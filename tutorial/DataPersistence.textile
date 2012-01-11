@@ -1,0 +1,17 @@
+h1. Building The Persistence Layer
+
+h2. Learn how we built the persistence layer for the application, and how we added tests for it
+
+---
+
+This guide shows you how we built the persistence layer for the TicketMonster application. After reading this guide, you'll understand how we built the persistence layer, and grasp why we made certain design choices. Topics covered include:
+
+* RDBMS design using JPA entity beans
+* Basic unit testing using JUnit
+* How to populate some test data
+* How to validate your entities using Bean Validation
+* Basic modification (CRUD) to entities
+
+And of course the guide will take you through the boring business of configuration.
+
+The tutorial will show you how to perform all these steps in JBoss Developer Studio, including screenshots that guide you through . For those of you who prefer to watch and learn, the included video shows you how we performed all the steps.

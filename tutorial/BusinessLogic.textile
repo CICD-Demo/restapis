@@ -1,0 +1,16 @@
+h1. Building the business services 
+
+h2. Learn how we designed and implemented the business layer of the application and how we made it accessible for different types of front-ends
+
+---
+
+You've just defined the domain model of your application and created its persistence layer. Now you need to implement the services that implement the business logic of your application and expose them to the front-end. Topics covered include:
+
+* Implementing basic persistence operations (?)
+* Encapsulating business logic in services and integrating with the persistence tier
+* Using CDI for integrating individual services
+* Functional testing using arquillian
+* Implementing cross-cutting concerns such as logging
+* Exposing RESTful services via JAX-RS
+
+The tutorial will show you how to perform all these steps in JBoss Developer Studio, including screenshots that guide you through . For those of you who prefer to watch and learn, the included video shows you how we performed all the steps.
