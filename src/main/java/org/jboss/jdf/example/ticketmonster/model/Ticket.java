@@ -42,7 +42,7 @@ public class Ticket implements Serializable {
     /**
      * Np-arg constructor for persistence
      */
-    protected Ticket() {
+    public Ticket() {
 
     }
 
