@@ -1,0 +1,63 @@
+From 2158f1b55dced8588928e117c3558023b60c9f2f Mon Sep 17 00:00:00 2001
+From: Pete Muir <pmuir@bleepbleep.org.uk>
+Date: Tue, 10 Apr 2012 22:52:34 +0100
+Subject: [PATCH] Manual changes reqd.
+
+---
+ src/main/webapp/admin/event/view.xhtml   |    2 ++
+ src/main/webapp/resources/tm/image.xhtml |   22 ++++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
+ create mode 100644 src/main/webapp/resources/tm/image.xhtml
+
+diff --git a/src/main/webapp/admin/event/view.xhtml b/src/main/webapp/admin/event/view.xhtml
+index 3300a87..b309294 100644
+--- a/src/main/webapp/admin/event/view.xhtml
++++ b/src/main/webapp/admin/event/view.xhtml
+@@ -4,6 +4,7 @@
+ 	xmlns:h="http://java.sun.com/jsf/html"
+ 	xmlns:f="http://java.sun.com/jsf/core"
+ 	xmlns:ui="http://java.sun.com/jsf/facelets"
++	xmlns:tm="http://java.sun.com/jsf/composite/tm"
+ 	template="/resources/scaffold/pageTemplate.xhtml">
+ 
+ 	<f:metadata>
+@@ -30,6 +31,7 @@
+ 			<h:outputText/>
+ 			<h:outputLabel for="eventBeanEventPicture" value="Picture:"/>
+ 			<h:link id="eventBeanEventPicture" outcome="/admin/mediaItem/view" value="#{eventBean.event.picture}">
++				<tm:image media="#{mediaManager.getPath(eventBean.event.picture)}" />
+ 				<f:param name="id" value="#{eventBean.event.picture.id}"/>
+ 			</h:link>
+ 			<h:outputText/>
+diff --git a/src/main/webapp/resources/tm/image.xhtml b/src/main/webapp/resources/tm/image.xhtml
+new file mode 100644
+index 0000000..8844b40
+--- /dev/null
++++ b/src/main/webapp/resources/tm/image.xhtml
+@@ -0,0 +1,22 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
++"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<html xmlns="http://www.w3.org/1999/xhtml"
++      xmlns:h="http://java.sun.com/jsf/html"
++      xmlns:composite="http://java.sun.com/jsf/composite">
++<head>
++<title>Cached Image</title>
++</head>
++<body>
++
++<composite:interface>
++    <composite:attribute name="media" type="org.jboss.jdf.example.ticketmonster.services.MediaPath"/>
++    <composite:attribute name="id" type="java.lang.String" />
++</composite:interface>
++
++<composite:implementation>
++    <h:graphicImage value="#{cc.attrs.media.url}" rendered="#{!cc.attrs.media.cached}"/>
++    <h:graphicImage value="/rest/media/cache/#{cc.attrs.media.url}" rendered="#{cc.attrs.media.cached}"/>
++</composite:implementation>
++
++</body>
++</html>
+\ No newline at end of file
+-- 
+1.7.9.6
+
