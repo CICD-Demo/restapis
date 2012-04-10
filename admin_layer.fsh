@@ -37,4 +37,21 @@ echo Examine the app so far at http://localhost:8080/ticket-monster;
 
 wait;
 
-echo Add "<tm:image media="#{mediaManager.getPath(eventBean.event.picture)}" />" to "scaffold/event/view.xhtml" and  "scaffold/venue/view.xhtml" instead of the output of the picture
+@/* Ask the user whether they want to patch in the changes described in the tutorial */;
+
+set ACCEPT_DEFAULTS false;
+
+if ( SHELL.promptBoolean("Apply manual changes described in tutorial?") ) {
+    echo Applying manual changes described in tutorial based on admin_layer.patch
+    git apply < admin_layer.patch    
+
+    @/* Deploy this to JBoss AS 7 to see the result */;
+    build clean package jboss-as:deploy;
+
+    echo Examine the app so far at http://localhost:8080/ticket-monster;
+
+    wait;
+
+}
+
+
