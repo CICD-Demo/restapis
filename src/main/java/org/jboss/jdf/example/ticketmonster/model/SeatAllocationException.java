@@ -3,6 +3,7 @@ package org.jboss.jdf.example.ticketmonster.model;
 /**
  * @author Marius Bogoevici
  */
+@SuppressWarnings("serial")
 public class SeatAllocationException extends RuntimeException {
 
     public SeatAllocationException() {

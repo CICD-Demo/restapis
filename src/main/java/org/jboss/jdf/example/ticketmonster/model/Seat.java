@@ -2,7 +2,6 @@ package org.jboss.jdf.example.ticketmonster.model;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
 /**

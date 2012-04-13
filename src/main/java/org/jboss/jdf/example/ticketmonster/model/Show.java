@@ -15,8 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 
 /**
  * A show is an instance of an event taking place at a particular venue. A show can have multiple

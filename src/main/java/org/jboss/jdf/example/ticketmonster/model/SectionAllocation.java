@@ -27,6 +27,7 @@ public class SectionAllocation {
     @GeneratedValue(strategy = IDENTITY)
     private long id;
 
+    @SuppressWarnings("unused")
     @Version
     private long version;
 

@@ -3,18 +3,11 @@ package org.jboss.jdf.example.ticketmonster.model;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * An allocation consists of one or more contiguous sold seats
