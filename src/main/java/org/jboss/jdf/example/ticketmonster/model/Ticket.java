@@ -8,29 +8,63 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 /**
- * An allocation consists of one or more contiguous sold seats
- * within a SectionRow.
- *
+ * <p>
+ * A ticket represents a seat sold for a particular price.
+ * </p>
+ * 
  * @author Shane Bryzak
  * @author Marius Bogoevici
+ * @author Pete Muir
  */
+/*
+ * We suppress the warning about not specifying a serialVersionUID, as we are still developing this app, and want the JVM to
+ * generate the serialVersionUID for us. When we put this app into production, we'll generate and embed the serialVersionUID
+ */
+@SuppressWarnings("serial")
 @Entity
 public class Ticket implements Serializable {
-    private static final long serialVersionUID = 8738724150877088864L;
 
+    /* Declaration of fields */
+
+    /**
+     * The synthetic id of the object.
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    /**
+     * <p>
+     * The seat for which this ticket has been sold.
+     * </p>
+     * 
+     * <p>
+     * The seat must be specifed, and the Bean Validation constraint <code>@NotNull</code> ensures this.
+     * </p>
+     */
+    @NotNull
     private Seat seat;
 
+    /**
+     * <p>
+     * The ticket price category for which this ticket has been sold.
+     * </p>
+     * 
+     * <p>
+     * The ticket price category must be specifed, and the Bean Validation constraint <code>@NotNull</code> ensures this.
+     * </p>
+     */
     @ManyToOne
+    @NotNull
     private TicketCategory ticketCategory;
 
+    /**
+     * The price which was charged for the ticket.
+     */
     private float price;
-
 
     /**
      * Np-arg constructor for persistence
@@ -45,10 +79,11 @@ public class Ticket implements Serializable {
         this.price = price;
     }
 
+    /* Boilerplate getters and setters */
+
     public Long getId() {
         return id;
     }
-
 
     public TicketCategory getTicketCategory() {
         return ticketCategory;
@@ -58,9 +93,7 @@ public class Ticket implements Serializable {
         return price;
     }
 
-
     public Seat getSeat() {
         return seat;
     }
 }
-

@@ -1,4 +1,4 @@
-package org.jboss.jdf.example.ticketmonster.services;
+package org.jboss.jdf.example.ticketmonster.service;
 
 import java.io.Serializable;
 import java.util.List;

@@ -5,7 +5,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 
 /**
+ * TODO
  * @author Marius Bogoevici
+ * @author Pete Muir
  */
 @Embeddable
 public class Seat {
@@ -16,12 +18,17 @@ public class Seat {
     @Min(1)
     private int number;
 
+    /**
+     * The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     */
     @ManyToOne
     private Section section;
 
     /** Constructor for persistence */
     protected Seat() {
     }
+
+    /* Boilerplate getters and setters */
 
     public Seat(Section section, int rowNumber, int number) {
         this.section = section;

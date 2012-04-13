@@ -1,4 +1,4 @@
-package org.jboss.jdf.example.ticketmonster.services;
+package org.jboss.jdf.example.ticketmonster.service;
 
 import static org.jboss.jdf.example.ticketmonster.model.MediaType.IMAGE;
 

@@ -10,36 +10,90 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
- * Contains price categories - each category represents the price for a ticket
- * in a particular section at a particular venue for a particular event, for a
- * particular ticket category.
- *
+ * <p>
+ * Contains price categories - each category represents the price for a ticket in a particular section at a particular venue for
+ * a particular event, for a particular ticket category.
+ * </p>
+ * 
+ * <p>
+ * The section, show and ticket category form the natural id of this entity, and therefore must be unique. JPA requires us to use the class level
+ * <code>@Table</code> constraint
+ * </p>
+ * 
  * @author Shane Bryzak
+ * @author Pete Muir
  */
-@Entity @JsonIgnoreProperties("show")
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"SECTION_ID","SHOW_ID","TICKETCATEGORY_ID"}))
+/*
+ * We suppress the warning about not specifying a serialVersionUID, as we are still developing this app, and want the JVM to
+ * generate the serialVersionUID for us. When we put this app into production, we'll generate and embed the serialVersionUID
+ */
+@SuppressWarnings("serial")
+@Entity
+// TODO Document @JsonIgnoreProperties
+@JsonIgnoreProperties("show")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "section_id", "show_id", "ticketcategory_id" }))
 public class TicketPriceCategory implements Serializable {
-    private static final long serialVersionUID = 6649855367578381386L;
 
+    /* Declaration of fields */
+
+    /**
+     * The synthetic id of the object.
+     */
     @Id
-    @GeneratedValue(strategy=IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    /**
+     * <p>
+     * The show to which this ticket price category belongs. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     * </p>
+     * 
+     * <p>
+     * The <code>@NotNull</code> Bean Validation constraint means that the show must be specified.
+     * </p>
+     */
     @ManyToOne
+    @NotNull
     private Show show;
 
+    /**
+     * <p>
+     * The section to which this ticket price category belongs. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     * </p>
+     * 
+     * <p>
+     * The <code>@NotNull</code> Bean Validation constraint means that the section must be specified.
+     * </p>
+     */
     @ManyToOne
+    @NotNull
     private Section section;
 
+    /**
+     * <p>
+     * The ticket category to which this ticket price category belongs. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     * </p>
+     * 
+     * <p>
+     * The <code>@NotNull</code> Bean Validation constraint means that the ticket category must be specified.
+     * </p>
+     */
     @ManyToOne
+    @NotNull
     private TicketCategory ticketCategory;
 
+    /**
+     * The price for this category of ticket.
+     */
     private float price;
 
+    /* Boilerplate getters and setters */
+    
     public Long getId() {
         return id;
     }
@@ -80,15 +134,21 @@ public class TicketPriceCategory implements Serializable {
         this.price = price;
     }
 
+    /* equals() and hashCode() for TicketPriceCategory, using the natural identity of the object */
+    
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         TicketPriceCategory that = (TicketPriceCategory) o;
 
-        if (section != null ? !section.equals(that.section) : that.section != null) return false;
-        if (show != null ? !show.equals(that.show) : that.show != null) return false;
+        if (section != null ? !section.equals(that.section) : that.section != null)
+            return false;
+        if (show != null ? !show.equals(that.show) : that.show != null)
+            return false;
         if (ticketCategory != null ? !ticketCategory.equals(that.ticketCategory) : that.ticketCategory != null)
             return false;
 

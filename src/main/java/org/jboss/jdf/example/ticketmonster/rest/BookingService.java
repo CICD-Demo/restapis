@@ -29,7 +29,7 @@ import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.model.Ticket;
 import org.jboss.jdf.example.ticketmonster.model.TicketCategory;
 import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
-import org.jboss.jdf.example.ticketmonster.services.SeatAllocationService;
+import org.jboss.jdf.example.ticketmonster.service.SeatAllocationService;
 
 
 /**

@@ -13,35 +13,100 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 /**
+ * <p>
  * Represents the state of ticket allocation in a section, for a specific performance.
- *
- * Optimistic locking ensures that two tickets will not be sold within the same row
+ * </p>
+ * 
+ * <p>
+ * Optimistic locking ensures that two tickets will not be sold within the same row. Adding a member annotated with
+ * <code>@Version</code> enables optimistic locking.
+ * </p>
+ * 
+ * <p>
+ * The performance and section form the natural id of this entity, and therefore must be unique. JPA requires us to use the
+ * class level <code>@Table</code> constraint.
+ * </p>
+ * 
+ * @author Marius Bogoevici
+ * @author Pete Muir
  */
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"performance_id", "section_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "performance_id", "section_id" }))
 public class SectionAllocation {
 
+    /* Declaration of fields */
+
+    /**
+     * The synthetic id of the object.
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private long id;
 
+    /**
+     * <p>
+     * The version used to optimistically lock this entity.
+     * </p>
+     * 
+     * <p>
+     * Adding this field enables optimistic locking. As we don't access this field in the application, we need to suppress the
+     * warnings the java compiler gives us about not using the field!
+     * </p>
+     */
     @SuppressWarnings("unused")
     @Version
     private long version;
 
+    /**
+     * <p>
+     * The performance to which this allocation relates. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     * </p>
+     * 
+     * <p>
+     * The performance must be specified, so we add the Bean Validation constrain <code>@NotNull</code>
+     * </p>
+     */
     @ManyToOne
+    @NotNull
     private Performance performance;
 
+    /**
+     * <p>
+     * The section to which this allocation relates. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     * </p>
+     * 
+     * <p>
+     * The section must be specified, so we add the Bean Validation constrain <code>@NotNull</code>
+     * </p>
+     */
     @ManyToOne
+    @NotNull
     private Section section;
 
+    /**
+     * <p>
+     * A two dimensional matrix of allocated seats in a section, represented by a 2 dimensional array.
+     * </p>
+     * 
+     * <p>
+     * A two dimensional array doesn't have a natural RDBMS mapping, so we simply store this a binary object in the database, an
+     * approach which requires no additional mapping logic. Any analysis of which seats within a section are allocated is done
+     * in the business logic, below, not by the RDBMS.
+     * </p>
+     * 
+     * <p>
+     * <code>@Lob</code> instructs JPA to map this a large object in the database
+     * </p>
+     */
     @Lob
     private boolean allocated[][];
-    
 
-
+    /**
+     * Constructor for persistence
+     */
     public SectionAllocation() {
     }
 
@@ -51,38 +116,56 @@ public class SectionAllocation {
         this.allocated = new boolean[section.getNumberOfRows()][section.getRowCapacity()];
     }
 
-
-    public Performance getPerformance() {
-        return performance;
-    }
-
-    public Section getSection() {
-        return section;
-    }
-
+    /**
+     * Check if a particular seat is allocated in this section for this performance.
+     * 
+     * @return true if the seat is allocated, otherwise false
+     */
     public boolean isAllocated(Seat s) {
-        return allocated[s.getRowNumber()-1][s.getNumber()-1];
+        // Examine the allocation matrix, using the row and seat number as indicies
+        return allocated[s.getRowNumber() - 1][s.getNumber() - 1];
     }
 
+    /**
+     * Allocate the specified number seats within this section for this performance. Optionally allocate them in a contiguous
+     * block.
+     * 
+     * @param seatCount the number of seats to allocate
+     * @param contiguous whether the seats must be allocated in a contiguous block or not
+     * @return the allocated seats
+     */
     public List<Seat> allocateSeats(int seatCount, boolean contiguous) {
+        // The list of seats allocated
         List<Seat> seats = new ArrayList<Seat>();
-        for (int rowCounter = 0; rowCounter < section.getNumberOfRows(); rowCounter ++) {
+
+        // The seat allocation algorithm starts by iterating through the rows in this section
+        for (int rowCounter = 0; rowCounter < section.getNumberOfRows(); rowCounter++) {
 
             if (contiguous) {
+                // identify the first block of free seats of the requested size
                 int startSeat = findFreeGapStart(rowCounter, 0, seatCount);
+                // if a large enough block of seats is available
                 if (startSeat >= 0) {
+                    // Allocate the seats in the allocation matrix
                     allocate(rowCounter, startSeat, seatCount);
+                    // Create the list of allocated seats to return
                     for (int i = 1; i <= seatCount; i++) {
                         seats.add(new Seat(section, rowCounter + 1, startSeat + i));
                     }
+                    // Seats are allocated now, so we can stop checking rows
                     break;
                 }
             } else {
+                // As we aren't allocating contiguously, allocate each seat needed, one at a time
                 int startSeat = findFreeGapStart(rowCounter, 0, 1);
+                // if a seat is found
                 if (startSeat >= 0) {
                     do {
-                        seats.add(new Seat(section, rowCounter + 1, startSeat + 1));
+                        // Allocate the seat
                         allocate(rowCounter, startSeat, 1);
+                        // Create the seat to return to the user
+                        seats.add(new Seat(section, rowCounter + 1, startSeat + 1));
+                        // Find the next free seat in the row
                         startSeat = findFreeGapStart(rowCounter, startSeat, 1);
                     } while (startSeat >= 0 && seats.size() < seatCount);
                     if (seats.size() == seatCount) {
@@ -91,6 +174,8 @@ public class SectionAllocation {
                 }
             }
         }
+
+        // Simple check to make sure we could actually allocate the required number of seats
         if (seats.size() == seatCount) {
             return seats;
         } else {
@@ -98,26 +183,51 @@ public class SectionAllocation {
         }
     }
 
-    public int findFreeGapStart(int row, int startSeat, int size) {
+    /**
+     * Helper method which can locate blocks of seats
+     * 
+     * @param row The row number to check
+     * @param startSeat The seat to start with in the row
+     * @param size The size of the block to locate
+     * @return
+     */
+    private int findFreeGapStart(int row, int startSeat, int size) {
+
+        // An array of occupied seats in the row
         boolean[] occupied = allocated[row];
         int candidateStart = -1;
-        for (int i=startSeat; i< occupied.length; i++) {
+
+        // Iterate over the seats, and locate the first free seat block
+        for (int i = startSeat; i < occupied.length; i++) {
+            // if the seat isn't allocated
             if (!occupied[i]) {
+                // then set this as a possible start
                 if (candidateStart == -1) {
                     candidateStart = i;
                 }
-                if ((size == (i-candidateStart + 1))) {
+                // if we've counted out enough seats since the possible start, then we are done
+                if ((size == (i - candidateStart + 1))) {
                     return candidateStart;
                 }
-            }
-            else {
+            } else {
                 candidateStart = -1;
             }
         }
         return -1;
     }
 
-    public void allocate(int row, int start, int size) throws SeatAllocationException {
+    /**
+     * Helper method to allocate a specific block of seats
+     * 
+     * @param row the row in which the seat should be allocated
+     * @param start the seat number to start allocating from
+     * @param size the size of the block to allocate
+     * @throws SeatAllocationException if less than 1 seat is to be allocated
+     * @throws SeatAllocationException if the first seat to allocate is more than the number of seats in the row
+     * @throws SeatAllocationException if the last seat to allocate is more than the number of seats in the row
+     * @throws SeatAllocationException if the seats are already occupied.
+     */
+    private void allocate(int row, int start, int size) throws SeatAllocationException {
         boolean[] occupied = allocated[row];
         if (size <= 0) {
             throw new SeatAllocationException("Number of seats must be greater than zero");
@@ -128,18 +238,30 @@ public class SectionAllocation {
         if ((start + size) > occupied.length) {
             throw new SeatAllocationException("Cannot allocate seats above row capacity");
         }
-        for (int i=start; i<(start + size); i++) {
+        // Check that seats aren't already occupied
+        for (int i = start; i < (start + size); i++) {
             if (occupied[i]) {
                 throw new SeatAllocationException("Found occupied seats in the requested block");
             }
         }
 
+        // Now that we know we can allocate the seats, set them to occupied in the allocation matrix
         for (int i = start; i < (start + size); i++) {
             occupied[i] = true;
         }
 
     }
-    
+
+    /* Boilerplate getters and setters */
+
+    public Performance getPerformance() {
+        return performance;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
     public long getId() {
         return id;
     }

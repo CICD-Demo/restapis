@@ -10,7 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.jboss.jdf.example.ticketmonster.model.MediaItem;
-import org.jboss.jdf.example.ticketmonster.services.MediaManager;
+import org.jboss.jdf.example.ticketmonster.service.MediaManager;
 
 @Path("/media")
 public class MediaService {
