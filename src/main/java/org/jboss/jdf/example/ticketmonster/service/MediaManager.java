@@ -24,18 +24,36 @@ import javax.persistence.EntityManager;
 
 import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 import org.jboss.jdf.example.ticketmonster.model.MediaType;
-import org.jboss.jdf.example.ticketmonster.rest.MediaService;
 import org.jboss.jdf.example.ticketmonster.util.Base64;
 import org.jboss.jdf.example.ticketmonster.util.Reflections;
 
-@Named @RequestScoped
+/**
+ * <p>
+ * The media manager is responsible for taking a media item, and returning either the URL of the cached version (if the
+ * application cannot load the item from the URL), or the original URL.
+ * </p>
+ * 
+ * <p>
+ * The media manager also transparently caches the media items on first load.
+ * </p>
+ * 
+ * <p>
+ * The computed URLs are cached for the duration of a request. This provides a good balance between consuming heap space, and
+ * computational time.
+ * </p>
+ * 
+ * @author Pete Muir
+ * 
+ */
+@Named
+@RequestScoped
 public class MediaManager {
-    
+
+    /**
+     * Locate the tmp directory for the machine
+     */
     private static final File tmpDir;
 
-    @Inject
-    EntityManager entityManager;
-    
     static {
         tmpDir = new File(System.getProperty("java.io.tmpdir"), "org.jboss.jdf.examples.ticket-monster");
         if (tmpDir.exists()) {
@@ -45,26 +63,31 @@ public class MediaManager {
             tmpDir.mkdir();
         }
     }
-    
+
+    /**
+     * A request scoped cache of computed URLs of media items.
+     */
     private final Map<MediaItem, MediaPath> cache;
-    
+
     public MediaManager() {
-        
+
         this.cache = new HashMap<MediaItem, MediaPath>();
     }
-    
-    private OutputStream getCachedOutputStream(String fileName) {
-        try {
-             return new FileOutputStream(getCachedFile(fileName));
-        } catch (FileNotFoundException e) {
-            throw new IllegalStateException("Error creating cached file", e);
-        }
-    }
-    
+
+    /**
+     * Load a cached file by name
+     * 
+     * @param fileName
+     * @return
+     */
     public File getCachedFile(String fileName) {
         return new File(tmpDir, fileName);
     }
-    
+
+    /**
+     * Obtain the URL of the media item. If the URL h has already been computed in this request, it will be looked up in the
+     * request scoped cache, otherwise it will be computed, and placed in the request scoped cache.
+     */
     public MediaPath getPath(MediaItem mediaItem) {
         if (cache.containsKey(mediaItem)) {
             return cache.get(mediaItem);
@@ -74,7 +97,12 @@ public class MediaManager {
             return mediaPath;
         }
     }
-    
+
+    /**
+     * Compute the URL to a media item. If the media item is not cacheable, then, as long as the resource can be loaded, the
+     * original URL is returned. If the resource is not available, then a placeholder image replaces it. If the media item is
+     * cachable, it is first cached in the tmp directory, and then path to load it is returned.
+     */
     private MediaPath createPath(MediaItem mediaItem) {
         if (!mediaItem.getMediaType().isCacheable()) {
             if (checkResourceAvailable(mediaItem)) {
@@ -84,15 +112,19 @@ public class MediaManager {
             }
         } else {
             return createCachedMedia(mediaItem);
-        }   
+        }
     }
-    
+
+    /**
+     * Check if a media item can be loaded from it's URL, using the JDK URLConnection classes.
+     */
     private boolean checkResourceAvailable(MediaItem mediaItem) {
         URL url = null;
         try {
-             url = new URL(mediaItem.getUrl());
-        } catch (MalformedURLException e) {}
-        
+            url = new URL(mediaItem.getUrl());
+        } catch (MalformedURLException e) {
+        }
+
         if (url != null) {
             try {
                 URLConnection connection = url.openConnection();
@@ -101,15 +133,23 @@ public class MediaManager {
                 } else {
                     return connection.getContentLength() > 0;
                 }
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
         return false;
     }
-    
+
+    /**
+     * The cached file name is a base64 encoded version of the URL. This means we don't need to maintain a database of cached
+     * files.
+     */
     private String getCachedFileName(String url) {
         return Base64.encodeToString(url.getBytes(), false);
     }
-    
+
+    /**
+     * Check to see if the file is already cached.
+     */
     private boolean alreadyCached(String cachedFileName) {
         File cache = getCachedFile(cachedFileName);
         if (cache.exists()) {
@@ -121,23 +161,26 @@ public class MediaManager {
             return false;
         }
     }
-    
+
+    /**
+     * To cache a media item we first load it from the net, then write it to disk.
+     */
     private MediaPath createCachedMedia(String url, MediaType mediaType) {
         String cachedFileName = getCachedFileName(url);
         if (!alreadyCached(cachedFileName)) {
             URL _url = null;
             try {
-                 _url = new URL(url);
+                _url = new URL(url);
             } catch (MalformedURLException e) {
                 throw new IllegalStateException("Error reading URL " + url);
             }
-            
+
             try {
                 InputStream is = null;
                 OutputStream os = null;
                 try {
-                     is = new BufferedInputStream(_url.openStream());
-                     os = new BufferedOutputStream(getCachedOutputStream(cachedFileName));
+                    is = new BufferedInputStream(_url.openStream());
+                    os = new BufferedOutputStream(getCachedOutputStream(cachedFileName));
                     while (true) {
                         int data = is.read();
                         if (data == -1)
@@ -156,9 +199,17 @@ public class MediaManager {
         }
         return new MediaPath(cachedFileName, true, mediaType);
     }
-    
+
     private MediaPath createCachedMedia(MediaItem mediaItem) {
         return createCachedMedia(mediaItem.getUrl(), mediaItem.getMediaType());
     }
-    
+
+    private OutputStream getCachedOutputStream(String fileName) {
+        try {
+            return new FileOutputStream(getCachedFile(fileName));
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("Error creating cached file", e);
+        }
+    }
+
 }
