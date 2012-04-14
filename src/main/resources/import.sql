@@ -24,10 +24,10 @@ insert into Section (id, name, description, numberofrows, rowcapacity, venue_id)
 
 insert into Venue (id, name, city, country, street, description, picture_id, capacity) values (3, 'BMO Field', 'Toronto', 'Canada', '170 Princes Boulevard','BMO Field is a Canadian soccer stadium located in Exhibition Place in the city of Toronto.',104, 21140);
 
-insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (5, 'A', 'Premier platinum reserve',40, 100, 1);
-insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (6, 'B', 'Premier gold reserve', 40, 100, 1);
-insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (7, 'C', 'Premier silver reserve', 30, 200, 1);
-insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (48, 'D', 'General', 80, 200, 1);
+insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (5, 'A', 'Premier platinum reserve',40, 100, 3);
+insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (6, 'B', 'Premier gold reserve', 40, 100, 3);
+insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (7, 'C', 'Premier silver reserve', 30, 200, 3);
+insert into Section (id, name, description, numberofrows, rowcapacity, venue_id) values (8, 'D', 'General', 80, 200, 3);
 
 
 insert into eventcategory (id, description) values (1, 'Concert');
