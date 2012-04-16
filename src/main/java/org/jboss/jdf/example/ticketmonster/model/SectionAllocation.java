@@ -105,6 +105,18 @@ public class SectionAllocation {
     private boolean allocated[][];
 
     /**
+     * <p>
+     *     The number of occupied seats in a section. It is updated whenever tickets are sold or canceled.
+     * </p>
+     *
+     * <p>
+     *     This field contains a summary of the information found in the <code>allocated</code> fields, and
+     *     it is intended to be used for analytics purposes only.
+     * </p>
+     */
+    private int occupiedCount = 0;
+
+    /**
      * Constructor for persistence
      */
     public SectionAllocation() {
@@ -248,11 +260,16 @@ public class SectionAllocation {
         // Now that we know we can allocate the seats, set them to occupied in the allocation matrix
         for (int i = start; i < (start + size); i++) {
             occupied[i] = true;
+            occupiedCount++;
         }
 
     }
 
     /* Boilerplate getters and setters */
+
+    public int getOccupiedCount() {
+        return occupiedCount;
+    }
 
     public Performance getPerformance() {
         return performance;
