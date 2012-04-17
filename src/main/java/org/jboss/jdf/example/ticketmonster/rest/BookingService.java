@@ -56,12 +56,12 @@ public class BookingService extends BaseEntityService<Booking> {
     }
 
     /**
-     * <p>
-     *     A method for deleting bookings.
+<    * <p>
+     * Delete a booking by id
      * </p>
      * @param id
      * @return
-     */
+=    */
     @DELETE
     @Path("/{id:[0-9][0-9]*}")
     public Response deleteBooking(@PathParam("id") Long id) {
@@ -75,7 +75,7 @@ public class BookingService extends BaseEntityService<Booking> {
 
     /**
      * <p>
-     *     A method for creating new bookings.
+     *   Create a booking. Data is contained in the bookingRequest object
      * </p>
      * @param bookingRequest
      * @return
