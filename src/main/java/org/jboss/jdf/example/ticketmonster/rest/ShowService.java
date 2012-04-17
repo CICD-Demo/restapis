@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Singleton;
-import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -18,14 +17,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.Show;
+import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
 
 /**
  * @author Marius Bogoevici
  */
 @Path("/shows")
-@ApplicationScoped
 @Singleton
 public class ShowService extends BaseEntityService<Show> {
 

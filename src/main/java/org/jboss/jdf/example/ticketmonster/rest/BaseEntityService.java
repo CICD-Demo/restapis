@@ -19,6 +19,48 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 /**
+ * <p>
+ *   A number of RESTful services implement GET operations on a particular type of entity. For
+ *   observing the DRY principle, the generic operations are implemented in the <code>BaseEntityService</code>
+ *   class, and the other services can inherit from here.
+ * </p>
+ *
+ * <p>
+ *    Subclasses will declare a base path using the JAX-RS {@link Path} annotation, for example:
+ * </p>
+ *
+ * <pre>
+ * <code>
+ * &#064;Path("/widgets")
+ * public class WidgetService extends BaseEntityService<Widget> {
+ * ...
+ * }
+ * </code>
+ * </pre>
+ *
+ * <p>
+ *   will support the following methods:
+ * </p>
+ *
+ * <pre>
+ * <code>
+ *   GET /widgets
+ *   GET /widgets/:id
+ * </code>
+ * </pre>
+ *
+ *  <p>
+ *     Subclasses may specify various criteria for filtering entities when retrieving a list of them, by supporting
+ *     custom query parameters. Pagination is supported by default through the query parameters <code>first</code>
+ *     and <code>maxResults</code>.
+ * </p>
+ *
+ * <p>
+ *     The class is abstract because it is not intended to be used directly, but subclassed by actual JAX-RS
+ *     endpoints.
+ * </p>
+ *
+
  * @author Marius Bogoevici
  */
 public abstract class BaseEntityService<T> {
@@ -36,6 +78,15 @@ public abstract class BaseEntityService<T> {
         return entityManager;
     }
 
+    /**
+     * <p>
+     *   A method for retrieving all entities of a given type. Supports the query parameters <code>first</code>
+     *   and <code>maxResults</code> for pagination.
+     * </p>
+     *
+     * @param uriInfo application and request context information (see {@see UriInfo} class information for more details)
+     * @return
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<T> getAll(@Context UriInfo uriInfo) {
@@ -58,10 +109,27 @@ public abstract class BaseEntityService<T> {
 		return query.getResultList();
     }
 
+    /**
+     * <p>
+     *     Subclasses may choose to expand the set of supported query parameters (for adding more filtering
+     *     criteria) by overriding this method.
+     * </p>
+     * @param queryParameters - the HTTP query parameters received by the endpoint
+     * @param criteriaBuilder - @{link CriteriaBuilder} used by the invoker
+     * @param root  @{link Root} used by the invoker
+     * @return a list of {@link Predicate}s that will added as query parameters
+     */
     protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, CriteriaBuilder criteriaBuilder, Root<T> root) {
         return new Predicate[]{};
     }
 
+    /**
+     * <p>
+     *     A method for retrieving individual entity instances.
+     * </p>
+     * @param id entity id
+     * @return
+     */
     @GET
     @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)

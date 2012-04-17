@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -32,14 +31,21 @@ import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
 import org.jboss.jdf.example.ticketmonster.service.SeatAllocationService;
 
 /**
- * JAX-RS endpoint that handles bookings
- * 
+ * <p>
+ *     A JAX-RS endpoint for handling {@link Booking}s. Inherits the GET
+ *     methods from {@link BaseEntityService}, and implements additional REST methods.
+ * </p>
+ *
  * @author Marius Bogoevici
  * @author Pete Muir
  */
 @Path("/bookings")
-@Stateful
-@RequestScoped
+/**
+ * <p>
+ *     This is a stateless service, so a single shared instance can be used in this case.
+ * </p>
+ */
+@Singleton
 public class BookingService extends BaseEntityService<Booking> {
 
     @Inject
@@ -49,6 +55,13 @@ public class BookingService extends BaseEntityService<Booking> {
         super(Booking.class);
     }
 
+    /**
+     * <p>
+     *     A method for deleting bookings.
+     * </p>
+     * @param id
+     * @return
+     */
     @DELETE
     @Path("/{id:[0-9][0-9]*}")
     public Response deleteBooking(@PathParam("id") Long id) {
@@ -60,14 +73,23 @@ public class BookingService extends BaseEntityService<Booking> {
         return Response.ok().build();
     }
 
+    /**
+     * <p>
+     *     A method for creating new bookings.
+     * </p>
+     * @param bookingRequest
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @POST
+    /**
+     * <p> Data is received in JSON format. For easy handling, it will be unmarshalled in the support
+     * {@link BookingRequest} class.
+     */
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createBooking(BookingRequest bookingRequest) {
         try {
-
-            // First, validate the posted data
-            // There will be more validation when persistence occurs
+            // identify the ticket price categories in this request
             Set<Long> priceCategoryIds = new HashSet<Long>();
             for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
                 if (priceCategoryIds.contains(ticketRequest.getPriceCategory())) {
@@ -75,11 +97,11 @@ public class BookingService extends BaseEntityService<Booking> {
                 }
                 priceCategoryIds.add(ticketRequest.getPriceCategory());
             }
-
-            // First, load the entities that make up this booking's relationships
+            
+            // load the entities that make up this booking's relationships
             Performance performance = getEntityManager().find(Performance.class, bookingRequest.getPerformance());
 
-            // As we can have a mix of ticket types in a booking, we need to load all of them that are relevant, and map them by
+            // As we can have a mix of ticket types in a booking, we need to load all of them that are relevant, 
             // id
             List<TicketPriceCategory> ticketPrices = (List<TicketPriceCategory>) getEntityManager()
                     .createQuery("select p from TicketPriceCategory p where p.id in :ids")
@@ -98,6 +120,7 @@ public class BookingService extends BaseEntityService<Booking> {
             booking.setCancellationCode("abc");
 
             // Now, we iterate over each ticket that was requested, and organize them by section and category
+            // we want to allocate ticket requests that belong to the same section contiguously
             Map<Section, Map<TicketCategory, TicketRequest>> ticketRequestsPerSection = new LinkedHashMap<Section, Map<TicketCategory, TicketRequest>>();
             for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
                 final TicketPriceCategory priceCategory = ticketPricesById.get(ticketRequest.getPriceCategory());
@@ -115,12 +138,14 @@ public class BookingService extends BaseEntityService<Booking> {
                 int totalTicketsRequestedPerSection = 0;
                 // Compute the total number of tickets required (a ticket category doesn't impact the actual seat!)
                 final Map<TicketCategory, TicketRequest> ticketRequestsByCategories = ticketRequestsPerSection.get(section);
+                // calculate the total quantity of tickets to be allocated in this section
                 for (TicketRequest ticketRequest : ticketRequestsByCategories.values()) {
                     totalTicketsRequestedPerSection += ticketRequest.getQuantity();
                 }
-                // Allocate the seats
-                List<Seat> seats = seatAllocationService.allocateSeats(section, performance, totalTicketsRequestedPerSection,
-                        true);
+                // try to allocate seats - if this fails, an exception will be thrown
+                List<Seat> seats = seatAllocationService.allocateSeats(section, performance, totalTicketsRequestedPerSection, true);
+                // allocation was successful, begin generating tickets
+                // associate each allocated seat with a ticket, assigning a price category to it
                 int seatCounter = 0;
                 // Now, add a ticket for each requested ticket to the booking
                 for (TicketCategory ticketCategory : ticketRequestsByCategories.keySet()) {
@@ -134,8 +159,9 @@ public class BookingService extends BaseEntityService<Booking> {
                     seatCounter += ticketRequest.getQuantity();
                 }
             }
-
             // Persist the booking, including cascaded relationships
+            booking.setPerformance(performance);
+            booking.setCancellationCode("abc");
             getEntityManager().persist(booking);
             // And finally, tell the app we succeeded
             return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -156,73 +182,4 @@ public class BookingService extends BaseEntityService<Booking> {
         }
     }
 
-    /**
-     * A {@link BookingRequest} is populated with unmarshalled JSON data, and handed to @{link
-     * {@link BookingService#createBooking(BookingRequest)}.
-     * 
-     * @author Marius Bogoevici
-     * @author Pete Muir
-     * 
-     */
-    public static class BookingRequest {
-
-        private List<TicketRequest> ticketRequests = new ArrayList<TicketRequest>();
-        private long performance;
-        private String email;
-
-        public List<TicketRequest> getTicketRequests() {
-            return ticketRequests;
-        }
-
-        public void setTicketRequests(List<TicketRequest> ticketRequests) {
-            this.ticketRequests = ticketRequests;
-        }
-
-        public long getPerformance() {
-            return performance;
-        }
-
-        public void setPerformance(long performance) {
-
-            this.performance = performance;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-    }
-
-    /**
-     * A {@link BookingRequest} will contain multiple {@link TicketRequest}s.
-     * 
-     * @author Marius Bogoevici
-     * @author Pete Muir
-     * 
-     */
-    public static class TicketRequest {
-
-        private long priceCategory;
-
-        private int quantity;
-
-        public long getPriceCategory() {
-            return priceCategory;
-        }
-
-        public void setPriceCategory(long priceCategory) {
-            this.priceCategory = priceCategory;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
-        }
-    }
 }

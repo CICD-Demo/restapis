@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
-import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -13,8 +12,21 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.jboss.jdf.example.ticketmonster.model.Event;
 
+/**
+ * <p>
+ *     A JAX-RS endpoint for handling {@link Event}s. Inherits the actual
+ *     methods from {@link BaseEntityService}, but implements additional search
+ *     criteria.
+ * </p>
+ *
+ * @author Marius Bogoevici
+ */
 @Path("/events")
-@ApplicationScoped
+/**
+ * <p>
+ *     This is a stateless service, so a single shared instance can be used in this case.
+ * </p>
+ */
 @Singleton
 public class EventService extends BaseEntityService<Event> {
 
@@ -22,6 +34,16 @@ public class EventService extends BaseEntityService<Event> {
         super(Event.class);
     }
 
+    /**
+     * <p>
+     *    We override the method from parent in order to add support for additional search
+     *    criteria for events.
+     * </p>
+     * @param queryParameters - the HTTP query parameters received by the endpoint
+     * @param criteriaBuilder - @{link CriteriaBuilder} used by the invoker
+     * @param root  @{link Root} used by the invoker
+     * @return
+     */
     @Override
     protected Predicate[] extractPredicates(
             MultivaluedMap<String, String> queryParameters, 
