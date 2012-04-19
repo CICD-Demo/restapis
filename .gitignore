@@ -6,3 +6,6 @@ target
 *.iws
 *.iml
 *.ipr
+.errai
+gwt-unitCache
+rpcPolicyManifest
