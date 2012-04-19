@@ -62,7 +62,7 @@
 
 <script type="text/javascript">
 
-TicketMonster = new Object()
+var TicketMonster = new Object();
 
 TicketMonster.Event = Backbone.Model.extend({
     urlRoot:'rest/events'
@@ -300,7 +300,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
         $("#bookingOption").show()
     }
 
-})
+});
 
 TicketMonster.VenueDetailView = Backbone.View.extend({
     events:{
