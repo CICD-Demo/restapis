@@ -6,10 +6,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
 
-    <link rel="stylesheet" href="resources/css/jquery.mobile-1.0rc2.min.css"/>
+    <link rel="stylesheet" href="resources/css/jquery.mobile-1.1.0.css"/>
     <link rel="stylesheet" href="resources/css/m.screen.css"/>
-    <script type="text/javascript" src="resources/js/jquery-1.6.4.js"></script>
-    <script type="text/javascript" src="resources/js/jquery.mobile-1.0.1.min.js"></script>
+    <script type="text/javascript" src="resources/js/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="resources/js/jquery.mobile-1.1.0.js"></script>
     <script type="text/javascript" src="resources/js/underscore.js"></script>
     <script type="text/javascript" src="resources/js/backbone.js"></script>
     <script type="text/javascript" src="resources/app/tm-utils.js"></script>
@@ -133,13 +133,13 @@ var preparePage = function () {
             $(this.el).empty().append("<div id='cityMenu' data-role='listview' data-filter='true' data-filter-placeholder='City name ...'/>")
             var rootView = $("#cityMenu")
             var current_city = null
-            _.each(this.model.models, function (event) {
-                var city = event.get('address').city
+            _.each(this.model.models, function (venue) {
+                var city = venue.get('address').city
                 if (current_city !== city) {
                     $(rootView).append(renderTemplate($('#city'), {'city':city}));
                     current_city = city;
                 }
-                var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
+                var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:venue});
                 $("#city-" + current_city).append(view.render().el);
             })
             $("#cityMenu").listview()
@@ -147,6 +147,7 @@ var preparePage = function () {
     });
 
     TicketMonster.VenueSummaryLineView = Backbone.View.extend({
+        tagName:'li',
         render:function () {
             applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
             return this;
@@ -262,63 +263,99 @@ var preparePage = function () {
 
     TicketMonster.VenueDetailView = Backbone.View.extend({
         events:{
-            "click input[name='bookButton']":"beginBooking",
-            "change select[id='showSelector']":"refreshShows"
+            "click a[id='bookButton']":"beginBooking",
+            "change select[id='showSelector']":"refreshShows",
+            "change select[id='performanceTimes']":"performanceSelected",
+            "change select[id='dayPicker']":'refreshTimes'
         },
         render:function () {
             $(this.el).empty()
             applyTemplate($(this.el), $("#venue-detail"), this.model.attributes)
+            $(this.el).trigger('create')
+            $("#bookButton").addClass("ui-disabled")
             var self = this
             $.getJSON("rest/shows?venue=" + this.model.get('id'), function (shows) {
-                self.shows = shows
-                $("#showSelector").empty()
+                self.shows = shows;
+                $("#showSelector").empty().append("<option data-placeholder='true'>Choose an event ...</option>");
                 $.each(shows, function (i, show) {
                     $("#showSelector").append("<option value='" + show.id + "'>" + show.event.name + "</option>")
                 })
-                if ($("#showSelector").val()) {
-                    $("#showSelector").change()
-                }
-            })
-            $('#dayPicker').live('dateboxcreate', function () {
-                $('#dayPicker').data('datebox').options.afterToday = true
-                $('#dayPicker').data('datebox').options.calHighToday = false
-            })
+                $("#showSelector").selectmenu('refresh', true)
+                $("#dayPicker").selectmenu('disable')
+                $("#dayPicker").empty().append("<option data-placeholder='true'>Choose a show date ...</option>")
+                $("#performanceTimes").selectmenu('disable')
+                $("#performanceTimes").empty().append("<option data-placeholder='true'>Choose a show time ...</option>")
+
+            });
+            $("#dayPicker").empty()
+            $("#dayPicker").selectmenu('disable')
+            $("#performanceTimes").empty()
+            $("#performanceTimes").selectmenu('disable')
+            $(this.el).trigger('pagecreate')
+            $("#showSelector").selectmenu('refresh', true)
+            $("#performanceTimes").selectmenu('refresh')
+        },
+        performanceSelected:function () {
+            if ($("#performanceTimes").val() != 'Choose a show time ...') {
+                $("#bookButton").removeClass("ui-disabled")
+            } else {
+                $("#bookButton").addClass("ui-disabled")
+            }
         },
         beginBooking:function () {
             tmRouter.navigate('/book/' + $("#showSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
         },
         refreshShows:function (event) {
+
             var selectedShowId = event.currentTarget.value;
-            var selectedShow = _.find(this.shows, function (show) {
-                return show.id == selectedShowId
-            });
 
-            $("#dayPicker").datepicker("destroy")
-            $("#dayPicker").datepicker({
-                beforeShowDay:function (date) {
-                    return [_.any(selectedShow.performances, function (performance) {
-                        return _.isEqual(new Date(performance.date).toCalendarDate(), date.toCalendarDate())
-                    }), "*", "Performance on this date"]
-                },
-                onSelect:function (dateText, inst) {
-                    var date = $(this).datepicker('getDate');
-                    $("#performanceTimes").empty()
-                    if (selectedShow) {
-                        $.each(selectedShow.performances, function (i, performance) {
-                            var performanceDate = new Date(performance.date);
-                            if (_.isEqual(performanceDate.toCalendarDate(), date.toCalendarDate())) {
-                                $("#performanceTimes").append("<option value='" + performance.id + "'>" + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
-                            }
-                        })
+            if (selectedShowId != 'Choose a venue ...') {
+                var selectedShow = _.find(this.shows, function (show) {
+                    return show.id == selectedShowId
+                });
+                this.selectedShow = selectedShow;
+                var times = _.uniq(_.sortBy(_.map(selectedShow.performances, function (performance) {
+                    return (new Date(performance.date).withoutTimeOfDay()).getTime()
+                }), function (item) {
+                    return item
+                }));
+                applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {event:selectedShow.event});
+                $("#detailsCollapsible").show()
+                $("#dayPicker").removeAttr('disabled')
+                $("#performanceTimes").removeAttr('disabled')
+                $("#dayPicker").empty().append("<option data-placeholder='true'>Choose a show date ...</option>")
+                _.each(times, function (time) {
+                    var date = new Date(time)
+                    $("#dayPicker").append("<option value='" + date.toYMD() + "'>" + date.toPrettyStringWithoutTime() + "</option>")
+                });
+                $("#dayPicker").selectmenu('refresh')
+                $("#dayPicker").selectmenu('enable')
+                this.refreshTimes()
+            } else {
+                $("#detailsCollapsible").hide()
+                $("#venueEventDescription").empty()
+                $("#dayPicker").empty()
+                $("#dayPicker").selectmenu('disable')
+                $("#performanceTimes").empty()
+                $("#performanceTimes").selectmenu('disable')
+            }
+
+
+        },
+        refreshTimes: function() {
+            var selectedDate = $("#dayPicker").val();
+            $("#performanceTimes").empty().append("<option data-placeholder='true'>Choose a show time ...</option>")
+            if (selectedDate) {
+                $.each(this.selectedShow.performances, function (i, performance) {
+                    var performanceDate = new Date(performance.date);
+                    if (_.isEqual(performanceDate.toYMD(), selectedDate)) {
+                        $("#performanceTimes").append("<option value='" + performance.id + "'>" + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
                     }
-                },
-                defaultDate:null,
-                minDate:new Date(selectedShow.performances[0].date),
-                maxDate:new Date(selectedShow.performances[selectedShow.performances.length - 1].date),
-                autoSize:false
-
-            });
-            $("#dayPicker").datepicker("setDate", null);
+                })
+                $("#performanceTimes").selectmenu('enable')
+            }
+            $("#performanceTimes").selectmenu('refresh')
+            this.performanceSelected()
         }
 
     })
@@ -614,7 +651,7 @@ var preparePage = function () {
                     function () {
                         eventsView.render()
                  }).fetch()
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false, allowSamePageTransition:true})
+            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
         },
         venues:function () {
             var venues = new TicketMonster.Venues;
@@ -623,7 +660,7 @@ var preparePage = function () {
                     function () {
                         venuesView.render()
                     }).fetch()
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false, allowSamePageTransition:true})
+            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
         },
         about:function () {
             new TicketMonster.AboutView({el:$("#container")}).render()
@@ -631,7 +668,7 @@ var preparePage = function () {
         bookTickets:function (showId, performanceId) {
             var createBookingView = new TicketMonster.CreateBookingView({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#container")})
             createBookingView.render();
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false, allowSamePageTransition:true})
+            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
         },
         listBookings:function () {
             var bookings = new TicketMonster.Bookings()
