@@ -1,6 +1,4 @@
-
-
-define(['underscore', 'backbone', 'jQuery'], function (_, Backbone) {
+define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
 
     var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     var monthNames = ["January", "February", "March", "April", "May", "June",

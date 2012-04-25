@@ -3,19 +3,25 @@
 require.config({
     paths: {
         jquery:'libs/jquery-1.7.1',
-        underscore:'libs/underscore',
+        jQueryMobile:'libs/jquery.mobile-1.1.0',
         text:'libs/text',
-        bootstrap: '../bootstrap/js/bootstrap'
+        order: 'libs/order',
+        app:'app/tm-utils-mobile'
     }
 });
 
-define("backbone", ['jquery','libs/backbone'], function($){
+define('underscore',['libs/underscore'], function(){
+    return _;
+});
+
+define("backbone", ['order!jquery', 'order!underscore','order!libs/backbone'], function($, _){
     return Backbone;
-})
+});
+
 
 // Now we declare all the dependencies
-require(['jquery','underscore','backbone', 'text', 'bootstrap', 'text!../templates/templates.html', 'app/tm-utils'],
-       function($, _, backbone, text, bootstrap, templates){
-    $('head').append(templates)
+require(['app'],
+       function(app){
+    app.preparePage()
     console.log('all loaded')
 })
