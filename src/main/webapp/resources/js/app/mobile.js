@@ -1,74 +1,10 @@
-define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templates/templates-mobile.html'], function ($, jQM, Backbone, templates) {
+define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'utilities', 'text!../templates/templates-mobile.html'], function ($, jQM, Backbone, utilities, templates) {
 
     $('head').append(templates)
 
     $.mobile.hashListeningEnabled = false;
     $.mobile.linkBindingEnabled = false;
     $.mobile.pushStateEnabled = false;
-
-    var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    var monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"];
-
-    Date.prototype.toPrettyString = function () {
-        return dayNames[this.getDay()] + " " +
-            this.getDate() + " " +
-            monthNames[this.getMonth()] + " " +
-            this.getFullYear() + " at " +
-            this.getHours().toZeroPaddedString(2) + ":" +
-            this.getMinutes().toZeroPaddedString(2);
-    };
-
-    Date.prototype.toPrettyStringWithoutTime = function () {
-        return dayNames[this.getDay()] + " " +
-            this.getDate() + " " +
-            monthNames[this.getMonth()] + " " +
-            this.getFullYear();
-    };
-
-    Date.prototype.toYMD = function () {
-        return this.getFullYear() + '-' + (this.getMonth() + 1).toZeroPaddedString(2) + '-' + this.getDate().toZeroPaddedString(2)
-    };
-
-    Date.prototype.toCalendarDate = function () {
-        return { 'day':this.getDate(), 'month':this.getMonth(), 'year':this.getFullYear()}
-    };
-
-    Date.prototype.withoutTimeOfDay = function () {
-        return new Date(this.getFullYear(), this.getMonth(), this.getDate(), 0, 0, 0, 0);
-    };
-
-    Date.prototype.asArray = function () {
-        return [this.getFullYear(), this.getMonth(), this.getDate()]
-    };
-
-
-    Date.prototype.toTimeOfDay = function () {
-        return { 'hours':this.getHours(), 'minutes':this.getMinutes(),
-            'seconds':this.getSeconds(), 'milliseconds':this.getMilliseconds()};
-    }
-
-    Date.prototype.diff = function (other) {
-        return parseInt((this.withoutTimeOfDay().getTime() - other.withoutTimeOfDay().getTime()) / (1000.0 * 60 * 60 * 24))
-    }
-
-    Number.prototype.toZeroPaddedString = function (digits) {
-        val = this + "";
-        while (val.length < digits) val = "0" + val;
-        return val;
-    }
-
-    function renderTemplate(template, data) {
-        return _.template(template.html(), (data == undefined) ? {} : data);
-    }
-
-    function applyTemplate(target, template, data) {
-        return target.empty().append(renderTemplate(template, data))
-    }
-
-    function replaceWithTemplate(target, template, data) {
-        return target.replaceWith(renderTemplate(template, data))
-    }
 
     var TM = new Object();
 
@@ -124,7 +60,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
 
         TicketMonster.EventsCategoriesView = Backbone.View.extend({
             render:function () {
-                applyTemplate($(this.el), $('#item-view'), {'items':'Categories', 'description':'Event categories'})
+                utilities.applyTemplate($(this.el), $('#item-view'), {'items':'Categories', 'description':'Event categories'})
                 this.menuView = new TicketMonster.EventMenuView({model:this.model, el:$("#itemMenu")});
                 this.menuView.render()
                 $(this.el).trigger('pagecreate')
@@ -133,7 +69,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
 
         TicketMonster.VenueCitiesView = Backbone.View.extend({
             render:function () {
-                applyTemplate($(this.el), $('#item-view'), {'items':'Cities', 'description':'Cities with Venues'})
+                utilities.applyTemplate($(this.el), $('#item-view'), {'items':'Cities', 'description':'Cities with Venues'})
                 this.menuView = new TicketMonster.VenueMenuView({model:this.model, el:$("#itemMenu")});
                 this.menuView.render()
                 $(this.el).trigger('pagecreate')
@@ -150,7 +86,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                 _.each(this.model.models, function (event) {
                     var model_category = event.get('category')
                     if (current_category !== model_category.id) {
-                        $(rootView).append(renderTemplate($('#category-title'), model_category));
+                        $(rootView).append(utilities.renderTemplate($('#category-title'), model_category));
                         current_category = model_category.id;
                     }
                     var view = new TicketMonster.EventSummaryLineView({summaryView:self.options.summaryView, model:event});
@@ -170,7 +106,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                 _.each(this.model.models, function (venue) {
                     var city = venue.get('address').city
                     if (current_city !== city) {
-                        $(rootView).append(renderTemplate($('#city'), {'city':city}));
+                        $(rootView).append(utilities.renderTemplate($('#city'), {'city':city}));
                         current_city = city;
                     }
                     var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:venue});
@@ -183,7 +119,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
         TicketMonster.VenueSummaryLineView = Backbone.View.extend({
             tagName:'li',
             render:function () {
-                applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
+                utilities.applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
                 return this;
             }
         })
@@ -191,7 +127,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
         TicketMonster.EventSummaryLineView = Backbone.View.extend({
             tagName:'li',
             render:function () {
-                applyTemplate($(this.el), $("#event-summary"), this.model.attributes)
+                utilities.applyTemplate($(this.el), $("#event-summary"), this.model.attributes)
                 return this;
             }
         })
@@ -205,7 +141,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
             },
             render:function () {
                 $(this.el).empty()
-                applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
+                utilities.applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
                 $(this.el).trigger('create')
                 $("#bookButton").addClass("ui-disabled")
                 var self = this
@@ -254,7 +190,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                     }), function (item) {
                         return item
                     }));
-                    applyTemplate($("#eventVenueDescription"), $("#event-venue-description"), {venue:selectedShow.venue});
+                    utilities.applyTemplate($("#eventVenueDescription"), $("#event-venue-description"), {venue:selectedShow.venue});
                     $("#detailsCollapsible").show()
                     $("#dayPicker").removeAttr('disabled')
                     $("#performanceTimes").removeAttr('disabled')
@@ -304,7 +240,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
             },
             render:function () {
                 $(this.el).empty()
-                applyTemplate($(this.el), $("#venue-detail"), this.model.attributes)
+                utilities.applyTemplate($(this.el), $("#venue-detail"), this.model.attributes)
                 $(this.el).trigger('create')
                 $("#bookButton").addClass("ui-disabled")
                 var self = this
@@ -353,7 +289,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                     }), function (item) {
                         return item
                     }));
-                    applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {event:selectedShow.event});
+                    utilities.applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {event:selectedShow.event});
                     $("#detailsCollapsible").show()
                     $("#dayPicker").removeAttr('disabled')
                     $("#performanceTimes").removeAttr('disabled')
@@ -401,7 +337,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                 "click ":"showDetails"
             },
             render:function () {
-                applyTemplate($(this.el), $("#booking-row"), this.model.attributes)
+                utilities.applyTemplate($(this.el), $("#booking-row"), this.model.attributes)
                 return this;
             },
             delete:function (event) {
@@ -419,7 +355,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
 
         TicketMonster.TicketSummaryView = Backbone.View.extend({
             render:function () {
-                applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
+                utilities.applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
             }
         })
 
@@ -438,7 +374,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
         TicketMonster.SectionSelectorView = Backbone.View.extend({
             render:function () {
                 var self = this;
-                applyTemplate($(this.el), $("#select-section"), { sections:_.uniq(_.sortBy(_.pluck(self.model.priceCategories, 'section'), function (item) {
+                utilities.applyTemplate($(this.el), $("#select-section"), { sections:_.uniq(_.sortBy(_.pluck(self.model.priceCategories, 'section'), function (item) {
                     return item.id
                 }), true, function (item) {
                     return item.id
@@ -453,7 +389,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                 "change input":"onChange"
             },
             render:function () {
-                applyTemplate($(this.el), $('#ticket-entry'), this.model.attributes);
+                utilities.applyTemplate($(this.el), $('#ticket-entry'), this.model.attributes);
                 $(this.el).trigger('pagecreate')
                 return this;
             },
@@ -479,7 +415,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                     var priceCategories = _.map(this.model.models, function (item) {
                         return item.attributes.priceCategory
                     })
-                    applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
+                    utilities.applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
 
                     _.each(this.model.models, function (model) {
                         $("#ticket-category-input-" + model.attributes.priceCategory.id).append(new TicketMonster.TicketCategoryView({model:model}).render().el);
@@ -537,7 +473,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                     self.model.performance = _.find(selectedShow.performances, function (item) {
                         return item.id == self.model.performanceId
                     })
-                    applyTemplate($(self.el), $("#create-booking"), { show:selectedShow,
+                    utilities.applyTemplate($(self.el), $("#create-booking"), { show:selectedShow,
                         performance:self.model.performance});
                     $(self.el).trigger('pagecreate')
                     self.selectorView = new TicketMonster.SectionSelectorView({model:selectedShow, el:$("#sectionSelectorPlaceholder")}).render();
@@ -601,7 +537,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                 "click a[id='goBack']":"back"
             },
             render:function () {
-                applyTemplate($(this.el), $("#confirm-booking"), this.model)
+                utilities.applyTemplate($(this.el), $("#confirm-booking"), this.model)
                 this.ticketSummaryView = new TicketMonster.TicketSummaryView({model:this.model, el:$("#ticketSummaryView")});
                 this.ticketSummaryView.render();
                 $(this.el).trigger('pagecreate')
@@ -628,7 +564,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                     dataType:"json",
                     contentType:"application/json",
                     success:function (booking) {
-                        applyTemplate($(self.el), $("#booking-details"), booking)
+                        utilities.applyTemplate($(self.el), $("#booking-details"), booking)
                         $(self.el).trigger('pagecreate')
                     }}).error(function (error) {
                         alert(error)
@@ -639,7 +575,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
 
         TicketMonster.BookingDetailView = Backbone.View.extend({
             render:function () {
-                applyTemplate($(this.el), $("#booking-details"), this.model.attributes)
+                utilities.applyTemplate($(this.el), $("#booking-details"), this.model.attributes)
                 $(this.el).trigger('pagecreate')
                 return this
             }
@@ -673,7 +609,7 @@ define(['order!jquery', 'order!jQueryMobile', 'order!backbone', 'text!../templat
                 }
             },
             home:function () {
-                applyTemplate($("#container"), $("#home-view"))
+                utilities.applyTemplate($("#container"), $("#home-view"))
                 try {
                     $("#container").trigger('pagecreate')
                 } catch (e) {

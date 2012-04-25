@@ -6,7 +6,8 @@ require.config({
         jQueryMobile:'libs/jquery.mobile-1.1.0',
         text:'libs/text',
         order: 'libs/order',
-        app:'app/tm-utils-mobile'
+        utilities: 'app/utilities',
+        app:'app/mobile'
     }
 });
 

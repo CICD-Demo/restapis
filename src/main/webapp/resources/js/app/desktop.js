@@ -1,68 +1,4 @@
-define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
-
-    var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    var monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"];
-
-    Date.prototype.toPrettyString = function () {
-        return dayNames[this.getDay()] + " " +
-            this.getDate() + " " +
-            monthNames[this.getMonth()] + " " +
-            this.getFullYear() + " at " +
-            this.getHours().toZeroPaddedString(2) + ":" +
-            this.getMinutes().toZeroPaddedString(2);
-    };
-
-    Date.prototype.toPrettyStringWithoutTime = function () {
-        return dayNames[this.getDay()] + " " +
-            this.getDate() + " " +
-            monthNames[this.getMonth()] + " " +
-            this.getFullYear();
-    };
-
-    Date.prototype.toYMD = function () {
-        return this.getFullYear() + '-' + (this.getMonth() + 1).toZeroPaddedString(2) + '-' + this.getDate().toZeroPaddedString(2)
-    };
-
-    Date.prototype.toCalendarDate = function () {
-        return { 'day':this.getDate(), 'month':this.getMonth(), 'year':this.getFullYear()}
-    };
-
-    Date.prototype.withoutTimeOfDay = function () {
-        return new Date(this.getFullYear(), this.getMonth(), this.getDate(), 0, 0, 0, 0);
-    };
-
-    Date.prototype.asArray = function () {
-        return [this.getFullYear(), this.getMonth(), this.getDate()]
-    };
-
-
-    Date.prototype.toTimeOfDay = function () {
-        return { 'hours':this.getHours(), 'minutes':this.getMinutes(),
-            'seconds':this.getSeconds(), 'milliseconds':this.getMilliseconds()};
-    }
-
-    Date.prototype.diff = function (other) {
-        return parseInt((this.withoutTimeOfDay().getTime() - other.withoutTimeOfDay().getTime()) / (1000.0 * 60 * 60 * 24))
-    }
-
-    Number.prototype.toZeroPaddedString = function (digits) {
-        val = this + "";
-        while (val.length < digits) val = "0" + val;
-        return val;
-    }
-
-    function renderTemplate(template, data) {
-        return _.template(template.html(), (data == undefined) ? {} : data);
-    }
-
-    function applyTemplate(target, template, data) {
-        return target.empty().append(renderTemplate(template, data))
-    }
-
-    function replaceWithTemplate(target, template, data) {
-        return target.replaceWith(renderTemplate(template, data))
-    }
+define(['jquery', 'underscore', 'backbone', 'utilities' ], function ($, _, Backbone, utilities) {
 
     var TicketMonster = new Object();
 
@@ -94,7 +30,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
 
     TicketMonster.EventsCategoriesView = Backbone.View.extend({
         render:function () {
-            applyTemplate($(this.el), $('#main-view'), {})
+            utilities.applyTemplate($(this.el), $('#main-view'), {})
             var summaryView = new TicketMonster.EventSummaryView({model:this.model});
             $("#itemSummary").append(summaryView.render().el)
             this.menuView = new TicketMonster.EventMenuView({summaryView:summaryView, model:this.model, el:$("#itemMenu")});
@@ -104,7 +40,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
 
     TicketMonster.VenueCitiesView = Backbone.View.extend({
         render:function () {
-            applyTemplate($(this.el), $('#main-view'), {})
+            utilities.applyTemplate($(this.el), $('#main-view'), {})
             var venueSummaryView = new TicketMonster.VenueSummaryView({model:this.model});
             $("#itemSummary").append(venueSummaryView.render().el)
             this.menuView = new TicketMonster.VenueMenuView({summaryView:venueSummaryView, model:this.model, el:$("#itemMenu")});
@@ -125,7 +61,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
             _.each(this.model.models, function (event) {
                 var model_category = event.get('category')
                 if (current_category !== model_category.id) {
-                    $(self.el).append(renderTemplate($('#category-title'), model_category));
+                    $(self.el).append(utilities.renderTemplate($('#category-title'), model_category));
                     current_category = model_category.id;
                 }
                 var view = new TicketMonster.EventSummaryLineView({summaryView:self.options.summaryView, model:event});
@@ -152,7 +88,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
             _.each(this.model.models, function (event) {
                 var model_city = event.get('address').city
                 if (current_city !== model_city) {
-                    $(self.el).append(renderTemplate($('#city'), event.get('address')));
+                    $(self.el).append(utilities.renderTemplate($('#city'), event.get('address')));
                     current_city = model_city;
                 }
                 var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
@@ -172,7 +108,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
             "click":"notify"
         },
         render:function () {
-            applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
+            utilities.applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
             return this;
         },
         notify:function () {
@@ -183,10 +119,10 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
     TicketMonster.EventSummaryView = Backbone.View.extend({
         render:function (data) {
             if (data) {
-                applyTemplate($(this.el), $("#event-summary-view"), data.attributes)
+                utilities.applyTemplate($(this.el), $("#event-summary-view"), data.attributes)
             }
             else {
-                applyTemplate($(this.el), $("#event-carousel"), {models:this.model.models});
+                utilities.applyTemplate($(this.el), $("#event-carousel"), {models:this.model.models});
                 $(this.el).find('.item:first').addClass('active')
             }
             return this
@@ -196,10 +132,10 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
     TicketMonster.VenueSummaryView = Backbone.View.extend({
         render:function (data) {
             if (data) {
-                applyTemplate($(this.el), $("#venue-summary-view"), data.attributes)
+                utilities.applyTemplate($(this.el), $("#venue-summary-view"), data.attributes)
             }
             else {
-                applyTemplate($(this.el), $("#venue-carousel"), {models:this.model.models});
+                utilities.applyTemplate($(this.el), $("#venue-carousel"), {models:this.model.models});
                 $(this.el).find('.item:first').addClass('active')
             }
             return this
@@ -212,7 +148,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
             "click":"notify"
         },
         render:function () {
-            applyTemplate($(this.el), $("#event-summary"), this.model.attributes)
+            utilities.applyTemplate($(this.el), $("#event-summary"), this.model.attributes)
             return this;
         },
         notify:function () {
@@ -228,7 +164,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
         },
         render:function () {
             $(this.el).empty()
-            applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
+            utilities.applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
             $("#bookingOption").hide()
             $("#venueSelector").attr('disabled', true)
             $("#dayPicker").empty()
@@ -261,13 +197,13 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
                     return show.id == selectedShowId
                 });
                 this.selectedShow = selectedShow;
-                applyTemplate($("#eventVenueDescription"), $("#event-venue-description"), {venue:selectedShow.venue});
+                utilities.applyTemplate($("#eventVenueDescription"), $("#event-venue-description"), {venue:selectedShow.venue});
                 var times = _.uniq(_.sortBy(_.map(selectedShow.performances, function (performance) {
                     return (new Date(performance.date).withoutTimeOfDay()).getTime()
                 }), function (item) {
                     return item
                 }));
-                applyTemplate($("#venueMedia"), $("#venue-media"), selectedShow.venue)
+                utilities.applyTemplate($("#venueMedia"), $("#venue-media"), selectedShow.venue)
                 $("#dayPicker").removeAttr('disabled')
                 $("#performanceTimes").removeAttr('disabled')
                 _.each(times, function (time) {
@@ -312,7 +248,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
         },
         render:function () {
             $(this.el).empty()
-            applyTemplate($(this.el), $("#venue-detail"), this.model.attributes)
+            utilities.applyTemplate($(this.el), $("#venue-detail"), this.model.attributes)
             $("#eventSelector").attr('disabled', true)
             $("#bookingOption").hide()
             $("#dayPicker").empty()
@@ -343,13 +279,13 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
                     return show.id == selectedShowId
                 });
                 this.selectedShow = selectedShow;
-                applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {event:selectedShow.event});
+                utilities.applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {event:selectedShow.event});
                 var times = _.uniq(_.sortBy(_.map(selectedShow.performances, function (performance) {
                     return (new Date(performance.date).withoutTimeOfDay()).getTime()
                 }), function (item) {
                     return item
                 }));
-                applyTemplate($("#eventMedia"), $("#venue-media"), selectedShow.event)
+                utilities.applyTemplate($("#eventMedia"), $("#venue-media"), selectedShow.event)
                 $("#dayPicker").removeAttr('disabled')
                 $("#performanceTimes").removeAttr('disabled')
                 _.each(times, function (time) {
@@ -404,7 +340,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
             "click a":"showDetails"
         },
         render:function () {
-            applyTemplate($(this.el), $("#booking-row"), this.model.attributes)
+            utilities.applyTemplate($(this.el), $("#booking-row"), this.model.attributes)
             return this;
         },
         delete:function (event) {
@@ -425,7 +361,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
             "click i":"removeEntry"
         },
         render:function () {
-            applyTemplate($(this.el), $('#ticket-request-summary'), {ticketRequest:this.model.ticketRequest})
+            utilities.applyTemplate($(this.el), $('#ticket-request-summary'), {ticketRequest:this.model.ticketRequest})
             return this
         },
         removeEntry:function () {
@@ -436,7 +372,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
     TicketMonster.TicketSummaryView = Backbone.View.extend({
         render:function () {
             var self = this
-            applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
+            utilities.applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
             _.each(this.model.bookingRequest.tickets, function (ticketRequest, index, tickets) {
                 $('#ticketRequestSummary')
                     .append(new TicketMonster.TicketSummaryLineView({model:{ticketRequest:ticketRequest, index:index, tickets:tickets, parentView:self}}).render().el);
@@ -446,7 +382,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
 
     TicketMonster.BookingsView = Backbone.View.extend({
         render:function () {
-            applyTemplate($(this.el), $('#booking-table'), {})
+            utilities.applyTemplate($(this.el), $('#booking-table'), {})
             _.each(this.model.models, function (booking) {
                 var bookingView = new TicketMonster.BookingRowView({model:booking})
                 $("#bookingList").append(bookingView.render().el)
@@ -465,7 +401,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
     TicketMonster.SectionSelectorView = Backbone.View.extend({
         render:function () {
             var self = this;
-            applyTemplate($(this.el), $("#select-section"), { sections:_.uniq(_.sortBy(_.pluck(self.model.priceCategories, 'section'), function (item) {
+            utilities.applyTemplate($(this.el), $("#select-section"), { sections:_.uniq(_.sortBy(_.pluck(self.model.priceCategories, 'section'), function (item) {
                 return item.id
             }), true, function (item) {
                 return item.id
@@ -479,7 +415,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
             "change input":"onChange"
         },
         render:function () {
-            applyTemplate($(this.el), $('#ticket-entry'), this.model.attributes);
+            utilities.applyTemplate($(this.el), $('#ticket-entry'), this.model.attributes);
             return this;
         },
         onChange:function (event) {
@@ -504,7 +440,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
                 var priceCategories = _.map(this.model.models, function (item) {
                     return item.attributes.priceCategory
                 })
-                applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
+                utilities.applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
 
                 _.each(this.model.models, function (model) {
                     $("#ticket-category-input-" + model.attributes.priceCategory.id).append(new TicketMonster.TicketCategoryView({model:model}).render().el);
@@ -562,7 +498,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
                 self.currentPerformance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId
                 });
-                applyTemplate($(self.el), $("#create-booking"), { show:selectedShow,
+                utilities.applyTemplate($(self.el), $("#create-booking"), { show:selectedShow,
                     performance:self.currentPerformance});
                 self.selectorView = new TicketMonster.SectionSelectorView({model:selectedShow, el:$("#sectionSelectorPlaceholder")}).render();
                 self.ticketCategoriesView = new TicketMonster.TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder") });
@@ -602,7 +538,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
                 success:function (booking) {
                     this.model = {}
                     $.getJSON('rest/shows/performance/' + booking.performance.id, function (retrievedPerformance) {
-                        applyTemplate($(self.el), $("#booking-confirmation"), {booking:booking, performance:retrievedPerformance })
+                        utilities.applyTemplate($(self.el), $("#booking-confirmation"), {booking:booking, performance:retrievedPerformance })
                     });
                 }}).error(function (error) {
                     if (error.status == 400 || error.status == 409) {
@@ -684,7 +620,7 @@ define(['jquery', 'underscore', 'backbone' ], function ($, _, Backbone) {
         render:function () {
             var self = this
             $.getJSON('rest/shows/performance/' + this.model.attributes.performance.id, function (retrievedPerformance) {
-                applyTemplate($(self.el), $("#booking-details"), {booking:self.model.attributes, performance:retrievedPerformance})
+                utilities.applyTemplate($(self.el), $("#booking-details"), {booking:self.model.attributes, performance:retrievedPerformance})
             });
             return this
         }
