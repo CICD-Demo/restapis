@@ -1,4 +1,4 @@
-define(['backbone', 'utilities'], function (Backbone, utilities) {
+define(['backbone', 'utilities', 'require'], function (Backbone, utilities, require) {
     return  Backbone.View.extend({
         events:{
             "click input[name='bookButton']":"beginBooking",
@@ -28,7 +28,7 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
             })
         },
         beginBooking:function () {
-            tmRouter.navigate('/book/' + $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
+            require("router").navigate('/book/' + $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
         },
         refreshShows:function (event) {
             $("#dayPicker").empty()

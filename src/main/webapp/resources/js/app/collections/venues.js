@@ -1,16 +1,11 @@
-define(['backbone'], function (Backbone) {
+define(['backbone', 'app/models/loader'], function (Backbone, Model) {
 
-    define(function () {
-
-        var Venues = Backbone.Collection.extend({
-            url:"rest/venues",
-            model:TicketMonster.Venue,
-            id:"id",
-            comparator:function (model) {
-                return model.get('address').city;
-            }
-        });
-
-        return Venues;
-    })
+    return Backbone.Collection.extend({
+        url:"rest/venues",
+        model:Model.Venue,
+        id:"id",
+        comparator:function (model) {
+            return model.get('address').city;
+        }
+    });
 });

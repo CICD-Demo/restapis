@@ -1,14 +1,12 @@
-define(['backbone'], function (Backbone) {
+define(['backbone', 'app/models/loader'], function (Backbone, Model) {
 
-    var Events = Backbone.Collection.extend({
+    return Backbone.Collection.extend({
         url:"rest/events",
-        model:TicketMonster.Event,
+        model:Model.Event,
         id:"id",
         comparator:function (model) {
             return model.get('category').id;
         }
     });
-
-    return Events;
 
 });

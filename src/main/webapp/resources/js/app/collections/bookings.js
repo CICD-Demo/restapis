@@ -1,10 +1,8 @@
-define(['backbone'], function (Backbone) {
+define(['backbone', 'app/models/loader'], function (Backbone, Model) {
 
-    var Bookings = Backbone.Collection.extend({
+    return Backbone.Collection.extend({
         url:'rest/bookings',
-        model:TicketMonster.Booking,
+        model: Model.Booking,
         id:'id'
     });
-
-    return Bookings;
 });

@@ -1,4 +1,4 @@
-define(['backbone', 'utilities', 'priceCategoryQuantity'], function (Backbone, utilities, PriceCategoryQuantity, SectionQuantities) {
+define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'], function (Backbone, utilities, Model, Collection) {
 
 
     var SectionSelectorView = Backbone.View.extend({
@@ -117,11 +117,11 @@ define(['backbone', 'utilities', 'priceCategoryQuantity'], function (Backbone, u
             })
             var models = new Array()
             _.each(priceCategories, function (priceCategory) {
-                var model = new PriceCategoryQuantity()
+                var model = new Model.PriceCategoryQuantity()
                 model.set('priceCategory', priceCategory)
                 models.push(model)
             })
-            this.ticketCategoriesView.model = new SectionQuantities(models);
+            this.ticketCategoriesView.model = new Collection.SectionQuantities(models);
             this.ticketCategoriesView.render();
         },
         save:function (event) {

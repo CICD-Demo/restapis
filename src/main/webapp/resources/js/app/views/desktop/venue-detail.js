@@ -29,7 +29,7 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
             })
         },
         beginBooking:function () {
-            tmRouter.navigate('/book/' + $("#eventSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
+            require("router").navigate('/book/' + $("#eventSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
         },
         refreshShows:function (event) {
             $("#dayPicker").empty()
