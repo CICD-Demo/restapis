@@ -2,51 +2,6 @@ define(['jquery', 'underscore', 'backbone', 'utilities' ], function ($, _, Backb
 
     var TicketMonster = new Object();
 
-   TicketMonster.BookingRowView = Backbone.View.extend({
-        tagName:'tr',
-        events:{
-            "click i[data-tm-role='delete']":"delete",
-            "click a":"showDetails"
-        },
-        render:function () {
-            utilities.applyTemplate($(this.el), $("#booking-row"), this.model.attributes)
-            return this;
-        },
-        delete:function (event) {
-            if (confirm("Are you sure you want to delete booking " + this.model.get('id'))) {
-                this.model.destroy({wait:true})
-            }
-            event.stopPropagation()
-            event.stopImmediatePropagation()
-        },
-        showDetails:function () {
-            tmRouter.navigate("#bookings/" + this.model.get('id'), true)
-        }
-    })
-
-
-
-    TicketMonster.BookingsView = Backbone.View.extend({
-        render:function () {
-            utilities.applyTemplate($(this.el), $('#booking-table'), {})
-            _.each(this.model.models, function (booking) {
-                var bookingView = new TicketMonster.BookingRowView({model:booking})
-                $("#bookingList").append(bookingView.render().el)
-            })
-        }
-    })
-
-
-    TicketMonster.BookingDetailView = Backbone.View.extend({
-        render:function () {
-            var self = this
-            $.getJSON('rest/shows/performance/' + this.model.attributes.performance.id, function (retrievedPerformance) {
-                utilities.applyTemplate($(self.el), $("#booking-details"), {booking:self.model.attributes, performance:retrievedPerformance})
-            });
-            return this
-        }
-    })
-
     TicketMonster.AboutView = Backbone.View.extend({
         render:function () {
             $(this.el).empty().append("<section><h1>Welcome to Ticket Monster!</h1>" +

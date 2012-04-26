@@ -12,7 +12,7 @@ require.config({
 
 define("backbone", ['jquery','libs/backbone'], function($){
     return Backbone;
-})
+});
 
 // Now we declare all the dependencies
 require(['jquery','underscore','backbone', 'text', 'bootstrap', 'text!../templates/templates.html', 'app/desktop'],
