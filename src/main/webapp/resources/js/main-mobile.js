@@ -3,11 +3,12 @@
 require.config({
     paths: {
         jquery:'libs/jquery-1.7.1',
-        jQueryMobile:'libs/jquery.mobile-1.1.0',
+        jquerymobile:'libs/jquery.mobile-1.1.0',
         text:'libs/text',
         order: 'libs/order',
         utilities: 'app/utilities',
-        app:'app/mobile'
+        router:'app/router/mobile/router'
+
     }
 });
 
@@ -21,8 +22,7 @@ define("backbone", ['order!jquery', 'order!underscore','order!libs/backbone'], f
 
 
 // Now we declare all the dependencies
-require(['app'],
-       function(app){
-    app.preparePage()
+require(['router'],
+       function(router){
     console.log('all loaded')
 })
