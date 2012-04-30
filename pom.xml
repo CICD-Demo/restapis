@@ -24,28 +24,40 @@
 		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 		<!-- Specify the JBoss AS directory to be the JBOSS_HOME environment variable -->
 		<jboss.home>${env.JBOSS_HOME}</jboss.home>
+        <!-- Define the version of JBoss' Java EE 6 APIs and Tools we want
+             to import. -->
+        <!-- <jboss.bom.version>1.0.0.M7</jboss.bom.version> -->
+        <!-- Alternatively, comment out the above line, and un-comment the
+            line below to use version 1.0.0.M7-redhat-1 which is a release certified
+            to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6
+            maven repository. -->
+        <jboss.bom.version>1.0.0.M7</jboss.bom.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any 
-				dependencies from org.jboss.spec will have their version defined by this 
-				BOM -->
-			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
-				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
-				of artifacts. We use this here so that we always get the correct versions 
-				of artifacts. Here we use the jboss-javaee-web-6.0 stack (you can read this 
-				as the JBoss stack of the Java EE Web Profile 6 APIs), and we use version 
-				2.0.0.Beta1 which is the latest release of the stack. You can actually use 
-				this stack with any version of JBoss AS that implements Java EE 6, not just 
-				JBoss AS 7! -->
-			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-web-6.0</artifactId>
-				<version>3.0.0.Beta1</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+            <!-- JBoss distributes a complete set of Java EE 6 APIs including
+             a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or
+             a collection) of artifacts. We use this here so that we always get the correct
+             versions of artifacts. Here we use the jboss-javaee-6.0-with-tools stack
+             (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras
+             tools for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate
+             stack you can read this as the JBoss stack of the Java EE 6 APIs, with extras
+             from the Hibernate family of projects) -->
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -106,7 +118,7 @@
 			JBoss AS 7 -->
 		<dependency>
 			<groupId>org.jboss.spec.javax.faces</groupId>
-			<artifactId>jboss-jsf-api_2.0_spec</artifactId>
+			<artifactId>jboss-jsf-api_2.1_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -151,7 +163,6 @@
 		<dependency>
 			<groupId>org.jboss.arquillian.junit</groupId>
 			<artifactId>arquillian-junit-container</artifactId>
-			<version>1.0.0.CR4</version>
 			<scope>test</scope>
 		</dependency>
 
