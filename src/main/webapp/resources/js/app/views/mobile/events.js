@@ -14,16 +14,22 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
                 }
                 var view = new EventSummaryLineView({summaryView:self.options.summaryView, model:event});
                 $("#category-" + current_category).append(view.render().el);
-            })
-            $("#categoryMenu").listview()
+            });
+            $("#categoryMenu").listview();
         }
     });
 
     var EventSummaryLineView = Backbone.View.extend({
         tagName:'li',
+        events:{
+            'click a': 'openDetail'
+        },
         render:function () {
-            utilities.applyTemplate($(this.el), $("#event-summary"), this.model.attributes)
+            utilities.applyTemplate($(this.el), $("#event-summary"), this.model.attributes);
             return this;
+        },
+        openDetail: function() {
+            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
         }
     });
 

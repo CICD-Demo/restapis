@@ -14,16 +14,22 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
                 }
                 var view = new VenueSummaryLineView({summaryView:self.options.summaryView, model:venue});
                 $("#city-" + current_city).append(view.render().el);
-            })
-            $("#cityMenu").listview()
+            });
+            $("#cityMenu").listview();
         }
     });
 
     var VenueSummaryLineView = Backbone.View.extend({
         tagName:'li',
+        events:{
+            'click a': 'openDetail'
+        },
         render:function () {
             utilities.applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
             return this;
+        },
+        openDetail: function() {
+            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
         }
     });
 
@@ -32,7 +38,7 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
             utilities.applyTemplate($(this.el), $('#item-view'), {'items':'Cities', 'description':'Cities with Venues'})
             this.menuView = new VenueMenuView({model:this.model, el:$("#itemMenu")});
             this.menuView.render()
-            $(this.el).trigger('pagecreate')
+            $(this.el).trigger('pagecreate');
         }
     });
 });

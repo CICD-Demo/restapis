@@ -1,6 +1,6 @@
 define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/models/loader', 'app/collections/loader', 'app/views/mobile/loader', 'utilities', 'text!../templates/templates-mobile.html'] , function ($, jqm, _, Backbone, Model, Collection, View, utilities, templates) {
 
-    $('head').append(templates)
+    $('head').append(templates);
 
     $.mobile.hashListeningEnabled = false;
     $.mobile.linkBindingEnabled = false;
@@ -26,7 +26,7 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
             }
         },
         home:function () {
-            utilities.applyTemplate($("#container"), $("#home-view"))
+            utilities.applyTemplate($("#container"), $("#home-view"));
             try {
                 $("#container").trigger('pagecreate')
             } catch (e) {
@@ -40,7 +40,6 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
                 function () {
                     eventsView.render()
                 }).fetch();
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
         },
         venues:function () {
             var venues = new Collection.Venues;
@@ -49,15 +48,13 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
                 function () {
                     venuesView.render()
                 }).fetch()
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
         },
         about:function () {
-            new View.About({el:$("#container")}).render()
+            new View.About({el:$("#container")}).render();
         },
         bookTickets:function (showId, performanceId) {
-            var createBookingView = new View.CreateBooking({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#container")})
+            var createBookingView = new View.CreateBooking({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#container")});
             createBookingView.render();
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
         },
         listBookings:function () {
             var bookings = new Collection.Bookings
@@ -68,8 +65,7 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
                 }).bind("destroy",
                 function () {
                     this.fetch()
-                }).fetch()
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
+                }).fetch();
         },
         eventDetail:function (id) {
             var model = new Model.Event({id:id});
@@ -77,8 +73,7 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
             model.bind("change",
                 function () {
                     eventDetailView.render()
-                }).fetch()
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
+                }).fetch();
         },
         venueDetail:function (id) {
             var model = new Model.Venue({id:id});
@@ -86,25 +81,21 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
             model.bind("change",
                 function () {
                     venueDetailView.render()
-                }).fetch()
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
+                }).fetch();
         },
         bookingDetail:function (id) {
             var bookingModel = new Model.Booking({id:id});
             var bookingDetailView = new View.BookingDetail({model:bookingModel, el:$("#content")})
             bookingModel.bind("change",
                 function () {
-                    bookingDetailView.render()
+                    bookingDetailView.render();
                 }).fetch();
-            $.mobile.changePage($("#container"), {transition:'slide', changeHash:false})
-
         }
     });
 
     var router = new TMRouter();
 
     Backbone.history.start();
-
 
     return router;
 });

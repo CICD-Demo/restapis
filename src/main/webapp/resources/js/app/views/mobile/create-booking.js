@@ -8,8 +8,8 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
                 return item.id
             }), true, function (item) {
                 return item.id
-            })})
-            $(this.el).trigger('pagecreate')
+            })});
+            $(this.el).trigger('pagecreate');
             return this
         }
     });

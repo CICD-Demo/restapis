@@ -11,27 +11,24 @@ define(['backbone', 'utilities', 'require'], function (Backbone, utilities, requ
             utilities.applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
             $(this.el).trigger('create')
             $("#bookButton").addClass("ui-disabled")
-            var self = this
+            var self = this;
             $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows;
                 $("#showSelector").empty().append("<option data-placeholder='true'>Choose a venue ...</option>");
                 $.each(shows, function (i, show) {
                     $("#showSelector").append("<option value='" + show.id + "'>" + show.venue.address.city + " : " + show.venue.name + "</option>");
-                })
+                });
                 $("#showSelector").selectmenu('refresh', true)
                 $("#dayPicker").selectmenu('disable')
                 $("#dayPicker").empty().append("<option data-placeholder='true'>Choose a show date ...</option>")
                 $("#performanceTimes").selectmenu('disable')
                 $("#performanceTimes").empty().append("<option data-placeholder='true'>Choose a show time ...</option>")
-
             });
-            $("#dayPicker").empty()
-            $("#dayPicker").selectmenu('disable')
-            $("#performanceTimes").empty()
-            $("#performanceTimes").selectmenu('disable')
-            $(this.el).trigger('pagecreate')
-            $("#showSelector").selectmenu('refresh', true)
-            $("#performanceTimes").selectmenu('refresh')
+            $("#dayPicker").empty();
+            $("#dayPicker").selectmenu('disable');
+            $("#performanceTimes").empty();
+            $("#performanceTimes").selectmenu('disable');
+            $(this.el).trigger('pagecreate');
         },
         performanceSelected:function () {
             if ($("#performanceTimes").val() != 'Choose a show time ...') {

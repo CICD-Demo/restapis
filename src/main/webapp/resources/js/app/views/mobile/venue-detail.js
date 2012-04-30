@@ -1,6 +1,6 @@
 define(['backbone', 'utilities','require'], function (Backbone, utilities, require) {
 
-    return  VenueDetailView = Backbone.View.extend({
+    return  Backbone.View.extend({
         events:{
             "click a[id='bookButton']":"beginBooking",
             "change select[id='showSelector']":"refreshShows",
@@ -30,7 +30,7 @@ define(['backbone', 'utilities','require'], function (Backbone, utilities, requi
             $("#dayPicker").selectmenu('disable')
             $("#performanceTimes").empty()
             $("#performanceTimes").selectmenu('disable')
-            $(this.el).trigger('pagecreate')
+            $(this.el).trigger('pagecreate');
             $("#showSelector").selectmenu('refresh', true)
             $("#performanceTimes").selectmenu('refresh')
         },
