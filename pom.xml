@@ -27,18 +27,12 @@
         <jboss.home>${env.JBOSS_HOME}</jboss.home>
         <!-- Define the version of JBoss' Java EE 6 APIs and Tools we want 
             to import. -->
-        <!-- <jboss.bom.version>1.0.0.M7</jboss.bom.version> -->
+        <!-- <jboss.bom.version>1.0.0.M10</jboss.bom.version> -->
         <!-- Alternatively, comment out the above line, and un-comment the 
-            line below to use version 1.0.0.M7-redhat-1 which is a release certified 
+            line below to use version 1.0.0.M10-redhat-1 which is a release certified 
             to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 
             maven repository. -->
-        <jboss.bom.version>1.0.0.M7</jboss.bom.version>
-
-        <errai.version>2.0.CR2</errai.version>
-        <gwt.version>2.4.0</gwt.version>
-        <gwt.maven.version>2.4.0</gwt.maven.version>
-        <mvel.version>2.1.Beta8</mvel.version>
-        
+        <jboss.bom.version>1.0.0.M10</jboss.bom.version>
     </properties>
 
     <dependencyManagement>
@@ -48,9 +42,10 @@
                 a collection) of artifacts. We use this here so that we always get the correct 
                 versions of artifacts. Here we use the jboss-javaee-6.0-with-tools stack 
                 (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras 
-                tools for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate 
-                stack you can read this as the JBoss stack of the Java EE 6 APIs, with extras 
-                from the Hibernate family of projects) -->
+                tools for your project, such as Arquillian for testing), the jboss-javaee-6.0-with-hibernate 
+                stack (you can read this as the JBoss stack of the Java EE 6 APIs, with extras 
+                from the Hibernate family of projects) and the jboss-javaee-6.0-with-errai
+                stack (you can read this as the JBoss stack of the Java EE 6 APIs, with support for Errai) -->
             <dependency>
                 <groupId>org.jboss.bom</groupId>
                 <artifactId>jboss-javaee-6.0-with-tools</artifactId>
@@ -61,6 +56,13 @@
             <dependency>
                 <groupId>org.jboss.bom</groupId>
                 <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-errai</artifactId>
                 <version>${jboss.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -135,7 +137,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -151,7 +152,6 @@
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-bus</artifactId>
-            <version>${errai.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.inject</groupId>
@@ -166,7 +166,6 @@
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-ioc</artifactId>
-            <version>${errai.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.inject</groupId>
@@ -181,32 +180,27 @@
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-tools</artifactId>
-            <version>${errai.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
-            <version>${mvel.version}</version>
         </dependency>
 
         <!-- CDI Integration Modules -->
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-cdi-client</artifactId>
-            <version>${errai.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-javax-enterprise</artifactId>
-            <version>${errai.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-weld-integration</artifactId>
-            <version>${errai.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>
@@ -220,14 +214,12 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
-            <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- End of Errai dependencies -->
@@ -239,7 +231,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>1.1.1.Final</version>
             <scope>provided</scope>
         </dependency>
 
@@ -247,7 +238,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
             <scope>test</scope>
         </dependency>
 
@@ -307,7 +297,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>${gwt.maven.version}</version>
+                <version>2.4.0</version>
                 <configuration>
                     <inplace>true</inplace>
                     <logLevel>INFO</logLevel>
@@ -318,7 +308,6 @@
                         download the HTML host page from the configured runTarget. -->
                     <noServer>true</noServer>
                     <runTarget>http://localhost:8080/ticket-monster/booking-monitor.html</runTarget>
-
                 </configuration>
                 <executions>
                     <execution>
@@ -351,7 +340,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>2.4.1</version>
-
                 <configuration>
                     <filesets>
                         <fileset>
