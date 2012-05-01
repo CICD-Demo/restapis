@@ -1,5 +1,8 @@
-// Shortcut alias definitions - will come in handy when declaring dependencies
-// Also, they allow us to keep the code free of any knowledge about library locations and versions
+/**
+ * Shortcut alias definitions - will come in handy when declaring dependencies
+ * Also, they allow you to keep the code free of any knowledge about library 
+ * locations and versions
+ */
 require.config({
     paths: {
         jquery:'libs/jquery-1.7.1',
