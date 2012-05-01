@@ -148,7 +148,7 @@
 
 
         <!-- The next set of dependencies are for Errai, which we use for 
-            the TicketMonster admin console -->
+            the TicketMonster booking monitor -->
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-bus</artifactId>
@@ -186,7 +186,7 @@
             <artifactId>mvel2</artifactId>
         </dependency>
 
-        <!-- CDI Integration Modules -->
+        <!-- CDI/ Errai Integration Modules -->
         <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-cdi-client</artifactId>
@@ -222,7 +222,6 @@
             <artifactId>gwt-dev</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- End of Errai dependencies -->
 
         <!-- Now we declare any tools needed -->
 

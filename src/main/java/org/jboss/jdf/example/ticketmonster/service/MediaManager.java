@@ -18,9 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
 
 import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 import org.jboss.jdf.example.ticketmonster.model.MediaType;

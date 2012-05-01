@@ -19,11 +19,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author Marius Bogoevici
  * @author Pete Muir
  */
+@SuppressWarnings("serial")
 @Embeddable
 @Portable
 public class Address implements Serializable {
-
-    private static final long serialVersionUID = -1;
 
     /* Declaration of fields */
     private String street;

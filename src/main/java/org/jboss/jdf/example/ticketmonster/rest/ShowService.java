@@ -57,6 +57,8 @@ public class ShowService extends BaseEntityService<Show> {
     public Map<Long,List<TicketPriceCategory>> getPricing(@PathParam("showId") Long showId) {
         Query query = getEntityManager().createQuery("select pc from PriceCategory pc where pc.show.id = :showId order by pc.section.id");
         query.setParameter("showId", showId);
+        
+        @SuppressWarnings("unchecked")
         List<TicketPriceCategory> priceCategories = query.getResultList();
         
         Map<Long, List<TicketPriceCategory>> priceCategoryMap = new LinkedHashMap<Long, List<TicketPriceCategory>> ();
