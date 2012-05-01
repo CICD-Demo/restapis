@@ -21,11 +21,11 @@ define('utilities', ['underscore'], function (_) {
     };
 
     Date.prototype.toYMD = function () {
-        return this.getFullYear() + '-' + (this.getMonth() + 1).toZeroPaddedString(2) + '-' + this.getDate().toZeroPaddedString(2)
+        return this.getFullYear() + '-' + (this.getMonth() + 1).toZeroPaddedString(2) + '-' + this.getDate().toZeroPaddedString(2);
     };
 
     Date.prototype.toCalendarDate = function () {
-        return { 'day':this.getDate(), 'month':this.getMonth(), 'year':this.getFullYear()}
+        return { 'day':this.getDate(), 'month':this.getMonth(), 'year':this.getFullYear()};
     };
 
     Date.prototype.withoutTimeOfDay = function () {
@@ -33,7 +33,7 @@ define('utilities', ['underscore'], function (_) {
     };
 
     Date.prototype.asArray = function () {
-        return [this.getFullYear(), this.getMonth(), this.getDate()]
+        return [this.getFullYear(), this.getMonth(), this.getDate()];
     };
 
 
@@ -43,7 +43,7 @@ define('utilities', ['underscore'], function (_) {
     };
 
     Date.prototype.diff = function (other) {
-        return parseInt((this.withoutTimeOfDay().getTime() - other.withoutTimeOfDay().getTime()) / (1000.0 * 60 * 60 * 24))
+        return parseInt((this.withoutTimeOfDay().getTime() - other.withoutTimeOfDay().getTime()) / (1000.0 * 60 * 60 * 24));
     };
 
     Number.prototype.toZeroPaddedString = function (digits) {
@@ -59,7 +59,7 @@ define('utilities', ['underscore'], function (_) {
         },
 
         applyTemplate:function (target, template, data) {
-            return target.empty().append(this.renderTemplate(template, data))
+            return target.empty().append(this.renderTemplate(template, data));
         }
 
     };

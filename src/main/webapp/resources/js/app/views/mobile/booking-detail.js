@@ -2,9 +2,9 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
 
     return Backbone.View.extend({
         render:function () {
-            utilities.applyTemplate($(this.el), $("#booking-details"), this.model.attributes)
-            $(this.el).trigger('pagecreate')
-            return this
+            utilities.applyTemplate($(this.el), $("#booking-details"), this.model.attributes);
+            $(this.el).trigger('pagecreate');
+            return this;
         }
     });
 });

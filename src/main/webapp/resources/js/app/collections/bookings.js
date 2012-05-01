@@ -1,3 +1,6 @@
+/**
+ * Defines a Backbone collection of Bookings
+ */
 define(['backbone', 'app/models/loader'], function (Backbone, Model) {
 
     return Backbone.Collection.extend({

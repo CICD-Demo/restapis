@@ -5,11 +5,11 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
         render:function () {
             var self = this;
             utilities.applyTemplate($(this.el), $("#select-section"), { sections:_.uniq(_.sortBy(_.pluck(self.model.priceCategories, 'section'), function (item) {
-                return item.id
+                return item.id;
             }), true, function (item) {
-                return item.id
+                return item.id;
             })});
-            return this
+            return this;
         }
     });
 
@@ -18,44 +18,38 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
             "change input":"onChange"
         },
         render:function () {
-            utilities.applyTemplate($(this.el), $('#ticket-entry'), this.model.attributes);
+            utilities.applyTemplate($(this.el), $('#ticket-entry'), this.model);
             return this;
         },
         onChange:function (event) {
             var value = event.currentTarget.value;
             if ($.isNumeric(value) && value > 0) {
-                this.model.set('quantity', parseInt(value))
+                this.model.quantity = value;
             }
             else {
-                this.model.unset('quantity')
+                delete this.model.quantity;
             }
         }
     });
 
 
     var TicketCategoriesView = Backbone.View.extend({
-
         id:'categoriesView',
         render:function () {
-            var views = {};
-
             if (this.model != null) {
-                var priceCategories = _.map(this.model.models, function (item) {
-                    return item.attributes.priceCategory
-                })
+                var priceCategories = _.map(this.model, function (item) {
+                    return item.priceCategory;
+                });
                 utilities.applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
 
-                _.each(this.model.models, function (model) {
-                    $("#ticket-category-input-" + model.attributes.priceCategory.id).append(new TicketCategoryView({model:model}).render().el);
+                _.each(this.model, function (model) {
+                    $("#ticket-category-input-" + model.priceCategory.id).append(new TicketCategoryView({model:model}).render().el);
 
                 });
             } else {
-                $(this.el).empty()
+                $(this.el).empty();
             }
             return this;
-        },
-        updateModel:function () {
-
         }
     });
 
@@ -65,18 +59,18 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
             "click i":"removeEntry"
         },
         render:function () {
-            utilities.applyTemplate($(this.el), $('#ticket-request-summary'), {ticketRequest:this.model.ticketRequest})
-            return this
+            utilities.applyTemplate($(this.el), $('#ticket-request-summary'), {ticketRequest:this.model.ticketRequest});
+            return this;
         },
         removeEntry:function () {
-            this.model.tickets.splice(this.model.index, 1)
+            this.model.tickets.splice(this.model.index, 1);
         }
     });
 
     var TicketSummaryView = Backbone.View.extend({
         render:function () {
-            var self = this
-            utilities.applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
+            var self = this;
+            utilities.applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest);
             _.each(this.model.bookingRequest.tickets, function (ticketRequest, index, tickets) {
                 $('#ticketRequestSummary')
                     .append(new TicketSummaryLineView({model:{ticketRequest:ticketRequest, index:index, tickets:tickets, parentView:self}}).render().el);
@@ -98,7 +92,7 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
             $.getJSON("rest/shows/" + this.model.showId, function (selectedShow) {
 
                 self.currentPerformance = _.find(selectedShow.performances, function (item) {
-                    return item.id == self.model.performanceId
+                    return item.id == self.model.performanceId;
                 });
                 utilities.applyTemplate($(self.el), $("#create-booking"), { show:selectedShow,
                     performance:self.currentPerformance});
@@ -113,15 +107,13 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
         },
         refreshPrices:function (event) {
             var priceCategories = _.filter(this.show.priceCategories, function (item) {
-                return item.section.id == event.currentTarget.value
-            })
-            var models = new Array()
+                return item.section.id == event.currentTarget.value;
+            });
+            var priceCategoryInputs = new Array();
             _.each(priceCategories, function (priceCategory) {
-                var model = new Model.PriceCategoryQuantity()
-                model.set('priceCategory', priceCategory)
-                models.push(model)
-            })
-            this.ticketCategoriesView.model = new Collection.SectionQuantities(models);
+            	priceCategoryInputs.push({priceCategory:priceCategory});
+            });
+            this.ticketCategoriesView.model = priceCategoryInputs;
             this.ticketCategoriesView.render();
         },
         save:function (event) {
@@ -158,23 +150,23 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
         addQuantities:function () {
             var self = this;
 
-            _.each(this.ticketCategoriesView.model.models, function (model) {
-                if (model.attributes.quantity != undefined) {
-                    var found = false
+            _.each(this.ticketCategoriesView.model, function (model) {
+                if (model.quantity != undefined) {
+                    var found = false;
                     _.each(self.model.bookingRequest.tickets, function (ticket) {
-                        if (ticket.priceCategory.id == model.attributes.priceCategory.id) {
-                            ticket.quantity += model.attributes.quantity
+                        if (ticket.priceCategory.id == model.priceCategory.id) {
+                            ticket.quantity += model.quantity;
                             found = true;
                         }
                     });
                     if (!found) {
-                        self.model.bookingRequest.tickets.push({priceCategory:model.attributes.priceCategory, quantity:model.attributes.quantity})
+                        self.model.bookingRequest.tickets.push({priceCategory:model.priceCategory, quantity:model.quantity});
                     }
                 }
             });
-            this.ticketCategoriesView.model = null
-            $('option:selected', 'select').removeAttr('selected')
-            this.ticketCategoriesView.render()
+            this.ticketCategoriesView.model = null;
+            $('option:selected', 'select').removeAttr('selected');
+            this.ticketCategoriesView.render();
             this.selectorView.render();
             this.updateQuantities();
         },
@@ -185,7 +177,7 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
                     return t1.priceCategory.section.id - t2.priceCategory.section.id;
                 }
                 else {
-                    return t1.priceCategory.ticketCategory.id - t2.priceCategory.ticketCategory.id
+                    return t1.priceCategory.ticketCategory.id - t2.priceCategory.ticketCategory.id;
                 }
             });
 
@@ -197,23 +189,23 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
             }, {tickets:0, price:0.0});
 
             this.ticketSummaryView.render();
-            this.setCheckoutStatus()
+            this.setCheckoutStatus();
         },
         updateEmail:function (event) {
             if ($(event.currentTarget).is(':valid')) {
-                this.model.bookingRequest.email = event.currentTarget.value
+                this.model.bookingRequest.email = event.currentTarget.value;
 
             } else {
-                delete this.model.bookingRequest.email
+                delete this.model.bookingRequest.email;
             }
-            this.setCheckoutStatus()
+            this.setCheckoutStatus();
         },
         setCheckoutStatus:function () {
             if (this.model.bookingRequest.totals != undefined && this.model.bookingRequest.totals.tickets > 0 && this.model.bookingRequest.email != undefined && this.model.bookingRequest.email != '') {
-                $('input[name="submit"]').removeAttr('disabled')
+                $('input[name="submit"]').removeAttr('disabled');
             }
             else {
-                $('input[name="submit"]').attr('disabled', true)
+                $('input[name="submit"]').attr('disabled', true);
             }
         }
     });
