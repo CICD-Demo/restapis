@@ -1,4 +1,6 @@
-define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'], function (Backbone, utilities, Model, Collection) {
+define(['backbone',
+        'utilities'],
+    function (Backbone, utilities) {
 
     return Backbone.View.extend({
         render:function () {

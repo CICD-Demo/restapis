@@ -247,13 +247,13 @@
             </thead>
             <tbody>
             <% _.each(tickets, function(ticketRequest) { %>
-            <% _.each(ticketRequest.models, function(model) { %>
-            <% if (model.attributes.quantity != undefined) { %>
+            <% _.each(ticketRequest, function(model) { %>
+            <% if (model.quantity != undefined) { %>
             <tr>
-                <td><%= model.attributes.priceCategory.section.name %></td>
-                <td><%= model.attributes.priceCategory.ticketCategory.description %></td>
-                <td>$<%= model.attributes.priceCategory.price %></td>
-                <td><%= model.attributes.quantity %></td>
+                <td><%= model.priceCategory.section.name %></td>
+                <td><%= model.priceCategory.ticketCategory.description %></td>
+                <td>$<%= model.priceCategory.price %></td>
+                <td><%= model.quantity %></td>
             </tr>
             <% } %>
             <% }) %>

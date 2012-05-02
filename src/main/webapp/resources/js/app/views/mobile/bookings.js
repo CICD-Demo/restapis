@@ -1,4 +1,4 @@
-define(['backbone', 'utilities', 'require'], function (Backbone, utilities) {
+define(['backbone', 'utilities', 'require'], function (Backbone, utilities, require) {
 
     var BookingRowView = Backbone.View.extend({
         tagName:'li',

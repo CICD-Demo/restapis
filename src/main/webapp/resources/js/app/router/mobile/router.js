@@ -1,4 +1,24 @@
-define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/models/loader', 'app/collections/loader', 'app/views/mobile/loader', 'utilities', 'text!../templates/templates-mobile.html'] , function ($, jqm, _, Backbone, Model, Collection, View, utilities, templates) {
+define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone',
+    'app/models/booking',
+    'app/models/event',
+    'app/models/venue',
+    'app/collections/bookings',
+    'app/collections/events',
+    'app/collections/venues',
+    'app/views/mobile/about',
+    'app/views/mobile/events',
+    'app/views/mobile/venues',
+    'app/views/mobile/create-booking',
+    'app/views/mobile/bookings',
+    'app/views/mobile/event-detail',
+    'app/views/mobile/venue-detail',
+    'app/views/mobile/booking-detail',
+    'utilities', 'text!../templates/templates-mobile.html'] , function ($, jqm, _, Backbone,
+                                                                        Booking, Event, Venue,
+                                                                        Bookings, Events, Venues,
+                                                                        AboutView, EventsView, VenuesView, CreateBookingView,
+                                                                        BookingsView, EventDetailView, VenueDetailView, BookingDetailView,
+                                                                        utilities, templates) {
 
     $('head').append(templates);
 
@@ -34,31 +54,31 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
             }
         },
         events:function () {
-            var events = new Collection.Events;
-            var eventsView = new View.Events({model:events, el:$("#container")})
+            var events = new Events;
+            var eventsView = new EventsView({model:events, el:$("#container")})
             events.bind("reset",
                 function () {
                     eventsView.render()
                 }).fetch();
         },
         venues:function () {
-            var venues = new Collection.Venues;
-            var venuesView = new View.Venues({model:venues, el:$("#container")})
+            var venues = new Venues;
+            var venuesView = new VenuesView({model:venues, el:$("#container")})
             venues.bind("reset",
                 function () {
                     venuesView.render()
                 }).fetch()
         },
         about:function () {
-            new View.About({el:$("#container")}).render();
+            new AboutView({el:$("#container")}).render();
         },
         bookTickets:function (showId, performanceId) {
-            var createBookingView = new View.CreateBooking({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#container")});
+            var createBookingView = new CreateBookingView({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#container")});
             createBookingView.render();
         },
         listBookings:function () {
-            var bookings = new Collection.Bookings
-            var bookingsView = new View.Bookings({model:bookings, el:$("#container")})
+            var bookings = new Bookings();
+            var bookingsView = new BookingsView({model:bookings, el:$("#container")})
             bookings.bind("reset",
                 function () {
                     bookingsView.render()
@@ -68,24 +88,24 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone', 'app/model
                 }).fetch();
         },
         eventDetail:function (id) {
-            var model = new Model.Event({id:id});
-            var eventDetailView = new View.EventDetail({model:model, el:$("#container")});
+            var model = new Event({id:id});
+            var eventDetailView = new EventDetailView({model:model, el:$("#container")});
             model.bind("change",
                 function () {
                     eventDetailView.render()
                 }).fetch();
         },
         venueDetail:function (id) {
-            var model = new Model.Venue({id:id});
-            var venueDetailView = new View.VenueDetail({model:model, el:$("#container")});
+            var model = new Venue({id:id});
+            var venueDetailView = new VenueDetailView({model:model, el:$("#container")});
             model.bind("change",
                 function () {
                     venueDetailView.render()
                 }).fetch();
         },
         bookingDetail:function (id) {
-            var bookingModel = new Model.Booking({id:id});
-            var bookingDetailView = new View.BookingDetail({model:bookingModel, el:$("#content")})
+            var bookingModel = new Booking({id:id});
+            var bookingDetailView = new BookingDetailView({model:bookingModel, el:$("#content")})
             bookingModel.bind("change",
                 function () {
                     bookingDetailView.render();

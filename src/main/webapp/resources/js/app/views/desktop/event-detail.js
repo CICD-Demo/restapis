@@ -1,4 +1,5 @@
 define(['backbone', 'utilities', 'require'], function (Backbone, utilities, require) {
+
     return  Backbone.View.extend({
         events:{
             "click input[name='bookButton']":"beginBooking",
@@ -7,12 +8,12 @@ define(['backbone', 'utilities', 'require'], function (Backbone, utilities, requ
         },
         render:function () {
             $(this.el).empty()
-            utilities.applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
-            $("#bookingOption").hide()
-            $("#venueSelector").attr('disabled', true)
-            $("#dayPicker").empty()
+            utilities.applyTemplate($(this.el), $("#event-detail"), this.model.attributes);
+            $("#bookingOption").hide();
+            $("#venueSelector").attr('disabled', true);
+            $("#dayPicker").empty();
             $("#dayPicker").attr('disabled', true)
-            $("#performanceTimes").empty()
+            $("#performanceTimes").empty();
             $("#performanceTimes").attr('disabled', true)
             var self = this
             $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
@@ -31,7 +32,7 @@ define(['backbone', 'utilities', 'require'], function (Backbone, utilities, requ
             require("router").navigate('/book/' + $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
         },
         refreshShows:function (event) {
-            $("#dayPicker").empty()
+            $("#dayPicker").empty();
 
             var selectedShowId = event.currentTarget.value;
 

@@ -1,4 +1,4 @@
-define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'], function (Backbone, utilities, Model, Collection) {
+define(['backbone', 'utilities', 'require'], function (Backbone, utilities, require) {
 
 
     var SectionSelectorView = Backbone.View.extend({
@@ -26,7 +26,7 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
         onChange:function (event) {
             var value = event.currentTarget.value;
             if (value != '' && value != 0) {
-                this.model.quantity = value;
+                this.model.quantity = parseInt(value);
             }
             else {
                 delete this.model.quantity;
@@ -80,7 +80,7 @@ define(['backbone', 'utilities', 'app/models/loader', 'app/collections/loader'],
             $(this.el).trigger('pagecreate')
         },
         back:function () {
-            tmRouter.navigate('book/' + this.model.bookingRequest.show.id + '/' + this.model.bookingRequest.performance.id, true)
+            require("router").navigate('book/' + this.model.bookingRequest.show.id + '/' + this.model.bookingRequest.performance.id, true)
 
         }, save:function (event) {
             var bookingRequest = {ticketRequests:[]};
