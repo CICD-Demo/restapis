@@ -1,4 +1,4 @@
-define(['backbone', 'utilities'], function (Backbone, utilities) {
+define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
 
     var VenueMenuView = Backbone.View.extend({
         events:{

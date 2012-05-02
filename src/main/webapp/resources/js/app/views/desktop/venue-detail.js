@@ -1,4 +1,4 @@
-define(['backbone', 'utilities', 'require'], function (Backbone, utilities, require) {
+define(['backbone', 'utilities', 'require', 'bootstrap'], function (Backbone, utilities, require) {
 
     return  Backbone.View.extend({
         events:{

@@ -8,18 +8,19 @@ require.config({
         jquery:'libs/jquery-1.7.1',
         underscore:'libs/underscore',
         text:'libs/text',
+        order:'libs/order',
         bootstrap: '../bootstrap/js/bootstrap',
         utilities: 'app/utilities',
         router:'app/router/desktop/router'
     }
 });
 
-define("backbone", ['jquery','libs/backbone'], function($){
+define("backbone", ['order!jquery', 'order!underscore','order!libs/backbone'], function($){
     return Backbone;
 });
 
 // Now we declare all the dependencies
-require(['jquery','underscore','backbone', 'text', 'bootstrap', 'text!../templates/templates.html', 'router'],
+require(['order!jquery','order!underscore','order!backbone', 'text', 'order!bootstrap', 'text!../templates/templates.html', 'order!router'],
        function($, _, backbone, text, bootstrap, templates){
     $('head').append(templates)
     console.log('all loaded')

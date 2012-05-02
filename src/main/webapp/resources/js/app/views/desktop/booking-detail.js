@@ -1,5 +1,4 @@
-define(['backbone',
-        'utilities'],
+define(['backbone','utilities','bootstrap'],
     function (Backbone, utilities) {
 
     return Backbone.View.extend({
