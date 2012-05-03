@@ -55,7 +55,10 @@ define('utilities', ['underscore'], function (_) {
     var utilities = {
 
         renderTemplate:function (template, data) {
-            return _.template(template.html(), (data == undefined) ? {} : data);
+            if (! (template.html == undefined)) {
+              return _.template(template.html(), (data == undefined) ? {} : data);
+            }
+            return _.template(template, (data == undefined) ? {} : data);
         },
 
         applyTemplate:function (target, template, data) {

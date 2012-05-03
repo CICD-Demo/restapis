@@ -1,10 +1,28 @@
-define([ 'backbone','utilities', 'bootstrap'], function (Backbone, utilities) {
-
+define(['backbone', 'utilities', 'require',
+    'text!../../../../templates/desktop/booking-details.html',
+    'text!../../../../templates/desktop/booking-confirmation.html',
+    'text!../../../../templates/desktop/create-booking.html',
+    'text!../../../../templates/desktop/select-section.html',
+    'text!../../../../templates/desktop/ticket-entry.html',
+    'text!../../../../templates/desktop/ticket-entries.html',
+    'text!../../../../templates/desktop/ticket-summary-view.html',
+    'text!../../../../templates/desktop/ticket-request-summary.html',
+    'bootstrap'
+],
+    function (Backbone, utilities, require,
+              bookingDetailsTemplate,
+              bookingConfirmationTemplate,
+              createBookingTemplate,
+              selectSectionTemplate,
+              ticketEntryTemplate,
+              ticketEntriesTemplate,
+              ticketSummaryViewTemplate,
+              ticketRequestSummaryTemplate) {
 
     var SectionSelectorView = Backbone.View.extend({
         render:function () {
             var self = this;
-            utilities.applyTemplate($(this.el), $("#select-section"), { sections:_.uniq(_.sortBy(_.pluck(self.model.priceCategories, 'section'), function (item) {
+            utilities.applyTemplate($(this.el), selectSectionTemplate, { sections:_.uniq(_.sortBy(_.pluck(self.model.priceCategories, 'section'), function (item) {
                 return item.id;
             }), true, function (item) {
                 return item.id;
@@ -18,7 +36,7 @@ define([ 'backbone','utilities', 'bootstrap'], function (Backbone, utilities) {
             "change input":"onChange"
         },
         render:function () {
-            utilities.applyTemplate($(this.el), $('#ticket-entry'), this.model);
+            utilities.applyTemplate($(this.el), ticketEntryTemplate, this.model);
             return this;
         },
         onChange:function (event) {
@@ -40,7 +58,7 @@ define([ 'backbone','utilities', 'bootstrap'], function (Backbone, utilities) {
                 var priceCategories = _.map(this.model, function (item) {
                     return item.priceCategory;
                 });
-                utilities.applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
+                utilities.applyTemplate($(this.el), ticketEntriesTemplate, {priceCategories:priceCategories});
 
                 _.each(this.model, function (model) {
                     $("#ticket-category-input-" + model.priceCategory.id).append(new TicketCategoryView({model:model}).render().el);
@@ -59,7 +77,7 @@ define([ 'backbone','utilities', 'bootstrap'], function (Backbone, utilities) {
             "click i":"removeEntry"
         },
         render:function () {
-            utilities.applyTemplate($(this.el), $('#ticket-request-summary'), {ticketRequest:this.model.ticketRequest});
+            utilities.applyTemplate($(this.el), ticketRequestSummaryTemplate, {ticketRequest:this.model.ticketRequest});
             return this;
         },
         removeEntry:function () {
@@ -70,7 +88,7 @@ define([ 'backbone','utilities', 'bootstrap'], function (Backbone, utilities) {
     var TicketSummaryView = Backbone.View.extend({
         render:function () {
             var self = this;
-            utilities.applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest);
+            utilities.applyTemplate($(this.el), ticketSummaryViewTemplate, this.model.bookingRequest);
             _.each(this.model.bookingRequest.tickets, function (ticketRequest, index, tickets) {
                 $('#ticketRequestSummary')
                     .append(new TicketSummaryLineView({model:{ticketRequest:ticketRequest, index:index, tickets:tickets, parentView:self}}).render().el);
@@ -94,7 +112,7 @@ define([ 'backbone','utilities', 'bootstrap'], function (Backbone, utilities) {
                 self.currentPerformance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId;
                 });
-                utilities.applyTemplate($(self.el), $("#create-booking"), { show:selectedShow,
+                utilities.applyTemplate($(self.el), createBookingTemplate, { show:selectedShow,
                     performance:self.currentPerformance});
                 self.selectorView = new SectionSelectorView({model:selectedShow, el:$("#sectionSelectorPlaceholder")}).render();
                 self.ticketCategoriesView = new TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder") });
@@ -132,7 +150,7 @@ define([ 'backbone','utilities', 'bootstrap'], function (Backbone, utilities) {
                 success:function (booking) {
                     this.model = {}
                     $.getJSON('rest/shows/performance/' + booking.performance.id, function (retrievedPerformance) {
-                        utilities.applyTemplate($(self.el), $("#booking-confirmation"), {booking:booking, performance:retrievedPerformance })
+                        utilities.applyTemplate($(self.el), bookingConfirmationTemplate, {booking:booking, performance:retrievedPerformance })
                     });
                 }}).error(function (error) {
                     if (error.status == 400 || error.status == 409) {

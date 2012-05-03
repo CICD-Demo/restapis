@@ -1,4 +1,8 @@
-define(['backbone', 'utilities'], function (Backbone, utilities) {
+define(['backbone', 'utilities',
+    'text!../../../../templates/mobile/category-title.html',
+    'text!../../../../templates/mobile/event-summary.html',
+    'text!../../../../templates/mobile/item-view.html'],
+    function (Backbone, utilities, categoryTitleTemplate, eventSummary, itemView) {
 
     var EventMenuView = Backbone.View.extend({
         render:function () {
@@ -9,7 +13,7 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
             _.each(this.model.models, function (event) {
                 var model_category = event.get('category')
                 if (current_category !== model_category.id) {
-                    $(rootView).append(utilities.renderTemplate($('#category-title'), model_category));
+                    $(rootView).append(utilities.renderTemplate(categoryTitleTemplate, model_category));
                     current_category = model_category.id;
                 }
                 var view = new EventSummaryLineView({summaryView:self.options.summaryView, model:event});
@@ -25,7 +29,7 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
             'click a': 'openDetail'
         },
         render:function () {
-            utilities.applyTemplate($(this.el), $("#event-summary"), this.model.attributes);
+            utilities.applyTemplate($(this.el), eventSummary, this.model.attributes);
             return this;
         },
         openDetail: function() {
@@ -36,9 +40,9 @@ define(['backbone', 'utilities'], function (Backbone, utilities) {
 
     return Backbone.View.extend({
         render:function () {
-            utilities.applyTemplate($(this.el), $('#item-view'), {'items':'Categories', 'description':'Event categories'})
+            utilities.applyTemplate($(this.el), itemView, {'items':'Categories', 'description':'Event categories'})
             this.menuView = new EventMenuView({model:this.model, el:$("#itemMenu")});
-            this.menuView.render()
+            this.menuView.render();
             $(this.el).trigger('pagecreate')
         }
     });

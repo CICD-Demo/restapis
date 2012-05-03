@@ -1,4 +1,8 @@
-define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone',
+define("router",
+    ['jquery',
+    'jquerymobile',
+    'underscore',
+    'backbone',
     'app/models/booking',
     'app/models/event',
     'app/models/venue',
@@ -13,14 +17,28 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone',
     'app/views/mobile/event-detail',
     'app/views/mobile/venue-detail',
     'app/views/mobile/booking-detail',
-    'utilities', 'text!../templates/templates-mobile.html'] , function ($, jqm, _, Backbone,
-                                                                        Booking, Event, Venue,
-                                                                        Bookings, Events, Venues,
-                                                                        AboutView, EventsView, VenuesView, CreateBookingView,
-                                                                        BookingsView, EventDetailView, VenueDetailView, BookingDetailView,
-                                                                        utilities, templates) {
-
-    $('head').append(templates);
+    'text!../templates/mobile/main-view.html',
+    'utilities'] ,
+    function ($,
+              jqm,
+              _,
+              Backbone,
+              Booking,
+              Event,
+              Venue,
+              Bookings,
+              Events,
+              Venues,
+              AboutView,
+              EventsView,
+              VenuesView,
+              CreateBookingView,
+              BookingsView,
+              EventDetailView,
+              VenueDetailView,
+              BookingDetailView,
+              homeViewTemplate,
+              utilities) {
 
     $.mobile.hashListeningEnabled = false;
     $.mobile.linkBindingEnabled = false;
@@ -46,7 +64,7 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone',
             }
         },
         home:function () {
-            utilities.applyTemplate($("#container"), $("#home-view"));
+            utilities.applyTemplate($("#container"), homeViewTemplate);
             try {
                 $("#container").trigger('pagecreate')
             } catch (e) {
@@ -55,7 +73,7 @@ define("router", ['jquery', 'jquerymobile', 'underscore', 'backbone',
         },
         events:function () {
             var events = new Events;
-            var eventsView = new EventsView({model:events, el:$("#container")})
+            var eventsView = new EventsView({model:events, el:$("#container")});
             events.bind("reset",
                 function () {
                     eventsView.render()

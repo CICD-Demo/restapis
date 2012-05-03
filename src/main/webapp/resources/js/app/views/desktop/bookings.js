@@ -1,4 +1,14 @@
-define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
+define(['backbone', 'utilities',
+    'text!../../../../templates/desktop/booking-row.html',
+    'text!../../../../templates/desktop/booking-table.html',
+    'require',
+    'bootstrap'],
+    function (Backbone,
+              utilities,
+              bookingRowTemplate,
+              bookingTableTemplate,
+              require) {
+
 
     var BookingRowView = Backbone.View.extend({
         tagName:'tr',
@@ -7,7 +17,7 @@ define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
             "click a":"showDetails"
         },
         render:function () {
-            utilities.applyTemplate($(this.el), $("#booking-row"), this.model.attributes);
+            utilities.applyTemplate($(this.el), bookingRowTemplate, this.model.attributes);
             return this;
         },
         deleteBooking:function (event) {
@@ -18,7 +28,7 @@ define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
             event.stopImmediatePropagation();
         },
         showDetails:function () {
-            tmRouter.navigate("#bookings/" + this.model.get('id'), true);
+            require('router').navigate("#bookings/" + this.model.get('id'), true);
         }
     });
 
@@ -26,7 +36,7 @@ define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
 
     return Backbone.View.extend({
         render:function () {
-            utilities.applyTemplate($(this.el), $('#booking-table'), {});
+            utilities.applyTemplate($(this.el), bookingTableTemplate, {});
             _.each(this.model.models, function (booking) {
                 var bookingView = new BookingRowView({model:booking});
                 $("#bookingList").append(bookingView.render().el);

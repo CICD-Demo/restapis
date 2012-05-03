@@ -1,5 +1,10 @@
-define(['backbone', 'utilities', 'require', 'bootstrap'], function (Backbone, utilities, require) {
-
+define(['backbone', 'utilities', 'require',
+    'text!../../../../templates/desktop/event-detail.html',
+    'text!../../../../templates/desktop/media.html',
+    'text!../../../../templates/desktop/event-venue-description.html',
+    'bootstrap'
+], function (Backbone, utilities, require,
+             eventDetail, venueMedia, eventVenueDescription) {
     return  Backbone.View.extend({
         events:{
             "click input[name='bookButton']":"beginBooking",
@@ -8,7 +13,7 @@ define(['backbone', 'utilities', 'require', 'bootstrap'], function (Backbone, ut
         },
         render:function () {
             $(this.el).empty()
-            utilities.applyTemplate($(this.el), $("#event-detail"), this.model.attributes);
+            utilities.applyTemplate($(this.el), eventDetail, this.model.attributes);
             $("#bookingOption").hide();
             $("#venueSelector").attr('disabled', true);
             $("#dayPicker").empty();
@@ -41,13 +46,13 @@ define(['backbone', 'utilities', 'require', 'bootstrap'], function (Backbone, ut
                     return show.id == selectedShowId
                 });
                 this.selectedShow = selectedShow;
-                utilities.applyTemplate($("#eventVenueDescription"), $("#event-venue-description"), {venue:selectedShow.venue});
+                utilities.applyTemplate($("#eventVenueDescription"), eventVenueDescription, {venue:selectedShow.venue});
                 var times = _.uniq(_.sortBy(_.map(selectedShow.performances, function (performance) {
                     return (new Date(performance.date).withoutTimeOfDay()).getTime()
                 }), function (item) {
                     return item
                 }));
-                utilities.applyTemplate($("#venueMedia"), $("#venue-media"), selectedShow.venue)
+                utilities.applyTemplate($("#venueMedia"), venueMedia, selectedShow.venue)
                 $("#dayPicker").removeAttr('disabled')
                 $("#performanceTimes").removeAttr('disabled')
                 _.each(times, function (time) {

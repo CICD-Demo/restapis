@@ -1,6 +1,12 @@
-define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
+define(['backbone', 'utilities',
+    'text!../../../../templates/desktop/city.html',
+    'text!../../../../templates/desktop/venue-summary.html',
+    'text!../../../../templates/desktop/venue-carousel.html',
+    'text!../../../../templates/desktop/main-view.html',
+    'backbone'],
+    function (Backbone, utilities, cityTemplate, venueSummary, venueCarousel, mainView) {
 
-    var VenueMenuView = Backbone.View.extend({
+        var VenueMenuView = Backbone.View.extend({
         events:{
             "click a":"update"
         },
@@ -12,7 +18,7 @@ define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
             _.each(this.model.models, function (event) {
                 var model_city = event.get('address').city;
                 if (current_city !== model_city) {
-                    $(self.el).append(utilities.renderTemplate($('#city'), event.get('address')));
+                    $(self.el).append(utilities.renderTemplate(cityTemplate, event.get('address')));
                     current_city = model_city;
                 }
                 var view = new VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
@@ -32,7 +38,7 @@ define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
             "click":"notify"
         },
         render:function () {
-            utilities.applyTemplate($(this.el), $("#venue-summary"), this.model.attributes);
+            utilities.applyTemplate($(this.el), venueSummary, this.model.attributes);
             return this;
         },
         notify:function () {
@@ -41,22 +47,17 @@ define(['backbone', 'utilities', 'bootstrap'], function (Backbone, utilities) {
     });
 
 
-    var VenueSummaryView = Backbone.View.extend({
-        render:function (data) {
-            if (data) {
-                utilities.applyTemplate($(this.el), $("#venue-summary-view"), data.attributes)
+        var VenueSummaryView = Backbone.View.extend({
+            render:function () {
+                utilities.applyTemplate($(this.el), venueCarousel, {models:this.model.models});
+                $(this.el).find('.item:first').addClass('active');
+                return this;
             }
-            else {
-                utilities.applyTemplate($(this.el), $("#venue-carousel"), {models:this.model.models});
-                $(this.el).find('.item:first').addClass('active')
-            }
-            return this
-        }
-    });
+        });
 
-    return Backbone.View.extend({
+        return Backbone.View.extend({
         render:function () {
-            utilities.applyTemplate($(this.el), $('#main-view'), {});
+            utilities.applyTemplate($(this.el), mainView, {});
             var venueSummaryView = new VenueSummaryView({model:this.model});
             $("#itemSummary").append(venueSummaryView.render().el)
             this.menuView = new VenueMenuView({summaryView:venueSummaryView, model:this.model, el:$("#itemMenu")});

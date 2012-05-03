@@ -1,0 +1,8 @@
+<form name="ticketCategories">
+    <h4>Select tickets by category</h4>
+    <% if (priceCategories.length > 0) { %>
+    <% _.each(priceCategories, function(priceCategory) { %>
+    <div id="ticket-category-input-<%=priceCategory.id%>"/>
+    <% }) %>
+</form>
+<% } %>

@@ -1,0 +1,25 @@
+<div class="row-fluid">
+    <div class="span12">
+        <h2><%=show.event.name%>
+            <small><%=show.venue.name%>, <%=new Date(performance.date).toPrettyString()%></p></small>
+        </h2>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span5 well">
+        <h4 class="page-header">Select tickets</h4>
+        <div id="sectionSelectorPlaceholder" class="row-fluid"></div>
+        <div id="ticketCategoriesViewPlaceholder" class="row-fluid"></div>
+    </div>
+
+    <div id="request-summary" class="span5 offset1 well">
+        <h4 class="page-header">Order summary</h4>
+        <div id="ticketSummaryView" class="row-fluid"/>
+        <h4 class="page-header">Checkout</h4>
+        <div class="row-fluid" >
+            <input type='email' id="email" placeholder="Email" required/>
+            <input type='button' class="btn btn-primary" name="submit" value="Checkout"
+                   style="margin-bottom:9px;" disabled="true"/>
+        </div>
+    </div>
+</div>

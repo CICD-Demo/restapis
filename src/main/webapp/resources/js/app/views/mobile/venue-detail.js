@@ -1,5 +1,8 @@
-define(['backbone', 'utilities','require'], function (Backbone, utilities, require) {
-
+define(['backbone', 'utilities', 'require',
+    'text!../../../../templates/mobile/venue-detail.html',
+    'text!../../../../templates/mobile/venue-event-description.html'
+], function (Backbone, utilities, require,
+             venueDetail,venueEventDescription) {
     return  Backbone.View.extend({
         events:{
             "click a[id='bookButton']":"beginBooking",
@@ -9,7 +12,7 @@ define(['backbone', 'utilities','require'], function (Backbone, utilities, requi
         },
         render:function () {
             $(this.el).empty()
-            utilities.applyTemplate($(this.el), $("#venue-detail"), this.model.attributes)
+            utilities.applyTemplate($(this.el), venueDetail, this.model.attributes)
             $(this.el).trigger('create')
             $("#bookButton").addClass("ui-disabled")
             var self = this
@@ -58,7 +61,7 @@ define(['backbone', 'utilities','require'], function (Backbone, utilities, requi
                 }), function (item) {
                     return item
                 }));
-                utilities.applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {event:selectedShow.event});
+                utilities.applyTemplate($("#venueEventDescription"), venueEventDescription, {event:selectedShow.event});
                 $("#detailsCollapsible").show()
                 $("#dayPicker").removeAttr('disabled')
                 $("#performanceTimes").removeAttr('disabled')
