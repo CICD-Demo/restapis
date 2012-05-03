@@ -3,33 +3,31 @@
         <div id="itemMenu">
 
             <%
-            var current_category = null;
-            _.each(model.models, function (event) {
-            var model_category = event.get('category');
-            if (current_category !== model_category.id) {
+            _.each(categories, function (category) {
             %>
             <div class="accordion-group">
                 <div class="accordion-heading">
                     <a class="accordion-toggle" style="color: #fff; background: #000;"
-                       data-target="#category-<%=model_category.id%>-collapsible" data-toggle="collapse"
-                       data-parent="#itemMenu"><%= model_category.description %></a>
+                       data-target="#category-<%=category.id%>-collapsible" data-toggle="collapse"
+                       data-parent="#itemMenu"><%= category.description %></a>
                 </div>
-                <div id="category-<%=model_category.id%>-collapsible" class="collapse in accordion-body">
-                    <% } %>
+                <div id="category-<%=category.id%>-collapsible" class="collapse in accordion-body">
+                    <div id="category-<%=category.id%>" class="accordion-inner">
 
-                    <a href="#events/<%=event.attributes.id%>" rel="popover"
-                       data-content="<%=event.attributes.description%>"
-                       data-original-title="<%=event.attributes.name%>"><%=event.attributes.name%></a>
-
-                    <% if (current_category !== model_category.id) { %>
+                        <%
+                        _.each(model.models, function (model) {
+                        if (model.get('category').id == category.id) {
+                        %>
+                        <p><a href="#venues/<%=model.attributes.id%>" rel="popover"
+                              data-content="<%=model.attributes.description%>"
+                              data-original-title="<%=model.attributes.name%>"><%=model.attributes.name%></a></p>
+                        <% }
+                        });
+                        %>
+                    </div>
                 </div>
             </div>
-            <%
-            current_category = model_category.id;
-            }
-            %>
-
-            <% }) %>
+            <% }); %>
         </div>
     </div>
 
