@@ -13,7 +13,16 @@
             </tr>
             </thead>
             <tbody id='bookingList'>
-
+            <% _.each(model.models, function (booking) { %>
+                <tr>
+                    <td><a href="#bookings/<%=booking.id%>"><%=booking.attributes.id%></a></td>
+                    <td><%=booking.attributes.contactEmail%></td>
+                    <td><%=new Date(booking.attributes.createdOn).toPrettyString()%></td>
+                    <td><%=booking.attributes.tickets.length%></td>
+                    <td>$<%=booking.attributes.totalTicketPrice%></td>
+                    <td><i data-tm-role='delete' data-tm-id="<%=booking.attributes.id%>" class="icon-trash" title="Delete booking"></i></td>
+                </tr>
+            <% }); %>
             </tbody>
         </table>
     </div>
