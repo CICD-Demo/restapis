@@ -1,5 +1,9 @@
-define("router",
-    ['jquery',
+/**
+ * A module for the router of the desktop application.
+ *
+ */
+define("router",[
+    'jquery',
     'jquerymobile',
     'underscore',
     'backbone',
@@ -17,34 +21,41 @@ define("router",
     'app/views/mobile/event-detail',
     'app/views/mobile/venue-detail',
     'app/views/mobile/booking-detail',
-    'text!../templates/mobile/main-view.html',
-    'utilities'] ,
-    function ($,
-              jqm,
-              _,
-              Backbone,
-              Booking,
-              Event,
-              Venue,
-              Bookings,
-              Events,
-              Venues,
-              AboutView,
-              EventsView,
-              VenuesView,
-              CreateBookingView,
-              BookingsView,
-              EventDetailView,
-              VenueDetailView,
-              BookingDetailView,
-              homeViewTemplate,
-              utilities) {
+    'text!../templates/mobile/home-view.html',
+    'utilities'
+],function ($,
+            jqm,
+            _,
+            Backbone,
+            Booking,
+            Event,
+            Venue,
+            Bookings,
+            Events,
+            Venues,
+            AboutView,
+            EventsView,
+            VenuesView,
+            CreateBookingView,
+            BookingsView,
+            EventDetailView,
+            VenueDetailView,
+            BookingDetailView,
+            HomeViewTemplate,
+            utilities) {
 
+    // prior to creating an starting the router, we disable jQuery Mobile's own routing mechanism
     $.mobile.hashListeningEnabled = false;
     $.mobile.linkBindingEnabled = false;
     $.mobile.pushStateEnabled = false;
 
-    var TMRouter = Backbone.Router.extend({
+    /**
+     * The Router class contains all the routes within the application - i.e. URLs and the actions
+     * that will be taken as a result.
+     *
+     * @type {Router}
+     */
+    var Router = Backbone.Router.extend({
         routes:{
             "":"home",
             "events":"events",
@@ -64,7 +75,7 @@ define("router",
             }
         },
         home:function () {
-            utilities.applyTemplate($("#container"), homeViewTemplate);
+            utilities.applyTemplate($("#container"), HomeViewTemplate);
             try {
                 $("#container").trigger('pagecreate')
             } catch (e) {
@@ -131,8 +142,10 @@ define("router",
         }
     });
 
-    var router = new TMRouter();
+    // Create a router instance
+    var router = new Router();
 
+    // Begin routing
     Backbone.history.start();
 
     return router;

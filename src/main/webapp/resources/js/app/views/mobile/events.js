@@ -1,8 +1,15 @@
-define(['backbone', 'utilities',
+define([
+    'backbone',
+    'utilities',
     'text!../../../../templates/mobile/category-title.html',
     'text!../../../../templates/mobile/event-summary.html',
-    'text!../../../../templates/mobile/item-view.html'],
-    function (Backbone, utilities, categoryTitleTemplate, eventSummary, itemView) {
+    'text!../../../../templates/mobile/item-view.html'
+], function (
+    Backbone,
+    utilities,
+    categoryTitleTemplate,
+    eventSummary,
+    itemView) {
 
     var EventMenuView = Backbone.View.extend({
         render:function () {
@@ -38,7 +45,7 @@ define(['backbone', 'utilities',
     });
 
 
-    return Backbone.View.extend({
+    var EventsView = Backbone.View.extend({
         render:function () {
             utilities.applyTemplate($(this.el), itemView, {'items':'Categories', 'description':'Event categories'})
             this.menuView = new EventMenuView({model:this.model, el:$("#itemMenu")});
@@ -46,4 +53,6 @@ define(['backbone', 'utilities',
             $(this.el).trigger('pagecreate')
         }
     });
+
+    return EventsView;
 });

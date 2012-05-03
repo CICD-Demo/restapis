@@ -1,5 +1,3 @@
-
-
 /**
  * Shortcut alias definitions - will come in handy when declaring dependencies
  * Also, they allow you to keep the code free of any knowledge about library 
@@ -17,11 +15,17 @@ require.config({
     }
 });
 
-define('underscore',['libs/underscore'], function(){
+define('underscore',[
+    'libs/underscore'
+], function(){
     return _;
 });
 
-define("backbone", ['order!jquery', 'order!underscore','order!libs/backbone'], function($, _){
+define("backbone", [
+    'order!jquery',
+    'order!underscore',
+    'order!libs/backbone'
+], function(){
     return Backbone;
 });
 
@@ -30,4 +34,4 @@ define("backbone", ['order!jquery', 'order!underscore','order!libs/backbone'], f
 require(['router'],
        function(router){
     console.log('all loaded')
-})
+});

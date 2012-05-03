@@ -1,8 +1,12 @@
-define('utilities', ['underscore'], function (_) {
+define('utilities',[
+    'underscore'
 
-    var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    var monthNames = ["January", "February", "March", "April", "May", "June",
+], function (_) {
+
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"];
+
 
     Date.prototype.toPrettyString = function () {
         return dayNames[this.getDay()] + " " +
@@ -52,11 +56,11 @@ define('utilities', ['underscore'], function (_) {
         return val;
     };
 
+    // utility functions for
     var utilities = {
-
         renderTemplate:function (template, data) {
-            if (! (template.html == undefined)) {
-              return _.template(template.html(), (data == undefined) ? {} : data);
+            if (!(template.html == undefined)) {
+                return _.template(template.html(), (data == undefined) ? {} : data);
             }
             return _.template(template, (data == undefined) ? {} : data);
         },
@@ -64,8 +68,8 @@ define('utilities', ['underscore'], function (_) {
         applyTemplate:function (target, template, data) {
             return target.empty().append(this.renderTemplate(template, data));
         }
-
     };
+
     return utilities;
 
 });

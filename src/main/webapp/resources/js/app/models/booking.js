@@ -1,7 +1,19 @@
-define(['backbone'], function (Backbone) {
+/**
+ * Module for the Booking model
+ */
+define([
+    // Backbone is a dependency
+    'backbone'
+], function (Backbone) {
 
-    return Backbone.Model.extend({
+    /**
+     * The Booking model class definition
+     * Used for CRUD operations against individual bookings
+     */
+    var Booking = Backbone.Model.extend({
         urlRoot:'rest/bookings'
     });
+
+    return Booking;
 
 });

@@ -1,10 +1,18 @@
-define(['backbone', 'utilities',
+define([
+    'backbone',
+    'utilities',
     'text!../../../../templates/desktop/city.html',
     'text!../../../../templates/desktop/venue-summary.html',
     'text!../../../../templates/desktop/venue-carousel.html',
     'text!../../../../templates/desktop/main-view.html',
-    'backbone'],
-    function (Backbone, utilities, cityTemplate, venueSummary, venueCarousel, mainView) {
+    'backbone'
+], function (
+    Backbone,
+    utilities,
+    cityTemplate,
+    venueSummaryTemplate,
+    venueCarouselTemplate,
+    mainViewTemplate) {
 
         var VenueMenuView = Backbone.View.extend({
         events:{
@@ -38,7 +46,7 @@ define(['backbone', 'utilities',
             "click":"notify"
         },
         render:function () {
-            utilities.applyTemplate($(this.el), venueSummary, this.model.attributes);
+            utilities.applyTemplate($(this.el), venueSummaryTemplate, this.model.attributes);
             return this;
         },
         notify:function () {
@@ -49,7 +57,7 @@ define(['backbone', 'utilities',
 
         var VenueSummaryView = Backbone.View.extend({
             render:function () {
-                utilities.applyTemplate($(this.el), venueCarousel, {models:this.model.models});
+                utilities.applyTemplate($(this.el), venueCarouselTemplate, {models:this.model.models});
                 $(this.el).find('.item:first').addClass('active');
                 return this;
             }
@@ -57,7 +65,7 @@ define(['backbone', 'utilities',
 
         return Backbone.View.extend({
         render:function () {
-            utilities.applyTemplate($(this.el), mainView, {});
+            utilities.applyTemplate($(this.el), mainViewTemplate, {});
             var venueSummaryView = new VenueSummaryView({model:this.model});
             $("#itemSummary").append(venueSummaryView.render().el)
             this.menuView = new VenueMenuView({summaryView:venueSummaryView, model:this.model, el:$("#itemMenu")});

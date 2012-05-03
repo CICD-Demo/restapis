@@ -1,4 +1,7 @@
-define(['backbone', 'utilities', 'require',
+define([
+    'backbone',
+    'utilities',
+    'require',
     'text!../../../../templates/desktop/booking-details.html',
     'text!../../../../templates/desktop/booking-confirmation.html',
     'text!../../../../templates/desktop/create-booking.html',
@@ -8,16 +11,18 @@ define(['backbone', 'utilities', 'require',
     'text!../../../../templates/desktop/ticket-summary-view.html',
     'text!../../../../templates/desktop/ticket-request-summary.html',
     'bootstrap'
-],
-    function (Backbone, utilities, require,
-              bookingDetailsTemplate,
-              bookingConfirmationTemplate,
-              createBookingTemplate,
-              selectSectionTemplate,
-              ticketEntryTemplate,
-              ticketEntriesTemplate,
-              ticketSummaryViewTemplate,
-              ticketRequestSummaryTemplate) {
+],function (
+    Backbone,
+    utilities,
+    require,
+    bookingDetailsTemplate,
+    bookingConfirmationTemplate,
+    createBookingTemplate,
+    selectSectionTemplate,
+    ticketEntryTemplate,
+    ticketEntriesTemplate,
+    ticketSummaryViewTemplate,
+    ticketRequestSummaryTemplate){
 
     var SectionSelectorView = Backbone.View.extend({
         render:function () {
@@ -96,7 +101,8 @@ define(['backbone', 'utilities', 'require',
         }
     });
 
-    return Backbone.View.extend({
+    var CreateBookingView = Backbone.View.extend({
+
         events:{
             "click input[name='submit']":"save",
             "change select":"refreshPrices",
@@ -129,7 +135,7 @@ define(['backbone', 'utilities', 'require',
             });
             var priceCategoryInputs = new Array();
             _.each(priceCategories, function (priceCategory) {
-            	priceCategoryInputs.push({priceCategory:priceCategory});
+                priceCategoryInputs.push({priceCategory:priceCategory});
             });
             this.ticketCategoriesView.model = priceCategoryInputs;
             this.ticketCategoriesView.render();
@@ -227,4 +233,6 @@ define(['backbone', 'utilities', 'require',
             }
         }
     });
+
+    return CreateBookingView;
 });

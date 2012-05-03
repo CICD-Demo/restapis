@@ -1,29 +1,50 @@
-define("router",
-    ['jquery', 'underscore', 'backbone',
-        'app/models/booking',
-        'app/models/event',
-        'app/models/venue',
-        'app/collections/bookings',
-        'app/collections/events',
-        'app/collections/venues',
-        'app/views/desktop/about',
-        'app/views/desktop/events',
-        'app/views/desktop/venues',
-        'app/views/desktop/create-booking',
-        'app/views/desktop/bookings',
-        'app/views/desktop/event-detail',
-        'app/views/desktop/venue-detail',
-        'app/views/desktop/booking-detail'
-    ] ,
-        function ($, _, Backbone,
-                  Booking, Event, Venue,
-                  Bookings, Events, Venues,
-                  AboutView, EventsView, VenuesView, CreateBookingView,
-                  BookingsView, EventDetailView, VenueDetailView, BookingDetailView
-                ) {
+/**
+ * A module for the router of the desktop application
+ */
+define("router", [
+    'jquery',
+    'underscore',
+    'backbone',
+    'app/models/booking',
+    'app/models/event',
+    'app/models/venue',
+    'app/collections/bookings',
+    'app/collections/events',
+    'app/collections/venues',
+    'app/views/desktop/about',
+    'app/views/desktop/events',
+    'app/views/desktop/venues',
+    'app/views/desktop/create-booking',
+    'app/views/desktop/bookings',
+    'app/views/desktop/event-detail',
+    'app/views/desktop/venue-detail',
+    'app/views/desktop/booking-detail'
+],function ($,
+            _,
+            Backbone,
+            Booking,
+            Event,
+            Venue,
+            Bookings,
+            Events,
+            Venues,
+            AboutView,
+            EventsView,
+            VenuesView,
+            CreateBookingView,
+            BookingsView,
+            EventDetailView,
+            VenueDetailView,
+            BookingDetailView) {
 
+    /**
+     * The Router class contains all the routes within the application - i.e. URLs and the actions
+     * that will be taken as a result.
+     *
+     * @type {Router}
+     */
 
-    var TMRouter = Backbone.Router.extend({
+    var Router = Backbone.Router.extend({
         routes:{
             "":"events",
             "events":"events",
@@ -102,10 +123,11 @@ define("router",
         }
     });
 
-    var router = new TMRouter();
+    // Create a router instance
+    var router = new Router();
 
+    //Begin routing
     Backbone.history.start();
-
 
     return router;
 });

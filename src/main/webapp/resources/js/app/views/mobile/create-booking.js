@@ -1,4 +1,7 @@
-define(['backbone', 'utilities', 'require',
+define([
+    'backbone',
+    'utilities',
+    'require',
     'text!../../../../templates/mobile/booking-details.html',
     'text!../../../../templates/mobile/create-booking.html',
     'text!../../../../templates/mobile/confirm-booking.html',
@@ -6,16 +9,17 @@ define(['backbone', 'utilities', 'require',
     'text!../../../../templates/mobile/ticket-entry.html',
     'text!../../../../templates/mobile/ticket-entries.html',
     'text!../../../../templates/mobile/ticket-summary-view.html'
-],
-    function (Backbone, utilities, require,
-              bookingDetailsTemplate,
-              createBookingTemplate,
-              confirmBookingTemplate,
-              selectSectionTemplate,
-              ticketEntryTemplate,
-              ticketEntriesTemplate,
-              ticketSummaryViewTemplate) {
-
+], function (
+    Backbone,
+    utilities,
+    require,
+    bookingDetailsTemplate,
+    createBookingTemplate,
+    confirmBookingTemplate,
+    selectSectionTemplate,
+    ticketEntryTemplate,
+    ticketEntriesTemplate,
+    ticketSummaryViewTemplate) {
 
     var SectionSelectorView = Backbone.View.extend({
         render:function () {
@@ -123,7 +127,8 @@ define(['backbone', 'utilities', 'require',
     });
 
 
-    return Backbone.View.extend({
+    var CreateBookingView = Backbone.View.extend({
+
         events:{
             "click a[id='confirmBooking']":"checkout",
             "change select":"refreshPrices",
@@ -194,4 +199,5 @@ define(['backbone', 'utilities', 'require',
             }
         }
     });
+    return CreateBookingView;
 });

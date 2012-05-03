@@ -1,15 +1,18 @@
-define(['backbone', 'utilities',
+define([
+    'backbone',
+    'utilities',
     'text!../../../../templates/desktop/booking-row.html',
     'text!../../../../templates/desktop/booking-table.html',
     'require',
-    'bootstrap'],
-    function (Backbone,
-              utilities,
-              bookingRowTemplate,
-              bookingTableTemplate,
-              require) {
+    'bootstrap'
+],function (Backbone,
+            utilities,
+            bookingRowTemplate,
+            bookingTableTemplate,
+            require) {
 
 
+    // A subview of the BookingsView
     var BookingRowView = Backbone.View.extend({
         tagName:'tr',
         events:{
@@ -33,8 +36,7 @@ define(['backbone', 'utilities',
     });
 
 
-
-    return Backbone.View.extend({
+    var BookingsView = Backbone.View.extend({
         render:function () {
             utilities.applyTemplate($(this.el), bookingTableTemplate, {});
             _.each(this.model.models, function (booking) {
@@ -43,5 +45,7 @@ define(['backbone', 'utilities',
             });
         }
     });
+
+    return BookingsView;
 
 });

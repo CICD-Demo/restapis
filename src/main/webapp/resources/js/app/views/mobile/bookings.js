@@ -1,4 +1,13 @@
-define(['backbone', 'utilities', 'text!../../../../templates/mobile/booking-row.html', 'require'], function (Backbone, utilities, bookingRowTemplate, require) {
+define([
+    'backbone',
+    'utilities',
+    'text!../../../../templates/mobile/booking-row.html',
+    'require'
+], function (
+    Backbone,
+    utilities,
+    bookingRowTemplate,
+    require) {
 
     var BookingRowView = Backbone.View.extend({
         tagName:'li',
@@ -23,7 +32,7 @@ define(['backbone', 'utilities', 'text!../../../../templates/mobile/booking-row.
     });
 
 
-    return Backbone.View.extend({
+    var BookingsView = Backbone.View.extend({
         render:function () {
             $(this.el).empty().append("<ul data-role='listview' id='bookingDetails'/>");
             _.each(this.model.models, function (booking) {
@@ -34,5 +43,7 @@ define(['backbone', 'utilities', 'text!../../../../templates/mobile/booking-row.
             $(this.el).trigger('pagecreate');
         }
     });
+
+    return BookingsView;
 
 });

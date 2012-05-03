@@ -1,10 +1,17 @@
-define(['backbone', 'utilities',
+define([
+    'backbone',
+    'utilities',
     'text!../../../../templates/mobile/city.html',
     'text!../../../../templates/mobile/venue-summary.html',
-    'text!../../../../templates/mobile/item-view.html'],
-    function (Backbone, utilities, cityTemplate, venueSummary, itemView) {
+    'text!../../../../templates/mobile/item-view.html'
+], function (
+    Backbone,
+    utilities,
+    cityTemplate,
+    venueSummary,
+    itemView) {
 
-        var VenueMenuView = Backbone.View.extend({
+    var VenueMenuView = Backbone.View.extend({
         render:function () {
             var self = this
             $(this.el).empty().append("<div id='cityMenu' data-role='listview' data-filter='true' data-filter-placeholder='City name ...'/>")
@@ -26,13 +33,13 @@ define(['backbone', 'utilities',
     var VenueSummaryLineView = Backbone.View.extend({
         tagName:'li',
         events:{
-            'click a': 'openDetail'
+            'click a':'openDetail'
         },
         render:function () {
             utilities.applyTemplate($(this.el), venueSummary, this.model.attributes)
             return this;
         },
-        openDetail: function() {
+        openDetail:function () {
             $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
         }
     });

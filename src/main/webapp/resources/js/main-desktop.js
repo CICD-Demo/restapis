@@ -15,13 +15,24 @@ require.config({
     }
 });
 
-define("backbone", ['order!jquery', 'order!underscore','order!libs/backbone'], function($){
+// Backbone is not AMD-ready, so a individual module is declared
+define("backbone", [
+    // the order plugin is used to ensure that the modules are loaded in the right order
+    'order!jquery',
+    'order!underscore',
+    'order!libs/backbone'], function(){
     return Backbone;
 });
 
 // Now we declare all the dependencies
-require(['order!jquery','order!underscore','order!backbone', 'text', 'order!bootstrap', 'text!../templates/templates.html', 'order!router'],
-       function($, _, backbone, text, bootstrap, templates){
-    $('head').append(templates)
+require([
+    'order!jquery',
+    'order!underscore',
+    'order!backbone',
+    'text',
+    'order!bootstrap',
+    'text!../templates/templates.html',
+    'order!router'
+], function(){
     console.log('all loaded')
 });

@@ -1,11 +1,20 @@
 /**
- * Defines a Backbone collection of Bookings
+ * The module for a collection of Bookings
  */
-define(['backbone', 'app/models/booking'], function (Backbone, Booking) {
+define([
+    // Backbone and the collection element type are dependencies
+    'backbone',
+    'app/models/booking'
+], function (Backbone, Booking) {
 
-    return Backbone.Collection.extend({
+    // Here we define the Bookings collection
+    // We will use it for CRUD operations on Bookings
+
+    var Bookings = Backbone.Collection.extend({
         url:'rest/bookings',
         model: Booking,
         id:'id'
     });
+
+    return Bookings;
 });

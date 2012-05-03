@@ -1,9 +1,18 @@
-define(['backbone', 'utilities', 'require',
+define([
+    'backbone',
+    'utilities',
+    'require',
     'text!../../../../templates/mobile/venue-detail.html',
     'text!../../../../templates/mobile/venue-event-description.html'
-], function (Backbone, utilities, require,
-             venueDetail,venueEventDescription) {
-    return  Backbone.View.extend({
+], function (
+    Backbone,
+    utilities,
+    require,
+    venueDetail,
+    venueEventDescription) {
+
+    var VenueDetailView = Backbone.View.extend({
+
         events:{
             "click a[id='bookButton']":"beginBooking",
             "change select[id='showSelector']":"refreshShows",
@@ -101,6 +110,6 @@ define(['backbone', 'utilities', 'require',
         }
 
     });
-
+    return  VenueDetailView;
 
 });
