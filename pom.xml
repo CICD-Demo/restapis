@@ -283,13 +283,11 @@
                    deployment, or classpath scanners such as Hibernate and Weld get confused
                    when the webapp is bootstrapping. -->
                         <packagingExcludes>**/javax/**/*.*,**/client/local/**/*.class</packagingExcludes>
-
                         <archive>
                             <manifestEntries>
                                 <Dependencies>org.jboss.as.naming,org.jboss.as.server,org.jboss.msc</Dependencies>
                             </manifestEntries>
                         </archive>
-
                     </configuration>
                 </plugin>
 

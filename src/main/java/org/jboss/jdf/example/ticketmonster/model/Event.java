@@ -124,11 +124,6 @@ public class Event implements Serializable {
     @NotNull
     private EventCategory category;
 
-    /**
-     * TODO
-     */
-    private boolean major;
-
     /* Boilerplate getters and setters */
 
     public Long getId() {
@@ -161,14 +156,6 @@ public class Event implements Serializable {
 
     public void setCategory(EventCategory category) {
         this.category = category;
-    }
-
-    public boolean isMajor() {
-        return major;
-    }
-
-    public void setMajor(boolean major) {
-        this.major = major;
     }
 
     public String getDescription() {
