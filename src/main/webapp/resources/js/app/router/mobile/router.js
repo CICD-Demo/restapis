@@ -7,6 +7,7 @@ define("router",[
     'jquerymobile',
     'underscore',
     'backbone',
+    'utilities',
     'app/models/booking',
     'app/models/event',
     'app/models/venue',
@@ -21,12 +22,12 @@ define("router",[
     'app/views/mobile/event-detail',
     'app/views/mobile/venue-detail',
     'app/views/mobile/booking-detail',
-    'text!../templates/mobile/home-view.html',
-    'utilities'
+    'text!../templates/mobile/home-view.html'
 ],function ($,
             jqm,
             _,
             Backbone,
+            utilities,
             Booking,
             Event,
             Venue,
@@ -41,8 +42,7 @@ define("router",[
             EventDetailView,
             VenueDetailView,
             BookingDetailView,
-            HomeViewTemplate,
-            utilities) {
+            HomeViewTemplate) {
 
     // prior to creating an starting the router, we disable jQuery Mobile's own routing mechanism
     $.mobile.hashListeningEnabled = false;

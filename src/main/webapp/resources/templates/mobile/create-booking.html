@@ -3,18 +3,15 @@
 </div>
 <div data-role="content">
     <p>
-
-    <h3><%=show.event.name%></h3></p>
-
-    <p><%=show.venue.name%>
-
-    <p>
-
-    <p>
-        <small><%=new Date(performance.date).toPrettyString()%></small>
+       <h3><%=show.event.name%></h3>
     </p>
+    <p>
+      <%=show.venue.name%>
+    <p>
 
-
+    <p>
+      <small><%=new Date(performance.date).toPrettyString()%></small>
+    </p>
     <div id="sectionSelectorPlaceholder">
         <div data-role="fieldcontain">
             <label for="sectionSelect">Section</label>
@@ -27,7 +24,6 @@
         </div>
 
     </div>
-
     <div id="ticketCategoriesViewPlaceholder" style="display:none;"/>
 
     <div class="fieldcontain">
