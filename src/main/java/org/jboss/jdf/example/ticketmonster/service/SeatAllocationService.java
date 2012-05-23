@@ -29,8 +29,13 @@ public class SeatAllocationService implements Serializable {
     private SectionAllocation retrieveSectionAllocation(Section section, Performance performance) {
         SectionAllocation sectionAllocationStatus;
         try {
-            sectionAllocationStatus = (SectionAllocation) entityManager.createQuery("select s from SectionAllocation s where s.performance.id = :performanceId and " +
-                    " s.section.id = :sectionId").setParameter("performanceId", performance.getId()).setParameter("sectionId", section.getId()).getSingleResult();
+            sectionAllocationStatus = (SectionAllocation) entityManager.createQuery(
+                            "select s from SectionAllocation s where " +
+                            "s.performance.id = :performanceId and " +
+                            "s.section.id = :sectionId")
+                            .setParameter("performanceId", performance.getId())
+                            .setParameter("sectionId", section.getId())
+                            .getSingleResult();
         } catch (NoResultException e) {
             sectionAllocationStatus = new SectionAllocation(performance, section);
             entityManager.persist(sectionAllocationStatus);
