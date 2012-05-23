@@ -137,7 +137,7 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
     background:#ECEAE6;
 }
 .accordion-body a {
-    color:#8F8D86;
+    color:#444444;
     text-shadow:0 1px 0 #fff;
 }
 .accordion-body a:hover {
@@ -271,6 +271,15 @@ h2.page-header {
 
 h4.page-header {
     font-size: 16px;
+}
+
+.special-title {
+   font-family: "Rokkitt", serif;
+}
+
+.light-font {
+    text-shadow: 0 1px 1px #000000;
+    color:  #EDF4EA;
 }
 
 

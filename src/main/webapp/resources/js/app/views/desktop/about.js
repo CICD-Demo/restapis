@@ -9,8 +9,7 @@ define([
         render:function () {
             $(this.el).empty().append(
                 "<section>" +
-                    "<h1>Welcome to Ticket Monster!</h1>" +
-                    "Ticket Monster is a demo application" +
+                    "<h2 class='light-font special-title page-header'>Welcome to Ticket Monster!</h2>" +
                 "</section>");
         }
     });
