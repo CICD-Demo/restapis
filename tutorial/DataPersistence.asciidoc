@@ -1,10 +1,12 @@
-Building The Persistence Layer
-==============================
+Building The Persistence Layer With JPA2 And Bean Validation
+============================================================
 
 What Will You Learn Here?
 -------------------------
 
-You have set up your project successfully. Now it is time to begin working on the TicketMonster application, and the first step is adding the persistence layer. After reading this guide, you'll understand what design and implementation choices to make. Topics covered include:
+You have set up your project successfully. Now it is time to begin working on the TicketMonster
+application, and the first step is adding the persistence layer. After reading this guide,
+you'll understand what design and implementation choices to make. Topics covered include:
 
 * RDBMS design using JPA entity beans
 * How to validate your entities using Bean Validation
@@ -13,14 +15,11 @@ You have set up your project successfully. Now it is time to begin working on th
 
 We'll round out the guide by revealing the required, yet short and sweet, configuration.
 
-The tutorial will show you how to perform all these steps in JBoss Developer Studio, including screenshots that guide you through. For those of you who prefer to watch and learn, the included video shows you how we performed all the steps.
+The tutorial will show you how to perform all these steps in JBoss Developer Studio, including
+screenshots that guide you through.
 
-TicketMonster contains 14 entities, of varying complexity. In this tutorial we'll classify the entities, and walk through desiging and creating one of each group.
-
-Database Schema
----------------
-
-TODO
+TicketMonster contains 14 entities, of varying complexity. In this tutorial we'll classify
+the entities, and walk through designing and creating one of each group.
 
 [[YourFirstEntity]]
 Your first entity
@@ -72,12 +71,12 @@ public class TicketCategory {
 
 We're going to want to keep the ticket category in collections (for example, to present it as part of drop down in the UI), so it's important that we properly implement `equals()` and `hashCode()`.  At this point, we need to define a property (or group of properties) that uniquely identifies the ticket category. We refer to these properties as the "entities natural identity".
 
-.Defining an entities natural identity
+.Defining an entity's natural identity
 *************************************************************************************
 Using an ORM introduces additional constraints on object identity. Defining the 
 properties that make up an entities natural identity can be tricky, but is very 
 important. Using the object identity, or the synthetic identity (database generated 
-primary key) identity can introduce unexpected bugs into your application, so you 
+primary key) can introduce unexpected bugs into your application, so you
 should always ensure you use a natural identity. You can read more about the issue at
 link: https://community.jboss.org/wiki/EqualsAndHashCode.
 *************************************************************************************
@@ -180,13 +179,13 @@ Bean Validation is a Java specification which:
 * defines a runtime engine to validate objects
 
 Bean Validation includes integration with other Java EE specifications, such as JPA.
-Bean Validation constrains are automatically applied before data is persisted to the
+Bean Validation constraints are automatically applied before data is persisted to the
 database, as a last line of defence against bad data.
 *************************************************************************************
 
 The _description_ of the ticket category should not be empty for two reasons. Firstly, an empty ticket category description is no use to a person trying to book a ticket - it doesn't convey any information. Secondly, as the description forms the natural identity, we need to make sure the property is always populated.
 
-Let's add the Bean Validation constrain `@NotEmpty`:
+Let's add the Bean Validation constraint `@NotEmpty`:
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketCategory.java
 [source,java]
@@ -208,7 +207,7 @@ public class TicketCategory {
      * </p>
      * 
      * <p>
-     * The description must not be null and must be one or more characters, the Bean Validation constrain <code>@NotEmpty</code>
+     * The description must not be null and must be one or more characters, the Bean Validation constraint <code>@NotEmpty</code>
      * enforces this.
      * </p>
      * 
@@ -877,13 +876,14 @@ Now, let's add the set of performances to the event. Unlike previous relationshi
      * </p>
      * 
      * <p>
-     * The <code>@OneToMany<code> JPA mapping establishes this relationship. As we will send this data 
+     * The <code>@OneToMany<code> JPA mapping establishes this relationship. Collection members
+     * are fetched eagerly, so that they can be accessed even after the entity has become detached.
      * This relationship is bi-directional (a performance knows which show it is part of), and the <code>mappedBy</code>
      * attribute establishes this. 
      * </p>
      * 
      */
-    @OneToMany(mappedBy = "show", cascade = ALL)
+    @OneToMany(fetch=EAGER, mappedBy = "show", cascade = ALL)
     @OrderBy("date")
     private Set<Performance> performances = new HashSet<Performance>();
 
@@ -904,7 +904,10 @@ As the relationship is bi-directional, we specify the `mappedBy` attribute on th
 
 As `Show` is the owner of `Performance` (and without a show, a performance cannot exist), we add the `cascade = ALL` attribute to the `@OneToMany` annotation. As a result, any persistence operation that occurs on a show, will be propagated to it's performances. For example, if a show is removed, any associated performances will be removed as well.
 
-TODO Add fetchMode stuff
+When retrieving a show, we will also retrieve its associated performances by adding the `fetch = EAGER` attribute to the `@OneToMany` annotation. This is a design decision which required careful consideration. In general,
+you should favour the default lazy initialization of collections: their content should be accessible on demand. However, in this case
+we intend to marshal the contents of the collection and pass it across the wire in the JAX-RS layer, after the entity has become
+detached, and cannot initialize its members on demand.
 
 We'll also need to add the set of ticket prices available for this show. Once more, this is a bi-directional relationship, owned by the show. It looks just like the set of performances.
 
@@ -996,9 +999,11 @@ public class Show implements Serializable {
      * </p>
      * 
      * <p>
-     * The <code>@OneToMany<code> JPA mapping establishes this relationship. TODO Explain EAGER fetch. 
-     * This relationship is bi-directional (a ticket price category knows which show it is part of), and the <code>mappedBy</code>
-     * attribute establishes this. We cascade all persistence operations to the set of performances, so, for example if a show
+     * The <code>@OneToMany<code> JPA mapping establishes this relationship.
+     * Collection members are fetched eagerly, so that they can be accessed even after the
+     * entity has become detached. This relationship is bi-directional (a ticket price category
+     * knows which show it is part of), and the <code>mappedBy</code> attribute establishes this.
+     * We cascade all persistence operations to the set of performances, so, for example if a show
      * is removed, then all of it's ticket price categories are also removed.
      * </p>
      */
@@ -1244,8 +1249,8 @@ public class Venue {
      * </p>
      * 
      * <p>
-     * The name must not be null and must be one or more characters, the Bean Validation constrain <code>@NotEmpty</code>
-     * enforces this.
+     * The name must not be null and must be one or more characters, the Bean Validation
+     * constraint <code>@NotEmpty</code> enforces this.
      * </p>
      */
     @Column(unique = true)
@@ -1269,9 +1274,11 @@ public class Venue {
      * </p>
      * 
      * <p>
-     * The <code>@OneToMany<code> JPA mapping establishes this relationship. TODO Explain EAGER fetch. 
-     * This relationship is bi-directional (a section knows which venue it is part of), and the <code>mappedBy</code>
-     * attribute establishes this. We cascade all persistence operations to the set of performances, so, for example if a venue
+     * The <code>@OneToMany<code> JPA mapping establishes this relationship.
+     * Collection members are fetched eagerly, so that they can be accessed even after the
+     * entity has become detached. This relationship is bi-directional (a section knows which
+     * venue it is part of), and the <code>mappedBy</code> attribute establishes this. We
+     * cascade all persistence operations to the set of performances, so, for example if a venue
      * is removed, then all of it's sections will also be removed.
      * </p>
      */
