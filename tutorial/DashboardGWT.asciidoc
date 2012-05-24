@@ -1,8 +1,8 @@
-Building A Statistics Dashboard Using GWT And Errai
-===================================================
+Building The Statistics Dashboard Using GWT And Errai
+=====================================================
 
-What will you learn now?
-------------------------
+What Will You Learn Here?
+-------------------------
 
 You've just an administration view, and would like to collect real-time information about ticket sales and attendance. Now it would be good to implement a dashboard that can collect data and receive real-time updates. After reading this tutorial, you will understand our dashboard design and the choices that we made in its implementation. Topics covered include:
 
