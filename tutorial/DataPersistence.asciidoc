@@ -1,5 +1,6 @@
 Building The Persistence Layer With JPA2 And Bean Validation
 ============================================================
+:Author: Pete Muir
 
 What Will You Learn Here?
 -------------------------

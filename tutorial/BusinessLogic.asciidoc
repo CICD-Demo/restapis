@@ -1,5 +1,6 @@
 Building The Business Services With JAX-RS
 ==========================================
+:Author: Marius Bogoevici
 
 What Will You Learn Here?
 -------------------------
@@ -348,7 +349,7 @@ public class MediaManager {
 ------------------------------------------------------------------------------------------
 
 The Seat Allocation Service
-===========================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The next service is used for finding free seats at booking time in a given section at a 
 given performance. It is a good example of how a service can coordinate infrastructure
