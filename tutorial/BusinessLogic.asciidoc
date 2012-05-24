@@ -1,23 +1,28 @@
-Building The Business Services 
-==============================
+Building The Business Services With JAX-RS
+==========================================
 
 What Will You Learn Here?
 -------------------------
 
-You've just defined the domain model of your application and created its persistence layer. Now you need to implement the services that implement the business logic of your application and expose them to the front-end. After reading this, you'll understand how to design the business layer and what choices to make while developing it. Topics covered include:
+You've just defined the domain model of your application and created its persistence layer.
+Now you need to define the services that implement the business logic of your application
+and expose them to the front-end. After reading this, you'll understand how to design the
+business layer and what choices to make while developing it. Topics covered include:
 
 * Encapsulating business logic in services and integrating with the persistence tier
 * Using CDI for integrating individual services
 * Integration testing using Arquillian
 * Exposing RESTful services via JAX-RS
 
-The tutorial will show you how to perform all these steps in JBoss Developer Studio, including screenshots that guide you through. For those of you who prefer to watch and learn, the included video shows you how we performed all the steps.
+The tutorial will show you how to perform all these steps in JBoss Developer Studio, including
+screenshots that guide you through. For those of you who prefer to watch and learn, the included
+ video shows you how we performed all the steps.
 
-Business services and their relationships
+Business Services And Their Relationships
 ------------------------------------------
 
-Ticket Monster uses a number of service classes, which incorporate business logic which serves
-different purposes:
+Ticket Monster's business logic is implemented by a few service classes, with different
+responsibilities:
 
 * managing media items;
 * allocating tickets;
@@ -26,26 +31,25 @@ different purposes:
 
 The services are consumed by various other layers of the application: 
 
+* the media management and ticket allocation services are encapsulating complex functionality,
+  which in turn is exposed externally by RESTful services that wrap them;
 * RESTful services are mainly used by the POH5 user interface;
-* the media management and ticket allocation services are encapsulating complex functionality
-exposed externally by the RESTful service;
 * the ticket availability service is used by the Errai-based user interface.
 
 .Where to draw the line?
 ******************************************************************************************
 A business service is an encapsulated, reusable logical component that groups together a 
-number of well-defined cohesive business operations. Business services perform business calculations,
+number of well-defined cohesive business operations. Business services perform business operations,
 and may coordinate infrastructure services such as persistence units, or even other business services 
 as well. The decision of drawing boundaries between them should take into account 
-whether the newly created service really represent standalone, potentially reusable components.
+whether the newly created services really represent standalone, potentially reusable components.
 ******************************************************************************************
 
 
 As you can see, some of the services are intended to be consumed within the business layer
-of the application, while others are exposing parts of the application as JAX-RS RESTful 
-services. We will start by implementing the former, and we will finish up with the latter.
-During this process, you will discover how CDI makes it easy to define and wire together
-services.
+of the application, while others provide an external interface as JAX-RS services. We will start
+by implementing the former, and we'll finish up with the latter. During this process, you will
+discover how CDI, EJB and JAX-RS make it easy to define and wire together our services.
 
 Preparations
 ------------
@@ -57,14 +61,10 @@ application.
 .src/main/webapp/WEB-INF/beans.xml
 [source,xml]
 ------------------------------------------------------------------------------------------
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- This file can be an empty text file (0 bytes) -->
-<!-- We're declaring the schema to save you time if you do have to configure 
-   this in the future -->
-<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-        http://java.sun.com/xml/ns/javaee 
-        http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+<beans xmlns="http://java.sun.com/xml/ns/javaee" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee  
+	                       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 </beans>
 ------------------------------------------------------------------------------------------
 
@@ -77,48 +77,32 @@ component management and injection services for Java EE applications. By enablin
 your application, your deployment classes become managed components and their lifecycle 
 and wiring becomes the responsibility of the Java EE server. 
 
-Reducing coupling is a critical goal for a truly decoupled architecture. You can focus now on implementing the specific responsibilities of each component and  describing their dependencies in a declarative fashion, and the runtime will do the rest for you: instantiating, destroying them and wiring them toghether!
+Reducing coupling is a critical goal for a truly decoupled architecture. You can focus now 
+on implementing the specific responsibilities of each component and  describing their 
+dependencies in a declarative fashion, and the runtime will do the rest for you: instantiating, 
+destroying them and wiring them toghether!
 ******************************************************************************************
 
-The MediaManager
-----------------
+Internal Services
+-----------------
 
-The `MediaManager` is a good illustration of a business service, because
-it encapsulates the retrieval and caching of media objects, abstracting that from the rest of 
-the application.
+The Media Manager
+~~~~~~~~~~~~~~~~~
 
-We will begin by adding the implementation class:
+The `MediaManager` is a good illustration of a business service:
+it encapsulates the retrieval and caching of media objects, abstracting a rather complex operation
+from the rest of the application.
+
+We will begin by creating the implementation class:
+
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaManager.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.service;
-
-import static org.jboss.jdf.example.ticketmonster.model.MediaType.IMAGE;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jboss.jdf.example.ticketmonster.model.MediaItem;
-import org.jboss.jdf.example.ticketmonster.model.MediaType;
-import org.jboss.jdf.example.ticketmonster.util.Base64;
-import org.jboss.jdf.example.ticketmonster.util.Reflections;
-
 /**
  * <p>
- * The media manager is responsible for taking a media item, and returning either the URL of the cached version (if the
- * application cannot load the item from the URL), or the original URL.
+ * The media manager is responsible for taking a media item, and returning either the URL 
+ * of the cached version (if the application cannot load the item from the URL), or the 
+ * original URL.
  * </p>
  * 
  * <p>
@@ -126,8 +110,8 @@ import org.jboss.jdf.example.ticketmonster.util.Reflections;
  * </p>
  * 
  * <p>
- * The computed URLs are cached for the duration of a request. This provides a good balance between consuming heap space, and
- * computational time.
+ * The computed URLs are cached for the duration of a request. This provides a good balance 
+ * between consuming heap space, and computational time.
  * </p>
  * 
  * @author Pete Muir
@@ -141,10 +125,12 @@ public class MediaManager {
     private static final File tmpDir;
 
     static {
-        tmpDir = new File(System.getProperty("java.io.tmpdir"), "org.jboss.jdf.examples.ticket-monster");
+        tmpDir = new File(System.getProperty("java.io.tmpdir"), 
+		                    "org.jboss.jdf.examples.ticket-monster");
         if (tmpDir.exists()) {
             if (tmpDir.isFile())
-                throw new IllegalStateException(tmpDir.getAbsolutePath() + " already exists, and is a file. Remove it.");
+                throw new IllegalStateException(tmpDir.getAbsolutePath() 
+				               + " already exists, and is a file. Remove it.");
         } else {
             tmpDir.mkdir();
         }
@@ -171,8 +157,9 @@ public class MediaManager {
     }
 
     /**
-     * Obtain the URL of the media item. If the URL h has already been computed in this request, it will be looked up in the
-     * request scoped cache, otherwise it will be computed, and placed in the request scoped cache.
+     * Obtain the URL of the media item. If the URL h has already been computed in this 
+	 * request, it will be looked up in the request scoped cache, otherwise it will be 
+	 * computed, and placed in the request scoped cache.
      */
     public MediaPath getPath(MediaItem mediaItem) {
         if (cache.containsKey(mediaItem)) {
@@ -185,9 +172,10 @@ public class MediaManager {
     }
 
     /**
-     * Compute the URL to a media item. If the media item is not cacheable, then, as long as the resource can be loaded, the
-     * original URL is returned. If the resource is not available, then a placeholder image replaces it. If the media item is
-     * cachable, it is first cached in the tmp directory, and then path to load it is returned.
+     * Compute the URL to a media item. If the media item is not cacheable, then, as long 
+	 * as the resource can be loaded, the original URL is returned. If the resource is not 
+	 * available, then a placeholder image replaces it. If the media item is cachable, it 
+	 * is first cached in the tmp directory, and then path to load it is returned.
      */
     private MediaPath createPath(MediaItem mediaItem) {
         if (!mediaItem.getMediaType().isCacheable()) {
@@ -301,14 +289,15 @@ public class MediaManager {
 }
 ------------------------------------------------------------------------------------------
 
-This service will convert the `MediaItem` entities defined in the  persistence tutorial into `MediaPath` handles, that can be used by the application to retrieve the actual binary data of the media item. The process involves retrieving and caching the data locally in the filesystem. `MediaPath` is a simple data holding object.
+This service delegates to a number of internal methods that do the heavy lifting, but to the
+external observer it will simply convert the `MediaItem` entities defined in the persistence tutorial into
+`MediaPath` handles, that can be used by the application to retrieve the actual binary data 
+of the media item. The process involves retrieving and caching the data locally in the filesystem. 
+`MediaPath` is a simple data holding object.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaPath.java
+[source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.service;
-
-import org.jboss.jdf.example.ticketmonster.model.MediaType;
-
 public class MediaPath {
     
     private final String url;
@@ -339,31 +328,27 @@ public class MediaPath {
 Before finishing the implementation of the service, we need to do a couple more things.
 As a managed bean, the service can be injected by type in the components that depend on it.
 However, in order to make it available to the JSF layer as well, we need to make it accessible
-by name - so we will add a `@Named` annotation on it, which in this case will ensure that 
+by name - so we will add a `@Named` annotation, which in this case will ensure that 
 the bean can be referenced under the name `mediaManager`.
 
 Also, we need to control the lifecycle of this service. Due to the fact that this is a 
 bean that stores request-specific state, we would like for an instance of
-the service to exists exactly for the duration of a web request - therefore we will add an
-annotation indicating just that.
+the service to exist exactly for the duration of a web request - therefore we will use the
+`@RequestScoped` to .
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaManager.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.service;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-...
+   ...
 @Named
 @RequestScoped
 public class MediaManager {
-...
+   ...
 }
 ------------------------------------------------------------------------------------------
 
-The seat allocation service
----------------------------
+The Seat Allocation Service
+===========================
 
 The next service is used for finding free seats at booking time in a given section at a 
 given performance. It is a good example of how a service can coordinate infrastructure
@@ -379,20 +364,6 @@ in-memory cache).
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/SeatAllocationService.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.service;
-
-import java.io.Serializable;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-
-import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.model.Seat;
-import org.jboss.jdf.example.ticketmonster.model.Section;
-import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
-
 /**
  * @author Marius Bogoevici
  */
@@ -410,8 +381,13 @@ public class SeatAllocationService implements Serializable {
     private SectionAllocation retrieveSectionAllocation(Section section, Performance performance) {
         SectionAllocation sectionAllocationStatus;
         try {
-            sectionAllocationStatus = (SectionAllocation) entityManager.createQuery("select s from SectionAllocation s where s.performance.id = :performanceId and " +
-                    " s.section.id = :sectionId").setParameter("performanceId", performance.getId()).setParameter("sectionId", section.getId()).getSingleResult();
+            sectionAllocationStatus = (SectionAllocation) entityManager.createQuery(
+                            "select s from SectionAllocation s where " +
+                            "s.performance.id = :performanceId and " +
+                            "s.section.id = :sectionId")
+                            .setParameter("performanceId", performance.getId())
+                            .setParameter("sectionId", section.getId())
+                            .getSingleResult();
         } catch (NoResultException e) {
             sectionAllocationStatus = new SectionAllocation(performance, section);
             entityManager.persist(sectionAllocationStatus);
@@ -421,37 +397,58 @@ public class SeatAllocationService implements Serializable {
 }
 ------------------------------------------------------------------------------------------
 
-The booking monitor service
----------------------------
 
-The last internal service that you will develop in your application provides informations
-about the current shows and their ticket availability status. It bears the Errai-specific
-`@Service` annotation, indicating that it will exposed through a dedicated RPC 
-mechanism for being accessed remotely by the Errai layer.
+Booking Monitor Service
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The last internal service that you will develop in your application provides data
+about the current shows and their ticket availability status. It will be accessed remotely
+by the Errai layer through a dedicated RPC mechanism, which requires it to define and implement
+a service interface. We will begin by adding the interface first, using the `@Remote` annotation
+from Errai to indicate its purpose.
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/monitor/client/shared/BookingMonitorService.java
+[source,java]
+-----------------------------------------------------------------------------------------
+/**
+ * A service used by the booking monitor for retrieving status information.
+ *
+ * Errai's @Remote annotation indicates that the Service implementation can
+ * be used as an RPC endpoint and that this interface can be used on the
+ * client for type safe method invocation on this endpoint.
+ *
+ * @author Christian Sadilek <csadilek@redhat.com>
+ */
+@Remote
+public interface BookingMonitorService {
+
+    /**
+     * Lists all active {@link Show}s (shows with future performances).
+     *
+     * @return list of shows found.
+     */
+    public List<Show> retrieveShows();
+
+    /**
+     * Constructs a map of performance IDs to the total number of sold tickets.
+     *
+     * @return map of performance IDs to the total number of sold tickets.
+     */
+    public Map<Long, Long> retrieveOccupiedCounts();
+}
+-----------------------------------------------------------------------------------------
+
+After doing so, we will create the service implementation, using the `@Service` annotation
+to indicate that it must be exposed externally by Errai.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/BookingMonitorServiceImpl.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BookingMonitorService;
-import org.jboss.jdf.example.ticketmonster.model.Show;
-
 /**
  * Implementation of {@link BookingMonitorService}.
- * 
+ *
  * Errai's @Service annotation exposes this service as an RPC endpoint.
- * 
+ *
  * @author Christian Sadilek <csadilek@redhat.com>
  */
 @ApplicationScoped 
@@ -465,7 +462,8 @@ public class BookingMonitorServiceImpl implements BookingMonitorService {
     @Override
     public List<Show> retrieveShows() {
         Query showQuery = entityManager.createQuery(
-            "select DISTINCT s from Show s JOIN s.performances p WHERE p.date > current_timestamp");
+                "select DISTINCT s from Show s JOIN s.performances p " +
+                "WHERE p.date > current_timestamp");
         return showQuery.getResultList();
     }
 
@@ -473,9 +471,9 @@ public class BookingMonitorServiceImpl implements BookingMonitorService {
     public Map<Long, Long> retrieveOccupiedCounts() {
         Map <Long, Long> occupiedCounts = new HashMap<Long, Long>();
   
-        Query occupiedCountsQuery = entityManager.createQuery("" +
+        Query occupiedCountsQuery = entityManager.createQuery(
             		"select s.performance.id, SUM(s.occupiedCount) from SectionAllocation s " +
-            		"WHERE s.performance.date > current_timestamp GROUP BY s.performance.id");
+            		"where s.performance.date > current_timestamp GROUP BY s.performance.id");
         
         List<Object[]> results = occupiedCountsQuery.getResultList();
         for (Object[] result : results) {
@@ -487,89 +485,57 @@ public class BookingMonitorServiceImpl implements BookingMonitorService {
 }
 ------------------------------------------------------------------------------------------
 
-This service implements a dedicated interface (`BookingMonitorService`). Having a
-service implement an interface is a requirement of Errai.
-
 .Implement an interface or not?
 ******************************************************************************************
 You will find yourself very often facing a dilemma: add an interface to a service or not?
-As you saw, most of the services in Ticket Monster do not implement one, except wherever
-it is a requirement of the framework in use (e.g. Errai in this case). In Java EE 6 the requirements for business services to implement interfaces have been relaxed significantly, therefore unless there are valid reasons for creating an abstraction (such as multiple possible implementations), we skipped adding interfaces to our services.
+As you have seen so far and will continue to see next, most of the services in Ticket Monster do
+not implement one, except wherever it is a requirement of the framework in use (e.g. Errai in this case). In Java EE 6 the
+requirements for business services to implement interfaces have been relaxed significantly,
+therefore unless there are valid reasons for creating an abstraction (such as multiple possible 
+implementations), we skipped adding interfaces to our services.
 ******************************************************************************************
 
-RESTful services
-----------------
+JAX-RS Services
+---------------
 
 The largest group of services in the application is the one that contains the JAX-RS 
-RESTful web services. They are critical part of our design, since they are the main
-interface of communication with the POH5 layer, and perform various operations varying
+web services. They are critical part of our design, as they are the main
+interface of communication with the POH5 layer. The JAX-RS services perform various operations varying
 from simple CRUD to processing bookings and media items. 
 
-We use JSON as the data marshalling format, as it is less verbose and easier to process 
-than XML by the JavaScript client-side framework.
+For passing data across the wire we use JSON as the data marshalling format, as it is less
+verbose and easier to process than XML by the JavaScript client-side framework.
 
 Initializing JAX-RS
 ~~~~~~~~~~~~~~~~~~~
 
-The first step in their implementation is activating JAX-RS, so that we don't have to write
-any configuration file. By adding the class below, we instruct the container to look for JAX-RS annotated classes and install them as endpoints.
+The first step is activating JAX-RS, so that we don't have to write
+any configuration file. By adding the class below, we instruct the container to look for
+JAX-RS annotated classes and install them as endpoints.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/JaxRsActivator.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-/**
- * A class extending {@link Application} and annotated with @ApplicationPath is the Java EE 6
- * "no XML" approach to activating JAX-RS.
- * 
- * <p>
- * Resources are served relative to the servlet path specified in the {@link ApplicationPath}
- * annotation.
- * </p>
- */
 @ApplicationPath("/rest")
 public class JaxRsActivator extends Application {
    /* class body intentionally left blank */
 }
 ------------------------------------------------------------------------------------------
 
-So, all our JAX-RS services will be mapped relative to the `/rest` path.
+So, all our JAX-RS services will be mapped relative to the `/rest` path, as indicated by the
+`@ApplicationPath` annotation.
 
-A base service for read operations
+A Base Service For Read Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A significant number of our JAX-RS service have in common the fact that they read data:
 lists of entities or individual entity values (this is the case for events, venues and
 bookings for example). So instead of copying over the implementation into each individual
-service we will create a base service class.
+service we will create a base service class and will wire the helper objects in.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
 [source,java]
-------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
-
+-----------------------------------------------------------------------------------------
 /**
  * <p>
  *   A number of RESTful services implement GET operations on a particular type of entity. For
@@ -612,8 +578,6 @@ import javax.ws.rs.core.UriInfo;
  *     endpoints.
  * </p>
  *
-
- * @author Marius Bogoevici
  */
 public abstract class BaseEntityService<T> {
 
@@ -632,28 +596,42 @@ public abstract class BaseEntityService<T> {
         return entityManager;
     }
 
+}
+------------------------------------------------------------------------------------------
+
+Now we will add a method for retrieving all entities of a given type.
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
+[source,java]
+-----------------------------------------------------------------------------------------
+public abstract class BaseEntityService<T> {
+
+    ...
+
     /**
      * <p>
-     *   A method for retrieving all entities of a given type. Supports the query parameters <code>first</code>
+     *   A method for retrieving all entities of a given type. Supports the query parameters
+     *  <code>first</code>
      *   and <code>maxResults</code> for pagination.
      * </p>
      *
-     * @param uriInfo application and request context information (see {@see UriInfo} class information for more details)
-     * @return
+     *  @param uriInfo application and request context information (see {@see UriInfo} class
+     *  information for more details)
+     *  @return
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<T> getAll(@Context UriInfo uriInfo) {
         return getAll(uriInfo.getQueryParameters());
     }
-    
+
     public List<T> getAll(MultivaluedMap<String, String> queryParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         Root<T> root = criteriaQuery.from(entityClass);
         Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-        
+
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
         if (queryParameters.containsKey("first")) {
         	Integer firstRecord = Integer.parseInt(queryParameters.getFirst("first"));
@@ -676,9 +654,42 @@ public abstract class BaseEntityService<T> {
      * @param root  @{link Root} used by the invoker
      * @return a list of {@link Predicate}s that will added as query parameters
      */
-    protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, CriteriaBuilder criteriaBuilder, Root<T> root) {
+    protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters,
+                                             CriteriaBuilder criteriaBuilder, Root<T> root) {
         return new Predicate[]{};
     }
+
+}
+------------------------------------------------------------------------------------------
+
+The newly added method `getAll` is annotated with `@GET` which means that it will be executed
+for `GET` HTTP requests on the JAX-RS' endpoint base URL '/rest/<entityRoot>'.
+But remember, this is not a true JAX-RS endpoint. It is an abstract class and it is not mapped to any
+path.  However, classes that extend it and are JAX-RS endpoints will have to be mapped to a path and
+will inherit ths method, so will be able to process those requests.
+
+The `@Produces` annotation indicates that the response sent back by the server is in JSON format.
+This serves two purposes: first, it tells the JAX-RS implementation that it should convert the
+result returned by the method (a list of entities) in JSON format. Besides identifying the right
+marshalling strategy, the annotation plays a role in content negociation and method resolution:
+if the client requests JSON content specifically, this is the method that will be invoked. Even
+if we don't show it in this example, remember that you may have multiple methods that handle a
+specific URL and HTTP method, but consuming and producing different types of content (JSON, HTML,
+XML or others).
+
+As an additional feature of our approach, subclasses can override the `extractPredicates` method and add
+their own support for additional query parameters `GET /rest/<entityRoot>`, which can act as
+filter criteria, for example.
+
+Next, we will add a method for retrieving individual entities.
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
+[source,java]
+-----------------------------------------------------------------------------------------
+   ...
+public abstract class BaseEntityService<T> {
+
+    ...
 
     /**
      * <p>
@@ -701,18 +712,19 @@ public abstract class BaseEntityService<T> {
 }
 ------------------------------------------------------------------------------------------
 
-This is not a true JAX-RS endpoint. It is an abstract class and it is not mapped to any
-path.  However, classes that extend it get two operations for free:
+This method is very similar to the previous, except that we use the `@Path` annotation to map
+it to a sub-path of '/rest/<entityRoot>'. The `value` attribute of the annotation identifies the
+expected format of the URL (basically the last segment has to be a number in this case) and binds
+a portion of the URL (the last part) to a variable named `id`. The `@PathParam` annotation enables
+passing the value of the variable to the method argument. Data conversion is performed automatically.
+
+With this, all the JAX-RS endpoints that subclass `BaseEntityService` will get two operations for free:
 
 * `GET /rest/<entityRoot>` - which retrieves all entities of a given type;
 * `GET /rest/<entityRoot>/<id>` - which retrieves an entity with a given id.
 
-In addition to that, implementors can override the `extractPredicates` method and add
-their own support for additional query parameters, which can be used as filter criteria
-on `GET /rest/<entityRoot>`.
-
 Retrieving Venues
------------------
+~~~~~~~~~~~~~~~~~
 
 Adding support for retrieving venues is extremely simple. All you need to do is to extend
 the base class, passing the entity type to the superclass constructor.
@@ -720,13 +732,6 @@ the base class, passing the entity type to the superclass constructor.
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueService.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
-
-import javax.ejb.Singleton;
-import javax.ws.rs.Path;
-
-import org.jboss.jdf.example.ticketmonster.model.Venue;
-
 /**
  * <p>
  *     A JAX-RS endpoint for handling {@link Venue}s. Inherits the actual
@@ -751,40 +756,29 @@ public class VenueService extends BaseEntityService<Venue> {
 }
 ------------------------------------------------------------------------------------------
 
-In addition to creating a concrete instance of the class, we define this service (along with
-all the other JAX-RS services) as enterprise java beans - in principal to benefit from 
-automatic transaction enrolment. Since the service is fundamentally stateless, we take advantage of
-the new EJB 3.1 singleton feature.
+By adding the `@Path` annotation on the class, we indicate that this is a JAX-RS resource whic
+serves URLs starting with `/rest/venues`.
 
-Now, we can retrieve venues from `/rest/venues` and `rest/venues/1` for example.
+We define this service (along with all the other JAX-RS services) as an enterprise java bean
+(see how simple is that in Java EE 6!) in principal to benefit from automatic transaction enrolment.
+Since the service is fundamentally stateless, we take advantage of the new EJB 3.1 singleton feature.
+
+Now, we can retrieve venues from URLs like `/rest/venues` or `rest/venues/1`.
 
 Retrieving Events
-------------------
+~~~~~~~~~~~~~~~~~
 
 Just like `VenueService`, `EventService` is a direct subclass of `BaseEntityService` with 
-the added twist that it supports querying events by category. So we can use urls like
-`/rest/events?category=1` to retrieve all concerts, for example.
+the added twist that it supports querying events by category. So we can use URLs like
+`/rest/events?category=1` to retrieve all concerts, for example (`1` is the category id of
+concerts).
 
 As we mentioned earlier, this is simply done by extending the `extractPredicates` method
-to handle the query parameters, as we do in this case with `category`.
+to handle the query parameters, as we do in this case with the `category` parameter.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventService.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ejb.Singleton;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.jboss.jdf.example.ticketmonster.model.Event;
-
 /**
  * <p>
  *     A JAX-RS endpoint for handling {@link Event}s. Inherits the actual
@@ -834,7 +828,9 @@ public class EventService extends BaseEntityService<Event> {
 }
 ------------------------------------------------------------------------------------------
 
-The `ShowService` and `BookingService` follow the same pattern and we will leave its implementation as an exercise to the reader (knowing that its contents can always be copied over to the appropriate folder).
+The `ShowService` and `BookingService` follow the same pattern and we will leave their
+implementation as an exercise to the reader (knowing that its contents can always be copied
+over to the appropriate folder).
 
 Of course, we want to do more with our services, so we will go beyond reading data. We want to create
 and delete bookings as well.
@@ -850,41 +846,6 @@ the request, reserve the seats and return the full booking details to the invoke
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingService.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.ejb.Singleton;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.Cancelled;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.Created;
-import org.jboss.jdf.example.ticketmonster.model.Booking;
-import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.model.Seat;
-import org.jboss.jdf.example.ticketmonster.model.Section;
-import org.jboss.jdf.example.ticketmonster.model.Ticket;
-import org.jboss.jdf.example.ticketmonster.model.TicketCategory;
-import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
-import org.jboss.jdf.example.ticketmonster.service.SeatAllocationService;
-
 /**
  * <p>
  *     A JAX-RS endpoint for handling {@link Booking}s. Inherits the GET
@@ -1029,7 +990,14 @@ public class BookingService extends BaseEntityService<Booking> {
 We won't get into the details of the inner workings of the method - it implements a 
 fairly complex algorithm - but we'd like to draw attention to a few particular items.
 
-For one thing, you can see that it delegates to the `SeatAllocationService` for the 
+On the JAX-RS side, we use the `@POST` annotation to indicate that this method is executed on
+inbound HTTP POST requests. When implementing a set of RESTful services, it is important that the
+semantic of HTTP methods is observed in the mappings. Creating new resources (like bookings) is
+typically handled with HTTP POST invocations. The `@Consumes` annotation indicates that the
+type of inbound content is JSON and it serves identifying the right unmarshalling strategy, as well
+as with content negociation.
+
+You can notice that this service delegates to the `SeatAllocationService` for the
 particular task of finding seats in a given section. This is an example of dependency
 injection in action - the required `SeatAllocationService` instance is initialized and supplied by the 
 container as needed. The only thing that our service does is to specify the dependency in form
@@ -1045,15 +1013,6 @@ will need to add as shown below.
 .src/main/java/org/jboss/jdf/example/ticketmonster/monitor/client/shared/qualifier/Created.java
 [source, java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import javax.inject.Qualifier;
-
 /**
  * {@link Qualifier} to mark a Booking as new (created).
  * 
@@ -1100,20 +1059,16 @@ public class BookingService extends BaseEntityService<Booking> {
 }
 ------------------------------------------------------------------------------------------
 
-Just as with creation, we would like to notify the other components for the cancellation of a booking as well, so we will fire an event for that too, with its own qualifier.
+For this method, we are using the `@DELETE` annotation to indicate that it will be executed
+as the result of an HTTP DELETE request. Again, this is a matter of convention but fairly easy
+to understand as well! Just as the meaning `GET /rest/bookings/1` is self-explanatory, so is
+`DELETE /rest/bookings/1`!
+
+Just as with creation, we would like to notify the other components for the cancellation of a booking, so we will fire an event for that too, with its own qualifier.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/monitor/client/shared/qualifier/Cancelled.java
 [source, java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import javax.inject.Qualifier;
-
 /**
  * {@link Qualifier} to mark a Booking as cancelled.
  * 
@@ -1161,7 +1116,7 @@ focus your efforts on the latter. Testing should include individual parts (unit 
 well as aggregates (integration testing).
 *****************************************************************************************
 
-A basic deployment class
+A Basic Deployment Class
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 In order to create Arquillian tests, we will define deployments. Exactly as their name 
@@ -1174,13 +1129,6 @@ with a factory method that creates a deployment with all the generic content for
 .src/test/java/org/jboss/jdf/ticketmonster/test/TicketMonsterDeployment.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.ticketmonster.test;
-
-import org.jboss.jdf.example.ticketmonster.util.Resources;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 public class TicketMonsterDeployment {
 
     public static WebArchive deployment() {
@@ -1209,17 +1157,6 @@ the deployment. Since we would have to do that for each test we create, we will 
 .src/test/java/org/jboss/jdf/ticketmonster/test/rest/RESTDeployment.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.ticketmonster.test.rest;
-
-import org.jboss.jdf.example.ticketmonster.model.Booking;
-import org.jboss.jdf.example.ticketmonster.rest.BaseEntityService;
-import org.jboss.jdf.example.ticketmonster.service.MediaManager;
-import org.jboss.jdf.example.ticketmonster.service.MediaPath;
-import org.jboss.jdf.example.ticketmonster.service.SeatAllocationService;
-import org.jboss.jdf.ticketmonster.test.TicketMonsterDeployment;
-import org.jboss.jdf.ticketmonster.test.rest.util.MockMultivaluedMap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 public class RESTDeployment {
 
     public static WebArchive deployment() {
@@ -1241,25 +1178,6 @@ an individual event.
 .src/test/java/org/jboss/jdf/ticketmonster/test/rest/VenueServiceTest.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.ticketmonster.test.rest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.jdf.example.ticketmonster.model.Venue;
-import org.jboss.jdf.example.ticketmonster.rest.VenueService;
-import org.jboss.jdf.ticketmonster.test.rest.util.MockMultivaluedMap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 @RunWith(Arquillian.class)
 public class VenueServiceTest {
     
@@ -1326,38 +1244,6 @@ new booking. So you can do so by adding a new test for bookings.
 .src/test/java/org/jboss/jdf/ticketmonster/test/rest/BookingServiceTest.java
 [source,java]
 ------------------------------------------------------------------------------------------
-package org.jboss.jdf.ticketmonster.test.rest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.NoResultException;
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
-import org.jboss.jdf.example.ticketmonster.model.Booking;
-import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.model.Show;
-import org.jboss.jdf.example.ticketmonster.model.Ticket;
-import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
-import org.jboss.jdf.example.ticketmonster.rest.BookingRequest;
-import org.jboss.jdf.example.ticketmonster.rest.BookingService;
-import org.jboss.jdf.example.ticketmonster.rest.ShowService;
-import org.jboss.jdf.example.ticketmonster.rest.TicketRequest;
-import org.jboss.jdf.ticketmonster.test.rest.util.MockMultivaluedMap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 @RunWith(Arquillian.class)
 public class BookingServiceTest {
 
