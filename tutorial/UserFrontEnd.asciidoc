@@ -1,5 +1,5 @@
-Building the User UI using HTML5
-================================
+Building The User UI Using HTML5 And jQuery
+===========================================
 
 What Will You Learn Here?
 -------------------------
