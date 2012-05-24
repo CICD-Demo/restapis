@@ -16,7 +16,8 @@ you'll understand what design and implementation choices to make. Topics covered
 We'll round out the guide by revealing the required, yet short and sweet, configuration.
 
 The tutorial will show you how to perform all these steps in JBoss Developer Studio, including
-screenshots that guide you through.
+screenshots that guide you through. For those of you who prefer to watch and learn, the included
+videos show you how we performed all the steps.
 
 TicketMonster contains 14 entities, of varying complexity. In this tutorial we'll classify
 the entities, and walk through designing and creating one of each group.
