@@ -115,8 +115,6 @@ We will begin by creating the implementation class:
  * between consuming heap space, and computational time.
  * </p>
  * 
- * @author Pete Muir
- * 
  */
 public class MediaManager {
 
@@ -365,9 +363,6 @@ in-memory cache).
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/SeatAllocationService.java
 [source,java]
 ------------------------------------------------------------------------------------------
-/**
- * @author Marius Bogoevici
- */
 @SuppressWarnings("serial")
 public class SeatAllocationService implements Serializable {
 
@@ -417,8 +412,6 @@ from Errai to indicate its purpose.
  * Errai's @Remote annotation indicates that the Service implementation can
  * be used as an RPC endpoint and that this interface can be used on the
  * client for type safe method invocation on this endpoint.
- *
- * @author Christian Sadilek <csadilek@redhat.com>
  */
 @Remote
 public interface BookingMonitorService {
@@ -449,8 +442,6 @@ to indicate that it must be exposed externally by Errai.
  * Implementation of {@link BookingMonitorService}.
  *
  * Errai's @Service annotation exposes this service as an RPC endpoint.
- *
- * @author Christian Sadilek <csadilek@redhat.com>
  */
 @ApplicationScoped 
 @Service
@@ -738,8 +729,6 @@ the base class, passing the entity type to the superclass constructor.
  *     A JAX-RS endpoint for handling {@link Venue}s. Inherits the actual
  *     methods from {@link BaseEntityService}.
  * </p>
- *
- * @author Marius Bogoevici
  */
 @Path("/venues")
 /**
@@ -786,8 +775,6 @@ to handle the query parameters, as we do in this case with the `category` parame
  *     methods from {@link BaseEntityService}, but implements additional search
  *     criteria.
  * </p>
- *
- * @author Marius Bogoevici
  */
 @Path("/events")
 /**
@@ -852,9 +839,6 @@ the request, reserve the seats and return the full booking details to the invoke
  *     A JAX-RS endpoint for handling {@link Booking}s. Inherits the GET
  *     methods from {@link BaseEntityService}, and implements additional REST methods.
  * </p>
- *
- * @author Marius Bogoevici
- * @author Pete Muir
  */
 @Path("/bookings")
 /**
@@ -1016,8 +1000,6 @@ will need to add as shown below.
 ------------------------------------------------------------------------------------------
 /**
  * {@link Qualifier} to mark a Booking as new (created).
- * 
- * @author Christian Sadilek <csadilek@redhat.com>
  */
 @Qualifier
 @Target({ElementType.FIELD,ElementType.PARAMETER,ElementType.METHOD,ElementType.TYPE})
@@ -1072,8 +1054,6 @@ Just as with creation, we would like to notify the other components for the canc
 ------------------------------------------------------------------------------------------
 /**
  * {@link Qualifier} to mark a Booking as cancelled.
- * 
- * @author Christian Sadilek <csadilek@redhat.com>
  */
 @Qualifier
 @Target({ElementType.FIELD,ElementType.PARAMETER,ElementType.METHOD,ElementType.TYPE})

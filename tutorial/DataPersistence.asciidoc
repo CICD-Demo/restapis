@@ -231,9 +231,6 @@ And that is our first entity! Here is the complete entity:
  * <p>
  * A lookup table containing the various ticket categories. E.g. Adult, Child, Pensioner, etc.
  * </p>
- * 
- * @author Shane Bryzak
- * @author Pete Muir
  */
 @Entity
 public class TicketCategory {
@@ -1408,9 +1405,6 @@ To _embed_ the `Address` into `Venue` we add the `@Embeddable` annotation to the
  * Addresses are used in many places in an application, so to observe the DRY principle, we model Address as an embeddable
  * entity. An embeddable entity appears as a child in the object model, but no relationship is established in the RDBMS..
  * </p>
- * 
- * @author Marius Bogoevici
- * @author Pete Muir
  */
 @Embeddable
 public class Address {

@@ -168,8 +168,6 @@ import com.google.gwt.user.client.ui.RootPanel;
  * The {@code @EntryPoint} annotation indicates to the Errai framework that 
  * this class should be instantiated inside the web browser when the web page
  * is first loaded.
- * 
- * @author Christian Sadilek <csadilek@redhat.com>
  */
 @EntryPoint
 public class BookingMonitor {
@@ -312,8 +310,6 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * A UI component to display the status of a {@link Performance}.
- *
- * @author Christian Sadilek <csadilek@redhat.com>
  */
 public class PerformanceStatusWidget extends Composite {
 
@@ -404,8 +400,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A UI component to display the status of a {@link Show}.
- *
- * @author Christian Sadilek <csadilek@redhat.com>
  */
 public class ShowStatusWidget extends Composite {
 
