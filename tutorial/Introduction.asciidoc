@@ -4,13 +4,20 @@ Burr Sutter
 
 Purpose and Target Audience
 ---------------------------
-The target audience for this tutorial are those individuals who do not yet have a great deal of experience with Eclipse + JBoss Tools (JBoss Developer Studio), JBoss Enterprise Application 6 or JBoss AS 7, Java EE 6 features like JAX-RS or HTML5 & jQuery for building an mobile web front-end.  
+The target audience for this tutorial are those individuals who do not yet have a great deal of experience with:
 
-This tutorial sets the stage for the creation of TicketMonster - our sample application that illustrates how to bring together the best features of *Java EE 6 + HTML5 + JBoss* to create a rich, mobile-optimized and dynamic application. Read more at https://github.com/jboss/ticket-monster
+* Eclipse + JBoss Tools (JBoss Developer Studio)
+* JBoss Enterprise Application 6 or JBoss AS 7
+* Java EE 6 features like JAX-RS 
+* HTML5 & jQuery for building an mobile web front-end.  
 
-If you prefer to watch instead of read, a large portion of this content is also covered in video form at http://docs.jboss.org/tools/movies/
+This tutorial sets the stage for the creation of TicketMonster - our sample application that illustrates how to bring together the best features of *Java EE 6 + HTML5 + JBoss* to create a rich, mobile-optimized and dynamic application.
 
-In this tutorial, we will touch on the following:
+TicketMonster is developed as an open source application, and you can find it under link:https://github.com/jboss-jdf/ticket-monster[at github]. 
+
+If you prefer to watch instead of read, a large portion of this content is also covered in link:http://docs.jboss.org/tools/movies/[video form]. 
+
+In this tutorial, we will cover the following topix:
 
 - Working with JBoss Developer Studio (Eclipse + JBoss Tools)
 - Creating of a Java EE 6 project via a Maven archetype
@@ -25,48 +32,61 @@ In this tutorial, we will touch on the following:
 
 [[jbds5_mobile_browsersim_image]]
 .JBoss Developer Studio 5 with Mobile BrowserSim
-image::gfx/introduction/jbds5_mobile_browsersim.png[scaledwidth="90%"]
-
+image::gfx/introduction/jbds5_mobile_browsersim.png[]
 
 Installation
 ------------
 
-The first order of business is to get your development environment setup and JBoss Developer Studio v5 installed.  JBoss Developer Studio is Eclipse Indigo (3.7.2) for Java EE Developers plus select JBoss Tools and is available for free at http://www.jboss.org/developer.  You may also choose to install JBoss Tools 3.3 into your existing Eclipse Indigo for Java EE Developers.   This document uses screenshots depicting JBoss Developer Studio.
+The first order of business is to get your development environment setup and JBoss Developer Studio v5 installed. JBoss Developer Studio is Eclipse Indigo (3.7.2) for Java EE Developers plus select JBoss Tools and is available for free. Visit http://www.jboss.org/developer to download it.  You may also choose to install JBoss Tools 3.3 into your existing Eclipse Indigo for Java EE Developers. This document uses screenshots depicting JBoss Developer Studio.
 
-You must have a Java Development Kit (JDK) installed, either v6 or v7 will work - while a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK.  System requirements for JBoss Developer Studio are listed in the online documentation. Read more at http://docs.redhat.com/docs/en-US/JBoss_Developer_Studio/5.0.Beta/html/Getting_Started_Guide/minimumrequirements.html
+You must have a Java Development Kit (JDK) installed, either v6 or v7 will work - whils a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK. System requirements for JBoss Developer Studio are link:http://docs.redhat.com/docs/en-US/JBoss_Developer_Studio/5.0.Beta/html/Getting_Started_Guide/minimumrequirements.html
+[listed in the online documentation].
 
-JBoss Developer Studio installation and introduction::
-    http://vimeo.com/39606090
+[TIP]
+==============================================================
+If you prefer to see JBoss Developer studio being installed,
+then check out link:http://vimeo.com/39606090[this video].
 
-JBoss Tools into Eclipse Indigo installation and introduction::
-    http://vimeo.com/39743315
+To see JBoss Tools being intalled into Eclipse Indigo, see
+link:http://vimeo.com/39743315[this video].
+==============================================================
 
-The JBoss Developer Studio installer normally has a very long name such as `jbdevstudio-product-universal-5.0.0.v201204301418M-H119.jar`
-where the latter portion of the file name is related to build date and version information and the text near the front related to what target OS the installer is for.   The "universal" installer is for any operating system.  To launch the installer you may simply be able to double-click on the .jar file name or you may need to issue the following from the operating system command line:
+The JBoss Developer Studio installer has a (very long!) name such as `jbdevstudio-product-universal-5.0.0.v201204301418M-H119.jar`
+where the latter portion of the file name relates to build date and version information and the text near the front related to the target operating system. The "universal" installer is for any operating system.  To launch the installer you may simply be able to double-click on the .jar file name or you may need to issue the following from the operating system command line:
 
     java -jar jbdevstudio-product-universal-5.0.0.v201204301418M-H119.jar
 
 We recommend using the "universal" installer as it handles Windows, Mac OS X and Linux - 32-bit and 64-bit versions.
 
 [NOTE]
-Even if you are installing on a 64-bit OS, you may still wish to use the 32-bit JVM for the JBoss Developer Studio (or Eclipse + JBoss Tools).   The 32-bit version allows you access to the Visual Page Editor - a split-pane editor that gives you a glimpse of what your HTML/XHTML (JSF, JSP, etc) will look like.  Also, the 32-bit version uses less memory than the 64-bit version.  You may still run your application servers in 64-bit JVMs if needed to insure compatibility with the production environment while keeping your IDE in 32-bit mode.
+===============================================================
+Even if you are installing on a 64-bit OS, you may still wish 
+to use the 32-bit JVM for the JBoss Developer Studio (or 
+Eclipse + JBoss Tools). Only the 32-bit version provides the
+Visual Page Editor - a split-pane editor that gives you a 
+glimpse of what your HTML/XHTML (JSF, JSP, etc) will look like.
+Also, the 32-bit version uses less memory than the 64-bit 
+version. You may still run your application server in 64-bit 
+JVMs if needed to insure compatibility with the production
+environment whilst keeping your IDE in 32-bit mode.
+================================================================
 
 [[installer-wizard_image]]
-.Installation Wizard 1 of 9
-image::gfx/introduction/installer_wizard_page1.png[scaledwidth="80%"]
+.Installation Wizard, Step 1 of 9
+image::gfx/introduction/installer_wizard_page1.png[]
 
 The rest of the steps are fairly self explanatory.  If you run into trouble, please consult the videos above as they explore a few troubleshooting tips related to JRE/JDK setup.
 
 Please make sure to say *Yes* to the prompt that says "Will you allow JBoss Tools team to receive anonymous usage statistics for this Eclipse instance with JBoss Tools?".  This information is very helpful to us when it comes to prioritizing our QA efforts in terms of operating system platforms. More information concerning our usage tracking can be found at http://www.jboss.org/tools/usage
 
-Also, if you have not already installed the JBoss Enterprise Application Platform 6 or JBoss AS 7, then those steps will be covered in the next section of this tutorial.  You can skip that step in the installation wizard as there are numerous ways to add a JBoss server to your IDE.
+You can skip that step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6 or JBoss AS 7 as we will do this in the next step.
 
 Creating a new Java EE 6 project with Maven
 -------------------------------------------
 
 Now that everything is properly installed, configured, running and verified to work, let's build something "from scratch".
 
-First, select *Java EE Web Project* from JBoss Central under Create Projects we will be using this archetype for the creation of a Java EE 6 web application (.war).  The additional benefit of using this archetype is that it provides a Maven-based project which can be built outside of the IDE as well as in continuous integration solutions like Hudson/Jenkins.
+First, select *Create Projects -> Java EE Web Project* in JBoss Central. Under the covers, this uses a Maven archetype which creates a Java EE 6 web application (.war), based around Maven.  The project can be built outside of the IDE, and in continuous integration solutions like Hudson/Jenkins.
 
 [[jboss-central_image]]
 .JBoss Central
