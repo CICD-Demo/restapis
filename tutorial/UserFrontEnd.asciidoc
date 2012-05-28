@@ -1,6 +1,6 @@
 Building The User UI Using HTML5 And jQuery
 ===========================================
-:Author: Marius Bogoevici
+Marius Bogoevici
 
 What Will You Learn Here?
 -------------------------
