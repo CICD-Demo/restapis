@@ -6,23 +6,22 @@ Purpose and Target Audience
 ---------------------------
 The target audience for this tutorial are those individuals who do not yet have a great deal of experience with Eclipse + JBoss Tools (JBoss Developer Studio), JBoss Enterprise Application 6 or JBoss AS 7, Java EE 6 features like JAX-RS or HTML5 & jQuery for building an mobile web front-end.  
 
-This tutorial sets the stage for the creation of TicketMonster - our sample application that illustrates how to bring together the best features of *Java EE 6 + HTML5 + JBoss* to create a rich, mobile-optimized and dynamic application +
-https://github.com/jboss/ticket-monster
+This tutorial sets the stage for the creation of TicketMonster - our sample application that illustrates how to bring together the best features of *Java EE 6 + HTML5 + JBoss* to create a rich, mobile-optimized and dynamic application. Read more at https://github.com/jboss/ticket-monster
 
-If you prefer to watch instead of read, a large portion of this content is also covered in video form at  +
-http://docs.jboss.org/tools/movies/
+If you prefer to watch instead of read, a large portion of this content is also covered in video form at http://docs.jboss.org/tools/movies/
 
-In this tutorial, we will touch on the following: +
-- Working with JBoss Developer Studio (Eclipse + JBoss Tools) +
-- Creating of a Java EE 6 project via a Maven archetype +
-- Leveraging m2e and m2e-wtp +
-- Using Forge to create a JPA entity +
-- Using Hibernate Tools +
-- Database Schema Generation +
-- Deployment to a local JBoss Server +
-- Adding a JAX-RS endpoint +
-- Adding a jQuery Mobile client +
-- Using the Mobile BrowserSim +
+In this tutorial, we will touch on the following:
+
+- Working with JBoss Developer Studio (Eclipse + JBoss Tools)
+- Creating of a Java EE 6 project via a Maven archetype
+- Leveraging m2e and m2e-wtp
+- Using Forge to create a JPA entity
+- Using Hibernate Tools
+- Database Schema Generation
+- Deployment to a local JBoss Server
+- Adding a JAX-RS endpoint
+- Adding a jQuery Mobile client
+- Using the Mobile BrowserSim
 
 [[jbds5_mobile_browsersim_image]]
 .JBoss Developer Studio 5 with Mobile BrowserSim
@@ -34,23 +33,23 @@ Installation
 
 The first order of business is to get your development environment setup and JBoss Developer Studio v5 installed.  JBoss Developer Studio is Eclipse Indigo (3.7.2) for Java EE Developers plus select JBoss Tools and is available for free at http://www.jboss.org/developer.  You may also choose to install JBoss Tools 3.3 into your existing Eclipse Indigo for Java EE Developers.   This document uses screenshots depicting JBoss Developer Studio.
 
-You must have a Java Development Kit (JDK) installed, either v6 or v7 will work - while a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK.  System requirements for JBoss Developer Studio are listed in the online documentation. +
-http://docs.redhat.com/docs/en-US/JBoss_Developer_Studio/5.0.Beta/html/Getting_Started_Guide/minimumrequirements.html
+You must have a Java Development Kit (JDK) installed, either v6 or v7 will work - while a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK.  System requirements for JBoss Developer Studio are listed in the online documentation. Read more at http://docs.redhat.com/docs/en-US/JBoss_Developer_Studio/5.0.Beta/html/Getting_Started_Guide/minimumrequirements.html
 
-JBoss Developer Studio installation and introduction +
-http://vimeo.com/39606090
+JBoss Developer Studio installation and introduction::
+    http://vimeo.com/39606090
 
-JBoss Tools into Eclipse Indigo installation and introduction +
-http://vimeo.com/39743315
+JBoss Tools into Eclipse Indigo installation and introduction::
+    http://vimeo.com/39743315
 
-The JBoss Developer Studio installer normally has a very long name such as +
-"jbdevstudio-product-universal-5.0.0.v201204301418M-H119.jar" +
+The JBoss Developer Studio installer normally has a very long name such as `jbdevstudio-product-universal-5.0.0.v201204301418M-H119.jar`
 where the latter portion of the file name is related to build date and version information and the text near the front related to what target OS the installer is for.   The "universal" installer is for any operating system.  To launch the installer you may simply be able to double-click on the .jar file name or you may need to issue the following from the operating system command line:
-*java -jar jbdevstudio-product-universal-5.0.0.v201204301418M-H119.jar*
+
+    java -jar jbdevstudio-product-universal-5.0.0.v201204301418M-H119.jar
 
 We recommend using the "universal" installer as it handles Windows, Mac OS X and Linux - 32-bit and 64-bit versions.
 
-Note: Even if you are installing on a 64-bit OS, you may still wish to use the 32-bit JVM for the JBoss Developer Studio (or Eclipse + JBoss Tools).   The 32-bit version allows you access to the Visual Page Editor - a split-pane editor that gives you a glimpse of what your HTML/XHTML (JSF, JSP, etc) will look like.  Also, the 32-bit version uses less memory than the 64-bit version.  You may still run your application servers in 64-bit JVMs if needed to insure compatibility with the production environment while keeping your IDE in 32-bit mode.
+[NOTE]
+Even if you are installing on a 64-bit OS, you may still wish to use the 32-bit JVM for the JBoss Developer Studio (or Eclipse + JBoss Tools).   The 32-bit version allows you access to the Visual Page Editor - a split-pane editor that gives you a glimpse of what your HTML/XHTML (JSF, JSP, etc) will look like.  Also, the 32-bit version uses less memory than the 64-bit version.  You may still run your application servers in 64-bit JVMs if needed to insure compatibility with the production environment while keeping your IDE in 32-bit mode.
 
 [[installer-wizard_image]]
 .Installation Wizard 1 of 9
@@ -73,9 +72,10 @@ First, select *Java EE Web Project* from JBoss Central under Create Projects we 
 .JBoss Central
 image::gfx/introduction/jboss_dev_studio_jboss_central.png[]
 
-We also recommend that you switch to the JBoss Perspective if you have not already.  Also, for a deeper dive into the world of Maven and how it is used with JBoss Developer Studio 5 (JBoss Tools 3.3) and Enterprise Application Platform 6 (Application Server 7) please feel free to take a few minutes to review this video + http://vimeo.com/39796236
+We also recommend that you switch to the JBoss Perspective if you have not already.  Also, for a deeper dive into the world of Maven and how it is used with JBoss Developer Studio 5 (JBoss Tools 3.3) and Enterprise Application Platform 6 (Application Server 7) please feel free to take a few minutes to review the video at http://vimeo.com/39796236
 
-NOTE: If you close JBoss Central, it is only a click away - simply click on the JBoss "balls" icon in the Eclipse toolbar - it is normally the last icon, on the last row - assuming you are in the JBoss Perspective.
+[NOTE]
+If you close JBoss Central, it is only a click away - simply click on the JBoss "balls" icon in the Eclipse toolbar - it is normally the last icon, on the last row - assuming you are in the JBoss Perspective.
 
 Once Java EE Web Project has been selected you will be prompted with a dialog box that verifies that Eclipse is configured correctly if you are in a brand new workspace, the application server will not be configured yet and you will notice the lack of a check mark on the server/runtime row.
 
@@ -83,9 +83,13 @@ Once Java EE Web Project has been selected you will be prompted with a dialog bo
 .New Project Wizard
 image::gfx/introduction/new_project_wizard.png[scaledwidth="90%"]
 
-Note: If you have been using another application or web server such as Tomcat, shut it down now to avoid any port conflicts.
+[NOTE]
+If you have been using another application or web server such as Tomcat, shut it down now to avoid any port conflicts.
 
-There are several ways to add either a JBoss Enterprise Application Platform 6 or JBoss AS 7 to Eclipse/JBoss Developer Studio the easiest one in this situation is to click on the *Install...* button. This assumes that the JBoss server has already been downloaded and unzipped.  If you have not yet downloaded the JBoss server, click on the *Download and Install...* button.  Note: The download option only works with the community application server.
+There are several ways to add either a JBoss Enterprise Application Platform 6 or JBoss AS 7 to Eclipse/JBoss Developer Studio the easiest one in this situation is to click on the *Install...* button. This assumes that the JBoss server has already been downloaded and unzipped.  If you have not yet downloaded the JBoss server, click on the *Download and Install...* button.  
+
+[NOTE]
+The download option only works with the community application server.
 
 Selecting *Install…* will pop up the JBoss Runtime Detection section of Preferences.  You can always get back to this dialog by selecting Preferences either under "Eclipse" or "JBoss Developer Studio" on the Mac or under "Window" menu on Windows.
 
@@ -115,7 +119,7 @@ image::gfx/introduction/jboss_tools_runtime_detection_after.png[scaledwidth="90%
 
 Select *OK* to close the Preferences Dialog
 
-And when you return to the New Project Example dialog, it will have the JBoss AS 7 or EAP 6 Found? Box checked.
+And when you return to the New Project Example dialog, it will have the "JBoss AS 7 or EAP 6 Found?" Box checked.
 
 [[as_eap_found_image]]
 .JBoss AS 7.0/7.1 or EAP 6 Found
@@ -129,7 +133,7 @@ image::gfx/introduction/new_project_example_step_2.png[scaledwidth="90%"]
 
 The default *Project name* is "jboss-javaee6-webapp" – if this field appears blank, it is becomes your workspace already contains a "jboss-javaee6-webapp" in which case just provide another name for your project. 
 
-Also, *Target Runtime* is empty and that is normally good for the getting started experience – if you target an Enterprise Application Platform you will need to first configure enterprise Maven repositories.  The previously referenced video on Maven will be helpful as well as this document on Maven + http://docs.redhat.com/docs/en-US/JBoss_Web_Framework_Kit/2-Beta/html/Maven_Repository_User_Guide/chap-repository-installation.html
+Also, *Target Runtime* is empty and that is normally good for the getting started experience – if you target an Enterprise Application Platform you will need to first configure enterprise Maven repositories.  The previously referenced video on Maven will be helpful as well as http://docs.redhat.com/docs/en-US/JBoss_Web_Framework_Kit/2-Beta/html/Maven_Repository_User_Guide/chap-repository-installation.html
 
 When the drop down list box is empty, then we assume the community Maven artifacts.
 
@@ -147,7 +151,7 @@ Exploring the newly generated project
 -------------------------------------
 Using the Project Explorer, open up the generated project, under Java Resources, drill-down into src/main/java.
 
-The generated project is a Maven-based project with a pom.xml in its root directory and adhering to the proper layout for a Maven web application.  Double-click on the *pom.xml*
+The generated project is a Maven-based project with a pom.xml in its root directory and adhering to the proper layout for a Maven web application.  Double-click on the `pom.xml`.
 
 [[newly_generated_project_explorer_image]]
 .Project Explorer
@@ -155,22 +159,25 @@ image::gfx/introduction/newly_generated_project_explorer.png[]
 
 JBoss Tools & JBoss Developer Studio include m2e and m2e-wtp. m2e is the Maven Eclipse plug-in - it provides a graphical editor for editing pom.xml files along with the ability to run maven goals directly from within Eclipse.  m2e-wtp allows you to deploy your Maven-based project directly to any Web Tools Project (WTP) compliant application server.  This means you can basically drag & drop, Run As Run on Server or use a variety of mechanisms to cause the Eclipse to generate a .war and place it in the JBoss server deployments directory for hot deployment.   
 
-The pom.xml editor has several tabs along its bottom edge.
+The `pom.xml` editor has several tabs along its bottom edge.
 
 [[pom_xml_tabs_image]]
 .pom.xml Editor Tabs
 image::gfx/introduction/pom_xml_tabs.png[scaledwidth="90%"]
 
-For this tutorial, we do not need to edit the pom.xml as it includes all the capabilities of Java EE 6 that we will need (e.g. JPA, JAX-RS, CDI, etc), however, you should spend some time exploring the Dependencies and the pom.xml (source view) tabs.   One key element to make note of is "<jboss.bom.version>1.0.0.M6</jboss.bom.version>" as that establishes if this project uses community or enterprise dependencies.  It is what aggregates the versions of the individually listed Java EE and other API dependencies in the dependency section.  The specific version of "1.0.0.M6" is very likely to change, please do not be surprised if the version is slightly different.  Also, if you are using JBoss Enterprise Application Platform 6 and you selected that as your Target Runtime, you will find a "-redhat-1" suffix on the version string.  
+For this tutorial, we do not need to edit the `pom.xml` as it includes all the capabilities of Java EE 6 that we will need (e.g. JPA, JAX-RS, CDI, etc), however, you should spend some time exploring the Dependencies and the pom.xml (source view) tabs.   One key element to make note of is `<jboss.bom.version>1.0.0.M6</jboss.bom.version>` as that establishes if this project uses community or enterprise dependencies.  It is what aggregates the versions of the individually listed Java EE and other API dependencies in the dependency section.  The specific version of `1.0.0.M6` is very likely to change, please do not be surprised if the version is slightly different.  Also, if you are using JBoss Enterprise Application Platform 6 and you selected that as your Target Runtime, you will find a `-redhat-1` suffix on the version string.  
 
 [[project_explorer_java_packages_image]]
 .Project Explorer Java Packages
 image::gfx/introduction/project_explorer_java_packages.png[]
 
-The initial project includes the following Java packages: +
-- *controller* – contains the backing bean for the JSF page called index.xhtml – specifically supporting the newMember and memberRegistration.register expressions in index.xhtml +
-- *data* – contains a class which uses @Produces and @Named to return a list of members for index.xhtml +
-- *model* – contains the JPA entity classes – simple annotated POJOs (@Entity) – in the case of Member.java, it demonstrates the use of new EE6, Bean Validation JSR 303 +
+The initial project includes the following Java packages:
+
+`controller`::
+    contains the backing bean for the JSF page called `index.xhtml` – specifically supporting the `newMember` and `memberRegistration.register` expressions` in `index.xhtml`
+`data`::
+    contains a class which uses `@Produces` and `@Named` to return a list of members for `index.xhtml`
+`model*– contains the JPA entity classes – simple annotated POJOs (@Entity) – in the case of Member.java, it demonstrates the use of new EE6, Bean Validation JSR 303 +
 - *rest* – contains the JAX-RS endpoints, also simple annotated POJOs (@Path) +
 - *service* - handles the registration transaction for new members + 
 - *util* – contains Resources.java which sets up an alias for @PersistenceContext to be injectable via @Inject
