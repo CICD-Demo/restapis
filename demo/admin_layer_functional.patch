@@ -1,0 +1,214 @@
+diff --git a/demo/src/main/webapp/WEB-INF/web.xml b/demo/src/main/webapp/WEB-INF/web.xml
+index d1afd7b..e62b752 100644
+--- a/demo/src/main/webapp/WEB-INF/web.xml
++++ b/demo/src/main/webapp/WEB-INF/web.xml
+@@ -32,7 +32,4 @@
+   <session-config>
+     <session-timeout>30</session-timeout>
+   </session-config>
+-  <welcome-file-list>
+-    <welcome-file>faces/index.xhtml</welcome-file>
+-  </welcome-file-list>
+ </web-app>
+diff --git a/demo/src/main/webapp/admin/event/view.xhtml b/demo/src/main/webapp/admin/event/view.xhtml
+index 2f61fb8..1522c99 100644
+--- a/demo/src/main/webapp/admin/event/view.xhtml
++++ b/demo/src/main/webapp/admin/event/view.xhtml
+@@ -4,6 +4,7 @@
+ 	xmlns:h="http://java.sun.com/jsf/html"
+ 	xmlns:f="http://java.sun.com/jsf/core"
+ 	xmlns:ui="http://java.sun.com/jsf/facelets"
++    xmlns:tm="http://java.sun.com/jsf/composite/tm"
+ 	template="/resources/scaffold/pageTemplate.xhtml">
+ 
+ 	<f:metadata>
+@@ -30,7 +31,8 @@
+ 			<h:outputText/>
+ 			<h:outputLabel for="eventBeanEventMediaItem" value="Media Item:"/>
+ 			<h:link id="eventBeanEventMediaItem" outcome="/admin/mediaItem/view" value="#{eventBean.event.mediaItem}">
+-				<f:param name="id" value="#{eventBean.event.mediaItem.id}"/>
++                <tm:image media="#{mediaManager.getPath(eventBean.event.mediaItem)}" />
++                <f:param name="id" value="#{eventBean.event.mediaItem.id}"/>
+ 			</h:link>
+ 			<h:outputText/>
+ 			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
+diff --git a/demo/src/main/webapp/admin/index.html b/demo/src/main/webapp/admin/index.html
+new file mode 100644
+index 0000000..4036f32
+--- /dev/null
++++ b/demo/src/main/webapp/admin/index.html
+@@ -0,0 +1 @@
++<meta http-equiv="refresh" content="0;url=../faces/admin/index.xhtml" />
+\ No newline at end of file
+diff --git a/demo/src/main/webapp/admin/index.xhtml b/demo/src/main/webapp/admin/index.xhtml
+new file mode 100644
+index 0000000..a1eaf27
+--- /dev/null
++++ b/demo/src/main/webapp/admin/index.xhtml
+@@ -0,0 +1,38 @@
++<?xml version='1.0' encoding='UTF-8' ?>
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<ui:composition xmlns="http://www.w3.org/1999/xhtml"
++	xmlns:ui="http://java.sun.com/jsf/facelets"
++	template="/resources/scaffold/pageTemplate.xhtml">
++
++	<ui:param name="pageTitle" value="Welcome to Forge" />
++
++	<ui:define name="header">
++		Welcome to Forge
++	</ui:define>
++
++	<ui:define name="subheader">
++		Your application is running.
++	</ui:define>
++
++	<ui:define name="main">
++		<p>
++			<a target="_blank"
++				href="https://docs.jboss.org/author/display/FORGE">Documentation</a>
++			| <a target="_blank"
++				href="http://twitter.com/intent/tweet?text=I+just+built+and+deployed+a+webapp+using+%23Forge,+from+%23JBoss+-+Super+easy!+(+http://jboss.org/forge+)">Get
++				Excited!</a><br /> <a target="_blank" href="http://jboss.org/forge"><br />
++				Forge Project</a> | <a target="_blank"
++				href="https://lists.jboss.org/mailman/listinfo/forge-users">User
++				List</a> | <a target="_blank"
++				href="https://issues.jboss.org/browse/FORGE">Report an issue</a>
++		</p>
++		<p style="text-align: right; padding-top: 50px">
++			<a target="_blank" href="http://jboss.org"><img
++				src="#{resource['jboss-community.png']}"
++				alt="JBoss and JBoss Community" width="254" height="31" border="0" />
++			</a> <br /> To replace this page edit 'src/main/webapp/index.xhtml', or
++			keep Forging!
++		</p>
++	</ui:define>
++
++</ui:composition>
+\ No newline at end of file
+diff --git a/demo/src/main/webapp/admin/venue/view.xhtml b/demo/src/main/webapp/admin/venue/view.xhtml
+index 2a0d19d..832f432 100644
+--- a/demo/src/main/webapp/admin/venue/view.xhtml
++++ b/demo/src/main/webapp/admin/venue/view.xhtml
+@@ -4,6 +4,7 @@
+ 	xmlns:h="http://java.sun.com/jsf/html"
+ 	xmlns:f="http://java.sun.com/jsf/core"
+ 	xmlns:ui="http://java.sun.com/jsf/facelets"
++    xmlns:tm="http://java.sun.com/jsf/composite/tm"
+ 	xmlns:forgeview="http://jboss.org/forge/view"
+ 	template="/resources/scaffold/pageTemplate.xhtml">
+ 
+@@ -44,7 +45,8 @@
+ 			<h:outputText/>
+ 			<h:outputLabel for="venueBeanVenueMediaItem" value="Media Item:"/>
+ 			<h:link id="venueBeanVenueMediaItem" outcome="/admin/mediaItem/view" value="#{venueBean.venue.mediaItem}">
+-				<f:param name="id" value="#{venueBean.venue.mediaItem.id}"/>
++                <tm:image media="#{mediaManager.getPath(venueBean.venue.mediaItem)}" />
++                <f:param name="id" value="#{venueBean.venue.mediaItem.id}"/>
+ 			</h:link>
+ 			<h:outputText/>
+ 			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
+diff --git a/demo/src/main/webapp/index.html b/demo/src/main/webapp/index.html
+index b1c9bee..9b971cd 100644
+--- a/demo/src/main/webapp/index.html
++++ b/demo/src/main/webapp/index.html
+@@ -1 +1,23 @@
+-<meta http-equiv="refresh" content="0;url=./faces/index.xhtml" /> 
+\ No newline at end of file
++<!DOCTYPE html>
++<html>
++<head>
++    <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
++
++    <!--
++         A simple check on the client. For touch devices or small-resolution screens)
++         show the mobile client. By enabling the mobile client on a small-resolution screen
++         we allow for testing outside a mobile device (like for example the Mobile Browser
++         simulator in JBoss Tools and JBoss Developer Studio).
++      -->
++    <script type="text/javascript">
++        if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
++            location.replace('mobile-index.html')
++        } else {
++            location.replace('desktop-index.html')
++        };
++    </script>
++</head>
++<body>
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/demo/src/main/webapp/index.xhtml b/demo/src/main/webapp/index.xhtml
+deleted file mode 100644
+index a1eaf27..0000000
+--- a/demo/src/main/webapp/index.xhtml
++++ /dev/null
+@@ -1,38 +0,0 @@
+-<?xml version='1.0' encoding='UTF-8' ?>
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+-	xmlns:ui="http://java.sun.com/jsf/facelets"
+-	template="/resources/scaffold/pageTemplate.xhtml">
+-
+-	<ui:param name="pageTitle" value="Welcome to Forge" />
+-
+-	<ui:define name="header">
+-		Welcome to Forge
+-	</ui:define>
+-
+-	<ui:define name="subheader">
+-		Your application is running.
+-	</ui:define>
+-
+-	<ui:define name="main">
+-		<p>
+-			<a target="_blank"
+-				href="https://docs.jboss.org/author/display/FORGE">Documentation</a>
+-			| <a target="_blank"
+-				href="http://twitter.com/intent/tweet?text=I+just+built+and+deployed+a+webapp+using+%23Forge,+from+%23JBoss+-+Super+easy!+(+http://jboss.org/forge+)">Get
+-				Excited!</a><br /> <a target="_blank" href="http://jboss.org/forge"><br />
+-				Forge Project</a> | <a target="_blank"
+-				href="https://lists.jboss.org/mailman/listinfo/forge-users">User
+-				List</a> | <a target="_blank"
+-				href="https://issues.jboss.org/browse/FORGE">Report an issue</a>
+-		</p>
+-		<p style="text-align: right; padding-top: 50px">
+-			<a target="_blank" href="http://jboss.org"><img
+-				src="#{resource['jboss-community.png']}"
+-				alt="JBoss and JBoss Community" width="254" height="31" border="0" />
+-			</a> <br /> To replace this page edit 'src/main/webapp/index.xhtml', or
+-			keep Forging!
+-		</p>
+-	</ui:define>
+-
+-</ui:composition>
+\ No newline at end of file
+diff --git a/demo/src/main/webapp/resources/tm/image.xhtml b/demo/src/main/webapp/resources/tm/image.xhtml
+new file mode 100644
+index 0000000..535c93f
+--- /dev/null
++++ b/demo/src/main/webapp/resources/tm/image.xhtml
+@@ -0,0 +1,22 @@
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
++                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++                <html xmlns="http://www.w3.org/1999/xhtml"
++                      xmlns:h="http://java.sun.com/jsf/html"
++                      xmlns:composite="http://java.sun.com/jsf/composite">
++                <head>
++<title>Cached Image</title>
++</head>
++                <body>
++
++<composite:interface>
++            <composite:attribute name="media" type="org.jboss.jdf.example.ticketmonster.service.MediaPath"/>
++            <composite:attribute name="id" type="java.lang.String" />
++        </composite:interface>
++
++<composite:implementation>
++            <h:graphicImage value="#{cc.attrs.media.url}" rendered="#{!cc.attrs.media.cached}"/>
++            <h:graphicImage value="/rest/media/cache/#{cc.attrs.media.url}" rendered="#{cc.attrs.media.cached}"/>
++        </composite:implementation>
++
++</body>
++        </html>
+\ No newline at end of file
