@@ -22,21 +22,22 @@ screenshots that guide you through. For those of you who prefer to watch and lea
 Business Services And Their Relationships
 ------------------------------------------
 
-Ticket Monster's business logic is implemented by a few service classes, with different
+TicketMonster's business logic is implemented by a few service classes, with different
 responsibilities:
 
-* managing media items;
-* allocating tickets;
-* handling information on ticket availability;
-* remote access through a RESTful interface.
+* managing media items
+* allocating tickets
+* handling information on ticket availability
+* remote access through a RESTful interface
 
 The services are consumed by various other layers of the application: 
 
 * the media management and ticket allocation services are encapsulating complex functionality,
-  which in turn is exposed externally by RESTful services that wrap them;
-* RESTful services are mainly used by the POH5 user interface;
-* the ticket availability service is used by the Errai-based user interface.
+  which in turn is exposed externally by RESTful services that wrap them
+* RESTful services are mainly used by the Plain Old HTML5 user interface
+* the ticket availability service is used by the Errai-based user interface
 
+[TIP]
 .Where to draw the line?
 ******************************************************************************************
 A business service is an encapsulated, reusable logical component that groups together a 
@@ -69,7 +70,19 @@ application.
 </beans>
 ------------------------------------------------------------------------------------------
 
+[NOTE]
+.If you were using the Maven archetype
+*******************************************************************************************
+If you were using the Maven archetype for creating the project, this file will exist already
+in the project - it is added automatically.
+*******************************************************************************************
 
+You may wonder about the file being empty - what is its purpose, after all? While `beans.xml`
+can specify various deployment-time options to the container (activation of interceptors,
+decorators or alternatives), it can simply act as a marker file, telling the container to
+enable CDI for the deployment (which it won't do, unless the file is present).
+
+[INFO]
 .Contexts and Dependency Injection (CDI)
 ******************************************************************************************
 As it's name suggests, CDI is the contexts and dependency injection standard for Java EE.
@@ -78,10 +91,10 @@ component management and injection services for Java EE applications. By enablin
 your application, your deployment classes become managed components and their lifecycle 
 and wiring becomes the responsibility of the Java EE server. 
 
-Reducing coupling is a critical goal for a truly decoupled architecture. You can focus now 
+Reducing coupling is a critical goal for a well-designed architecture. You can focus now
 on implementing the specific responsibilities of each component and  describing their 
-dependencies in a declarative fashion, and the runtime will do the rest for you: instantiating, 
-destroying them and wiring them toghether!
+dependencies in a declarative fashion, and the runtime will do the rest for you: instantiating and
+wiring them together, as well as disposing of them when their lifecyle comes to an end.
 ******************************************************************************************
 
 Internal Services
@@ -325,7 +338,7 @@ public class MediaPath {
 ------------------------------------------------------------------------------------------
 
 Before finishing the implementation of the service, we need to do a couple more things.
-As a managed bean, the service can be injected by type in the components that depend on it.
+As a managed bean, the service can be injected by type into the components that depend on it.
 However, in order to make it available to the JSF layer as well, we need to make it accessible
 by name - so we will add a `@Named` annotation, which in this case will ensure that 
 the bean can be referenced under the name `mediaManager`.
@@ -333,7 +346,7 @@ the bean can be referenced under the name `mediaManager`.
 Also, we need to control the lifecycle of this service. Due to the fact that this is a 
 bean that stores request-specific state, we would like for an instance of
 the service to exist exactly for the duration of a web request - therefore we will use the
-`@RequestScoped` to .
+`@RequestScoped` to set up the appropriate scope for it.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaManager.java
 [source,java]
@@ -477,10 +490,11 @@ public class BookingMonitorServiceImpl implements BookingMonitorService {
 }
 ------------------------------------------------------------------------------------------
 
+[TIP]
 .Implement an interface or not?
 ******************************************************************************************
 You will find yourself very often facing a dilemma: add an interface to a service or not?
-As you have seen so far and will continue to see next, most of the services in Ticket Monster do
+As you have seen so far and will continue to see next, most of the services in TicketMonster do
 not implement one, except wherever it is a requirement of the framework in use (e.g. Errai in this case). In Java EE 6 the
 requirements for business services to implement interfaces have been relaxed significantly,
 therefore unless there are valid reasons for creating an abstraction (such as multiple possible 
@@ -1009,6 +1023,16 @@ public @interface Created {
 }
 ------------------------------------------------------------------------------------------
 
+[INFO]
+.What are qualifiers?
+***********************************************************************************************
+CDI use a type-based resolution mechanism for injection and observers. In order to disambiguate between
+multiple candidate beans, you can use dedicated annotations named _qualifiers_ to tag beans.
+Target injection points or event observers can use qualifiers to narrow down the set of candidates:
+only beans bearing the same qualifier annotations will be taken into consideration.
+***********************************************************************************************
+
+
 Of course, we would also like to be able to delete bookings, therefore we will add a corresponding method as well:
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingService.java
@@ -1088,6 +1112,7 @@ Fortunately, Arquillian provides the means to testing your application code with
 with access to all the services and container features. In this section we will show you how 
 to create a few Arquillian tests for your business services.
 
+[TIP]
 .What to test?
 ******************************************************************************************
 A common asked question is: how much application functionality should you test? The truth is,
@@ -1390,3 +1415,12 @@ deletion takes place correctly (`testDelete`).
 
 The other tests in the application follow roughly the same pattern and are left as an exercise to the
 reader.
+
+Running the tests
+-----------------
+
+You can execute your tests in two ways:
+
+* from the command-line Maven build
+* from an IDE
+
