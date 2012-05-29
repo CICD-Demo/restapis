@@ -102,10 +102,10 @@ public class BookingService extends BaseEntityService<Booking> {
             // identify the ticket price categories in this request
             Set<Long> priceCategoryIds = new HashSet<Long>();
             for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
-                if (TicketPrices.contains(ticketRequest.getTicketPrice())) {
+                if (priceCategoryIds.contains(ticketRequest.getTicketPrice())) {
                     throw new RuntimeException("Duplicate price category id");
                 }
-                TicketPrices.add(ticketRequest.getTicketPrice());
+                priceCategoryIds.add(ticketRequest.getTicketPrice());
             }
             
             // load the entities that make up this booking's relationships
@@ -115,7 +115,7 @@ public class BookingService extends BaseEntityService<Booking> {
             // id
             List<TicketPrice> ticketPrices = (List<TicketPrice>) getEntityManager()
                     .createQuery("select p from TicketPrice p where p.id in :ids")
-                    .setParameter("ids", TicketPrices).getResultList();
+                    .setParameter("ids", priceCategoryIds).getResultList();
             // Now, map them by id
             Map<Long, TicketPrice> ticketPricesById = new HashMap<Long, TicketPrice>();
             for (TicketPrice ticketPrice : ticketPrices) {
