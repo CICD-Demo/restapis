@@ -13,11 +13,11 @@ The target audience for this tutorial are those individuals who do not yet have 
 
 This tutorial sets the stage for the creation of TicketMonster - our sample application that illustrates how to bring together the best features of *Java EE 6 + HTML5 + JBoss* to create a rich, mobile-optimized and dynamic application.
 
-TicketMonster is developed as an open source application, and you can find it under link:https://github.com/jboss-jdf/ticket-monster[at github]. 
+TicketMonster is developed as an open source application, and you can find it link:https://github.com/jboss-jdf/ticket-monster[at github]. 
 
 If you prefer to watch instead of read, a large portion of this content is also covered in link:http://docs.jboss.org/tools/movies/[video form]. 
 
-In this tutorial, we will cover the following topix:
+In this tutorial, we will cover the following topics:
 
 - Working with JBoss Developer Studio (Eclipse + JBoss Tools)
 - Creating of a Java EE 6 project via a Maven archetype
@@ -39,8 +39,7 @@ Installation
 
 The first order of business is to get your development environment setup and JBoss Developer Studio v5 installed. JBoss Developer Studio is Eclipse Indigo (3.7.2) for Java EE Developers plus select JBoss Tools and is available for free. Visit http://www.jboss.org/developer to download it.  You may also choose to install JBoss Tools 3.3 into your existing Eclipse Indigo for Java EE Developers. This document uses screenshots depicting JBoss Developer Studio.
 
-You must have a Java Development Kit (JDK) installed, either v6 or v7 will work - whils a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK. System requirements for JBoss Developer Studio are link:http://docs.redhat.com/docs/en-US/JBoss_Developer_Studio/5.0.Beta/html/Getting_Started_Guide/minimumrequirements.html
-[listed in the online documentation].
+You must have a Java Development Kit (JDK) installed, either v6 or v7 will work - whilst a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK. System requirements for JBoss Developer Studio are link:http://docs.redhat.com/docs/en-US/JBoss_Developer_Studio/5.0.Beta/html/Getting_Started_Guide/minimumrequirements.html[listed in the online documentation].
 
 [TIP]
 ==============================================================
@@ -79,7 +78,7 @@ The rest of the steps are fairly self explanatory.  If you run into trouble, ple
 
 Please make sure to say *Yes* to the prompt that says "Will you allow JBoss Tools team to receive anonymous usage statistics for this Eclipse instance with JBoss Tools?".  This information is very helpful to us when it comes to prioritizing our QA efforts in terms of operating system platforms. More information concerning our usage tracking can be found at http://www.jboss.org/tools/usage
 
-You can skip that step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6 or JBoss AS 7 as we will do this in the next step.
+You can skip the step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6 or JBoss AS 7 as we will do this in the next step.
 
 Creating a new Java EE 6 project with Maven
 -------------------------------------------
@@ -110,7 +109,7 @@ First, select *Create Projects -> Java EE Web Project* in JBoss Central. Under t
 .JBoss Central
 image::gfx/introduction/jboss_dev_studio_jboss_central.png[]
 
-You will be prompted with a dialog box that verifies that JBoss Devloper Studio is configured correctly. If you are in a brand new workspace, the application server will not be configured yet and you will notice the lack of a check mark on the server/runtime row.
+You will be prompted with a dialog box that verifies that JBoss Developer Studio is configured correctly. If you are in a brand new workspace, the application server will not be configured yet and you will notice the lack of a check mark on the server/runtime row.
 
 [[new-project-wizard_image]]
 .New Project Wizard
@@ -187,7 +186,7 @@ Exploring the newly generated project
 -------------------------------------
 Using the *Project Explorer*, open up the generated project, and double-click on the `pom.xml`.
 
-The generated project is a Maven-based project with a `pom.xml` in its root directory and the standard Maven project layout.
+The generated project is a Maven-based project with a `pom.xml` in its root directory.
 
 [[newly_generated_project_explorer_image]]
 .Project Explorer
@@ -226,12 +225,12 @@ The initial project includes the following Java packages:
 `.data`::
     contains a class which uses `@Produces` and `@Named` to return the list of members for `index.xhtml`
 `.model`::
-    contains the JPA entity class, a POJO annotated annotated with `@Entity`, annodated with Bean Validation (JSR 303) constraints
+    contains the JPA entity class, a POJO annotated with `@Entity`, annodated with Bean Validation (JSR 303) constraints
 `.rest`::
-    contains the JAX-RS endpoints, POJOs annoated with `@Path`
+    contains the JAX-RS endpoints, POJOs annotated with `@Path`
 `.service`::
     handles the registration transaction for new members
-`.util`
+`.util`::
     contains Resources.java which sets up an alias for `@PersistenceContext` to be injectable via `@Inject`
 
 Now, let's explore the resources in the project.
@@ -248,6 +247,7 @@ Under src you will find:
     establishes that this project contains JPA entities and it identifies the datasource, which is deployed alongside the project.  
 
     It also includes the `hibernate.hbm2dll.auto` property set to `create-drop` by default. 
+
 `test/java/test`::
     provides the `.test` package that contains `MemberRegistrationTest.java`, an Arquillian based test that runs both at the command line 
         mvn test –Parq-jbossas-remote
@@ -323,11 +323,11 @@ image::gfx/introduction/forge_console_tab.png[]
 .Show Forge Console
 image::gfx/introduction/forge_console.png[]
 
-Forge is a command-oriented rapid application development tool that allows you to enter commands that generate classes and code. It will automatically update the IDE for you.  A key features is "content assist" or "tab completion", activated by pressing *tab*.
+Forge is a command-oriented rapid application development tool that allows you to enter commands that generate classes and code. It will automatically update the IDE for you.  A key feature is "content assist" or "tab completion", activated by pressing *tab*.
 
 To generate an entity, use these commands:
 
-    entity --named Event --package org.jboss.tools.examples.model
+    entity --named Event --package org.jboss.toos.examples.model
     field string --named name
     validation setup
     constraint NotNull --onProperty name
@@ -360,7 +360,7 @@ import java.lang.Override` by Forge. Using the formatter your IDE provides on
 the entity will make this look more like you would expect!
 ==============================================================================
 
-Forge has automatically changed the context of the CLI to `Event.java, and typing `ls` – this will provide a listing of the fields and methods.  
+Forge has automatically changed the context of the CLI to `Event.java`, and typing `ls` will provide a listing of the fields and methods.  
 [[forge_ls_results_image]]
 .Forge `ls`
 image::gfx/introduction/forge_ls.png[]
@@ -370,7 +370,7 @@ Now that the base `Event` entity has been created, let's add the fields and thei
 This next step involves adding a `name` property for the Event entity so that an event could hold data like "Rock Concert". 
 
 Type `fie` and hit tab to fill in `field`, if you hit *tab* again, Forge will list out the possible field types.   Type in `s` and hit *tab*, Forge will respond with `string`.  Hit *tab* again to get `--named` and type in `name`.   
-You should end up the command `field string --named name`, to execute it, press enter.  This will add a `private String name;` field, and the appropriate accessor and mutator (getter and setter) methods.  You should also notice that the toString method is tweaked to include `name` as well.
+You should end up with the command `field string --named name`, to execute it, press enter.  This will add a `private String name;` field, and the appropriate accessor and mutator (getter and setter) methods.  You should also notice that the toString method is tweaked to include `name` as well.
 
 [[forge_added_name_image]]
 .@Column name
@@ -397,7 +397,7 @@ image::gfx/introduction/outline_of_event.png[]
 Reviewing persistence.xml & updating import.sql
 -----------------------------------------------
 
-By default, the entity classes generate the database schema, and is controoled by `src/main/resources/persistence.xml`.
+By default, the entity classes generate the database schema, and is controlled by `src/main/resources/persistence.xml`.
 
 The two key settings are the `<jta-data-source>` and the `hibernate.hbm2ddl.auto` property.  The datasource maps to the datasource defined in `src\main\webapp\jboss-javaee6-webapp–ds.xml`.
 
