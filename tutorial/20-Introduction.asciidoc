@@ -347,11 +347,11 @@ Now hit the Enter/Return key to watch the command execute.  The Event entity wil
 
 [[forge_event_entity_image]]
 .Forge new entity
-image::gfx/introduction/forge_event_entity.png
+image::gfx/introduction/forge_event_entity.png[]
 
 [[forge_event_entity_created_image]]
 .Event Entity
-image::gfx/introduction/forge_event_entity_created.png
+image::gfx/introduction/forge_event_entity_created.png[]
 
 [NOTE]
 ==============================================================================
@@ -488,7 +488,7 @@ such as Tomcat, shut it down now to avoid any port conflicts.
 
 [[run_as_run_on_server_image]]
 .Run As -> Run on Server
-image::gfx/introduction/run_as_run_on_server.png
+image::gfx/introduction/run_as_run_on_server.png[]
 
 Now, deploy the h2console webapp. You can read how to do this in the link:http://www.jboss.org/jdf/stage/quickstarts/jboss-as-quickstart/h2-console/[h2console quickstart].
 
@@ -496,13 +496,13 @@ The *Run As -> Run on Server* option will also launch the internal Eclipse brows
 
 [[result_run_on_server_image]]
 .Eclipse Browser after Run As -> Run on Server
-image::gfx/introduction/result_run_on_server.png
+image::gfx/introduction/result_run_on_server.png[]
 
 Now, go to http://localhost:8080/h2console to start up the h2 console.
 
 [[h2console_in_browser_image]]
 .h2console in browser
-image::gfx/introduction/h2console_in_browser.png
+image::gfx/introduction/h2console_in_browser.png[]
 
 Use `jdbc:h2:mem:jboss-javaee6-webapp` as the JDBC URL (this is defined in `src/main/webapp/WEB-INF/jboss-javaee6-webapp-ds.xml`), `sa` as the username and `sa` as the password.
 
@@ -526,7 +526,7 @@ Right-click on the `.rest` package, select *New -> Class* from the context menu,
 
 [[new_class_eventservice_image]]
 .New Class EventService
-image::gfx/introduction/new_class_eventservice.png
+image::gfx/introduction/new_class_eventservice.png[]
 
 Select *Finish*.
 
@@ -557,13 +557,13 @@ This class is a JAX-RS endpoint that returns all Events.
 
 [[event_service_copy_paste_image]]
 .EventService after Copy and Paste
-image::gfx/introduction/event_service_copy_paste.png
+image::gfx/introduction/event_service_copy_paste.png[]
 
 You'll notice a lot of errors, relating to missing imports. The easiest way to solve this is to right-click inside the editor and select *Source -> Organize Imports* from the context menu. 
 
 [[source_organize_imports_image]]
 .Source -> Organize -> Imports
-image::gfx/introduction/source_organize_imports.png
+image::gfx/introduction/source_organize_imports.png[]
 
 Some of the class names are not unique. Eclipse will prompt you with any decisions around what class is intended. Select the following:
 
@@ -578,27 +578,27 @@ The following screenshots illustrate how you handle these decisions. The Figure 
 
 [[organize_imports_1_image]]
 .javax.ws.rs.core.MediaType
-image::gfx/introduction/organize_imports_1.png
+image::gfx/introduction/organize_imports_1.png[]
 
 [[organize_imports_2_image]]
 .org.jboss.tools.examples.Event
-image::gfx/introduction/organize_imports_2.png
+image::gfx/introduction/organize_imports_2.png[]
 
 [[organize_imports_3_image]]
 .javax.ws.rs.Produces
-image::gfx/introduction/organize_imports_3.png
+image::gfx/introduction/organize_imports_3.png[]
 
 [[organize_imports_4_image]]
 .java.util.List
-image::gfx/introduction/organize_imports_4.png
+image::gfx/introduction/organize_imports_4.png[]
 
 [[organize_imports_5_image]]
 .javax.inject.Inject
-image::gfx/introduction/organize_imports_5.png
+image::gfx/introduction/organize_imports_5.png[]
 
 [[organize_imports_6_image]]
 .javax.enterprise.context.RequestScoped
-image::gfx/introduction/organize_imports_6.png
+image::gfx/introduction/organize_imports_6.png[]
 
 You should end up with these imports:
 
@@ -629,13 +629,13 @@ You should now redeploy your project via *Run As -> Run on Server*, or by right 
 
 [[full_publish_image]]
 .Full Publish
-image::gfx/introduction/full_publish.png
+image::gfx/introduction/full_publish.png[]
 
 Using a browser, visit http://localhost:8080/jboss-javaee6-webapp/rest/events to see the results of the query, formatted as JSON (JavaScript Object Notation).
 
 [[json_event_results_image]]
 .JSON Response
-image::gfx/introduction/json_event_results.png
+image::gfx/introduction/json_event_results.png[]
 
 [NOTE]
 =================================================================================
@@ -663,7 +663,7 @@ These next steps will guide you through the creation of a file called `mobile.ht
 First, using the Project Explorer, navigate to `src/main/webapp`, and right-click on `webapp`, and choose *New HTML file*.
 [[new_html_file_image]]
 .New HTML File
-image::gfx/introduction/new_html_file.png
+image::gfx/introduction/new_html_file.png[]
 
 [CAUTION]
 =================================================================================
@@ -679,7 +679,7 @@ Change directory to `jboss-javaee6-webapp/src/main/webapp` and enter name the fi
 
 [[new_html_file_correct_location_image]]
 .New HTML File src/main/webapp
-image::gfx/introduction/new_html_file_correct_location.png
+image::gfx/introduction/new_html_file_correct_location.png[]
 
 Select *Next*.
 
@@ -687,7 +687,7 @@ On the *Select HTML Template* page of the *New HTML File* wizard, select *HTML5 
 
 [[select_html_template]]
 .Select HTML5 jQuery Mobile Template
-image::gfx/introduction/select_html_template.png
+image::gfx/introduction/select_html_template.png[]
 
 Select *Finish*.
 
@@ -707,7 +707,7 @@ As soon as the page loads, you will be prompted with an alert box with "Ready to
 
 [[jquery_mobile_template_image]]
 .jQuery Mobile Template
-image::gfx/introduction/jquery_mobile_template.png
+image::gfx/introduction/jquery_mobile_template.png[]
 
 One side benefit of using a HTML5 + jQuery-based front-end to your application is that it allows for fast turnaround in development.  Simply edit the HTML file, save the file and refresh your browser.  
 
@@ -750,13 +750,13 @@ The result is ready for the average mobile phone. Simply refresh your browser to
 
 [[jquery_mobile_results_image]]
 .jQuery Mobile REST Results
-image::gfx/introduction/jquery_mobile_results.png
+image::gfx/introduction/jquery_mobile_results.png[]
 
 JBoss Developer Studio and JBoss Tools includes BrowerSim to help you better understand what your mobile application will look like. Look for a "phone" icon in the toolbar, visible in the JBoss Perspective.
 
 [[mobile_browsersim_in_toolbar_image]]
 .Mobile BrowserSim icon in Eclipse Toolbar
-image::gfx/introduction/mobile_browsersim_in_toolbar.png
+image::gfx/introduction/mobile_browsersim_in_toolbar.png[]
 
 [NOTE]
 =================================================================================
@@ -769,28 +769,28 @@ focused application!
 
 [[mobile_browsersim_image]]
 .Mobile BrowserSim
-image::gfx/introduction/mobile_browsersim.png
+image::gfx/introduction/mobile_browsersim.png[]
 The Mobile BrowserSim has a Devices menu, on Mac it is in the top menu bar and on Windows it is available via right-click as a pop-up menu.   This menu allows you to change user-agent and dimensions of the browser, plus change the orientation of the device.  
 
 [[mobile_browsersim_devices_menu_image]]
 .Mobile BrowserSim Devices Menu
-image::gfx/introduction/mobile_browsersim_devices_menu.png
+image::gfx/introduction/mobile_browsersim_devices_menu.png[]
 
 [[mobile_browsersim_windows_menu_image]]
 .Mobile BrowserSim on Windows 7
-image::gfx/introduction/mobile_browsersim_windows_menu.png
+image::gfx/introduction/mobile_browsersim_windows_menu.png[]
 
 You can also add your own custom device/browser types.
 
 [[mobile_browsersim_custom_devices_image]]
 .Mobile BrowserSim Custom Devices Window
-image::gfx/introduction/mobile_browsersim_custom_devices.png
+image::gfx/introduction/mobile_browsersim_custom_devices.png[]
 
 Under the *File* menu, you will find a *View Page Source* option that will open up the mobile-version of the website's source code inside of JBoss Developer Studio.  This is a very useful feature for learning how other developers are creating their mobile web presence. 
 
 [[mobile_browsersim_bofa_source_image]]
 .Mobile BrowserSim View Source
-image::gfx/introduction/mobile_browsersim_bofa_source.png
+image::gfx/introduction/mobile_browsersim_bofa_source.png[]
 
 Conclusion
 ----------
