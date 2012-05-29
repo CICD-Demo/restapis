@@ -84,7 +84,25 @@ You can skip that step in the installation wizard that allows you to install JBo
 Creating a new Java EE 6 project with Maven
 -------------------------------------------
 
+[TIP]
+=================================================================
+For a deeper dive into the world of Maven and how it is used with
+JBoss Developer Studio 5 and JBoss Enterprise Application 
+Platform 6 (or JBoss Tools 3.3 and JBoss AS 7) review 
+link: http://vimeo.com/39796236[this video].
+=================================================================
+
 Now that everything is properly installed, configured, running and verified to work, let's build something "from scratch".
+
+We recommend that you switch to the JBoss Perspective if you have not already.  
+
+[TIP]
+=================================================================
+If you close JBoss Central, it is only a click away - simply 
+click on the JBoss icon in the Eclipse toolbar - it is normally 
+the last icon, on the last row - assuming you are in the JBoss 
+Perspective.
+=================================================================
 
 First, select *Create Projects -> Java EE Web Project* in JBoss Central. Under the covers, this uses a Maven archetype which creates a Java EE 6 web application (.war), based around Maven.  The project can be built outside of the IDE, and in continuous integration solutions like Hudson/Jenkins.
 
@@ -92,92 +110,90 @@ First, select *Create Projects -> Java EE Web Project* in JBoss Central. Under t
 .JBoss Central
 image::gfx/introduction/jboss_dev_studio_jboss_central.png[]
 
-We also recommend that you switch to the JBoss Perspective if you have not already.  Also, for a deeper dive into the world of Maven and how it is used with JBoss Developer Studio 5 (JBoss Tools 3.3) and Enterprise Application Platform 6 (Application Server 7) please feel free to take a few minutes to review the video at http://vimeo.com/39796236
-
-[NOTE]
-If you close JBoss Central, it is only a click away - simply click on the JBoss "balls" icon in the Eclipse toolbar - it is normally the last icon, on the last row - assuming you are in the JBoss Perspective.
-
-Once Java EE Web Project has been selected you will be prompted with a dialog box that verifies that Eclipse is configured correctly if you are in a brand new workspace, the application server will not be configured yet and you will notice the lack of a check mark on the server/runtime row.
+You will be prompted with a dialog box that verifies that JBoss Devloper Studio is configured correctly. If you are in a brand new workspace, the application server will not be configured yet and you will notice the lack of a check mark on the server/runtime row.
 
 [[new-project-wizard_image]]
 .New Project Wizard
-image::gfx/introduction/new_project_wizard.png[scaledwidth="90%"]
+image::gfx/introduction/new_project_wizard.png[]
 
 [NOTE]
-If you have been using another application or web server such as Tomcat, shut it down now to avoid any port conflicts.
+=================================================================
+There are several ways to add JBoss Enterprise Application 
+Platform 6 or JBoss AS 7 to JBoss Developer Studio. The 
+*Install...* button on the new project wizard is probably the
+easiest, but you can use any of the methods you are familiar 
+with!
+=================================================================
 
-There are several ways to add either a JBoss Enterprise Application Platform 6 or JBoss AS 7 to Eclipse/JBoss Developer Studio the easiest one in this situation is to click on the *Install...* button. This assumes that the JBoss server has already been downloaded and unzipped.  If you have not yet downloaded the JBoss server, click on the *Download and Install...* button.  
+To add JBoss Enterprise Application Platform or JBoss AS 7, click on the *Install...* button, or if you have not yet downloaded and unzipped the server, click on the *Download and Install...* button.  
 
-[NOTE]
-The download option only works with the community application server.
+[CAUTION]
+=================================================================
+The download option only works with the community application 
+server.
+=================================================================
 
-Selecting *Install…* will pop up the JBoss Runtime Detection section of Preferences.  You can always get back to this dialog by selecting Preferences either under "Eclipse" or "JBoss Developer Studio" on the Mac or under "Window" menu on Windows.
+Selecting *Install...* will pop up the JBoss Runtime Detection section of Preferences.  You can always get back to this dialog by selecting *Preferences -> JBoss Tools -> JBoss Tools Runtime Detection*.
 
 [[jboss_tools_runtime_detection_image]]
 .JBoss Tools Runtime Detection
-image::gfx/introduction/jboss_tools_runtime_detection.png[scaledwidth="90%"]
+image::gfx/introduction/jboss_tools_runtime_detection.png[]
 
-Select the *Add* button, this will take you to a file browser dialog where you can pick the main directory of your unzipped JBoss server.
+Select the *Add* button which will take you to a file browser dialog where you should locate your unzipped JBoss server.
 
 [[runtime_open_dialog_image]]
 .Runtime Open Dialog
 image::gfx/introduction/runtime_open_dialog.png[]
 
-Select *Open* – you will then see the Searching for runtimes… window. 
+Select *Open* and JBoss Developer Studio will pop up the *Searching for runtimes...* window. 
 
 [[searching_for_runtimes_dialog_image]]
 .Searching for runtimes window
 image::gfx/introduction/searching_for_runtimes_dialog.png[]
 
-Simply select *OK*.
-
-The JBoss Tools Runtime Detection Preferences screen will reset and you should see the added runtime in the Paths list.
+Simply select *OK*. You should see the added runtime in the Paths list.
 
 [[jboss_tools_runtime_detection_after_image]]
 .JBoss Tools Runtime Detection Completed
-image::gfx/introduction/jboss_tools_runtime_detection_after.png[scaledwidth="90%"]
+image::gfx/introduction/jboss_tools_runtime_detection_after.png[]
 
-Select *OK* to close the Preferences Dialog
-
-And when you return to the New Project Example dialog, it will have the "JBoss AS 7 or EAP 6 Found?" Box checked.
+Select *OK* to close the *Preferences* dialog, and you will be returned to the *New Project Example* dialog, with the the server/runtime found.
 
 [[as_eap_found_image]]
 .JBoss AS 7.0/7.1 or EAP 6 Found
-image::gfx/introduction/as_eap_found.png[scaledwidth="90%"]
+image::gfx/introduction/as_eap_found.png[]
 
-Select *Next*
+Select *Next*.
 
 [[new-project-wizard-step_2_image]]
 .New Project Wizard Step 2
-image::gfx/introduction/new_project_example_step_2.png[scaledwidth="90%"]
+image::gfx/introduction/new_project_example_step_2.png[]
 
-The default *Project name* is "jboss-javaee6-webapp" – if this field appears blank, it is becomes your workspace already contains a "jboss-javaee6-webapp" in which case just provide another name for your project. 
+The default *Project name* is `jboss-javaee6-webapp`. If this field appears blank, it is because your workspace already contains a "jboss-javaee6-webapp" in which case just provide another name for your project. 
 
-Also, *Target Runtime* is empty and that is normally good for the getting started experience – if you target an Enterprise Application Platform you will need to first configure enterprise Maven repositories.  The previously referenced video on Maven will be helpful as well as http://docs.redhat.com/docs/en-US/JBoss_Web_Framework_Kit/2-Beta/html/Maven_Repository_User_Guide/chap-repository-installation.html
+The *Target Runtime* allows you to choose between JBoss Enterprise Application Platform and JBoss AS 7. If it is left empty, JBoss AS 7 will be elected.
 
-When the drop down list box is empty, then we assume the community Maven artifacts.
+Select *Finish*.
 
-Select *Finish*
-
-JBoss Tools/JBoss Developer Studio will now generate the template project and import it into the workspace.  You will see it pop up into the Project Explorer and a message that asks if you would like to review the "readme" file.
+JBoss Tools/JBoss Developer Studio will now generate the template project and import it into the workspace.  You will see it pop up into the Project Explorer and a message that asks if you would like to review the readme file.
 
 [[prompt_for_readme_image]]
 .New Project Wizard Step 3
-image::gfx/introduction/prompt_for_readme.png[scaledwidth="90%"]
+image::gfx/introduction/prompt_for_readme.png[]
 
 Select *Finish*
 
 Exploring the newly generated project
 -------------------------------------
-Using the Project Explorer, open up the generated project, under Java Resources, drill-down into src/main/java.
+Using the *Project Explorer*, open up the generated project, and double-click on the `pom.xml`.
 
-The generated project is a Maven-based project with a pom.xml in its root directory and adhering to the proper layout for a Maven web application.  Double-click on the `pom.xml`.
+The generated project is a Maven-based project with a `pom.xml` in its root directory and the standard Maven project layout.
 
 [[newly_generated_project_explorer_image]]
 .Project Explorer
 image::gfx/introduction/newly_generated_project_explorer.png[]
 
-JBoss Tools & JBoss Developer Studio include m2e and m2e-wtp. m2e is the Maven Eclipse plug-in - it provides a graphical editor for editing pom.xml files along with the ability to run maven goals directly from within Eclipse.  m2e-wtp allows you to deploy your Maven-based project directly to any Web Tools Project (WTP) compliant application server.  This means you can basically drag & drop, Run As Run on Server or use a variety of mechanisms to cause the Eclipse to generate a .war and place it in the JBoss server deployments directory for hot deployment.   
+JBoss Developer Studio and JBoss Tools include m2e and m2e-wtp. m2e is the Maven Eclipse plug-in and provides a graphical editor for editing `pom.xml` files, along with the ability to run maven goals directly from within Eclipse.  m2e-wtp allows you to deploy your Maven-based project directly to any Web Tools Project (WTP) compliant application server.  This means you can drag & drop, use *Run As -> Run on Server* and other mechanisms to have the IDE deploy your application.
 
 The `pom.xml` editor has several tabs along its bottom edge.
 
@@ -185,45 +201,72 @@ The `pom.xml` editor has several tabs along its bottom edge.
 .pom.xml Editor Tabs
 image::gfx/introduction/pom_xml_tabs.png[scaledwidth="90%"]
 
-For this tutorial, we do not need to edit the `pom.xml` as it includes all the capabilities of Java EE 6 that we will need (e.g. JPA, JAX-RS, CDI, etc), however, you should spend some time exploring the Dependencies and the pom.xml (source view) tabs.   One key element to make note of is `<jboss.bom.version>1.0.0.M6</jboss.bom.version>` as that establishes if this project uses community or enterprise dependencies.  It is what aggregates the versions of the individually listed Java EE and other API dependencies in the dependency section.  The specific version of `1.0.0.M6` is very likely to change, please do not be surprised if the version is slightly different.  Also, if you are using JBoss Enterprise Application Platform 6 and you selected that as your Target Runtime, you will find a `-redhat-1` suffix on the version string.  
+For this tutorial, we do not need to edit the `pom.xml` as it already provides the Java EE 6 APIs that we will need (e.g. JPA, JAX-RS, CDI). You should spend some time exploring the *Dependencies* and the *pom.xml* (source view) tabs.   
+
+One key element to make note of is `<jboss.bom.version>1.0.0.M6</jboss.bom.version>` which establishes if this project uses JBoss Enterprise Application Platform or JBoss AS dependencies.  The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
+
+If you are using JBoss Enterprise Application Platform 6 and you selected that as your Target Runtime, you will find a `-redhat-1` suffix on the version string.  
+
+[CAUTION]
+=================================================================
+The specific version (e.g. `1.0.0.M6`) is very likely to change, 
+so do not be surprised if the version is slightly different.
+=================================================================
 
 [[project_explorer_java_packages_image]]
 .Project Explorer Java Packages
 image::gfx/introduction/project_explorer_java_packages.png[]
 
+Using the *Project Explorer*, drill-down into `src/main/java` under *Java Resources*.
+
 The initial project includes the following Java packages:
 
-`controller`::
-    contains the backing bean for the JSF page called `index.xhtml` – specifically supporting the `newMember` and `memberRegistration.register` expressions` in `index.xhtml`
-`data`::
-    contains a class which uses `@Produces` and `@Named` to return a list of members for `index.xhtml`
-`model*– contains the JPA entity classes – simple annotated POJOs (@Entity) – in the case of Member.java, it demonstrates the use of new EE6, Bean Validation JSR 303 +
-- *rest* – contains the JAX-RS endpoints, also simple annotated POJOs (@Path) +
-- *service* - handles the registration transaction for new members + 
-- *util* – contains Resources.java which sets up an alias for @PersistenceContext to be injectable via @Inject
+`.controller`::
+    contains the backing beans for `#{newMember}` and `#{memberRegistration}` in the JSF page `index.xhtml`
+`.data`::
+    contains a class which uses `@Produces` and `@Named` to return the list of members for `index.xhtml`
+`.model`::
+    contains the JPA entity class, a POJO annotated annotated with `@Entity`, annodated with Bean Validation (JSR 303) constraints
+`.rest`::
+    contains the JAX-RS endpoints, POJOs annoated with `@Path`
+`.service`::
+    handles the registration transaction for new members
+`.util`
+    contains Resources.java which sets up an alias for `@PersistenceContext` to be injectable via `@Inject`
+
+Now, let's explore the resources in the project.
 
 [[project_explorer_resources_image]]
 .Project Explorer Resources
 image::gfx/introduction/project_explorer_resources.png[]
 
-Under src you will find +
+Under src you will find:
 
-- main/resources/*import.sql* – contains insert statements that provides initial database data.  This is particularly useful when hibernate.hbm2dll.auto=create-drop as seen in persistence.xml - since the schema is recreated with each deployment +
+`main/resources/import.sql`::
+    contains insert statements that provides initial database data.  This is particularly useful when `hibernate.hbm2dll.auto=create-drop` is set in `persistence.xml`.  `hibernate.hbm2dll.auto=create-drop` causes the schema to be recreated each time the application is deployed.
+`main/resources/META-INF/persistence.xml`::
+    establishes that this project contains JPA entities and it identifies the datasource, which is deployed alongside the project.  
 
-- main/resources/META-INF/*persistence.xml* – this file establishes that this project contains JPA entities and it identifies the datasource as ExampleDS.  It also includes the hibernate.hbm2dll.auto property set to create-drop by default.  ExampleDS is pre-established on both JBoss AS 7 and Enterprise Application Platform 6.  You can visit the application server’s admin console at http://localhost:9990/console/ and see that ExampleDS is mapped to the embedded H2 database.  This tutorial will cover the deployment of the H2 console for exploring the database via web-based interactive SQL tool +
-
-- test/java/test you will find a "test" package that contains *MemberRegistrationTest.java* – this is an Arquillian based test that runs both at the command line (mvn test –Parq-jbossas-remote) as well as from within Eclipse (Run As JUnit Test). +
-
-- src/main/webapp you will find *index.xhtml*, this is the primary JSF-based user interface for the sample application.  If you double-click on that file you will see the JBoss Developer Studio/JBoss Tools Visual Page Editor – allowing you to visually navigate through the file and see the source simultaneously.  Changes to the source are immediately reflected in the visual pane. +
+    It also includes the `hibernate.hbm2dll.auto` property set to `create-drop` by default. 
+`test/java/test`::
+    provides the `.test` package that contains `MemberRegistrationTest.java`, an Arquillian based test that runs both at the command line 
+        mvn test –Parq-jbossas-remote
+    as well as from within JBoss Developer Studio *Run As -> JUnit Test*.
+`src/main/webapp`::
+    contains `index.xhtml`, the JSF-based user interface for the sample application.  If you double-click on that file you will see Visual Page Editor allows you to visually navigate through the file and see the source simultaneously.  Changes to the source are immediately reflected in the visual pane.
 
 [[visual_page_editor_image]]
 .Visual Page Editor
-image::gfx/introduction/visual_page_editor.png[scaledwidth="90%"]
+image::gfx/introduction/visual_page_editor.png[]
 
-In src/main/webapp/WEB-INF, you will find three key files: +
-- *beans.xml* is basically empty but it is the marker file that indicates this is a CDI capable EE6 application. +
-- *faces-config.xml* is also empty but it is the marker file that indicates this is a JSF capable EE6 application. +
-- *jboss-javaee6-webapp-ds.xml* - is actually a hot deployable file that establishes a new datasource within the JBoss container. 
+In `src/main/webapp/WEB-INF`, you will find three key files:
+
+`beans.xml`::
+   is an empty file that indicates this is a CDI capable EE6 application
+`faces-config.xml`
+   is an empty file that indicates this is a JSF capable EE6 application
+`jboss-javaee6-webapp-ds.xml` 
+   when deployed, creates a new datasource within the JBoss container
 
 Adding a new entity using Forge
 -------------------------------
@@ -434,6 +477,13 @@ Deployment
 ----------
 
 At this point, if you have not already deployed the application, right click on the project name in the Project Explorer and select *Run As -> Run on Server*.  If needed, this will startup the application server instance, compile & build the application and push the application into the JBoss/standalone/deployments directory.  Thus causing a hot deployment of the application. 
+
+[CAUTION]
+=================================================================
+If you have been using another application server or web server 
+such as Tomcat, shut it down now to avoid any port conflicts.
+=================================================================
+
 
 [[run_as_run_on_server_image]]
 .Run As -> Run on Server
