@@ -25,8 +25,6 @@ echo "**** Cleaning $TARGET"
 rm -rf $TARGET
 mkdir -p $TARGET
 
-files=`find * -iname \*.asciidoc`
-
 element_count=${#OUTPUT_FORMATS[@]}
 for ((i=0; i < $element_count; i++))
 do
@@ -36,7 +34,7 @@ do
    echo "**** Copying shared resources to $dir"
    cp -r gfx $dir
 
-   for file in $files
+   for file in *.asciidoc 
    do
       output_filename=$dir/${file//.asciidoc/.$output_format}
       echo "**** Processing $file > ${output_filename}"
