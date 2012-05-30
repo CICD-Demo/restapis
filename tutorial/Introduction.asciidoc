@@ -1,6 +1,6 @@
 Introduction & Getting Started
 ==============================
-Burr Sutter
+:Author: Burr Sutter
 
 Purpose and Target Audience
 ---------------------------
@@ -795,3 +795,4 @@ image::gfx/introduction/mobile_browsersim_bofa_source.png[]
 Conclusion
 ----------
 This concludes our introduction to building HTML5 Mobile Web applications using Java EE 6 with Forge and JBoss Developer Studio.   At this point, you should feel confident enough to tackle any of the additional exercises to learn how the TicketMonster sample application is constructed.
+

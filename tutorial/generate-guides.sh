@@ -43,6 +43,7 @@ for ((i=0; i < ${#OUTPUT_FORMATS[@]}; i++))
 do
    output_format=${OUTPUT_FORMATS[i]}
    dir=$TARGET/$output_format
+   output_filename=$dir/${file//.asciidoc/.$output_format}
    mkdir -p $dir
    echo "**** Copying shared resources to $dir"
    cp -r gfx $dir

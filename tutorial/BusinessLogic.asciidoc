@@ -1,6 +1,6 @@
 Building The Business Services With JAX-RS
 ==========================================
-Marius Bogoevici
+:Author: Marius Bogoevici
 
 What Will You Learn Here?
 -------------------------

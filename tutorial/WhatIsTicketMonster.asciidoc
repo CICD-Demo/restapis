@@ -1,6 +1,6 @@
 What is TicketMonster?
 ======================
-Marius Bogoevici
+:Author: Marius Bogoevici
 
 TicketMonster is an example application that focuses on Java EE6 - JSF 2, JPA 2, CDI and JAX-RS
 along with HTML5, jQuery Mobile, JSF and GWT.  It is a moderately complex application that
@@ -17,7 +17,7 @@ needed to help you rebuild TicketMonster on your own - or you can simply downloa
 as a completed application and import into your favorite IDE.
 
 Use Cases
----------
+~~~~~~~~~
 
 We have grouped the current use cases in two major categories: end user oriented and
 administrative.
@@ -41,7 +41,7 @@ image::gfx/ticket-monster-user-use-cases.png[]
 
 
 What Can Administrators Do?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Administrators are more concerned the operation of the site. They will manage the _master data_:
 information about venues, events and shows, and want to see how many tickets have been sold.
@@ -57,7 +57,7 @@ Their use cases are:
 image::gfx/ticket-monster-user-use-cases.png[]
 
 Architecture
-------------
+^^^^^^^^^^^^
 
 The general architecture of the application is shown in the figure below.
 
@@ -79,12 +79,12 @@ part of the application will be developed in GWT and showcases Errai's support f
 updates via client-server CDI eventing.
 
 How Can You Run It?
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 TODO
 
 Learn More About TicketMonster
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The example is accompanied by a series of tutorials that will walk you through the process of
 creating the TicketMonster application from end to end.
@@ -99,5 +99,4 @@ After reading this series you will understand how to:
 * thoroughly test your project using JUnit and Arquillian;
 
 Throughout the series, you will be shown how to achieve these goals using JBoss Developer Studio.
-
 

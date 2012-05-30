@@ -1,6 +1,6 @@
 Building The User UI Using HTML5 And jQuery
 ===========================================
-Marius Bogoevici
+:Author: Marius Bogoevici
 
 What Will You Learn Here?
 -------------------------
@@ -2126,14 +2126,4 @@ you will add the `src/main/webapp/index.html` file with the following content:
 
 Now you can navigate to an URL like `http://localhost:8080/ticket-monster/` with either
 a mobile device or a desktop browser, and you will be redirected to the appropriate page.
-
-
-
-
-
-
-
-
-
-
 

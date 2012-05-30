@@ -1,6 +1,6 @@
 Building the Administration UI using Forge
 ==========================================
-Pete Muir
+:Author: Pete Muir
 
 What Will You Learn Here?
 -------------------------
@@ -251,3 +251,4 @@ We can test these changes by running
     mvn clean package jboss-as:deploy
 
 as usual.
+
