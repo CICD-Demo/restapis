@@ -15,9 +15,10 @@ DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 # DEFINE
 
 TARGET=target/guides
+MASTER=ticket-monster.asciidoc
 
-OUTPUT_FORMATS=("html" "xml" "epub" "pdf")
-OUTPUT_CMDS=("asciidoc -b html5 -a toc2 -a pygments -o \${output_filename} \$file" "asciidoc -b docbook -o \${output_filename} \$file" "a2x -f epub -D \$dir \$file" "a2x --dblatex-opts \"-P latex.output.revhistory=0\" -D \$dir \$file")
+OUTPUT_FORMATS=("xml" "epub" "pdf")
+OUTPUT_CMDS=("asciidoc -b docbook -o \${output_filename} \$MASTER" "a2x -f epub -D \$dir \$MASTER" "a2x --dblatex-opts \"-P latex.output.revhistory=0\" -D \$dir \$MASTER")
 
 echo "** Building tutorial"
 
@@ -25,21 +26,27 @@ echo "**** Cleaning $TARGET"
 rm -rf $TARGET
 mkdir -p $TARGET
 
-element_count=${#OUTPUT_FORMATS[@]}
-for ((i=0; i < $element_count; i++))
+output_format=html
+dir=$TARGET/$output_format
+mkdir -p $dir
+echo "**** Copying shared resources to $dir"
+cp -r gfx $dir
+
+for file in *.asciidoc 
+do
+   output_filename=$dir/${file//.asciidoc/.$output_format}
+   echo "**** Processing $file > ${output_filename}"
+   asciidoc -b html5 -a toc2 -a pygments -o ${output_filename} $file
+done
+
+for ((i=0; i < ${#OUTPUT_FORMATS[@]}; i++))
 do
    output_format=${OUTPUT_FORMATS[i]}
    dir=$TARGET/$output_format
    mkdir -p $dir
    echo "**** Copying shared resources to $dir"
    cp -r gfx $dir
-
-   for file in *.asciidoc 
-   do
-      output_filename=$dir/${file//.asciidoc/.$output_format}
-      echo "**** Processing $file > ${output_filename}"
-      eval ${OUTPUT_CMDS[i]}
-   done
-
+   echo "**** Processing $file > ${output_filename}"
+   eval ${OUTPUT_CMDS[i]}
 done
 
