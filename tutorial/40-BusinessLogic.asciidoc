@@ -1507,8 +1507,7 @@ Or, after starting a JBoss AS7 instance, you can run the following command
 mvn clean test -Parq-jbossas-remote
 ------------------------------------------------------------------------------------------
 
-As a note, we call this 'command line' because this is the most simple way to run them.
-However, it is important to re-emphasize the fact that these tests execute as part of a
+While these tests are run indeed from the command line, it is important to re-emphasize the fact that they execute as part of a
 Maven build. Therefore, they can be easily included in an automated build and test harness.
 
 Running Arquillian tests from within Eclipse
