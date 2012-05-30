@@ -39,13 +39,13 @@ The services are consumed by various other layers of the application:
 
 [TIP]
 .Where to draw the line?
-******************************************************************************************
-A business service is an encapsulated, reusable logical component that groups together a 
+=====================================================================================
+A business service is an encapsulated, reusable logical component that groups together a
 number of well-defined cohesive business operations. Business services perform business operations,
 and may coordinate infrastructure services such as persistence units, or even other business services 
 as well. The decision of drawing boundaries between them should take into account 
 whether the newly created services really represent standalone, potentially reusable components.
-******************************************************************************************
+=====================================================================================
 
 
 As you can see, some of the services are intended to be consumed within the business layer
@@ -72,40 +72,51 @@ application.
 
 [NOTE]
 .If you were using the Maven archetype
-*******************************************************************************************
+=====================================================================================
 If you were using the Maven archetype for creating the project, this file will exist already
 in the project - it is added automatically.
-*******************************************************************************************
+=====================================================================================
 
 You may wonder about the file being empty - what is its purpose, after all? While `beans.xml`
 can specify various deployment-time options to the container (activation of interceptors,
 decorators or alternatives), it can simply act as a marker file, telling the container to
 enable CDI for the deployment (which it won't do, unless the file is present).
 
-[INFO]
+[TIP]
 .Contexts and Dependency Injection (CDI)
-******************************************************************************************
+=====================================================================================
 As it's name suggests, CDI is the contexts and dependency injection standard for Java EE.
-Its goal is to bring the various parts of the application together, by defining a set of
-component management and injection services for Java EE applications. By enabling CDI in 
-your application, your deployment classes become managed components and their lifecycle 
-and wiring becomes the responsibility of the Java EE server. 
+By enabling CDI in  your application, your deployment classes become managed components
+and their lifecycle and wiring becomes the responsibility of the Java EE server.
 
-Reducing coupling is a critical goal for a well-designed architecture. You can focus now
-on implementing the specific responsibilities of each component and  describing their 
+In this way, you can reduce coupling between components, which is is a critical goal for a well-designed architecture.
+You can focus now on implementing the specific responsibilities of each component and  describing their
 dependencies in a declarative fashion, and the runtime will do the rest for you: instantiating and
 wiring them together, as well as disposing of them when their lifecyle comes to an end.
-******************************************************************************************
+=====================================================================================
 
 Internal Services
 -----------------
 
+We will begin by implementing a few helper services that are used internally by the application.
+
 The Media Manager
 ~~~~~~~~~~~~~~~~~
 
-The `MediaManager` is a good illustration of a business service:
-it encapsulates the retrieval and caching of media objects, abstracting a rather complex operation
-from the rest of the application.
+One of the first things that we need to do is to manage media items. As you recall, while building the
+persistence layer, we implemented media item entities that contain URLs to media items stored
+by online services. Those URL look like this:
+
+------------------------------------------------------------------------------------------
+http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg
+------------------------------------------------------------------------------------------
+
+Now, we could surely embed these URLs in our application pages and retrieve these media items directly
+from their provider. However, we would prefer to cache these media items in order to improve application
+performance and increase resilience to external failures - this will allow us to run the application
+successfully even if the external service is down. The `MediaManager` we implements for this is a good illustration
+of a business service: it encapsulates the retrieval and caching of media objects, abstracting a
+rather complex operation from the rest of the application.
 
 We will begin by creating the implementation class:
 
@@ -492,14 +503,14 @@ public class BookingMonitorServiceImpl implements BookingMonitorService {
 
 [TIP]
 .Implement an interface or not?
-******************************************************************************************
+=====================================================================================
 You will find yourself very often facing a dilemma: add an interface to a service or not?
 As you have seen so far and will continue to see next, most of the services in TicketMonster do
 not implement one, except wherever it is a requirement of the framework in use (e.g. Errai in this case). In Java EE 6 the
 requirements for business services to implement interfaces have been relaxed significantly,
 therefore unless there are valid reasons for creating an abstraction (such as multiple possible 
 implementations), we skipped adding interfaces to our services.
-******************************************************************************************
+=====================================================================================
 
 JAX-RS Services
 ---------------
@@ -676,8 +687,8 @@ will inherit ths method, so will be able to process those requests.
 
 The `@Produces` annotation indicates that the response sent back by the server is in JSON format.
 This serves two purposes: first, it tells the JAX-RS implementation that it should convert the
-result returned by the method (a list of entities) in JSON format. Besides identifying the right
-marshalling strategy, the annotation plays a role in content negociation and method resolution:
+result returned by the method (a list of entities) into JSON format. Besides identifying the right
+marshaling strategy, the annotation plays a role in content negotiation and method resolution:
 if the client requests JSON content specifically, this is the method that will be invoked. Even
 if we don't show it in this example, remember that you may have multiple methods that handle a
 specific URL and HTTP method, but consuming and producing different types of content (JSON, HTML,
@@ -760,11 +771,11 @@ public class VenueService extends BaseEntityService<Venue> {
 }
 ------------------------------------------------------------------------------------------
 
-By adding the `@Path` annotation on the class, we indicate that this is a JAX-RS resource whic
+By adding the `@Path` annotation on the class, we indicate that this is a JAX-RS resource which
 serves URLs starting with `/rest/venues`.
 
-We define this service (along with all the other JAX-RS services) as an enterprise java bean
-(see how simple is that in Java EE 6!) in principal to benefit from automatic transaction enrolment.
+We define this service (along with all the other JAX-RS services) as an Enterprise Java Bean
+(see how simple is that in Java EE 6!) in principal to benefit from automatic transaction enrollment.
 Since the service is fundamentally stateless, we take advantage of the new EJB 3.1 singleton feature.
 
 Now, we can retrieve venues from URLs like `/rest/venues` or `rest/venues/1`.
@@ -1023,15 +1034,14 @@ public @interface Created {
 }
 ------------------------------------------------------------------------------------------
 
-[INFO]
+[TIP]
 .What are qualifiers?
-***********************************************************************************************
+=====================================================================================
 CDI use a type-based resolution mechanism for injection and observers. In order to disambiguate between
 multiple candidate beans, you can use dedicated annotations named _qualifiers_ to tag beans.
 Target injection points or event observers can use qualifiers to narrow down the set of candidates:
 only beans bearing the same qualifier annotations will be taken into consideration.
-***********************************************************************************************
-
+=====================================================================================
 
 Of course, we would also like to be able to delete bookings, therefore we will add a corresponding method as well:
 
@@ -1112,15 +1122,17 @@ Fortunately, Arquillian provides the means to testing your application code with
 with access to all the services and container features. In this section we will show you how 
 to create a few Arquillian tests for your business services.
 
+
 [TIP]
 .What to test?
-******************************************************************************************
+=====================================================================================
 A common asked question is: how much application functionality should you test? The truth is,
 you can never test too much. That being said, resources are always limited and tradeoffs are
 part of an engineer's work. Generally speaking, trivial functionality (setters/getters/toString methods) is not such a big subject of concern as the actual business code, so you may want to
 focus your efforts on the latter. Testing should include individual parts (unit testing), as
 well as aggregates (integration testing).
-*****************************************************************************************
+=====================================================================================
+
 
 A Basic Deployment Class
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1154,8 +1166,8 @@ While Arquillian does not concern itself with packaging the resources under test
 this functionality to its dependent (or sibling) project ShrinkWrap, the API of which it uses -
 Arquillian expects a ShrinkWrap archive as the deployment under test.
 
-Testing RESTful services
-~~~~~~~~~~~~~~~~~~~~~~~~
+Writing RESTful service tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For testing our JAX-RS RESTful services, we need to add the corresponding class files to 
 the deployment. Since we would have to do that for each test we create, we will abide by the DRY principles and will create a utility class again. 
@@ -1417,10 +1429,118 @@ The other tests in the application follow roughly the same pattern and are left 
 reader.
 
 Running the tests
------------------
+~~~~~~~~~~~~~~~~~
 
-You can execute your tests in two ways:
+If you have followed the instructions in the introduction and used the Maven archetype to generate
+the project structure, you should have two profiles already defined in your application.
 
-* from the command-line Maven build
+./pom.xml
+[source,xml]
+------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+        ...
+        <profile>
+            <!-- An optional Arquillian testing profile that executes tests
+                in your JBoss AS instance -->
+            <!-- This profile will start a new JBoss AS instance, and execute
+                the test, shutting it down when done -->
+            <!-- Run with: mvn clean test -Parq-jbossas-managed -->
+            <id>arq-jbossas-managed</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <!-- An optional Arquillian testing profile that executes tests
+                in a remote JBoss AS instance -->
+            <!-- Run with: mvn clean test -Parq-jbossas-remote -->
+            <id>arq-jbossas-remote</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+    </profiles>
+</project>
+------------------------------------------------------------------------------------------
+
+If you haven't used the archetype, or the profiles don't exist, it is the time to create them now.
+Each profile defines a different Arquillian container (as a dependency). While in each case
+tests will execute in a JBoss AS instance, in one case (`arq-jbossas-managed`)
+the server instance is started and stopped by the test suite, while in the other (`arq-jbossas-remote`),
+the test suite expects an already started server instance.
+
+Once these profiles are defined, you can execute your tests in two ways:
+
+* from the command-line build
 * from an IDE
+
+Executing tests from the command line
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can now execute your test suite from the command line by simply running a Maven build with
+the appropriate target and profile, as in one of the following examples.
+
+After ensuring that the `JBOSS_HOME` environment variable is set to a valid JBoss AS7 installation directory),
+you can run the following command:
+
+------------------------------------------------------------------------------------------
+mvn clean test -Parq-jbossas-managed
+------------------------------------------------------------------------------------------
+
+Or, after starting a JBoss AS7 instance, you can run the following command
+
+------------------------------------------------------------------------------------------
+mvn clean test -Parq-jbossas-remote
+------------------------------------------------------------------------------------------
+
+As a note, we call this 'command line' because this is the most simple way to run them.
+However, it is important to re-emphasize the fact that these tests execute as part of a
+Maven build. Therefore, they can be easily included in an automated build and test harness.
+
+Running Arquillian tests from within Eclipse
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Running the entire test battery as part of the build is an important part of the development
+process - you want to make sure that everything is working fine before releasing a new
+milestone, or even committing new code. However, running the entire test battery all the time
+can be an issue, especially when you're trying to focus on a particular problem. Also, you
+definitively don't want to leave the comfort of your IDE for running the tests.
+
+Running Arquillian tests from within Eclipse (including JBoss Tools and JBoss Developer Studio here)
+is in fact very simple, based on existing JUnit test running support.
+
+The first thing to do is to enable one of the two profiles in the project. In Eclipse, open
+the project properties, and from the _Maven_ tab, add the profile as shown in the picture below.
+
+[[eclipse-update-profiles]]
+.Update Maven profiles in Eclipse
+image::gfx/eclipse-maven-profile-update.png[scaledwidth="50%"]
+
+The project configuration will be updated automatically.
+
+Now, it's all simple. You can click right on one of your test classes, say `VenueServiceTest` and select
+_Run As -> JUnit Test_.
+
+The test suite will run, deploying the test classes in the JBoss AS7 container, executing the tests
+and finally producing the much coveted green bar.
+
+[[eclipse-green-bar]]
+.Running the tests
+image::gfx/eclipse-green-bar.png[scaledwidth="50%"]
+
+
 
