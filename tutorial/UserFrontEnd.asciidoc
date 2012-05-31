@@ -43,11 +43,11 @@ Modularity
 
 As the application becomes more modular, the code also becomes more fragmented in order to support good separation of concerns. Ensuring that all the modules of the application are loaded properly at runtime becomes a more complex task as the application size increases. For conquering this complexity, we will be using the Asynchronous Module Definition mechanism as implemented by the `require.js` library.
 
-
+[TIP]
 .Asynchronous Module Definition
-***********************************************************************
+========================================================================
 The Asynchronous Module Definition (AMD) API specifies a mechanism for defining modules such that the module and its dependencies can be asynchronously loaded. This is particularly well suited for the browser environment where synchronous loading of modules incurs performance, usability, debugging, and cross-domain access problems.
-***********************************************************************
+========================================================================
 
 Templating
 ~~~~~~~~~~
@@ -147,6 +147,7 @@ The actual HTML code of the page contains a menu definition which will be presen
 The JavaScript code of the page is loaded by `require.js`, according to the module definition contained in `resources/js/main-desktop.js`, as follows:
 
 .src/main/webapp/resources/js/main-desktop.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * Shortcut alias definitions - will come in handy when declaring dependencies
@@ -199,6 +200,7 @@ The Event model
 We will define a Backbone model for holding individual event data. Nearly each domain entity (booking, event, venue) is represented by a corresponding Backbone model.
 
 .src/main/webapp/resources/js/app/models/event.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * Module for the Event model
@@ -220,10 +222,11 @@ define([
 
 The `Event` model can perform CRUD operations directly against the REST services. 
 
+[TIP]
 .Backbone Models
-***********************************************************************
+========================================================================
 Backbone models contain the interactive data as well as a large part of the logic surrounding it: conversions, validations, computed properties, and access control. The can also perform CRUD operations with the REST service. 
-***********************************************************************
+========================================================================
 
 The Events collection
 ~~~~~~~~~~~~~~~~~~~~~
@@ -231,6 +234,7 @@ The Events collection
 We will define a Backbone collection for handling groups of events (like the events list). 
 
 .src/main/webapp/resources/js/app/collections/events.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * Module for the Events collection
@@ -270,6 +274,7 @@ The EventsView view
 Now that we have implemented the data components of the example, we need to create the view that displays them.
 
 .src/main/webapp/resources/js/app/views/desktop/events.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
     'backbone',
@@ -385,6 +390,7 @@ Routing
 We will continue by defining a Router which provides linkable, bookmarkable and shareable URLs for the various locations in our application.
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
+[source, javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application
@@ -443,6 +449,7 @@ Remember, this is a single page application. You will be able to navigate either
 Once the router has been defined, all that remains is to cause is to be loaded by the main module definition. Because the router depends on all the other components (models, collections and views) of the application, directly or indirectly, it will be the only one that is explicitly listed in the `main-desktop` definition, which will change as follows:
 
 .src/main/webapp/resources/js/main-desktop.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 require.config({
     paths: {
@@ -479,6 +486,7 @@ With the events list view now in place, we can begin implementing the next step 
 We already have the models in place so all we need to do is to create a additional view and expand the router. The view comes first.
 
 .src/main/webapp/resources/js/app/views/desktop/event-detail.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
     'backbone',
@@ -666,6 +674,7 @@ The corresponding templates for the three fragments used above are shown below
 Now that the view has actually been created, we need to add it to the router:
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application
@@ -710,6 +719,7 @@ The user has chosen an event, a venue and a performance time, so the last step i
 First, we will add the new view:
 
 .src/main/webapp/resources/js/app/views/desktop/create-booking.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
     'backbone',
@@ -1082,6 +1092,7 @@ The corresponding templates for the views above are shown below:
 Finally, once the view is available, we can add it's corresponding routing rule:
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application
@@ -1171,6 +1182,7 @@ As you can see, this page is even simpler. We just load the stylesheets for the 
 Then, we will add the module loader.
 
 .src/main/webapp/resources/js/main-mobile.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * Shortcut alias definitions - will come in handy when declaring dependencies
@@ -1220,6 +1232,7 @@ the `defaultHandler` added to the route for handling jQuery Mobile transitions b
 pages (such as the ones generated by a nested listview).
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application.
@@ -1300,6 +1313,7 @@ The first page in our application is the landing page. First, we add the templat
 Now we have to add the page to the router:
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application.
@@ -1344,6 +1358,7 @@ Since mobile interfaces are more constrained, we will just show a simple list vi
 we will create the appropriate Backbone view.
 
 .src/main/webapp/resources/js/app/views/mobile/events.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
     'backbone',
