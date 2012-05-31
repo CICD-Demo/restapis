@@ -11,7 +11,7 @@ define("router", [
     'app/collections/bookings',
     'app/collections/events',
     'app/collections/venues',
-    'app/views/desktop/about',
+    'app/views/desktop/home',
     'app/views/desktop/events',
     'app/views/desktop/venues',
     'app/views/desktop/create-booking',
@@ -28,7 +28,7 @@ define("router", [
             Bookings,
             Events,
             Venues,
-            AboutView,
+            HomeView,
             EventsView,
             VenuesView,
             CreateBookingView,
@@ -46,12 +46,12 @@ define("router", [
 
     var Router = Backbone.Router.extend({
         routes:{
-            "":"events",
+            "":"home",
+            "about":"home",
             "events":"events",
             "events/:id":"eventDetail",
             "venues":"venues",
             "venues/:id":"venueDetail",
-            "about":"about",
             "book/:showId/:performanceId":"bookTickets",
             "bookings":"listBookings",
             "bookings/:id":"bookingDetail",
@@ -74,8 +74,8 @@ define("router", [
                     venuesView.render();
                 }).fetch();
         },
-        about:function () {
-            new AboutView({el:$("#content")}).render();
+        home:function () {
+            new HomeView({el:$("#content")}).render();
         },
         bookTickets:function (showId, performanceId) {
             var createBookingView = 

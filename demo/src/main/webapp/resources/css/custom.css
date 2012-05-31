@@ -294,3 +294,8 @@ footer a {
     color:#525252;
     border-bottom:1px dotted #ccc;
 }
+
+
+.well-icon {
+    float: left;
+}
