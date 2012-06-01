@@ -1,7 +1,7 @@
 define('utilities',[
-    'underscore'
-
-], function (_) {
+    'underscore',
+    'backbone'
+], function (_, Backbone) {
 
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -56,8 +56,27 @@ define('utilities',[
         return val;
     };
 
+    Backbone.View.prototype.close = function(){
+        $(this.el).empty();
+        this.undelegateEvents();
+        if (this.onClose){
+            this.onClose();
+        }
+    };
+
     // utility functions for rendering templates
     var utilities = {
+        viewManager:{
+            currentView:null,
+
+            showView:function (view) {
+                if (this.currentView != null) {
+                    this.currentView.close();
+                }
+                this.currentView = view;
+                return this.currentView.render();
+            }
+        },
         renderTemplate:function (template, data) {
             return _.template(template, (data == undefined) ? {} : data);
         },

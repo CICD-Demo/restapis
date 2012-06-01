@@ -34,20 +34,18 @@ define([
             var self = this
             $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows
-                $("#venueSelector").empty().append("<option value='0'>Select a venue</option>");
+                $("#venueSelector").empty().append("<option value='0' selected>Select a venue</option>");
                 $.each(shows, function (i, show) {
                     $("#venueSelector").append("<option value='" + show.id + "'>" + show.venue.address.city + " : " + show.venue.name + "</option>")
                 });
                 $("#venueSelector").removeAttr('disabled')
-                if ($("#venueSelector").val()) {
-                    $("#venueSelector").change()
-                }
             })
         },
         beginBooking:function () {
             require("router").navigate('/book/' + $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
         },
         refreshShows:function (event) {
+            event.stopPropagation();
             $("#dayPicker").empty();
 
             var selectedShowId = event.currentTarget.value;
@@ -69,7 +67,7 @@ define([
                 _.each(times, function (time) {
                     var date = new Date(time)
                     $("#dayPicker").append("<option value='" + date.toYMD() + "'>" + date.toPrettyStringWithoutTime() + "</option>")
-                })
+                });
                 this.refreshTimes()
                 $("#bookingWhen").show(100)
             } else {

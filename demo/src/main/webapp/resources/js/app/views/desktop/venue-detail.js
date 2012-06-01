@@ -32,21 +32,19 @@ define([
             var self = this
             $.getJSON("rest/shows?venue=" + this.model.get('id'), function (shows) {
                 self.shows = shows
-                $("#eventSelector").empty().append("<option value='0'>Select an event</option>");
+                $("#eventSelector").empty().append("<option value='0' selected>Select an event</option>");
                 $.each(shows, function (i, show) {
                     $("#eventSelector").append("<option value='" + show.id + "'>" + show.event.name + "</option>")
                 })
                 $("#eventSelector").removeAttr('disabled')
-                if ($("#eventSelector").val()) {
-                    $("#eventSelector").change()
-                }
             })
         },
         beginBooking:function () {
             require("router").navigate('/book/' + $("#eventSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
         },
         refreshShows:function (event) {
-            $("#dayPicker").empty()
+            event.stopPropagation();
+            $("#dayPicker").empty();
             var selectedShowId = event.currentTarget.value;
             if (selectedShowId != 0) {
                 var selectedShow = _.find(this.shows, function (show) {

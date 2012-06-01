@@ -64,8 +64,9 @@ define([
 
         events:{
             "click input[name='submit']":"save",
-            "change select":"refreshPrices",
+            "change select[id='sectionSelect']":"refreshPrices",
             "keyup #email":"updateEmail",
+            "change #email":"updateEmail",
             "click input[name='add']":"addQuantities",
             "click i":"updateQuantities"
         },
