@@ -366,6 +366,7 @@ footer a {
 }
 
 .booking-status-header {
+    font-family: "Rokkitt", serif
     text-shadow: 0 1px 1px #000000;
     color:  #EDF4EA;
     padding-bottom: 17px;

@@ -5924,7 +5924,7 @@ diff --git a/demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml b/demo/s
 index 5478a74..0d5601a 100644
 --- a/demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml
 +++ b/demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml
-@@ -7,66 +7,93 @@
+@@ -7,66 +7,94 @@
  	<h:head>
  		<title>#{empty pageTitle ? '{#pageTitle}' : pageTitle}</title>
  		<link rel="icon" href="#{resource['favicon.ico']}" />
@@ -5946,6 +5946,7 @@ index 5478a74..0d5601a 100644
 +                <div class="navbar-inner">
 +                    <div class="container">
 +                        <ul class="nav">
++                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#about"><h:outputText value="About"/></h:outputLink></li>
 +                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#events"><h:outputText value="Events"/></h:outputLink></li>
 +                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#venues"><h:outputText value="Venues"/></h:outputLink></li>
 +                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#bookings"><h:outputText value="Bookings"/></h:outputLink></li>
