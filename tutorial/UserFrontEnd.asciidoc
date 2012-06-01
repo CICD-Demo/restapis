@@ -1427,6 +1427,7 @@ The next step is adding the template for rendering the view.
 And finally, we need to instruct the router to invoke the page.
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application.
@@ -1476,6 +1477,7 @@ Viewing an individual event
 For viewing individual event details, we need to create the view first.
 
 .src/main/webapp/resources/js/app/views/mobile/event-detail.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 define(['backbone',
     'utilities',
@@ -1653,6 +1655,7 @@ transition has to take place after the view is rendered - in order to allow the 
 correctly after it has been invoked from the listview. 
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application.
@@ -1708,6 +1711,7 @@ users can submit it.
 First, we will create the views:
 
 .src/main/webapp/resources/js/app/views/mobile/create-booking.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
     'backbone',
@@ -2062,6 +2066,7 @@ And finally, the page that displays the booking confirmation.
 The last step is tying the view into the router.
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * A module for the router of the desktop application
