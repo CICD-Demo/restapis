@@ -56,7 +56,7 @@ define([
             utilities.applyTemplate($(this.el), ticketSummaryViewTemplate, this.model.bookingRequest);
         },
         removeEntry:function () {
-            this.model.tickets.splice(this.model.index, 1);
+            this.model.bookingRequest.tickets.splice(this.model.index, 1);
         }
     });
 
