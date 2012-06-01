@@ -101,7 +101,7 @@ public abstract class BaseEntityService<T> {
         Root<T> root = criteriaQuery.from(entityClass);
         Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-        
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("id")));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
         if (queryParameters.containsKey("first")) {
         	Integer firstRecord = Integer.parseInt(queryParameters.getFirst("first"));
