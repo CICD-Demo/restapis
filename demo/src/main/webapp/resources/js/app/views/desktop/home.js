@@ -10,6 +10,7 @@ define([
     var HomeView = Backbone.View.extend({
         render:function () {
             utilities.applyTemplate($(this.el),HomeTemplate,{});
+            return this;
         }
     });
 

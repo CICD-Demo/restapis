@@ -22,7 +22,7 @@ define([
             $(this.el).find('.item:first').addClass('active');
             $(".collapse").collapse()
             $("a[rel='popover']").popover({trigger:'hover'});
-            return this
+            return this;
         },
         update:function () {
             $("a[rel='popover']").popover('hide')

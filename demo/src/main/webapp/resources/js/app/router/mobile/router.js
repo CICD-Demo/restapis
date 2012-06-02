@@ -87,7 +87,8 @@ define("router",[
             var eventsView = new EventsView({model:events, el:$("#container")});
             events.bind("reset",
                 function () {
-                    eventsView.render();
+                    var view = eventsView.render();
+                    utilities.viewManager.showView(view);
                 }).fetch();
         },
         venues:function () {
@@ -95,7 +96,7 @@ define("router",[
             var venuesView = new VenuesView({model:venues, el:$("#container")});
             venues.bind("reset",
                 function () {
-                    venuesView.render();
+                    utilities.viewManager.showView(venuesView.render());
                 }).fetch();
         },
         about:function () {
@@ -121,7 +122,8 @@ define("router",[
             var eventDetailView = new EventDetailView({model:model, el:$("#container")});
             model.bind("change",
                 function () {
-                    eventDetailView.render();
+                    var view = eventDetailView.render();
+                    utilities.viewManager.showView(view);
                     $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
                 }).fetch();
         },
@@ -130,7 +132,7 @@ define("router",[
             var venueDetailView = new VenueDetailView({model:model, el:$("#container")});
             model.bind("change",
                 function () {
-                    venueDetailView.render();
+                    utilities.viewManager.showView(venueDetailView.render());
                     $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
                 }).fetch();
         },

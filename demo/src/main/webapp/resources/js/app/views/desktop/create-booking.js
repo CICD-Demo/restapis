@@ -93,6 +93,7 @@ define([
                 self.ticketSummaryView.render();
                 $("#sectionSelector").change();
             });
+            return this;
         },
         refreshPrices:function (event) {
             var ticketPrices = _.filter(this.show.ticketPrices, function (item) {

@@ -16,7 +16,8 @@ define([
                     return item.id
                 });
             utilities.applyTemplate($(this.el), eventsView,  {categories:categories, model:this.model})
-            $(this.el).trigger('pagecreate')
+            $(this.el).trigger('pagecreate');
+            return this;
         }
     });
 

@@ -40,6 +40,7 @@ define(['backbone',
             $("#performanceTimes").empty();
             $("#performanceTimes").selectmenu('disable');
             $(this.el).trigger('pagecreate');
+            return this;
         },
         performanceSelected:function () {
             if ($("#performanceTimes").val() != 'Choose a show time ...') {

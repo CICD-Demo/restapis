@@ -40,6 +40,7 @@ define([
                 });
                 $("#venueSelector").removeAttr('disabled')
             })
+            return this;
         },
         beginBooking:function () {
             require("router").navigate('/book/' + $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)

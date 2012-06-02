@@ -14,7 +14,8 @@ define([
                     return model.get('address').city
                 }));
             utilities.applyTemplate($(this.el), venuesView,  {cities:cities, model:this.model})
-            $(this.el).trigger('pagecreate')
+            $(this.el).trigger('pagecreate');
+            return this;
         }
     });
 

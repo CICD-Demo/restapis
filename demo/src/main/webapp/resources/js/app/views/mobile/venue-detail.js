@@ -38,13 +38,14 @@ define([
                 $("#performanceTimes").empty().append("<option data-placeholder='true'>Choose a show time ...</option>")
 
             });
-            $("#dayPicker").empty()
-            $("#dayPicker").selectmenu('disable')
-            $("#performanceTimes").empty()
-            $("#performanceTimes").selectmenu('disable')
+            $("#dayPicker").empty();
+            $("#dayPicker").selectmenu('disable');
+            $("#performanceTimes").empty();
+            $("#performanceTimes").selectmenu('disable');
             $(this.el).trigger('pagecreate');
-            $("#showSelector").selectmenu('refresh', true)
-            $("#performanceTimes").selectmenu('refresh')
+            $("#showSelector").selectmenu('refresh', true);
+            $("#performanceTimes").selectmenu('refresh');
+            return this;
         },
         performanceSelected:function () {
             if ($("#performanceTimes").val() != 'Choose a show time ...') {

@@ -37,7 +37,8 @@ define([
                     $("#eventSelector").append("<option value='" + show.id + "'>" + show.event.name + "</option>")
                 })
                 $("#eventSelector").removeAttr('disabled')
-            })
+            });
+            return this;
         },
         beginBooking:function () {
             require("router").navigate('/book/' + $("#eventSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)

@@ -12,6 +12,7 @@ define([
         },
         render:function () {
             utilities.applyTemplate($(this.el), bookingTableTemplate, {model:this.model});
+            return this;
         },
         deleteBooking:function (event) {
             var id = $(event.currentTarget).data("tm-id");
