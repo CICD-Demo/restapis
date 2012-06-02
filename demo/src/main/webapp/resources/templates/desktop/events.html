@@ -12,15 +12,15 @@
                        data-parent="#itemMenu"><%= category.description %></a>
                 </div>
                 <div id="category-<%=category.id%>-collapsible" class="collapse in accordion-body">
-                    <div id="category-<%=category.id%>" class="accordion-inner">
+                    <div id="category-<%- category.id%>" class="accordion-inner">
 
                         <%
                         _.each(model.models, function (model) {
                         if (model.get('category').id == category.id) {
                         %>
-                        <p><a href="#events/<%=model.attributes.id%>" rel="popover"
-                              data-content="<%=model.attributes.description%>"
-                              data-original-title="<%=model.attributes.name%>"><%=model.attributes.name%></a></p>
+                        <p><a href="#events/<%- model.attributes.id%>" rel="popover"
+                              data-content="<%- model.attributes.description%>"
+                              data-original-title="<%- model.attributes.name%>"><%=model.attributes.name%></a></p>
                         <% }
                         });
                         %>

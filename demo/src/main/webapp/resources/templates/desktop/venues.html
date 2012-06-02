@@ -19,8 +19,8 @@
                     if (model.get('address').city == city) {
                     %>
                     <p><a href="#venues/<%=model.attributes.id%>" rel="popover"
-                       data-content="<%=model.attributes.description%>"
-                       data-original-title="<%=model.attributes.name%>"><%=model.attributes.name%></a></p>
+                       data-content="<%- model.attributes.description%>"
+                       data-original-title="<%- model.attributes.name%>"><%=model.attributes.name%></a></p>
                     <% }
                     });
                     %>
