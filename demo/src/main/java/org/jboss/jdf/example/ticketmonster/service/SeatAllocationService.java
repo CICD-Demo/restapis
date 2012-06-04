@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.Seat;
+import org.jboss.jdf.example.ticketmonster.model.SeatAllocationException;
 import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
 
@@ -24,6 +25,16 @@ public class SeatAllocationService implements Serializable {
     public List<Seat> allocateSeats(Section section, Performance performance, int seatCount, boolean contiguous) {
         SectionAllocation sectionAllocation = retrieveSectionAllocation(section, performance);
         return sectionAllocation.allocateSeats(seatCount, contiguous);
+    }
+
+    public void deallocateSeats(Section section, Performance performance, List<Seat> seats) {
+        SectionAllocation sectionAllocation = retrieveSectionAllocation(section, performance);
+        for (Seat seat : seats) {
+            if (!seat.getSection().equals(section)) {
+                throw new SeatAllocationException("All seats must be in the same section!");
+            }
+            sectionAllocation.deallocate(seat);
+        }
     }
 
     private SectionAllocation retrieveSectionAllocation(Section section, Performance performance) {

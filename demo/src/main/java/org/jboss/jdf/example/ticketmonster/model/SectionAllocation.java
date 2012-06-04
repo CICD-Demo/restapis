@@ -134,7 +134,7 @@ public class SectionAllocation {
      * @return true if the seat is allocated, otherwise false
      */
     public boolean isAllocated(Seat s) {
-        // Examine the allocation matrix, using the row and seat number as indicies
+        // Examine the allocation matrix, using the row and seat number as indices
         return allocated[s.getRowNumber() - 1][s.getNumber() - 1];
     }
 
@@ -265,6 +265,19 @@ public class SectionAllocation {
 
     }
 
+    /**
+     * Dellocate a seat within this section for this performance.
+     *
+     * @param seat the seats that need to be deallocated
+     */
+    public void deallocate(Seat seat) {
+        if (!isAllocated(seat)) {
+            throw new SeatAllocationException("Trying to deallocate an unallocated seat!");
+        }
+        this.allocated[seat.getRowNumber()-1][seat.getNumber()-1] = false;
+        occupiedCount --;
+    }
+
     /* Boilerplate getters and setters */
 
     public int getOccupiedCount() {
@@ -282,4 +295,5 @@ public class SectionAllocation {
     public long getId() {
         return id;
     }
+
 }

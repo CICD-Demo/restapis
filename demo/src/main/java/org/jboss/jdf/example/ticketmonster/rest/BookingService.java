@@ -79,6 +79,21 @@ public class BookingService extends BaseEntityService<Booking> {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         getEntityManager().remove(booking);
+        // Group together seats by section so that we can deallocate them in a group
+        Map<Section, List<Seat>> seatsBySection = new HashMap<Section, List<Seat>>();
+        for (Ticket ticket : booking.getTickets()) {
+            List<Seat> seats = seatsBySection.get(ticket.getSeat().getSection());
+            if (seats == null) {
+                seats = new ArrayList<Seat>();
+                seatsBySection.put(ticket.getSeat().getSection(), seats);
+            }
+            seats.add(ticket.getSeat());
+        }
+        // Deallocate each section block
+        for (Map.Entry<Section, List<Seat>> sectionListEntry : seatsBySection.entrySet()) {
+            seatAllocationService.deallocateSeats( sectionListEntry.getKey(),
+                    booking.getPerformance(), sectionListEntry.getValue());
+        }
         cancelledBookingEvent.fire(booking);
         return Response.ok().build();
     }
