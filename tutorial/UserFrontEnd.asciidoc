@@ -1,18 +1,18 @@
-Building The User UI Using HTML5 And jQuery
-===========================================
+Building The User UI Using HTML5
+================================
 :Author: Marius Bogoevici
 
 What Will You Learn Here?
 -------------------------
 
-You've just implemented the business services of your application, and exposed them through RESTful endpoints. Now you need to implement a flexible user interface that can be easily used with both desktop and mobile clients. After reading this tutorial, you will understand our front-end design and the choices that we made in its implementation. Topics covered include:
+We've just implemented the business services of our application, and exposed them through RESTful endpoints. Now we need to implement a flexible user interface that can be easily used with both desktop and mobile clients. After reading this tutorial, you will understand our front-end design and the choices that we made in its implementation. Topics covered include:
 
 * Creating single-page applications using HTML5, JavaScript and JSON
 * Using JavaScript frameworks for invoking RESTful endpoints and manipulating page content
 * Feature and device detection
 * Implementing a version of the user interface that is optimized for mobile clients using JavaScript frameworks such as jQuery mobile
 
-The tutorial will show you how to perform all these steps in JBoss Developer Studio, including screenshots that guide you through. For those of you who prefer to watch and learn, the included video shows you how we performed all the steps.
+The tutorial will show you how to perform all these steps in JBoss Developer Studio, including screenshots that guide you through.
 
 First, the basics
 -----------------
@@ -26,65 +26,68 @@ image::gfx/single-page-app.png[]
 Client-side MVC Support
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Because this is a moderately complex example, which involves multiple views and different types of data, you will use a client-side MVC framework to structure your application, which provides amongst others:
+Because this is a moderately complex example, which involves multiple views and different types of data, we will use a client-side MVC framework to structure the application, which provides amongst others:
 
-* routing support within your single page application;
+* routing support within the single page application;
 * event-driven interaction between views and data;
 * simplified CRUD invocations on RESTful services.
 
-The client-side MVC framework that we use in this application in `backbone.js`. Its general architecture is shown below:
+In this application we use the client-side MVC framework "backbone.js".
 
 [[use-of-backbone_image]]
-.Backbone interaction in Ticket Monster
+.Backbone architecture
 image::gfx/backbone-usage.png[]
 
 Modularity
 ~~~~~~~~~~
 
-As the application becomes more modular, the code also becomes more fragmented in order to support good separation of concerns. Ensuring that all the modules of the application are loaded properly at runtime becomes a more complex task as the application size increases. For conquering this complexity, we will be using the Asynchronous Module Definition mechanism as implemented by the `require.js` library.
+In order to provide good separation of concerns, we split the JavaScript code into modules.  Ensuring that all the modules of the application are loaded properly at runtime becomes a complex task, as the application size increases. To conquer this complexity, we use the Asynchronous Module Definition mechanism as implemented by the "require.js" library.
 
 [TIP]
 .Asynchronous Module Definition
 ========================================================================
-The Asynchronous Module Definition (AMD) API specifies a mechanism for defining modules such that the module and its dependencies can be asynchronously loaded. This is particularly well suited for the browser environment where synchronous loading of modules incurs performance, usability, debugging, and cross-domain access problems.
+The Asynchronous Module Definition (AMD) API specifies a mechanism for defining modules such that the module, and its dependencies, can be asynchronously loaded. This is particularly well suited for the browser where synchronous loading of modules incurs performance, usability, debugging, and cross-domain access problems.
 ========================================================================
 
 Templating
 ~~~~~~~~~~
 
-Instead of manipulating the DOM directly, and mixing up HTML with the JavaScript code, we create HTML markup fragments separately as templates, to be applied when the application views render. 
+Instead of manipulating the DOM directly, and mixing up HTML with the JavaScript code, we create HTML markup fragments separately as templates which are applied when the application views are rendered.
 
-In this application we use the templating support provided by `underscore.js`.
+In this application we use the templating support provided by "underscore.js".
 
 Mobile and desktop versions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We will build two variants of the single-page-application: one for the desktop and one for mobile clients. This is because the page flow and structure, as well as feature set are slightly different in each case. Because they are very similar, we will cover the desktop version of the application first, and then we will explain what is different in the case of the mobile version.
+The page flow and structure, as well as feature set, are slightly different for mobile and desktop therefore we will build two variants of the single-page-application, one for desktop and one for mobile. As the application variants are very similar, we will cover the desktop version of the application first, and then we will explain what is different in the mobile version.
 
 Setting up the structure
 ------------------------
 
-Before we start developing the user interface, we need to set up the general application structure and copy the library files. So the first thing to do is to create the directory structure.
+Before we start developing the user interface, we need to set up the general application structure and add the JavaScript libraries. First, we create the directory structure:
 
 [[ui-directory-structure]]
 .File structure for our web application
 image::gfx/ui-file-structure.png[]
 
-We will copy all stylesheets in the `resources/css` folder, `resources/img` contains the images and `resources/templates` contains the HTML templates for generating the views. 
+We put stylesheets in `resources/css` folder, images in `resources/img`, and HTML view templates in `resources/templates`. `resources/js` contains the JavaScript code, split between `resource/js/lib` - which contains the libraries used by the application and `resources/js/app` which contains the application code. The latter will contain the application modules, in subsequent subdirectories, for models, collections, routers and views.
 
-`resources/js` will contain the JavaScript code, split between `resource/js/lib` - which contains the libraries used by the application and `resources/js/app` which contains the application code. The latter will contain the application modules, in subsequent subdirectories, for models, collections, routers and views.
+The first step in implementing our solution is adding the stylesheets and JavaScript libraries to the `resources/css` and `resources/js/lib`:
 
-The first step in implementing our solution is copying the corresponding files into the `resources/css` and `resources/js/lib` folders:
-
-* require.js - for AMD support, along with its plugins
+require.js::
+    AMD support, along with the plugins:
 ** text - for loading text files, in our case the HTML templates
 ** order - for enforcing load ordering if necessary
-* jQuery - general purpose library for HTML traversal and manipulation
-* Underscore - JavaScript utility library (and a dependency of Backbone)
-* Backbone - Client-side MVC frame
-* Bootstrap - UI components and stylesheets for page structuring
+jQuery::
+    general purpose library for HTML traversal and manipulation
+Underscore::
+    JavaScript utility library (and a dependency of Backbone)
+Backbone::
+    Client-side MVC framework
+Bootstrap::
+    UI components and stylesheets for page structuring
 
-Then, we will create the main page of the application (which will be actually referenced by the browser).
+Now, we create the main page of the application (which is the URL loaded by the browser):
 
 .src/main/webapp/desktop-index.html
 [source,html]
@@ -140,11 +143,11 @@ Then, we will create the main page of the application (which will be actually re
 </html>
 -------------------------------------------------------------------------------------------------------
 
-As you can see, the page does not contain too much. It loads the custom stylesheet of the application, as well as the one required by Twitter bootstrap, sets up instructions for loading the application scripts and defines a general structure of the page.  
+As you can see, the page does not contain much. It loads the custom stylesheet of the application, as well as the one required by Bootstrap, sets up instructions for loading the application scripts and defines the general structure of the page.  
 
-The actual HTML code of the page contains a menu definition which will be present on all the pages, as well as an empty element named `content` which is essentially a placeholder for the application views. When a view is displayed, it will apply a template and populate it.
+The actual HTML code of the page contains a menu definition which will be present on all the pages, as well as an empty element named `content`, which is the placeholder for the application views. When a view is displayed, it will apply a template and populate the `content` element.
 
-The JavaScript code of the page is loaded by `require.js`, according to the module definition contained in `resources/js/main-desktop.js`, as follows:
+The JavaScript code of the page is loaded by `require.js`, according to the module definition contained in `resources/js/main-desktop.js`:
 
 .src/main/webapp/resources/js/main-desktop.js
 [source,javascript]
@@ -187,17 +190,17 @@ require([
 });
 -------------------------------------------------------------------------------------------------------
 
-As you see, this module loads all the utility libraries. Later on, when we will have written the application code too, we will load it here as well.
+The module loads all the utility libraries. Later on, when we will have written the application code, it will be loaded here as well.
 
-Visualising Events
-------------------
+Displaying Events
+-----------------
 
 The first use case that we implement is event navigation. The users will be able to view the list of events and select the one that they want to attend. After doing so, they will select a venue, and will be able to choose a performance date and time.
 
 The Event model
 ~~~~~~~~~~~~~~~
 
-We will define a Backbone model for holding individual event data. Nearly each domain entity (booking, event, venue) is represented by a corresponding Backbone model.
+We a Backbone model for holding event data. Nearly all domain entities (booking, event, venue) are represented by a corresponding Backbone model:
 
 .src/main/webapp/resources/js/app/models/event.js
 [source,javascript]
@@ -220,18 +223,20 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-The `Event` model can perform CRUD operations directly against the REST services. 
+The `Event` model can perform CRUD operations against the REST services we defined earlier.
 
 [TIP]
 .Backbone Models
 ========================================================================
-Backbone models contain the interactive data as well as a large part of the logic surrounding it: conversions, validations, computed properties, and access control. The can also perform CRUD operations with the REST service. 
+Backbone models contain data as well as much of the logic surrounding 
+it: conversions, validations, computed properties, and access control. 
+They also perform CRUD operations with the REST service. 
 ========================================================================
 
 The Events collection
 ~~~~~~~~~~~~~~~~~~~~~
 
-We will define a Backbone collection for handling groups of events (like the events list). 
+We define a Backbone collection for handling groups of events (like the events list):
 
 .src/main/webapp/resources/js/app/collections/events.js
 [source,javascript]
@@ -262,11 +267,14 @@ define([
 
 By mapping the model and collection to a REST endpoint you can perform CRUD operations without having to invoke the services explicitly. You will see how that works a bit later.
 
+[TIP]
+
 .Backbone Collections
-***********************************************************************
-Collections are ordered sets of models. They can handle events which are fired as a result of a change to a
-individual member, and can perform CRUD operations for syncing up contents against RESTful services.
-*********************************************************************** 
+========================================================================
+Collections are ordered sets of models. They can handle events which are
+fired as a result of a change to a individual member, and can perform 
+CRUD operations for syncing up contents against RESTful services.
+========================================================================
 
 The EventsView view
 ~~~~~~~~~~~~~~~~~~~
@@ -311,7 +319,7 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-The view is attached to a DOM element (the `el` property). When the `render` method is invoked, it manipulates the DOM and renders the view. We could have achieved that by writing these instructions directly in the method, but that would make it hard to change the page design later on. Rather than that, we will create a template and apply it, thus separating the HTML view code from the view implementation. 
+The view is attached to a DOM element (the `el` property). When the `render` method is invoked, it manipulates the DOM and renders the view. We could have achieved this by writing these instructions directly in the method, but that would make it hard to change the page design later on. Instead, we create a template and apply it, thus separating the HTML view code from the view implementation. 
 
 .src/main/webapp/resources/templates/desktop/events.html
 [source,html]
@@ -378,16 +386,16 @@ The view is attached to a DOM element (the `el` property). When the `render` met
 -------------------------------------------------------------------------------------------------------
 
 
-Besides applying the template and preparing the data that will be used to fill it (the `categories` and `model` entries in the map), this method also performs the JavaScript calls that are required to initialize the UI components (in this case the Twitter Bootstrap carousel and popover).
+As well as applying the template and preparing the data that will be used to fill it in (the `categories` and `model` entries in the map), the `render` method also performs the JavaScript calls that are required to initialize the UI components (in this case the Bootstrap carousel and popover).
 
-A view can also listen to events fired by children of it's `el` root element. In this case, the `update` method is set up within the `events` property of the class to listen to clicks on anchors. 
+A view can also listen to events fired by the children of it's root element (`el`). In this case, the `update` method is configured to listen to clicks on anchors. The configuration occurs within the `events` property of the class. 
 
-Now that the views are in place, you will need to add a routing rule to the application. We will create a router and add our first routes.
+Now that the views are in place, we need to add a routing rule to the application. We create the router and add our first routes.
 
 Routing
 ~~~~~~~
 
-We will continue by defining a Router which provides linkable, bookmarkable and shareable URLs for the various locations in our application.
+We will continue by defining a router which provides bookmarkable URLs for the various locations in our application.
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
 [source, javascript]
@@ -442,11 +450,17 @@ define("router", [
 });
 -------------------------------------------------------------------------------------------------------
 
-Remember, this is a single page application. You will be able to navigate either using urls such as `http://localhost:8080/ticket-monster/desktop-index.html#events` or from with relative urls from within the application itself (this being exactly what the main menu does). The portion after the hash sign represents the url within the page, the one on which the router will act. The `routes` property maps urls to controller function. In the example above, we have two controller functions.
+Remember, this is a single page application. You can either navigate using urls such as `http://localhost:8080/ticket-monster/desktop-index.html#events` or using relative urls (from within the application, this being exactly what the main menu does). The fragment after the hash sign represents the url within the single page, on which the router will act. 
 
-`events` handles the `#events` URL and will retrieve the events in our application through a REST call. You don't have to do the REST call yourself, it will be triggered the `fetch` invocation on the `Events` collection (remember our earlier point about mapping collections to REST urls?). The `reset` event on the collection is invoked when the data from the server is received and the collection is populated, and this triggers the rendering of the events view (which is bound to the `#content` div). Notice how the whole process is orchestrated in an event-driven fashion - the models, views and controllers interact through events.
+The `routes` property maps urls to controller function. In the example above, we have two controller functions.
 
-Once the router has been defined, all that remains is to cause is to be loaded by the main module definition. Because the router depends on all the other components (models, collections and views) of the application, directly or indirectly, it will be the only one that is explicitly listed in the `main-desktop` definition, which will change as follows:
+`events` handles the `#events` fragment and will retrieve the events in our application via a REST call. We don't manually perform the REST call as it is triggered the by invocation of `fetch` on the `Events` collection, as discussed earlier. 
+
+The `reset` event on the collection is invoked when the data from the server is received, and the collection is populated. This triggers the rendering of the events view (which is bound to the `#content` div). 
+
+The whole process is event orientated - the models, views and controllers interact through events.
+
+Once the router has been defined, all that remains is to cause it to be loaded by the main module definition. Because the router depends on all the other components (models, collections and views) of the application, directly or indirectly, it is the only component that is explicitly loaded in the `main-desktop` definition, which we change as follows:
 
 .src/main/webapp/resources/js/main-desktop.js
 [source,javascript]
@@ -481,9 +495,9 @@ require([
 Viewing a single event
 ----------------------
 
-With the events list view now in place, we can begin implementing the next step of the use case: adding a view for visualizing the details of an individual event, selecting a venue and a performance time.
+With the events list view now in place, we can add a view to display the details of each individual event, allowing the user to select a venue and performance time.
 
-We already have the models in place so all we need to do is to create a additional view and expand the router. The view comes first.
+We already have the models in place so all we need to do is to create the additional view and expand the router. First, we'll implement the view:
 
 .src/main/webapp/resources/js/app/views/desktop/event-detail.js
 [source,javascript]
@@ -596,19 +610,19 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-This view is already a bit more complex than the global events view. The main reason for that happening is that certain portions of the page need to be updated whenever the user chooses a different venue. 
+This view is more complex than the global events view, as portions of the page need to be updated when the user chooses a venue. 
 
 [[ui-event-detail]]
-.On the event details page some fragments need to be re-rendered when the user changes the venue
+.On the event details page some fragments are re-rendered when the user selects a venue
 image::gfx/ui-event-details.png[]
 
 The view responds to three different events:
 
-* a of the current venue will trigger a reload of the details and venue image, as well as of the performance times. The application will retrieve the latter information through a RESTful web service;
-* changing the performance day will cause the performance time selector to reload;
-* once the venue and performance time and date have been selected, the user can navigate to the booking page.
+* changing the current venue triggers a reload of the venue details and the venue image, as well as the performance times. The application retrieves the performance times through a REST call.
+* changing the day of the performance causes the performance time selector to reload.
+* once the venue and performance date and time have been selected, the user can navigate to the booking page.
 
-The corresponding templates for the three fragments used above are shown below
+The corresponding templates for the three fragments rendered above are:
 
 .src/main/webapp/resources/templates/desktop/event-detail.html
 [source,html]
@@ -671,7 +685,7 @@ The corresponding templates for the three fragments used above are shown below
 </address>
 -------------------------------------------------------------------------------------------------------
 
-Now that the view has actually been created, we need to add it to the router:
+Now that the view exists, we add it to the router:
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
 [source,javascript]
@@ -707,16 +721,16 @@ define("router", [
 });
 -------------------------------------------------------------------------------------------------------
 
-As you can see, this is extremely similar to the previous view and route, except that right now the application can also navigate routes such as `http://localhost:8080/ticket-monster/desktop-index#events/1`. This can be entered directly in the browser or it can be navigated as a relative path to `#events/1` from within the applicaton, which is what the collapsible events menu above does.
+As you can see, this is very similar to the previous view and route, except that now the application can accept URLs (e.g. `http://localhost:8080/ticket-monster/desktop-index#events/1`). This URL can be entered directly into the browser, or it can be navigated to as a relative path (e.g. `#events/1`) from within the applicaton.
 
 With this in place, all that remains is to implement the final view of this use case, creating the bookings.
 
 Creating Bookings
 -----------------
 
-The user has chosen an event, a venue and a performance time, so the last step in our implementation is creating a booking. Users can select one of the available sections for the show's venue, and once they do so, they will be able to enter a number of tickets for each category available for this show (Adult, Child, etc.) and add them to the current order. Once they do so, a summary view gets updated. Users can also choose to remove tickets from the order. When the order is complete, they can enter the contact information (e-mail address) and can submit it to the server.
+The user has chosen the event, the venue and the performance time, and must now create the booking. Users can select one of the available sections for the show's venue, and then enter the number of tickets requiredfor each category available for this show (Adult, Child, etc.). They then add the tickets to the current order, which causes the summary view to be updated. Users can also remove tickets from the order. When the order is complete, they enter their contact information (e-mail address) and submit the order to the server.
 
-First, we will add the new view:
+First, we add the new view:
 
 .src/main/webapp/resources/js/app/views/desktop/create-booking.js
 [source,javascript]
@@ -924,9 +938,9 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-The code above may be surprising: after all, we said that we were going to add a single view, but instead, we have added three! The reason is that this view makes use of subviews (`TicketCategoriesView` and `TicketSummaryView`) for re-rendering parts of the main view. Whenever the user changes the current section selection, it will display a list of available tickets, by price category. Whenever the user adds the tickets to the main request, the current summary will be re-rendered. Changes in quantities or the target email may enable or disable the submission button - the booking request data is re-validated in the process. We do not create separate modules for the subviews, since they are not referenced outside the module itself.
+The code above may be surprising! After all, we said that we were going to add a single view, but instead, we added three! This view makes use of two subviews (`TicketCategoriesView` and `TicketSummaryView`) for re-rendering parts of the main view. Whenever the user changes the current section, the list of available tickets is updated. Whenever the user adds the tickets to the booking, the booking summary is re-rendered. Changes in quantities or the target email may enable or disable the submission button - the booking is validated whenever changes to it are made. We do not create separate modules for the subviews, since they are not referenced outside the module itself.
 
-The user submission is handled by the `save` method which constructs the a JSON object in the format required by a POST at `http://localhost:8080/ticket-monster/rest/bookings`, and performs the AJAX call. In case of a successful response, a confirmation view is rendered. On failure, a warning is displayed and the user may continue to edit the form. 
+The booking submission is handled by the `save` method which constructs a JSON object, as required by a POST to `http://localhost:8080/ticket-monster/rest/bookings`, and performs the AJAX call. In case of a successful response, a confirmation view is rendered. On failure, a warning is displayed and the user may continue to edit the form. 
 
 The corresponding templates for the views above are shown below:
 
@@ -1126,33 +1140,38 @@ define("router", [
 });
 -------------------------------------------------------------------------------------------------------
 
-This concludes the implementation of a full booking use case, starting with listing events, continuing with selecting a venue and performance time, and ending with choosing tickets and completing the order.
+This concludes the implementation of the booking use case. We started by listing the available events, continued by selecting a venue and performance time, and ended by choosing tickets and completing the order.
 
-The other use cases: full booking starting from venues and visualizing existing bookings are conceptually similar, so you can just copy the remaining files in the `src/main/webapp/resources/js/app/models`, `src/main/webapp/resources/js/app/collections`, 
+The other use cases: a booking starting from venues and vi existing bookings are conceptually similar, so you can just copy the remaining files in the `src/main/webapp/resources/js/app/models`, `src/main/webapp/resources/js/app/collections`, 
 `src/main/webapp/resources/js/app/views/desktop` and the remainder of `src/main/webapp/resources/js/app/routers/desktop/router.js`.
 
 
 Mobile view
 -----------
 
-The mobile version of the application follows roughly the same architecture as the desktop version. The distinctions are mainly caused by the functional differences between the two versions, as well as the use of jQuery mobile. 
+The mobile version of the application uses approximately the same architecture as the desktop version. Any differences are due to the functional changes in the mobile version and the use of jQuery mobile. 
 
 Setting up the structure
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The first step in implementing our solution is copying the corresponding files into the `resources/css` and `resources/js/lib` folders:
+The first step in implementing our solution is to copy the CSS and JavaScript libraries to `resources/css` and `resources/js/lib`:
 
-* require.js - for AMD support, along with its plugins
+require.js::
+    AMD support, along with the plugins:
 ** text - for loading text files, in our case the HTML templates
 ** order - for enforcing load ordering if necessary
-* jQuery - general purpose library for HTML traversal and manipulation;
-* Underscore - JavaScript utility library (and a dependency of Backbone);
-* Backbone - Client-side MVC framework;
-* jQuery Mobile - user interface system for mobile devices;
+jQuery::
+    general purpose library for HTML traversal and manipulation
+Underscore::
+    JavaScript utility library (and a dependency of Backbone)
+Backbone::
+    Client-side MVC framework
+jQuery Mobile::
+     user interface system for mobile devices;
 
-(If you built the desktop application following the previous example, some files may already be in place.) 
+(If you have already built the desktop application, some files may already be in place.) 
 
-Next, we will add the mobile main page.
+Next, we add the mobile main page.
 
 .src/main/webapp/mobile-index.html
 [source,html]
@@ -1177,9 +1196,9 @@ Next, we will add the mobile main page.
 </html>
 -------------------------------------------------------------------------------------------------------
 
-As you can see, this page is even simpler. We just load the stylesheets for the application, and then we use `require.js` to load the JavaScript code and page fragments. All the pages will render inside the `container` element, which has a `data-role` attribute with the `page` value. This means that this is a jQuery Mobile page. 
+As you can see, this page is simple. We just load the stylesheets for the application, and then we use `require.js` to load the JavaScript code and page fragments. All the pages will render inside the `container` element, which has a `data-role` attribute with the `page` value, as with any jQuery Mobile application. 
 
-Then, we will add the module loader.
+Now, we add it the module loader.
 
 .src/main/webapp/resources/js/main-mobile.js
 [source,javascript]
@@ -1222,14 +1241,9 @@ require(['router'],
 });
 -------------------------------------------------------------------------------------------------------
 
-In this application, we combine Backbone and jQuery Mobile. Each framework has its own
-strengths: jQuery Mobile provides the UI components and touch device support, whereas 
-Backbone provides the MVC support. However, there is some overlap between the two, as jQuery
-Mobile provides its own navigation mechanism which will need to be disabled. 
-So in the router code below you will find the customizations that need to be performed in order to 
-get the two frameworks working together - disabling the jQuery Mobile navigation and 
-the `defaultHandler` added to the route for handling jQuery Mobile transitions between internal
-pages (such as the ones generated by a nested listview).
+In this application, we combine Backbone and jQuery Mobile. Each framework has its own strengths; jQuery Mobile provides UI components and touch support, whilst Backbone provides MVC support. There is some overlap between the two, as jQuery Mobile provides its own navigation mechanism which we disable. 
+
+In the router code we make customizations in order to get the two frameworks working together - disabling the jQuery Mobile navigation and adding the `defaultHandler` to the router for handling jQuery Mobile transitions between internal pages (such as the ones generated by a nested listview).
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
 [source,javascript]
@@ -1281,14 +1295,12 @@ define("router",[
 });
 -------------------------------------------------------------------------------------------------------
 
-Please note that the router will be also have more responsibilities, will
-interact with more libraries and it will declare them as its dependencies. We won't specify
+The router also will also interact with additional libraries and will declare them as its dependencies, rather than specifying
 them in the main loader. 
 
 The landing page
 ~~~~~~~~~~~~~~~~
-
-The first page in our application is the landing page. First, we add the template for it.
+The first page in our application is the landing page. First, we add the template for it:
 
 .src/main/webapp/resources/templates/mobile/home-view.html
 [source,html]
@@ -1345,17 +1357,12 @@ define("router",[
 });
 -------------------------------------------------------------------------------------------------------
 
-Because jQuery Mobile navigation is disabled in order to be able to take advantage of 
-backbone's support, we need to tell jQuery Mobile explicitly to enhance the page content
-in order to create the mobile view - in this case, we trigger the jQuery Mobile `pagecreate` 
-event explicitly to ensure that the page gets the appropriate look and feel.
+Because jQuery Mobile navigation is disabled, we must tell jQuery Mobile explicitly to enhance the page content in order to create the mobile view. Here, we trigger the jQuery Mobile `pagecreate` event explicitly to ensure that the page gets the appropriate look and feel.
 
 The events view
 ~~~~~~~~~~~~~~~
 
-Just as in the case of the desktop view, we would like to display a list of events first.
-Since mobile interfaces are more constrained, we will just show a simple list view. First
-we will create the appropriate Backbone view.
+First, we display a list of events (just as in the desktop view). Since mobile interfaces are more constrained, we will just show a simple list view:
 
 .src/main/webapp/resources/js/app/views/mobile/events.js
 [source,javascript]
@@ -1387,10 +1394,9 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-As you can see, it is conceptually very similar to the desktop view, the main difference being the explicit
-hint to jQuery mobile through the `pagecreate` event invocation.
+As you can see, the view is very similar to the desktop view, the main difference being the explicit hint to jQuery mobile through the `pagecreate` event invocation.
 
-The next step is adding the template for rendering the view.
+Next, we add the template for rendering the view:
 
 .src/main/webapp/resources/templates/mobile/events.html
 [source,html]
@@ -1424,7 +1430,7 @@ The next step is adding the template for rendering the view.
 </div>
 -------------------------------------------------------------------------------------------------------
 
-And finally, we need to instruct the router to invoke the page.
+And finally, we need to instruct the router to invoke the page:
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
 [source,javascript]
@@ -1468,13 +1474,12 @@ define("router",[
 });
 -------------------------------------------------------------------------------------------------------
 
-Just as in the case of the desktop application, the list of events will be accessible at `#events`, like
-for example `http://localhost:8080/ticket-monster/mobile-index.html#events`.
+Just as in the case of the desktop application, the list of events will be accessible at `#events` (i.e. `http://localhost:8080/ticket-monster/mobile-index.html#events`).
 
-Viewing an individual event
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Displaying an individual event
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For viewing individual event details, we need to create the view first.
+Now, we create the view to display an event:
 
 .src/main/webapp/resources/js/app/views/mobile/event-detail.js
 [source,javascript]
@@ -1591,8 +1596,7 @@ define(['backbone',
 });
 -------------------------------------------------------------------------------------------------------
 
-Again, this is very similar to the desktop version, the main differences being due to the specific jQuery
-Mobile invocations. And now we need to provide the actual page templates
+Once again, this is very similar to the desktop version. Now we add the page templates:
 
 .src/main/webapp/resources/templates/mobile/event-detail.html
 [source,html]
@@ -1650,9 +1654,7 @@ Mobile invocations. And now we need to provide the actual page templates
 </address>
 -------------------------------------------------------------------------------------------------------
 
-And finally, we need to instruct add this to the router, explicitly indicating jQuery Mobile that a 
-transition has to take place after the view is rendered - in order to allow the page to render 
-correctly after it has been invoked from the listview. 
+Finally, we add this to the router, explicitly indicating to jQuery Mobile that a transition has to take place after the view is rendered - in order to allow the page to render correctly after it has been invoked from the listview. 
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
 [source,javascript]
@@ -1697,18 +1699,14 @@ define("router",[
 });
 -------------------------------------------------------------------------------------------------------
 
-Just as the desktop version, the mobile event detail view allows users to choose a venue 
-and a performance time. The next step is booking some tickets.
+Just as the desktop version, the mobile event detail view allows users to choose a venue and a performance time. The next step is to allow the user to book some tickets.
 
 Booking tickets
 ~~~~~~~~~~~~~~~
 
-The process of booking tickets is simpler than in the case of desktop version. Users can
-select a section and enter the number of tickets for each category - however, there is 
-no process of adding and removing tickets to an order, once the form is filled out, the 
-users can submit it. 
+The views to book tickets are simpler than the desktop version. Users can select a section and enter the number of tickets for each category however, there is no way to add or remove tickets from an order. Once the form is filled out, the user can only submit it. 
 
-First, we will create the views:
+First, we create the views:
 
 .src/main/webapp/resources/js/app/views/mobile/create-booking.js
 [source,javascript]
@@ -1893,11 +1891,10 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-The views follow the same view/subview breakdown principles as in the case of the desktop
-application, except that the summary view is not rendered inline but after a page
+The views follow the structure the desktop application, except that the summary view is not rendered inline but after a page
 transition.
 
-The next step is creating the page fragment templates. First, the actual page.
+Next, we create the page fragment templates. First, the actual page:
 
 .src/main/webapp/resources/templates/mobile/create-booking.html
 [source,html]
@@ -1939,8 +1936,7 @@ The next step is creating the page fragment templates. First, the actual page.
 </div>
 -------------------------------------------------------------------------------------------------------
  
-Next, the fragment that contains the input form for tickets, which will be re-rendered
-whenever the section selection changes.
+Next, the fragment that contains the input form for tickets, which is re-rendered whenever the section is changed:
  
 .src/main/webapp/resources/templates/mobile/ticket-entries.html
 [source,html]
@@ -1961,7 +1957,7 @@ whenever the section selection changes.
 <% } %>
 -------------------------------------------------------------------------------------------------------
 
-Before submitting the request to the server, the order will be confirmed:
+Before submitting the request to the server, the order is confirmed:
 
 .src/main/webapp/resources/templates/mobile/confirm-booking.html
 [source,html]
@@ -1987,7 +1983,7 @@ Before submitting the request to the server, the order will be confirmed:
 </div>
 -------------------------------------------------------------------------------------------------------
 
-This page contains a summary subview:
+The confirmation page contains a summary subview:
 
 .src/main/webapp/resources/templates/mobile/ticket-summary-view.html
 [source,html]
@@ -2023,7 +2019,7 @@ This page contains a summary subview:
 </div>
 -------------------------------------------------------------------------------------------------------
 
-And finally, the page that displays the booking confirmation.
+Finally, we create the page that displays the booking confirmation:
 
 .src/main/webapp/resources/templates/mobile/booking-details.html
 [source,html]
@@ -2063,7 +2059,7 @@ And finally, the page that displays the booking confirmation.
 </div>
 -------------------------------------------------------------------------------------------------------
 
-The last step is tying the view into the router.
+The last step is registering the view with the router:
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
 [source,javascript]
@@ -2103,18 +2099,11 @@ define("router", [
 Device detection
 ------------------
 
-Now we have two distinct single-page applications and we can point users to any of them 
-easily. But instead letting the user figure out which page do they want to get to, we could
-simply redirect them to one of the pages based on the device that they have.
+We have created two distinct single-page applications and can point users to any of them easily. But instead of requiring that the user work out which page they want, we should redirect them to the correct page based on the device that they have.
 
-To this end, we are using `Modernizr.js` a JavaScript library that help us detect 
-device capabilities - and which you can use for much more thank just desktop vs. mobile 
-detection: it can identify which features from the HTML5 set are supported by a particular
-browser at runtime, which is extremely helpful for implementing progressive enhancement in
-applications.
+We use Modernizr.js, a JavaScript library that help us detect device capabilities. You can use Modernizer.js for much more thank just desktop vs. mobile detection. It can also identify which features from the HTML5 set are supported by a particular browser at runtime, which is extremely helpful for implementing progressive enhancement in applications.
 
-So, the first step is to copy `modernizr.js` into `src/main/webapp/resources/js/libs`. Then,
-you will add the `src/main/webapp/index.html` file with the following content:
+First step we copy `modernizr.js` into `src/main/webapp/resources/js/libs`. Then, we add `src/main/webapp/index.html`, with the following content:
 
 .src/main/webapp/index.html
 [source,html]
@@ -2144,6 +2133,5 @@ you will add the `src/main/webapp/index.html` file with the following content:
 </html>
 -------------------------------------------------------------------------------------------------------
 
-Now you can navigate to an URL like `http://localhost:8080/ticket-monster/` with either
-a mobile device or a desktop browser, and you will be redirected to the appropriate page.
+Now we can navigate to `http://localhost:8080/ticket-monster/` with either a mobile device or a desktop browser, and be redirected to the appropriate page.
 
