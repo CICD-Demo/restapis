@@ -2135,3 +2135,7 @@ First step we copy `modernizr.js` into `src/main/webapp/resources/js/libs`. Then
 
 Now we can navigate to `http://localhost:8080/ticket-monster/` with either a mobile device or a desktop browser, and be redirected to the appropriate page.
 
+More Resources
+--------------
+
+To learn more about writing HTML5 + REST applications with JBoss, take a look at the link:http://www.jboss.org/aerogear[Aerogear] project.
