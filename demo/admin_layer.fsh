@@ -28,6 +28,11 @@ if ( SHELL.promptBoolean("Apply manual functional changes described in tutorial?
     git apply --ignore-whitespace --ignore-space-change admin_layer_functional.patch;
 }
 
+if ( SHELL.promptBoolean("Apply manual fixes for FORGE-587,FORGE-589?") ) {
+    echo Applying manual fixes for FORGE-587,FORGE-589 based on admin_layer_fixes.patch;
+    git apply --ignore-whitespace --ignore-space-change admin_layer_fixes.patch;
+}
+
 if ( SHELL.promptBoolean("Apply manual visual changes?") ) {
     echo Applying manual visual changes based on admin_layer_graphics.patch;
     git apply --ignore-whitespace --ignore-space-change admin_layer_graphics.patch;

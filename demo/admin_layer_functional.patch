@@ -1,5 +1,5 @@
 diff --git a/demo/src/main/webapp/WEB-INF/web.xml b/demo/src/main/webapp/WEB-INF/web.xml
-index 8894f78..e62b752 100644
+index d1afd7b..e62b752 100644
 --- a/demo/src/main/webapp/WEB-INF/web.xml
 +++ b/demo/src/main/webapp/WEB-INF/web.xml
 @@ -32,7 +32,4 @@
@@ -10,63 +10,8 @@ index 8894f78..e62b752 100644
 -    <welcome-file>faces/index.xhtml</welcome-file>
 -  </welcome-file-list>
  </web-app>
-diff --git a/demo/src/main/webapp/admin/booking/search.xhtml b/demo/src/main/webapp/admin/booking/search.xhtml
-index be2efef..edc9dd4 100644
---- a/demo/src/main/webapp/admin/booking/search.xhtml
-+++ b/demo/src/main/webapp/admin/booking/search.xhtml
-@@ -25,8 +25,9 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
- 
-+			<h:panelGroup styleClass="search">
-+                <f:validateBean disabled="true">
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="bookingBeanSearchCancellationCode" value="Cancellation Code:"/>
- 					<h:panelGroup>
-@@ -54,7 +55,9 @@
- 					<h:commandLink value="Search" action="#{bookingBean.search}"/>
- 					<h:commandLink value="Create New" action="#{bookingBean.create}"/>
- 				</h:panelGroup>
-+                </f:validateBean>
- 			</h:panelGroup>
-+
- 			
- 			<h:dataTable id="bookingBeanPageItems" styleClass="data-table" value="#{bookingBean.pageItems}" var="_item">
- 				<h:column>
-diff --git a/demo/src/main/webapp/admin/event/search.xhtml b/demo/src/main/webapp/admin/event/search.xhtml
-index a5650a8..2c26f51 100644
---- a/demo/src/main/webapp/admin/event/search.xhtml
-+++ b/demo/src/main/webapp/admin/event/search.xhtml
-@@ -25,6 +25,7 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
-+            <f:validateBean disabled="true">
- 			<h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
-@@ -46,7 +47,8 @@
- 					<h:outputLabel for="eventBeanSearchCategory" value="Category:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{eventCategoryBean.converter}" id="eventBeanSearchCategory" value="#{eventBean.search.category}">
--							<f:selectItems value="#{eventCategoryBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{eventCategoryBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="eventBeanSearchCategory" styleClass="error"/>
- 					</h:panelGroup>
-@@ -63,6 +65,7 @@
- 					<h:commandLink value="Create New" action="#{eventBean.create}"/>
- 				</h:panelGroup>
- 			</h:panelGroup>
-+            </f:validateBean>
- 			
- 			<h:dataTable id="eventBeanPageItems" styleClass="data-table" value="#{eventBean.pageItems}" var="_item">
- 				<h:column>
 diff --git a/demo/src/main/webapp/admin/event/view.xhtml b/demo/src/main/webapp/admin/event/view.xhtml
-index 2f61fb8..ecbb929 100644
+index 2f61fb8..1522c99 100644
 --- a/demo/src/main/webapp/admin/event/view.xhtml
 +++ b/demo/src/main/webapp/admin/event/view.xhtml
 @@ -4,6 +4,7 @@
@@ -87,28 +32,6 @@ index 2f61fb8..ecbb929 100644
  			</h:link>
  			<h:outputText/>
  			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
-diff --git a/demo/src/main/webapp/admin/eventCategory/search.xhtml b/demo/src/main/webapp/admin/eventCategory/search.xhtml
-index b9ebca6..5a404a1 100644
---- a/demo/src/main/webapp/admin/eventCategory/search.xhtml
-+++ b/demo/src/main/webapp/admin/eventCategory/search.xhtml
-@@ -25,6 +25,7 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
-+            <f:validateBean disabled="true">
- 			<h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
-@@ -40,7 +41,8 @@
- 					<h:commandLink value="Create New" action="#{eventCategoryBean.create}"/>
- 				</h:panelGroup>
- 			</h:panelGroup>
--			
-+            </f:validateBean>
-+
- 			<h:dataTable id="eventCategoryBeanPageItems" styleClass="data-table" value="#{eventCategoryBean.pageItems}" var="_item">
- 				<h:column>
- 					<f:facet name="header">
 diff --git a/demo/src/main/webapp/admin/index.html b/demo/src/main/webapp/admin/index.html
 new file mode 100644
 index 0000000..4036f32
@@ -162,226 +85,8 @@ index 0000000..a1eaf27
 +
 +</ui:composition>
 \ No newline at end of file
-diff --git a/demo/src/main/webapp/admin/mediaItem/search.xhtml b/demo/src/main/webapp/admin/mediaItem/search.xhtml
-index ad986b6..6a8ed85 100644
---- a/demo/src/main/webapp/admin/mediaItem/search.xhtml
-+++ b/demo/src/main/webapp/admin/mediaItem/search.xhtml
-@@ -25,7 +25,7 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
-+			<f:validateBean disabled="true"><h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="mediaItemBeanSearchMediaType" value="Media Type:"/>
-@@ -48,7 +48,7 @@
- 					<h:commandLink value="Search" action="#{mediaItemBean.search}"/>
- 					<h:commandLink value="Create New" action="#{mediaItemBean.create}"/>
- 				</h:panelGroup>
--			</h:panelGroup>
-+			</h:panelGroup></f:validateBean>
- 			
- 			<h:dataTable id="mediaItemBeanPageItems" styleClass="data-table" value="#{mediaItemBean.pageItems}" var="_item">
- 				<h:column>
-diff --git a/demo/src/main/webapp/admin/performance/search.xhtml b/demo/src/main/webapp/admin/performance/search.xhtml
-index c68290d..18bab2a 100644
---- a/demo/src/main/webapp/admin/performance/search.xhtml
-+++ b/demo/src/main/webapp/admin/performance/search.xhtml
-@@ -25,13 +25,14 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
-+			<f:validateBean disabled="true"><h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="performanceBeanSearchShow" value="Show:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{showBean.converter}" id="performanceBeanSearchShow" value="#{performanceBean.search.show}">
--							<f:selectItems value="#{showBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{showBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="performanceBeanSearchShow" styleClass="error"/>
- 					</h:panelGroup>
-@@ -41,7 +42,7 @@
- 					<h:commandLink value="Search" action="#{performanceBean.search}"/>
- 					<h:commandLink value="Create New" action="#{performanceBean.create}"/>
- 				</h:panelGroup>
--			</h:panelGroup>
-+			</h:panelGroup></f:validateBean>
- 			
- 			<h:dataTable id="performanceBeanPageItems" styleClass="data-table" value="#{performanceBean.pageItems}" var="_item">
- 				<h:column>
-diff --git a/demo/src/main/webapp/admin/section/search.xhtml b/demo/src/main/webapp/admin/section/search.xhtml
-index eced141..5d91349 100644
---- a/demo/src/main/webapp/admin/section/search.xhtml
-+++ b/demo/src/main/webapp/admin/section/search.xhtml
-@@ -26,7 +26,7 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
-+			<f:validateBean disabled="true"><h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="sectionBeanSearchName" value="Name:"/>
-@@ -56,7 +56,8 @@
- 					<h:outputLabel for="sectionBeanSearchVenue" value="Venue:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{venueBean.converter}" id="sectionBeanSearchVenue" value="#{sectionBean.search.venue}">
--							<f:selectItems value="#{venueBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{venueBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="sectionBeanSearchVenue" styleClass="error"/>
- 					</h:panelGroup>
-@@ -66,7 +67,7 @@
- 					<h:commandLink value="Search" action="#{sectionBean.search}"/>
- 					<h:commandLink value="Create New" action="#{sectionBean.create}"/>
- 				</h:panelGroup>
--			</h:panelGroup>
-+			</h:panelGroup></f:validateBean>
- 			
- 			<h:dataTable id="sectionBeanPageItems" styleClass="data-table" value="#{sectionBean.pageItems}" var="_item">
- 				<h:column>
-diff --git a/demo/src/main/webapp/admin/show/search.xhtml b/demo/src/main/webapp/admin/show/search.xhtml
-index 080831b..e202b33 100644
---- a/demo/src/main/webapp/admin/show/search.xhtml
-+++ b/demo/src/main/webapp/admin/show/search.xhtml
-@@ -25,13 +25,14 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
-+			<f:validateBean disabled="true"><h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="showBeanSearchEvent" value="Event:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{eventBean.converter}" id="showBeanSearchEvent" value="#{showBean.search.event}">
--							<f:selectItems value="#{eventBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{eventBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="showBeanSearchEvent" styleClass="error"/>
- 					</h:panelGroup>
-@@ -39,7 +40,8 @@
- 					<h:outputLabel for="showBeanSearchVenue" value="Venue:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{venueBean.converter}" id="showBeanSearchVenue" value="#{showBean.search.venue}">
--							<f:selectItems value="#{venueBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{venueBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="showBeanSearchVenue" styleClass="error"/>
- 					</h:panelGroup>
-@@ -49,7 +51,7 @@
- 					<h:commandLink value="Search" action="#{showBean.search}"/>
- 					<h:commandLink value="Create New" action="#{showBean.create}"/>
- 				</h:panelGroup>
--			</h:panelGroup>
-+			</h:panelGroup></f:validateBean>
- 			
- 			<h:dataTable id="showBeanPageItems" styleClass="data-table" value="#{showBean.pageItems}" var="_item">
- 				<h:column>
-diff --git a/demo/src/main/webapp/admin/ticketCategory/search.xhtml b/demo/src/main/webapp/admin/ticketCategory/search.xhtml
-index cca226e..8e2bcad 100644
---- a/demo/src/main/webapp/admin/ticketCategory/search.xhtml
-+++ b/demo/src/main/webapp/admin/ticketCategory/search.xhtml
-@@ -25,7 +25,7 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
-+			<f:validateBean disabled="true"><h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="ticketCategoryBeanSearchDescription" value="Description:"/>
-@@ -39,7 +39,7 @@
- 					<h:commandLink value="Search" action="#{ticketCategoryBean.search}"/>
- 					<h:commandLink value="Create New" action="#{ticketCategoryBean.create}"/>
- 				</h:panelGroup>
--			</h:panelGroup>
-+			</h:panelGroup></f:validateBean>
- 			
- 			<h:dataTable id="ticketCategoryBeanPageItems" styleClass="data-table" value="#{ticketCategoryBean.pageItems}" var="_item">
- 				<h:column>
-diff --git a/demo/src/main/webapp/admin/ticketPrice/search.xhtml b/demo/src/main/webapp/admin/ticketPrice/search.xhtml
-index bf820d1..7f0da1c 100644
---- a/demo/src/main/webapp/admin/ticketPrice/search.xhtml
-+++ b/demo/src/main/webapp/admin/ticketPrice/search.xhtml
-@@ -25,13 +25,14 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
-+			<f:validateBean disabled="true"><h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="ticketPriceBeanSearchShow" value="Show:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{showBean.converter}" id="ticketPriceBeanSearchShow" value="#{ticketPriceBean.search.show}">
--							<f:selectItems value="#{showBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{showBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="ticketPriceBeanSearchShow" styleClass="error"/>
- 					</h:panelGroup>
-@@ -39,7 +40,8 @@
- 					<h:outputLabel for="ticketPriceBeanSearchSection" value="Section:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{sectionBean.converter}" id="ticketPriceBeanSearchSection" value="#{ticketPriceBean.search.section}">
--							<f:selectItems value="#{sectionBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{sectionBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="ticketPriceBeanSearchSection" styleClass="error"/>
- 					</h:panelGroup>
-@@ -47,7 +49,8 @@
- 					<h:outputLabel for="ticketPriceBeanSearchTicketCategory" value="Ticket Category:"/>
- 					<h:panelGroup>
- 						<h:selectOneMenu converter="#{ticketCategoryBean.converter}" id="ticketPriceBeanSearchTicketCategory" value="#{ticketPriceBean.search.ticketCategory}">
--							<f:selectItems value="#{ticketCategoryBean.all}"/>
-+							<f:selectItem/>
-+                            <f:selectItems value="#{ticketCategoryBean.all}"/>
- 						</h:selectOneMenu>
- 						<h:message for="ticketPriceBeanSearchTicketCategory" styleClass="error"/>
- 					</h:panelGroup>
-@@ -57,7 +60,7 @@
- 					<h:commandLink value="Search" action="#{ticketPriceBean.search}"/>
- 					<h:commandLink value="Create New" action="#{ticketPriceBean.create}"/>
- 				</h:panelGroup>
--			</h:panelGroup>
-+			</h:panelGroup></f:validateBean>
- 			
- 			<h:dataTable id="ticketPriceBeanPageItems" styleClass="data-table" value="#{ticketPriceBean.pageItems}" var="_item">
- 				<h:column>
-diff --git a/demo/src/main/webapp/admin/venue/search.xhtml b/demo/src/main/webapp/admin/venue/search.xhtml
-index f628b4c..88f3c6c 100644
---- a/demo/src/main/webapp/admin/venue/search.xhtml
-+++ b/demo/src/main/webapp/admin/venue/search.xhtml
-@@ -26,7 +26,7 @@
- 
- 	<ui:define name="main">
- 		<h:form id="search">
--			<h:panelGroup styleClass="search">
-+			<f:validateBean disabled="true"><h:panelGroup styleClass="search">
- 
- 				<h:panelGrid columnClasses="label,component,required" columns="3">
- 					<h:outputLabel for="venueBeanSearchName" value="Name:"/>
-@@ -61,7 +61,7 @@
- 					<h:commandLink value="Search" action="#{venueBean.search}"/>
- 					<h:commandLink value="Create New" action="#{venueBean.create}"/>
- 				</h:panelGroup>
--			</h:panelGroup>
-+			</h:panelGroup></f:validateBean>
- 			
- 			<h:dataTable id="venueBeanPageItems" styleClass="data-table" value="#{venueBean.pageItems}" var="_item">
- 				<h:column>
 diff --git a/demo/src/main/webapp/admin/venue/view.xhtml b/demo/src/main/webapp/admin/venue/view.xhtml
-index 2a0d19d..17313a9 100644
+index 2a0d19d..832f432 100644
 --- a/demo/src/main/webapp/admin/venue/view.xhtml
 +++ b/demo/src/main/webapp/admin/venue/view.xhtml
 @@ -4,6 +4,7 @@
@@ -403,28 +108,36 @@ index 2a0d19d..17313a9 100644
  			<h:outputText/>
  			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
 diff --git a/demo/src/main/webapp/index.html b/demo/src/main/webapp/index.html
-index 5221967..9b971cd 100644
+index b1c9bee..9b971cd 100644
 --- a/demo/src/main/webapp/index.html
 +++ b/demo/src/main/webapp/index.html
-@@ -3,12 +3,12 @@
- <head>
-     <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
- 
--	<!-- 
--		A simple check on the client. For touch devices or small-resolution screens)
--		show the mobile client. By enabling the mobile client on a small-resolution screen 
--		we allow for testing outside a mobile device (like for example the Mobile Browser 
--		simulator in JBoss Tools and JBoss Developer Studio).
--	 -->
+@@ -1 +1,23 @@
+-<meta http-equiv="refresh" content="0;url=./faces/index.xhtml" /> 
+\ No newline at end of file
++<!DOCTYPE html>
++<html>
++<head>
++    <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
++
 +    <!--
 +         A simple check on the client. For touch devices or small-resolution screens)
 +         show the mobile client. By enabling the mobile client on a small-resolution screen
 +         we allow for testing outside a mobile device (like for example the Mobile Browser
 +         simulator in JBoss Tools and JBoss Developer Studio).
 +      -->
-     <script type="text/javascript">
-         if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
-             location.replace('mobile-index.html')
++    <script type="text/javascript">
++        if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
++            location.replace('mobile-index.html')
++        } else {
++            location.replace('desktop-index.html')
++        };
++    </script>
++</head>
++<body>
++
++</body>
++</html>
+\ No newline at end of file
 diff --git a/demo/src/main/webapp/index.xhtml b/demo/src/main/webapp/index.xhtml
 deleted file mode 100644
 index a1eaf27..0000000
