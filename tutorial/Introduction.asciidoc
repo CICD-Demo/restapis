@@ -244,15 +244,13 @@ Under src you will find:
 `main/resources/import.sql`::
     contains insert statements that provides initial database data.  This is particularly useful when `hibernate.hbm2dll.auto=create-drop` is set in `persistence.xml`.  `hibernate.hbm2dll.auto=create-drop` causes the schema to be recreated each time the application is deployed.
 `main/resources/META-INF/persistence.xml`::
-    establishes that this project contains JPA entities and it identifies the datasource, which is deployed alongside the project.  
-
-    It also includes the `hibernate.hbm2dll.auto` property set to `create-drop` by default. 
+    establishes that this project contains JPA entities and it identifies the datasource, which is deployed alongside the project. It also includes the `hibernate.hbm2dll.auto` property set to `create-drop` by default. 
 
 `test/java/test`::
-    provides the `.test` package that contains `MemberRegistrationTest.java`, an Arquillian based test that runs both at the command line 
-        mvn test –Parq-jbossas-remote
+    provides the `.test` package that contains `MemberRegistrationTest.java`, an Arquillian based test that runs both fomm within JBoss Developer Studio via *Run As -> JUnit Test* and at the command line:
+    
+    mvn test –Parq-jbossas-remote
    
-    as well as from within JBoss Developer Studio *Run As -> JUnit Test*.
 `src/main/webapp`::
     contains `index.xhtml`, the JSF-based user interface for the sample application.  If you double-click on that file you will see Visual Page Editor allows you to visually navigate through the file and see the source simultaneously.  Changes to the source are immediately reflected in the visual pane.
 
