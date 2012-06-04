@@ -388,21 +388,32 @@ footer a {
 
 .show-status-header {
     border-bottom: 2px solid #eeeeee;
+    font-weight: bold;
+    margin-right: 40px;
+}
+
+.show-status td {
+    padding: 10px;
+    padding-left: 50px;
 }
 
 .performance-status {
-    margin-top: 5px;
-    margin-right: 5px;
+     margin-top: 5px;
+     margin-right: 5px;
+}
+
+.performance-status td {
+    padding: 0px;
 }
 
 .performance-status-progress-sold {
-    margin-left: 5px;
+    margin-left: 20px;
     height: 18px;
     background: #cc0000;
 }
 
 .performance-status-progress-available {
-    margin-right: 5px;
+    margin-right: 20px;
     height: 18px;
     background: #009900;
 }
