@@ -10,7 +10,7 @@
 
     <name>ticket-monster</name>
 
-    <description>A starter Java EE 6 Plain Old HTML5 (POH5) webapp project for use on JBoss AS 7, generated from the jboss-javaee6-poh5-webapp archetype</description>
+    <description>A starter HTML5 + REST webapp project for use on JBoss AS 7, generated from the jboss-javaee6-poh5-webapp archetype</description>
 
     <properties>
         <!-- Explicitly declaring the source encoding eliminates the following 
