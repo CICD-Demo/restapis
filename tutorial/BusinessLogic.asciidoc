@@ -34,7 +34,7 @@ The services are consumed by various other layers of the application:
 
 * the media management and ticket allocation services are encapsulating complex functionality,
   which in turn is exposed externally by RESTful services that wrap them
-* RESTful services are mainly used by the Plain Old HTML5 user interface
+* RESTful services are mainly used by the HTML5 view layer
 * the ticket availability service is used by the Errai-based user interface
 
 [TIP]
@@ -517,7 +517,7 @@ JAX-RS Services
 
 The largest group of services in the application is the one that contains the JAX-RS 
 web services. They are critical part of our design, as they are the main
-interface of communication with the POH5 layer. The JAX-RS services perform various operations varying
+interface of communication with the HTML5 view layer. The JAX-RS services perform various operations varying
 from simple CRUD to processing bookings and media items. 
 
 For passing data across the wire we use JSON as the data marshalling format, as it is less

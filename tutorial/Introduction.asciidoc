@@ -650,11 +650,11 @@ Now, it is time to add a HTML5, jQuery based client application that is optimize
 
 There are numerous JavaScript libraries that help you optimize the end-user experience on a mobile web browser. We have found that jQuery Mobile is one of the easier ones to get started with but as your skills mature, you might investigate solutions like Sencha Touch, Zepto or Jo.  This tutorial focuses on jQuery Mobile as the basis for creating the UI layer of the application.
 
-The UI components interact with the JAX-RS RESTful services (e.g. `EventService.java`) and we refer to this architecture as POH5 – for plain old HTML5 – to help distringuish it from JSF-based or GWT-based architectures. In a POH5 application, all the rendering of views is done in the client, with the server just providing data.
+The UI components interact with the JAX-RS RESTful services (e.g. `EventService.java`). 
 
 [TIP]
 =================================================================================
-For more information on building POH5 applications with JBoss technologies, check
+For more information on building HTML5 + REST applications with JBoss technologies, check
 out link:http://www.jboss.org/aerogear[Aerogear].
 =================================================================================
 
