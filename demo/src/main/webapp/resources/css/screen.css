@@ -279,7 +279,7 @@ button::-moz-focus-inner {
     font-weight:bold;
     text-align:center;
     color:#961311!important;
-    background: #f15755 url(../gfx/btn-pink.png) top left repeat-x;
+    background: #f15755 url(../img/btn-pink.png) top left repeat-x;
     padding:8px 10px;
     border: 1px solid #b53331;
     text-shadow:  0 1px 0  #ea8c8b;
@@ -294,7 +294,7 @@ a.btn-danger:active,
 a.btn-primary:active {
     font-weight:bold;
     color:#fff!important;
-    background: #f15755 url(../gfx/btn-pink.png) top left repeat-x;
+    background: #f15755 url(../img/btn-pink.png) top left repeat-x;
     padding:8px 10px;
     border: 1px solid #b53331;
     text-shadow:  0 1px 0  #f8a5a4;
@@ -309,7 +309,7 @@ a.btn-danger:hover,
 a.btn-primary:hover {
     font-weight:bold;
     color:#fff!important;
-    background:#dc4644 url(../gfx/btn-pink-hvr.png) top left repeat-x;
+    background:#dc4644 url(../img/btn-pink-hvr.png) top left repeat-x;
     text-shadow:  0 1px 0  #961311;
 }
 .btn-primary:hover,
