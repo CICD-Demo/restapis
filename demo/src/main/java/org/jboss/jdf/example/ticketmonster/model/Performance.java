@@ -135,4 +135,9 @@ public class Performance implements Serializable {
         result = 31 * result + (show != null ? show.hashCode() : 0);
         return result;
     }
+    
+    @Override
+    public String toString() {
+        return show + " on " + date.toString(); 
+    }
 }
