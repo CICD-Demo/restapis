@@ -6,12 +6,16 @@ import java.util.logging.Logger;
 
 import javax.ejb.Timer;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BotService;
 import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotCreated;
+import org.jboss.jdf.example.ticketmonster.rest.BookingService;
+import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 
 /**
  * Implementation of {@link BotService}.
@@ -31,7 +35,13 @@ public class BotServiceImpl implements BotService {
     private Bot bot;
     
     @Inject
+    private BookingService bookingService;
+    
+    @Inject
     private Logger logger;
+    
+    @Inject @BotCreated
+    private Event<String> event;
 
     private Timer timer;
     
@@ -55,6 +65,14 @@ public class BotServiceImpl implements BotService {
                 bot.stop(timer);
                 timer = null;
             }
+        }
+    }
+    
+    @Override
+    public void deleteAll() {
+        for (Booking booking : bookingService.getAll(MultivaluedHashMap.<String, String>empty())) {
+            event.fire("Deleted booking " + booking.getCancellationCode() + " for " + booking.getContactEmail() + "\n");
+            bookingService.deleteBooking(booking.getId());
         }
     }
 

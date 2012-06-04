@@ -1,5 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.monitor.client.local;
 
+import static com.google.gwt.user.client.ui.HasHorizontalAlignment.ALIGN_RIGHT;
+
 import java.util.List;
 
 import javax.enterprise.event.Observes;
@@ -17,6 +19,7 @@ import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotCr
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -68,10 +71,11 @@ public class Bot {
     }
 
     protected void createUi() {
-        Panel controls = new HorizontalPanel();
+        HorizontalPanel controls = new HorizontalPanel();
 
         Button start = new Button("Start bot");
         Button stop = new Button("Stop bot");
+        Button deleteAll = new Button("Delete all bookings");
 
         start.addClickHandler(new ClickHandler() {
 
@@ -100,9 +104,24 @@ public class Bot {
                 }).stop();
             }
         });
+        
+        deleteAll.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                botService.call(new RemoteCallback<Void>() {
+
+                    @Override
+                    public void callback(Void response) {
+
+                    }
+                }).deleteAll();
+            }
+        });
 
         controls.add(start);
         controls.add(stop);
+        controls.add(deleteAll);
 
         Panel console = new VerticalPanel();
 

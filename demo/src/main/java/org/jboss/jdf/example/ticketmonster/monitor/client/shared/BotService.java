@@ -43,6 +43,11 @@ public interface BotService {
      * Stop the bot.
      */
     public void stop();
+    
+    /**
+     * Delete all bookings
+     */
+    public void deleteAll();
 
     /**
      * Get the log for the bot
