@@ -91,6 +91,9 @@ public class Bot {
             }
         });
 
+        start.setStyleName("btn", true);
+        start.setStyleName("btn-danger",true);
+
         stop.addClickHandler(new ClickHandler() {
 
             @Override
@@ -104,6 +107,10 @@ public class Bot {
                 }).stop();
             }
         });
+
+
+        stop.setStyleName("btn", true);
+        stop.setStyleName("btn-danger",true);
         
         deleteAll.addClickHandler(new ClickHandler() {
 
@@ -119,18 +126,27 @@ public class Bot {
             }
         });
 
+        deleteAll.setStyleName("btn", true);
+        deleteAll.setStyleName("btn-danger",true);
+
         controls.add(start);
         controls.add(stop);
         controls.add(deleteAll);
 
-        Panel console = new VerticalPanel();
+        controls.setStyleName("btn-group");
+
+        VerticalPanel console = new VerticalPanel();
+
+        console.setStyleName("bot-console");
 
         log = new TextArea();
         log.setWidth("400px");
         log.setHeight("300px");
         log.setReadOnly(true);
 
-        console.add(new Label("Bot Log"));
+        Label botLabel = new Label("Bot Log");
+        botLabel.setStyleName("bot-label");
+        console.add(botLabel);
         console.add(log);
 
         Panel root = new VerticalPanel();

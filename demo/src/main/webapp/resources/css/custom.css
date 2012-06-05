@@ -233,9 +233,6 @@ a.btn-primary:hover {
     background:#dc4644 url(../img/btn-pink-hvr.png) top left repeat-x;
     text-shadow:  0 1px 0  #961311;
 }
-.btn-primary:hover,
-.btn-primary:active,
-.btn-primary.active,
 .btn-primary.disabled,
 .btn-primary[disabled] {
     background-color: #e24f4d;

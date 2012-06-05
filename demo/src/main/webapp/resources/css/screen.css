@@ -305,6 +305,30 @@ a.btn-primary:active {
     -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
 }
+button.btn-danger:hover,
+button.btn-primary:hover {
+    font-weight:bold;
+    color:#fff!important;
+    background:#dc4644 url(../img/btn-pink-hvr.png) top left repeat-x;
+    text-shadow:  0 1px 0  #961311;
+}
+
+input[type='button'].btn-danger:hover,
+input[type='button'].btn-primary:hover {
+    font-weight:bold;
+    color:#fff!important;
+    background:#dc4644 url(../img/btn-pink-hvr.png) top left repeat-x;
+    text-shadow:  0 1px 0  #961311;
+}
+
+input[type='button']:not([disabled]).btn-danger:hover,
+input[type='button']:not([disabled]).btn-primary:hover {
+    font-weight:bold;
+    color:#fff!important;
+    background:#dc4644 url(../img/btn-pink-hvr.png) top left repeat-x;
+    text-shadow:  0 1px 0  #961311;
+}
+
 a.btn-danger:hover,
 a.btn-primary:hover {
     font-weight:bold;
@@ -312,6 +336,7 @@ a.btn-primary:hover {
     background:#dc4644 url(../img/btn-pink-hvr.png) top left repeat-x;
     text-shadow:  0 1px 0  #961311;
 }
+
 .btn-primary:hover,
 .btn-primary:active,
 .btn-primary.active,
@@ -417,3 +442,17 @@ footer a {
     height: 18px;
     background: #009900;
 }
+
+.bot-label {
+    font-weight: bold;
+    font-family: "Rokkitt", serif;
+    font-size: 1.1em;
+    text-shadow: 0 1px 1px #000000;
+    color:  #EDF4EA;
+}
+
+.bot-console {
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
