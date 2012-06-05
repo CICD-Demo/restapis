@@ -5,25 +5,19 @@ Building The Business Services With JAX-RS
 What Will You Learn Here?
 -------------------------
 
-You've just defined the domain model of your application and created its persistence layer.
-Now you need to define the services that implement the business logic of your application
-and expose them to the front-end. After reading this, you'll understand how to design the
-business layer and what choices to make while developing it. Topics covered include:
+We've just defined the domain model of the application and created its persistence layer. Now we need to define the services that implement the business logic of the application and expose them to the front-end. After reading this, you'll understand how to design the business layer and what choices to make while developing it. Topics covered include:
 
 * Encapsulating business logic in services and integrating with the persistence tier
 * Using CDI for integrating individual services
 * Integration testing using Arquillian
 * Exposing RESTful services via JAX-RS
 
-The tutorial will show you how to perform all these steps in JBoss Developer Studio, including
-screenshots that guide you through. For those of you who prefer to watch and learn, the included
- video shows you how we performed all the steps.
+The tutorial will show you how to perform all these steps in JBoss Developer Studio, including screenshots that guide you through.
 
 Business Services And Their Relationships
 ------------------------------------------
 
-TicketMonster's business logic is implemented by a few service classes, with different
-responsibilities:
+TicketMonster's business logic is implemented by a number of classes, with different responsibilities:
 
 * managing media items
 * allocating tickets
@@ -32,33 +26,28 @@ responsibilities:
 
 The services are consumed by various other layers of the application: 
 
-* the media management and ticket allocation services are encapsulating complex functionality,
-  which in turn is exposed externally by RESTful services that wrap them
+* the media management and ticket allocation services encapsulate complex functionality, which in turn is exposed externally by RESTful services that wrap them
 * RESTful services are mainly used by the HTML5 view layer
-* the ticket availability service is used by the Errai-based user interface
+* the ticket availability service is used by the Errai-based view layer
 
 [TIP]
 .Where to draw the line?
 =====================================================================================
-A business service is an encapsulated, reusable logical component that groups together a
-number of well-defined cohesive business operations. Business services perform business operations,
-and may coordinate infrastructure services such as persistence units, or even other business services 
-as well. The decision of drawing boundaries between them should take into account 
-whether the newly created services really represent standalone, potentially reusable components.
+A business service is an encapsulated, reusable logical component that groups 
+together a number of well-defined cohesive business operations. Business services
+perform business operations, and may coordinate infrastructure services such as 
+persistence units, or even other business services as well. The boundaries drawn
+between them should take into account whether the newly created services represent 
+, potentially reusable components.
 =====================================================================================
 
-
-As you can see, some of the services are intended to be consumed within the business layer
-of the application, while others provide an external interface as JAX-RS services. We will start
-by implementing the former, and we'll finish up with the latter. During this process, you will
+As you can see, some of the services are intended to be consumed within the business layer of the application, while others provide an external interface as JAX-RS services. We will start by implementing the former, and we'll finish up with the latter. During this process, you will
 discover how CDI, EJB and JAX-RS make it easy to define and wire together our services.
 
 Preparations
 ------------
 
-The first step for setting up our service architecture is to enable CDI in the deployment. 
-You can simply do so by creating a `beans.xml` file in the `WEB-INF` folder of your web
-application.
+The first step for setting up our service architecture is to enable CDI in the deployment by creating a `beans.xml` file in the `WEB-INF` folder of the web application.
 
 .src/main/webapp/WEB-INF/beans.xml
 [source,xml]
@@ -71,54 +60,43 @@ application.
 ------------------------------------------------------------------------------------------
 
 [NOTE]
-.If you were using the Maven archetype
+.If you used the Maven archetype
 =====================================================================================
-If you were using the Maven archetype for creating the project, this file will exist already
+If you used the Maven archetype to create the project, this file will exist already
 in the project - it is added automatically.
 =====================================================================================
 
-You may wonder about the file being empty - what is its purpose, after all? While `beans.xml`
-can specify various deployment-time options to the container (activation of interceptors,
-decorators or alternatives), it can simply act as a marker file, telling the container to
-enable CDI for the deployment (which it won't do, unless the file is present).
+You may wonder why the file is empty! Whilst `beans.xml` can specify various deployment-time configuration (e.g. activation of interceptors,
+decorators or alternatives), it can also act as a marker file, telling the container to enable CDI for the deployment (which it doesn't do, unless `beans.xml` is present).
 
 [TIP]
 .Contexts and Dependency Injection (CDI)
 =====================================================================================
-As it's name suggests, CDI is the contexts and dependency injection standard for Java EE.
-By enabling CDI in  your application, your deployment classes become managed components
+As it's name suggests, CDI is the contexts and dependency injection standard for Java
+EE. By enabling CDI in your application, deployed classes become managed components 
 and their lifecycle and wiring becomes the responsibility of the Java EE server.
 
-In this way, you can reduce coupling between components, which is is a critical goal for a well-designed architecture.
-You can focus now on implementing the specific responsibilities of each component and  describing their
-dependencies in a declarative fashion, and the runtime will do the rest for you: instantiating and
-wiring them together, as well as disposing of them when their lifecyle comes to an end.
+In this way, we can reduce coupling between components, which is a requirement o a 
+well-designed architecture. Now, we can focus on implementing the responsibilities of
+the components and  describing their dependencies in a declarative fashion. The 
+runtime will do the rest for you: instantiating and wiring them together, as well as
+disposing of them as needed.
 =====================================================================================
 
 Internal Services
 -----------------
 
-We will begin by implementing a few helper services that are used internally by the application.
+We begin by implementing some helper services.
 
 The Media Manager
 ~~~~~~~~~~~~~~~~~
 
-One of the first things that we need to do is to manage media items. As you recall, while building the
-persistence layer, we implemented media item entities that contain URLs to media items stored
-by online services. Those URL look like this:
+First, lets add support for managing media items, such as images. The persistence layer siimply stores URLs, referencing media items stored by online services. The URL look like link:http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg[].
 
-------------------------------------------------------------------------------------------
-http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg
-------------------------------------------------------------------------------------------
+Now, we could use the URLs in our application, and retrieve these media items from the provider. However, we would prefer to cache these media items in order to improve application performance and increase resilience to external failures - this will allow us to run the application
+successfully even if the provider is down. The `MediaManager` is a good illustration of a business service; it performs the retrieval and caching of media objects, encapsulating the operation from the rest of the application.
 
-Now, we could surely embed these URLs in our application pages and retrieve these media items directly
-from their provider. However, we would prefer to cache these media items in order to improve application
-performance and increase resilience to external failures - this will allow us to run the application
-successfully even if the external service is down. The `MediaManager` we implements for this is a good illustration
-of a business service: it encapsulates the retrieval and caching of media objects, abstracting a
-rather complex operation from the rest of the application.
-
-We will begin by creating the implementation class:
+We begin by creating `MediaManager`:
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaManager.java
 [source,java]
@@ -312,11 +290,7 @@ public class MediaManager {
 }
 ------------------------------------------------------------------------------------------
 
-This service delegates to a number of internal methods that do the heavy lifting, but to the
-external observer it will simply convert the `MediaItem` entities defined in the persistence tutorial into
-`MediaPath` handles, that can be used by the application to retrieve the actual binary data 
-of the media item. The process involves retrieving and caching the data locally in the filesystem. 
-`MediaPath` is a simple data holding object.
+The service delegates to a number of internal methods that do the heavy lifting, but exposes a simple API, to the external observer it simply converts the `MediaItem` entities into `MediaPath` data structures, that can be used by the application to load the binary data of the media item. The service will retrieve and cache the data locally in the filesystem, if possible (e.g. streamed videos aren't cachable!).
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaPath.java
 [source,java]
@@ -348,16 +322,9 @@ public class MediaPath {
 }
 ------------------------------------------------------------------------------------------
 
-Before finishing the implementation of the service, we need to do a couple more things.
-As a managed bean, the service can be injected by type into the components that depend on it.
-However, in order to make it available to the JSF layer as well, we need to make it accessible
-by name - so we will add a `@Named` annotation, which in this case will ensure that 
-the bean can be referenced under the name `mediaManager`.
+The service can be injected by type into the components that depend on it. However, in order to make it available to JSF vuews, we add a `@Named` annotation, which means the bean can be referenced as `mediaManager` as well.
 
-Also, we need to control the lifecycle of this service. Due to the fact that this is a 
-bean that stores request-specific state, we would like for an instance of
-the service to exist exactly for the duration of a web request - therefore we will use the
-`@RequestScoped` to set up the appropriate scope for it.
+We should also control the lifecycle of this service. The `MediaManager` stores request-specific state, so should be scoped to the web request, the CDI `@RequestScoped` is perfect.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaManager.java
 [source,java]
@@ -373,16 +340,9 @@ public class MediaManager {
 The Seat Allocation Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The next service is used for finding free seats at booking time in a given section at a 
-given performance. It is a good example of how a service can coordinate infrastructure
-services (using the injected persistence unit to get access to the `ServiceAllocation`
-instance) and domain objects (by invoking the `allocateSeats` method on a concrete
-allocation instance).
+The seat allocation service finds free seats at booking time, in a given section of the venue. It is a good example of how a service can coordinate infrastructure services (using the injected persistence unit to get access to the `ServiceAllocation` instance) and domain objects (by invoking the `allocateSeats` method on a concrete allocation instance).
 
-Isolating this functionality in a service class makes it possible to write simpler,
-self-explanatory code in the layers above and opens the possibility of replacing this
-code at a later date with a more advanced implementation (for example one using an 
-in-memory cache).
+Isolating this functionality in a service class makes it possible to write simpler, self-explanatory code in the layers above and opens the possibility of replacing this code at a later date with a more advanced implementation (for example one using an in-memory cache).
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/SeatAllocationService.java
 [source,java]
@@ -421,11 +381,7 @@ public class SeatAllocationService implements Serializable {
 Booking Monitor Service
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The last internal service that you will develop in your application provides data
-about the current shows and their ticket availability status. It will be accessed remotely
-by the Errai layer through a dedicated RPC mechanism, which requires it to define and implement
-a service interface. We will begin by adding the interface first, using the `@Remote` annotation
-from Errai to indicate its purpose.
+The last service that we create provides data about the current shows and their ticket availability status. It is accessed remotely by Errai through a dedicated RPC mechanism, which requires us to define and implement a service interface. We begin by adding the interface first, using the `@Remote` annotation from Errai to indicate its purpose.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/monitor/client/shared/BookingMonitorService.java
 [source,java]
@@ -456,8 +412,7 @@ public interface BookingMonitorService {
 }
 -----------------------------------------------------------------------------------------
 
-After doing so, we will create the service implementation, using the `@Service` annotation
-to indicate that it must be exposed externally by Errai.
+After doing so, we create the service implementation, using the `@Service` annotation to indicate that it should be exposed externally by Errai.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/BookingMonitorServiceImpl.java
 [source,java]
@@ -504,31 +459,26 @@ public class BookingMonitorServiceImpl implements BookingMonitorService {
 [TIP]
 .Implement an interface or not?
 =====================================================================================
-You will find yourself very often facing a dilemma: add an interface to a service or not?
-As you have seen so far and will continue to see next, most of the services in TicketMonster do
-not implement one, except wherever it is a requirement of the framework in use (e.g. Errai in this case). In Java EE 6 the
-requirements for business services to implement interfaces have been relaxed significantly,
-therefore unless there are valid reasons for creating an abstraction (such as multiple possible 
+You will find yourself very often facing a dilemma: add an interface for a service or
+not? As you have seen so far and will continue to see next, most of the services in
+TicketMonster do not implement interfaces, except wherever it is a requirement of the
+framework in use (e.g. Errai in this case). In Java EE 6 the requirements for business
+services to implement interfaces have been relaxed significantly, therefore unless 
+there are valid reasons for creating an abstraction (such as multiple possible 
 implementations), we skipped adding interfaces to our services.
 =====================================================================================
 
 JAX-RS Services
 ---------------
 
-The largest group of services in the application is the one that contains the JAX-RS 
-web services. They are critical part of our design, as they are the main
-interface of communication with the HTML5 view layer. The JAX-RS services perform various operations varying
-from simple CRUD to processing bookings and media items. 
+The majority of services in the application are JAX-RS web services. They are critical part of the design, as they next service is used for provide communication with the HTML5 view layer. The JAX-RS services range from simple CRUD to processing bookings and media items. 
 
-For passing data across the wire we use JSON as the data marshalling format, as it is less
-verbose and easier to process than XML by the JavaScript client-side framework.
+To pass data across the wire we use JSON as the data marshalling format, as it is less verbose and easier to process than XML by the JavaScript client-side framework.
 
 Initializing JAX-RS
 ~~~~~~~~~~~~~~~~~~~
 
-The first step is activating JAX-RS, so that we don't have to write
-any configuration file. By adding the class below, we instruct the container to look for
-JAX-RS annotated classes and install them as endpoints.
+To activate JAX-RS we add the class below, which instructs the container to look for JAX-RS annotated classes and install them as endpoints.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/JaxRsActivator.java
 [source,java]
@@ -539,16 +489,12 @@ public class JaxRsActivator extends Application {
 }
 ------------------------------------------------------------------------------------------
 
-So, all our JAX-RS services will be mapped relative to the `/rest` path, as indicated by the
-`@ApplicationPath` annotation.
+All the JAX-RS services are mapped relative to the `/rest` path, as defined by the `@ApplicationPath` annotation.
 
 A Base Service For Read Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A significant number of our JAX-RS service have in common the fact that they read data:
-lists of entities or individual entity values (this is the case for events, venues and
-bookings for example). So instead of copying over the implementation into each individual
-service we will create a base service class and will wire the helper objects in.
+Most of the JAX-RS service must provide both a (filtered) list of entities or individual entity (e.g. events, venues and bookings). Instead of duplicating the implementation into each individual service we create a base service class and wire the helper objects in.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
 [source,java]
@@ -616,7 +562,7 @@ public abstract class BaseEntityService<T> {
 }
 ------------------------------------------------------------------------------------------
 
-Now we will add a method for retrieving all entities of a given type.
+Now we add a method to retrieve all entities of a given type:
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
 [source,java]
@@ -679,26 +625,22 @@ public abstract class BaseEntityService<T> {
 }
 ------------------------------------------------------------------------------------------
 
-The newly added method `getAll` is annotated with `@GET` which means that it will be executed
-for `GET` HTTP requests on the JAX-RS' endpoint base URL '/rest/<entityRoot>'.
-But remember, this is not a true JAX-RS endpoint. It is an abstract class and it is not mapped to any
-path.  However, classes that extend it and are JAX-RS endpoints will have to be mapped to a path and
-will inherit ths method, so will be able to process those requests.
+The newly added method `getAll` is annotated with `@GET` which instructs JAX-RS to call it when a `GET` HTTP requests on the JAX-RS' endpoint base URL '/rest/<entityRoot>' is performed. But remember, this is not a true JAX-RS endpoint. It is an abstract class and it is not mapped to a path. The classes that extend it are JAX-RS endpoints, and will have to be mapped to a path, and are able to process requests.
 
-The `@Produces` annotation indicates that the response sent back by the server is in JSON format.
-This serves two purposes: first, it tells the JAX-RS implementation that it should convert the
-result returned by the method (a list of entities) into JSON format. Besides identifying the right
-marshaling strategy, the annotation plays a role in content negotiation and method resolution:
-if the client requests JSON content specifically, this is the method that will be invoked. Even
-if we don't show it in this example, remember that you may have multiple methods that handle a
-specific URL and HTTP method, but consuming and producing different types of content (JSON, HTML,
-XML or others).
+The `@Produces` annotation defines that the response sent back by the server is in JSON format. The JAX-RS implementation will automatically convert the result returned by the method (a list of entities) into JSON format. 
 
-As an additional feature of our approach, subclasses can override the `extractPredicates` method and add
-their own support for additional query parameters `GET /rest/<entityRoot>`, which can act as
-filter criteria, for example.
+As well as configuring the marshaling strategy, the annotation affects content negotiation and method resolution. If the client requests JSON content specifically, this method will be invoked. 
 
-Next, we will add a method for retrieving individual entities.
+[NOTE]
+=====================================================================================
+Even though it is not shown in this example, you may have multiple methods that 
+handle a specific URL and HTTP method, whilst consuming and producing different types
+of content (JSON, HTML, XML or others).
+=====================================================================================
+
+Subclasses can also override the `extractPredicates` method and add own support for additional query parameters to `GET /rest/<entityRoot>` which can act as filter criteria.
+
+Next, we add a method for retrieving individual entities.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
 [source,java]
@@ -729,22 +671,17 @@ public abstract class BaseEntityService<T> {
 }
 ------------------------------------------------------------------------------------------
 
-This method is very similar to the previous, except that we use the `@Path` annotation to map
-it to a sub-path of '/rest/<entityRoot>'. The `value` attribute of the annotation identifies the
-expected format of the URL (basically the last segment has to be a number in this case) and binds
-a portion of the URL (the last part) to a variable named `id`. The `@PathParam` annotation enables
-passing the value of the variable to the method argument. Data conversion is performed automatically.
+This method is similar to the `getAll` method, except that we use the `@Path` annotation to map it to a sub-path of '/rest/<entityRoot>'. The annotation attribute identifies the expected format of the URL (here, the last segment has to be a number) and binds a  portion of the URL to a variable (here named `id`). The `@PathParam` annotation allows the value of the variable to be passed as amethod argument. Data conversion is performed automatically.
 
-With this, all the JAX-RS endpoints that subclass `BaseEntityService` will get two operations for free:
+Now, all the JAX-RS endpoints that subclass `BaseEntityService` will get two operations for free:
 
-* `GET /rest/<entityRoot>` - which retrieves all entities of a given type;
-* `GET /rest/<entityRoot>/<id>` - which retrieves an entity with a given id.
+`GET /rest/<entityRoot>`:: retrieves all entities of a given type
+`GET /rest/<entityRoot>/<id>`:: retrieves an entity with a given id
 
 Retrieving Venues
 ~~~~~~~~~~~~~~~~~
 
-Adding support for retrieving venues is extremely simple. All you need to do is to extend
-the base class, passing the entity type to the superclass constructor.
+Adding support for retrieving venues is now extremely simple. All we do is extend the base class, passing the entity type to the superclass constructor.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueService.java
 [source,java]
@@ -771,25 +708,18 @@ public class VenueService extends BaseEntityService<Venue> {
 }
 ------------------------------------------------------------------------------------------
 
-By adding the `@Path` annotation on the class, we indicate that this is a JAX-RS resource which
-serves URLs starting with `/rest/venues`.
+We add the `@Path` annotation to the class, to indicate that this is a JAX-RS resource which can serve URLs starting with `/rest/venues`.
 
-We define this service (along with all the other JAX-RS services) as an Enterprise Java Bean
-(see how simple is that in Java EE 6!) in principal to benefit from automatic transaction enrollment.
-Since the service is fundamentally stateless, we take advantage of the new EJB 3.1 singleton feature.
+We define this service (along with all the other JAX-RS services) as an EJB (see how simple is that in Java EE 6!) to benefit from automatic transaction enrollment. Since the service is fundamentally stateless, we take advantage of the new EJB 3.1 singleton feature.
 
 Now, we can retrieve venues from URLs like `/rest/venues` or `rest/venues/1`.
 
 Retrieving Events
 ~~~~~~~~~~~~~~~~~
 
-Just like `VenueService`, `EventService` is a direct subclass of `BaseEntityService` with 
-the added twist that it supports querying events by category. So we can use URLs like
-`/rest/events?category=1` to retrieve all concerts, for example (`1` is the category id of
-concerts).
+Just like `VenueService`, `EventService` is a direct subclass of `BaseEntityService` with the added twist that it supports querying events by category. We can use URLs like `/rest/events?category=1` to retrieve all concerts, for example (`1` is the category id of concerts).
 
-As we mentioned earlier, this is simply done by extending the `extractPredicates` method
-to handle the query parameters, as we do in this case with the `category` parameter.
+This is done by overriding the `extractPredicates` method to handle any query parameters (in this case, the `category` parameter).
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventService.java
 [source,java]
@@ -841,20 +771,14 @@ public class EventService extends BaseEntityService<Event> {
 }
 ------------------------------------------------------------------------------------------
 
-The `ShowService` and `BookingService` follow the same pattern and we will leave their
-implementation as an exercise to the reader (knowing that its contents can always be copied
-over to the appropriate folder).
+The `ShowService` and `BookingService` follow the same pattern and we leave the implementation as an exercise to the reader (knowing that its contents can always be copied over to the appropriate folder).
 
-Of course, we want to do more with our services, so we will go beyond reading data. We want to create
-and delete bookings as well.
+Of course, we also want to change data with our services - we want to create and delete bookings as well!
 
 Creating and deleting bookings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For creating bookings, we will implement a new metod, which handles `POST` requests to
-`/rest/bookings`. Please note that this is not a simple CRUD method. The client does not
-send a booking, but a booking request. It is the responsibility of the service to process
-the request, reserve the seats and return the full booking details to the invoker.
+To create a booking, we add a new method, which handles `POST` requests to `/rest/bookings`. This is not a simple CRUD method, as the client does not send a booking, but a booking request. It is the responsibility of the service to process the request, reserve the seats and return the full booking details to the invoker.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingService.java
 [source,java]
@@ -997,28 +921,14 @@ public class BookingService extends BaseEntityService<Booking> {
 }
 ------------------------------------------------------------------------------------------
 
-We won't get into the details of the inner workings of the method - it implements a 
-fairly complex algorithm - but we'd like to draw attention to a few particular items.
+We won't get into the details of the inner workings of the method - it implements a fairly complex algorithm - but we'd like to draw attention to a few particular items.
 
-On the JAX-RS side, we use the `@POST` annotation to indicate that this method is executed on
-inbound HTTP POST requests. When implementing a set of RESTful services, it is important that the
-semantic of HTTP methods is observed in the mappings. Creating new resources (like bookings) is
-typically handled with HTTP POST invocations. The `@Consumes` annotation indicates that the
-type of inbound content is JSON and it serves identifying the right unmarshalling strategy, as well
-as with content negociation.
+We use the `@POST` annotation to indicate that this method is executed on inbound HTTP POST requests. When implementing a set of RESTful services, it is important that the semantic of HTTP methods are observed in the mappings. Creating new resources (e.g. bookings) is typically associated with HTTP POST invocations. The `@Consumes` annotation indicates that the type of the request content is JSON and identifies the correct unmarshalling strategy, as well as content negotiation.
 
-You can notice that this service delegates to the `SeatAllocationService` for the
-particular task of finding seats in a given section. This is an example of dependency
-injection in action - the required `SeatAllocationService` instance is initialized and supplied by the 
-container as needed. The only thing that our service does is to specify the dependency in form
+The `BookingService` delegates to the `SeatAllocationService` to find seats in the requested section, the required `SeatAllocationService` instance is initialized and supplied by the container as needed. The only thing that our service does is to specify the dependency in form
 of an injection point - the field annotated with `@Inject`.
 
-The other particular aspect of this method is the use of CDI eventing. We would like other
-parts of the application to be aware of the fact that a new booking has been created, therefore
-we use the CDI to fire an event. We do so by injecting an `Event` instance into the 
-service (indicating that its payload will be a booking). In order to individually identify 
-this event as referring to event creation, we will use a specifc CDI qualifier, which you
-will need to add as shown below.
+We would like other parts of the application to be aware of the fact that a new booking has been created, therefore we use the CDI to fire an event. We do so by injecting an `Event<Booking>` instance into the service (indicating that its payload will be a booking). In order to individually identify this event as referring to event creation, we use a CDI qualifier, which we need to add:
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/monitor/client/shared/qualifier/Created.java
 [source, java]
@@ -1037,13 +947,13 @@ public @interface Created {
 [TIP]
 .What are qualifiers?
 =====================================================================================
-CDI use a type-based resolution mechanism for injection and observers. In order to disambiguate between
-multiple candidate beans, you can use dedicated annotations named _qualifiers_ to tag beans.
-Target injection points or event observers can use qualifiers to narrow down the set of candidates:
-only beans bearing the same qualifier annotations will be taken into consideration.
+CDI uses a type-based resolution mechanism for injection and observers. In order to
+distinguish between implementations of an interface, you can use qualifiers, a type 
+of annotations, to disambiguate. Injection points and event observers can use 
+qualifiers to narrow down the set of candidates
 =====================================================================================
 
-Of course, we would also like to be able to delete bookings, therefore we will add a corresponding method as well:
+We also need allow the removal of bookings, so we add a method:
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingService.java
 [source,java]
@@ -1076,12 +986,9 @@ public class BookingService extends BaseEntityService<Booking> {
 }
 ------------------------------------------------------------------------------------------
 
-For this method, we are using the `@DELETE` annotation to indicate that it will be executed
-as the result of an HTTP DELETE request. Again, this is a matter of convention but fairly easy
-to understand as well! Just as the meaning `GET /rest/bookings/1` is self-explanatory, so is
-`DELETE /rest/bookings/1`!
+We use the `@DELETE` annotation to indicate that it will be executed as the result of an HTTP DELETE request (again, the use of the DELETE HTTP verb is a matter of convention).
 
-Just as with creation, we would like to notify the other components for the cancellation of a booking, so we will fire an event for that too, with its own qualifier.
+We need to notify the other components of the cancellation of the booking, so we fire an event, with a different qualifier.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/monitor/client/shared/qualifier/Cancelled.java
 [source, java]
@@ -1097,52 +1004,39 @@ public @interface Cancelled {
 }
 ------------------------------------------------------------------------------------------
 
-The other services, including the `MediaService` that handles media items follow roughly the
-same patterns as above, so we will leave them as an exercise to the reader.
+The other services, including the `MediaService` that handles media items follow roughly the same patterns as above, so we leave them as an exercise to the reader.
 
 Testing the services
 --------------------
 
-You've finished implementing your services and now you have a significant amount of functionality
-in your application. Before taking any step forward, you need to make sure that they work
-correctly: you need to test them.
+We've now finished implementing the services and there is a significant amount of functionality in the application. Before taking any step forward, you need to make sure the services work correctly: we need to test them.
 
-Testing enterprise services can become a complex task due to the fact that their implementation
-is based on services provided by a container: dependency injection, access to infrastructure
-services such as persistence, transactions and so on. Unit testing frameworks, while offering
-a valuable infrastructure for running tests, do not provide these capabilities.
+Testing enterprise services be a complex task as the implementation is based on services provided by a container: dependency injection, access to infrastructure services such as persistence, transactions etc.. Unit testing frameworks, whilst offering a valuable infrastructure for running tests, do not provide these capabilities.
 
-One of the traditional approaches has been the use of mocking frameworks for simulating
-'what should happen' in the runtime environment. While certainly providing a solution, to
-some degree, mocking brings in its own set of problems - like the additional effort required
-to provide a proper simulation or the risk of introducing errors in the test suite by improper
-implemented mocks.
+One of the traditional approaches has been the use of mocking frameworks to simulate 'what will happen' in the runtime environment. While certainly providing a solution mocking brings its own set of problems (e.g.  the additional effort required to provide a proper simulation or the risk of introducing errors in the test suite by incorrectly implemented mocks.
 
-Fortunately, Arquillian provides the means to testing your application code within the container,
-with access to all the services and container features. In this section we will show you how 
-to create a few Arquillian tests for your business services.
+Fortunately, Arquillian provides the means to testing your application code within the container, with access to all the services and container features. In this section we will show you how to create a few Arquillian tests for your business services.
 
 
 [TIP]
 .What to test?
 =====================================================================================
-A common asked question is: how much application functionality should you test? The truth is,
-you can never test too much. That being said, resources are always limited and tradeoffs are
-part of an engineer's work. Generally speaking, trivial functionality (setters/getters/toString methods) is not such a big subject of concern as the actual business code, so you may want to
-focus your efforts on the latter. Testing should include individual parts (unit testing), as
-well as aggregates (integration testing).
+A common asked question is: how much application functionality should we test? The 
+truth is, you can never test too much. That being said, resources are always limited 
+and tradeoffs are part of an engineer's work. Generally speaking, trivial 
+functionality (setters/getters/toString methods) is a big concern compared to  the 
+actual business code, so you probably want to focus your efforts on the business 
+code. Testing should include individual parts (unit testing), as well as 
+aggregates (integration testing).
 =====================================================================================
 
 
 A Basic Deployment Class
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-In order to create Arquillian tests, we will define deployments. Exactly as their name 
-indicates, code under test as well as its dependencies is packaged and deployed in the container, 
-following exactly the same lifecycle as your application.
+In order to create Arquillian tests, we need to define the deployment. The code under test, as well as its dependencies is packaged and deployed in the container.
 
-A lot of our deployment files are common for all tests, so we will create a helper class 
-with a factory method that creates a deployment with all the generic content for us.
+Much of the deployment contents is common for all tests, so we create a helper class with a method that creates the base deployment with all the general content.
 
 .src/test/java/org/jboss/jdf/ticketmonster/test/TicketMonsterDeployment.java
 [source,java]
@@ -1162,15 +1056,12 @@ public class TicketMonsterDeployment {
 }
 ------------------------------------------------------------------------------------------
 
-While Arquillian does not concern itself with packaging the resources under test, it delegates
-this functionality to its dependent (or sibling) project ShrinkWrap, the API of which it uses -
-Arquillian expects a ShrinkWrap archive as the deployment under test.
+Arquillian uses Shrinkwrap to define the contents of the deployment.
 
 Writing RESTful service tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For testing our JAX-RS RESTful services, we need to add the corresponding class files to 
-the deployment. Since we would have to do that for each test we create, we will abide by the DRY principles and will create a utility class again. 
+For testing our JAX-RS RESTful services, we need to add the corresponding application classes to the deployment. Since we need to do that for each test we create, we abide by the DRY principles and create a utility class.
 
 .src/test/java/org/jboss/jdf/ticketmonster/test/rest/RESTDeployment.java
 [source,java]
@@ -1190,8 +1081,7 @@ public class RESTDeployment {
 }
 ------------------------------------------------------------------------------------------
 
-Once you have done so, you can go and create a first test - validating the proper retrieval of
-an individual event.
+Now, we create the first test to validate the proper retrieval of individual events.
 
 .src/test/java/org/jboss/jdf/ticketmonster/test/rest/VenueServiceTest.java
 [source,java]
@@ -1219,11 +1109,9 @@ public class VenueServiceTest {
 }
 ------------------------------------------------------------------------------------------
 
-In the class above we have stated what is the deployment under test - the `deployment`, and we have defined a test method. As you can notice, the class is CDI-injected with a `VenueService` instance
-. This is one of the strengths of Arquillian - the ability of injecting tested objects directly into test classes. And, of course, there is a test method (`testGetVenueById`).
+In the class above we specify the deployment, and we define the test method. The test supports CDI injection - one of the strengths of Arquillian is the ability to inject the object being tested.
 
-As you move on, you can begin testing even more complicated use cases, like for the use of query 
-parameters for pagination.
+Now, we test a more complicated use cases, query parameters for pagination.
 
 .src/test/java/org/jboss/jdf/ticketmonster/test/rest/VenueServiceTest.java
 [source,java]
@@ -1252,12 +1140,10 @@ public class VenueServiceTest {
 }
 ------------------------------------------------------------------------------------------
 
-You will add another method (`testPagination`), which tests the retrieval of all venues, passing the 
-search criteria as parameters. We use a Map to simulate the passing of query parameters in 
-a similar way to which JAX-RS would handle it.
+We add another test method (`testPagination`), which tests the retrieval of all venues, passing the 
+search criteria as parameters. We use a Map to simulate the passing of query parameters.
 
-After this, you may want to test some more advanced use cases like the creation of a 
-new booking. So you can do so by adding a new test for bookings.
+Now, we test more advanced use cases such as the creation of a new booking. We do so by adding a new test for bookings
 
 .src/test/java/org/jboss/jdf/ticketmonster/test/rest/BookingServiceTest.java
 [source,java]
@@ -1420,19 +1306,15 @@ public class BookingServiceTest {
 }
 ------------------------------------------------------------------------------------------
 
-The class above contains a more advanced use case: first we test booking creation in a test method
-of its own (`testCreateBookings`). Then, we test that the previously created bookings
-are retrieved correctly (`testGetBookings` and `testPagination`). Finally, we are testing that
-deletion takes place correctly (`testDelete`).
+First we test booking creation in a test method of its own (`testCreateBookings`). Then, we test that the previously created bookings
+are retrieved correctly (`testGetBookings` and `testPagination`). Finally, we test that deletion takes place correctly (`testDelete`).
 
-The other tests in the application follow roughly the same pattern and are left as an exercise to the
-reader.
+The other tests in the application follow roughly the same pattern and are left as an exercise to the reader.
 
 Running the tests
 ~~~~~~~~~~~~~~~~~
 
-If you have followed the instructions in the introduction and used the Maven archetype to generate
-the project structure, you should have two profiles already defined in your application.
+If you have followed the instructions in the introduction and used the Maven archetype to generate the project structure, you should have two profiles already defined in your application.
 
 ./pom.xml
 [source,xml]
@@ -1477,13 +1359,11 @@ the project structure, you should have two profiles already defined in your appl
 </project>
 ------------------------------------------------------------------------------------------
 
-If you haven't used the archetype, or the profiles don't exist, it is the time to create them now.
-Each profile defines a different Arquillian container (as a dependency). While in each case
-tests will execute in a JBoss AS instance, in one case (`arq-jbossas-managed`)
-the server instance is started and stopped by the test suite, while in the other (`arq-jbossas-remote`),
-the test suite expects an already started server instance.
+If you haven't used the archetype, or the profiles don't exist, create them.
 
-Once these profiles are defined, you can execute your tests in two ways:
+Each profile defines a different Arquillian container. In both cases the tests execute in an application server instance. In one case (`arq-jbossas-managed`) the server instance is started and stopped by the test suite, whils in the other (`arq-jbossas-remote`), the test suite expects an already started server instance.
+
+Once these profiles are defined, we can execute the tests in two ways:
 
 * from the command-line build
 * from an IDE
@@ -1491,39 +1371,27 @@ Once these profiles are defined, you can execute your tests in two ways:
 Executing tests from the command line
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can now execute your test suite from the command line by simply running a Maven build with
-the appropriate target and profile, as in one of the following examples.
+You can now execute the test suite from the command line by running the Maven build with the appropriate target and profile, as in one of the following examples.
 
-After ensuring that the `JBOSS_HOME` environment variable is set to a valid JBoss AS7 installation directory),
-you can run the following command:
+After ensuring that the `JBOSS_HOME` environment variable is set to a valid JBoss AS7 installation directory), you can run the following command:
 
-------------------------------------------------------------------------------------------
-mvn clean test -Parq-jbossas-managed
-------------------------------------------------------------------------------------------
+    mvn clean test -Parq-jbossas-managed
 
 Or, after starting a JBoss AS7 instance, you can run the following command
 
-------------------------------------------------------------------------------------------
-mvn clean test -Parq-jbossas-remote
-------------------------------------------------------------------------------------------
+    mvn clean test -Parq-jbossas-remote
 
-While these tests are run indeed from the command line, it is important to re-emphasize the fact that they execute as part of a
-Maven build. Therefore, they can be easily included in an automated build and test harness.
+These tests execute as part of the Maven build and can be easily included in an automated build and test harness.
 
 Running Arquillian tests from within Eclipse
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Running the entire test battery as part of the build is an important part of the development
-process - you want to make sure that everything is working fine before releasing a new
-milestone, or even committing new code. However, running the entire test battery all the time
-can be an issue, especially when you're trying to focus on a particular problem. Also, you
-definitively don't want to leave the comfort of your IDE for running the tests.
+Running the entire test suite as part of the build is an important part of the development process - you may want to make sure that everything is working fine before releasing a new milestone, or just before committing new code. However, running the entire test suite all the time
+can be a productivity drain, especially when you're trying to focus on a particular problem. Also, when debugging, you don't want to leave the comfort of your IDE for running the tests.
 
-Running Arquillian tests from within Eclipse (including JBoss Tools and JBoss Developer Studio here)
-is in fact very simple, based on existing JUnit test running support.
+Running Arquillian tests from JBoss Developer Studio or JBoss tools is very simple as Arquillian builds on JUnit (or TestNG).
 
-The first thing to do is to enable one of the two profiles in the project. In Eclipse, open
-the project properties, and from the _Maven_ tab, add the profile as shown in the picture below.
+First enable one of the two profiles in the project. In Eclipse, open the project properties, and from the _Maven_ tab, add the profile as shown in the picture below.
 
 [[eclipse-update-profiles]]
 .Update Maven profiles in Eclipse
@@ -1531,11 +1399,9 @@ image::gfx/eclipse-maven-profile-update.png[scaledwidth="50%"]
 
 The project configuration will be updated automatically.
 
-Now, it's all simple. You can click right on one of your test classes, say `VenueServiceTest` and select
-_Run As -> JUnit Test_.
+Now, you can click right on one of your test classes, and select *Run As -> JUnit Test*.
 
-The test suite will run, deploying the test classes in the JBoss AS7 container, executing the tests
-and finally producing the much coveted green bar.
+The test suite will run, deploying the test classes to the application server, executing the tests and finally producing the much coveted green bar.
 
 [[eclipse-green-bar]]
 .Running the tests
