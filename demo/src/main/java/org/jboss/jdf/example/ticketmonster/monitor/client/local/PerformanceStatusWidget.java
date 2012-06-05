@@ -16,6 +16,7 @@
 
 package org.jboss.jdf.example.ticketmonster.monitor.client.local;
 
+import com.google.gwt.user.client.ui.HTML;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -76,23 +77,21 @@ public class PerformanceStatusWidget extends Composite {
     private void setProgress() {
         int soldPercent = Math.round((soldTickets / (float) capacity) * 100);
 
-        if (soldPercentLabel != null) {
-            progressBar.remove(soldPercentLabel);
+        String colour;
+        if (soldPercent >= 100) {
+            colour = "progress-danger";
+        } else if (soldPercent > 90) {
+            colour = "progress-warning";
+        } else {
+            colour = "progress-success";
         }
+        soldPercentLabel = new HTML("<div class=\"performance-status-progress progress " + colour + "\">\n" +
+                "  <div class=\"bar\"\n" +
+                "       style=\"width: " + soldPercent + "%;\"></div>\n" +
+                "</div>");
 
-        if (availablePercentLabel != null) {
-            progressBar.remove(availablePercentLabel);
-        }
-
-        soldPercentLabel = new Label();
-        soldPercentLabel.setStyleName("performance-status-progress-sold");
-        soldPercentLabel.setWidth(soldPercent + "px");
-        
-        availablePercentLabel = new Label();
-        availablePercentLabel.setStyleName("performance-status-progress-available");
-        availablePercentLabel.setWidth((100 - soldPercent) + "px");
-
+        progressBar.clear();
         progressBar.add(soldPercentLabel);
-        progressBar.add(availablePercentLabel);
+
     }
 }

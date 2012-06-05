@@ -404,8 +404,7 @@ footer a {
     margin-top: 10px;
     margin-right: 5px;
     margin-left: 5px;
-    background-color: #f5f5f5;
-
+    background-color: #ffffff;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     border-radius: 8px;
@@ -431,16 +430,11 @@ footer a {
     padding: 0px;
 }
 
-.performance-status-progress-sold {
+.performance-status-progress{
     margin-left: 20px;
-    height: 18px;
-    background: #cc0000;
-}
-
-.performance-status-progress-available {
     margin-right: 20px;
     height: 18px;
-    background: #009900;
+    width: 120px;
 }
 
 .bot-label {
