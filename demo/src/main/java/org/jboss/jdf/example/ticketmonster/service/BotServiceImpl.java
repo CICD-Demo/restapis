@@ -2,6 +2,7 @@ package org.jboss.jdf.example.ticketmonster.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import javax.ejb.Timer;
@@ -52,8 +53,10 @@ public class BotServiceImpl implements BotService {
     @Override
     public void start() {
         synchronized (bot) {
-            logger.info("Starting bot");
-            timer = bot.start();
+            if (timer == null) {
+                logger.info("Starting bot");
+                timer = bot.start();
+            }
         }
     }
 
