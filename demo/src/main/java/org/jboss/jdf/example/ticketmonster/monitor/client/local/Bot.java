@@ -38,6 +38,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 @EntryPoint
 public class Bot {
+
+    /**
+     * Maximum length of the log, we will truncate beyond this value
+     */
+    private static final int MAX_LOG_LENGTH = 8000;
+
     /**
      * This bots log.
      */
@@ -157,7 +163,12 @@ public class Bot {
 
     private void updateLog(String append) {
         String orig = log.getText();
-        Bot.log.setText(append + orig);
+        String newLogContent = append + orig;
+        if (newLogContent.length() > MAX_LOG_LENGTH) {
+            newLogContent = newLogContent.substring(0, MAX_LOG_LENGTH);
+            newLogContent.substring(0, newLogContent.lastIndexOf("\n"));
+        }
+        Bot.log.setText(newLogContent);
     }
 
     /**
