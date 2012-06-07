@@ -1,8 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import javax.ejb.Timer;
@@ -14,8 +12,9 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BotService;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotCreated;
+import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotMessage;
 import org.jboss.jdf.example.ticketmonster.rest.BookingService;
+import org.jboss.jdf.example.ticketmonster.util.CircularBuffer;
 import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 
 /**
@@ -30,7 +29,9 @@ import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 @Service
 public class BotServiceImpl implements BotService {
 
-    private List<String> log;
+    private static final int MAX_LOG_SIZE = 50;
+
+    private CircularBuffer<String> log;
 
     @Inject
     private Bot bot;
@@ -41,13 +42,13 @@ public class BotServiceImpl implements BotService {
     @Inject
     private Logger logger;
     
-    @Inject @BotCreated
+    @Inject @BotMessage
     private Event<String> event;
 
     private Timer timer;
-    
+
     public BotServiceImpl() {
-        log = new ArrayList<String>();
+        log = new CircularBuffer<String>(MAX_LOG_SIZE);
     }
 
     @Override
@@ -79,13 +80,13 @@ public class BotServiceImpl implements BotService {
         }
     }
 
-    public void newBookingRequest(@Observes @BotCreated String bookingRequest) {
+    public void newBookingRequest(@Observes @BotMessage String bookingRequest) {
         log.add(bookingRequest);
     }
 
     @Override
     public List<String> fetchLog() {
-        return log;
+        return log.getContents();
     }
 
 }

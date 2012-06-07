@@ -1,6 +1,5 @@
 package org.jboss.jdf.example.ticketmonster.service;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,7 +19,7 @@ import javax.inject.Inject;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.Show;
 import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotCreated;
+import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotMessage;
 import org.jboss.jdf.example.ticketmonster.rest.BookingRequest;
 import org.jboss.jdf.example.ticketmonster.rest.BookingService;
 import org.jboss.jdf.example.ticketmonster.rest.ShowService;
@@ -49,17 +48,25 @@ public class Bot {
     @Inject
     private BookingService bookingService;
     
-    @Inject @BotCreated
+    @Inject @BotMessage
     Event<String> event;
     
     @Resource
     private TimerService timerService;
     
     public Timer start() {
+        String startMessage = new StringBuilder("==========================\n")
+                .append("Bot started at ").append(new Date().toString()).append("\n")
+                .toString();
+        event.fire(startMessage);
         return timerService.createIntervalTimer(0, DURATION, new TimerConfig(null, false));
     }
     
     public void stop(Timer timer) {
+        String startMessage = new StringBuilder("==========================\n")
+                .append("Bot stopped at ").append(new Date().toString()).append("\n")
+                .toString();
+        event.fire(startMessage);
         timer.cancel();
     }
     

@@ -1,7 +1,5 @@
 package org.jboss.jdf.example.ticketmonster.monitor.client.local;
 
-import static com.google.gwt.user.client.ui.HasHorizontalAlignment.ALIGN_RIGHT;
-
 import java.util.List;
 
 import javax.enterprise.event.Observes;
@@ -14,12 +12,11 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BookingMonitorService;
 import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BotService;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotCreated;
+import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotMessage;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -116,7 +113,7 @@ public class Bot {
 
 
         stop.setStyleName("btn", true);
-        stop.setStyleName("btn-danger",true);
+        stop.setStyleName("btn-danger", true);
         
         deleteAll.addClickHandler(new ClickHandler() {
 
@@ -133,7 +130,7 @@ public class Bot {
         });
 
         deleteAll.setStyleName("btn", true);
-        deleteAll.setStyleName("btn-danger",true);
+        deleteAll.setStyleName("btn-danger", true);
 
         controls.add(start);
         controls.add(stop);
@@ -176,7 +173,7 @@ public class Bot {
      * 
      * @param booking the create booking
      */
-    public void onLogUpdated(@Observes @BotCreated String append) {
+    public void onLogUpdated(@Observes @BotMessage String append) {
         updateLog(append);
     }
 
