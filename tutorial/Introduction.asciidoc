@@ -325,7 +325,7 @@ Forge is a command-oriented rapid application development tool that allows you t
 
 To generate an entity, use these commands:
 
-    entity --named Event --package org.jboss.toos.examples.model
+    entity --named Event --package org.jboss.tools.examples.model
     field string --named name
     validation setup
     constraint NotNull --onProperty name
