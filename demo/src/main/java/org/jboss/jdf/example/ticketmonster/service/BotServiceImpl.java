@@ -74,9 +74,12 @@ public class BotServiceImpl implements BotService {
     
     @Override
     public void deleteAll() {
-        for (Booking booking : bookingService.getAll(MultivaluedHashMap.<String, String>empty())) {
-            event.fire("Deleted booking " + booking.getCancellationCode() + " for " + booking.getContactEmail() + "\n");
-            bookingService.deleteBooking(booking.getId());
+        synchronized (bot) {
+            stop();
+            for (Booking booking : bookingService.getAll(MultivaluedHashMap.<String, String>empty())) {
+                event.fire("Deleted booking " + booking.getCancellationCode() + " for " + booking.getContactEmail() + "\n");
+                bookingService.deleteBooking(booking.getId());
+            }
         }
     }
 
