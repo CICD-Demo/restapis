@@ -114,6 +114,7 @@ define([
             });
             bookingRequest.email = this.model.bookingRequest.email;
             bookingRequest.performance = this.model.performanceId
+            $("input[name='submit']").disable()
             $.ajax({url:"rest/bookings",
                 data:JSON.stringify(bookingRequest),
                 type:"POST",
@@ -133,7 +134,7 @@ define([
                     } else {
                         $("#request-summary").append('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><strong>Error! </strong>An error has occured</div>')
                     }
-
+                    $("input[name='submit']").enable();
                 })
 
         },
