@@ -87,7 +87,7 @@ public class EventServiceTest {
         
         List<Event> events = eventService.getAll(queryParameters);
         assertNotNull(events);
-        assertEquals(1, events.size());
+        assertEquals(5, events.size());
         for (Event e: events) {
             assertEquals("Concert", e.getCategory().getDescription());
         }
