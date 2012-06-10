@@ -107,8 +107,8 @@ public class Bot {
                 .append("\n");
             
         }
-        event.fire(message.toString());    
         bookingService.createBooking(bookingRequest);
+        event.fire(message.toString());
     }
     
     

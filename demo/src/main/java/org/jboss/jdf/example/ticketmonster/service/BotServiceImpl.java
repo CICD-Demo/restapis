@@ -77,8 +77,8 @@ public class BotServiceImpl implements BotService {
         synchronized (bot) {
             stop();
             for (Booking booking : bookingService.getAll(MultivaluedHashMap.<String, String>empty())) {
-                event.fire("Deleted booking " + booking.getCancellationCode() + " for " + booking.getContactEmail() + "\n");
                 bookingService.deleteBooking(booking.getId());
+                event.fire("Deleted booking " + booking.getId() + " for " + booking.getContactEmail() + "\n");
             }
         }
     }
