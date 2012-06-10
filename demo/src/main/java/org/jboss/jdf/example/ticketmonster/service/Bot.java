@@ -15,6 +15,7 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import org.jboss.jdf.example.ticketmonster.model.Performance;
@@ -108,14 +109,23 @@ public class Bot {
                 .append("\n");
             
         }
-        Response response = bookingService.createBooking(bookingRequest);
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+        try {
+            bookingService.createBooking(bookingRequest);
             message.append("SUCCESSFUL\n")
-           .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        } else {
-            message.append("FAILED:\n")
-            .append(response.getEntity())
-            .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+                   .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        } catch (Exception e) {
+            WebApplicationException targetException = null;
+            if (e instanceof WebApplicationException) {
+                targetException = (WebApplicationException)e;
+            }
+            if (e.getCause() instanceof WebApplicationException) {
+                targetException = (WebApplicationException) e.getCause();
+            }
+            if (targetException != null) {
+                message.append("FAILED:\n")
+                .append(targetException.getResponse().getEntity())
+                .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            }
         }
         event.fire(message.toString());
     }

@@ -19,6 +19,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -198,12 +199,16 @@ public class BookingService extends BaseEntityService<Booking> {
                 errorMessages.add(constraintViolation.getMessage());
             }
             errors.put("errors", errorMessages);
-            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
+            // A WebApplicationException can wrap a response
+            // Throwing the exception causes an automatic rollback
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
         } catch (Exception e) {
             // Finally, handle unexpected exceptions
             Map<String, Object> errors = new HashMap<String, Object>();
             errors.put("errors", Collections.singletonList(e.getMessage()));
-            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
+            // A WebApplicationException can wrap a response
+            // Throwing the exception causes an automatic rollback
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
         }
     }
 
