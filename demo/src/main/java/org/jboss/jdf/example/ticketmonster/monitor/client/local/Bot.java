@@ -96,6 +96,7 @@ public class Bot {
 
         start.setStyleName("btn", true);
         start.setStyleName("btn-danger",true);
+        start.setTitle("Start the bot");
 
         stop.addClickHandler(new ClickHandler() {
 
@@ -114,6 +115,7 @@ public class Bot {
 
         stop.setStyleName("btn", true);
         stop.setStyleName("btn-danger", true);
+        deleteAll.setTitle("Stop the bot");
         
         deleteAll.addClickHandler(new ClickHandler() {
 
@@ -131,6 +133,7 @@ public class Bot {
 
         deleteAll.setStyleName("btn", true);
         deleteAll.setStyleName("btn-danger", true);
+        deleteAll.setTitle("Delete all bookings (stops the bot first)");
 
         controls.add(start);
         controls.add(stop);
