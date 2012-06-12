@@ -56,9 +56,13 @@ define("router", [
             "venues/:id":"venueDetail",
             "book/:showId/:performanceId":"bookTickets",
             "bookings":"listBookings",
-            "bookings/:id":"bookingDetail",
+            "bookings/:options":"listBookings",
             "ignore":"ignore",
             "*actions":"defaultHandler"
+        },
+        initialize: function(options) {
+          // route bookings/:numericId to bookingDetail
+          this.route("/^bookings\/([0-9]+)$/","bookingsWithId",this.bookingDetail);
         },
         events:function () {
             var events = new Events();
@@ -89,20 +93,46 @@ define("router", [
             			   });
             utilities.viewManager.showView(createBookingView);
         },
-        listBookings:function () {
-            var bookings = new Bookings;
-            var bookingsView = new BookingsView({ 
-            	model:bookings, 
-            	 el:$("#content")});
-            bookings.bind("destroy",
-                function () {
-                    bookings.fetch({success:function () {
-                        utilities.viewManager.showView(bookingsView);
-                    }});
+        listBookings:function (optionsQuery) {
+            var options = {};
+            if (optionsQuery != undefined) {
+                optionsQuery.replace(/[A-Z0-9]+?=(\w*)/gi, function (token) {
+                    options[ token.split('=').shift() ] = token.split('=').pop();
                 });
-            bookings.fetch({success:function () {
-                utilities.viewManager.showView(bookingsView);
-            }});
+            }
+            if (options.first == undefined) {
+                options.first = 1;
+            }
+            if (options.maxResults  == undefined) {
+                options.maxResults = 10;
+            }
+            $.get(
+                "rest/bookings/count",
+                function (data) {
+                    var bookings = new Bookings;
+                    var bookingsView = new BookingsView({
+                        model:{bookings: bookings},
+                        el:$("#content"),
+                        pageSize: options.maxResults,
+                        page: 1,
+                        count:data.count});
+
+                    bookings.bind("destroy",
+                        function () {
+                            bookings.fetch({
+                                data:options,
+                                processData:true,
+                                success:function () {
+                                    utilities.viewManager.showView(bookingsView);
+                                }});
+                        });
+                    bookings.fetch({data:options,
+                        processData:true, success:function () {
+                            utilities.viewManager.showView(bookingsView);
+                        }});
+                }
+            );
+
         },
         eventDetail:function (id) {
             var model = new Event({id:id});

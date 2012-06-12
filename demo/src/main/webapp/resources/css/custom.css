@@ -296,3 +296,25 @@ footer a {
 .well-icon {
     float: left;
 }
+
+.pagination a {
+    border-style: none;
+    color: #f5f5f5;
+    background-color: inherit;
+}
+
+.pagination .active a {
+    border-style: none;
+    color: #f15755;
+    background-color: inherit;
+}
+
+.pagination a:hover,
+.pagination .active {
+    color: #dc4644;
+    background-color: inherit;
+}
+
+.pagination .active {
+    font-weight: bold;
+}
