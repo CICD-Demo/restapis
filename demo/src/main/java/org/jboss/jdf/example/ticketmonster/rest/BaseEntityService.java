@@ -1,6 +1,8 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -46,6 +48,7 @@ import javax.ws.rs.core.UriInfo;
  * <code>
  *   GET /widgets
  *   GET /widgets/:id
+ *   GET /widgets/count
  * </code>
  * </pre>
  *
@@ -104,7 +107,7 @@ public abstract class BaseEntityService<T> {
         criteriaQuery.orderBy(criteriaBuilder.asc(root.get("id")));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
         if (queryParameters.containsKey("first")) {
-        	Integer firstRecord = Integer.parseInt(queryParameters.getFirst("first"));
+        	Integer firstRecord = Integer.parseInt(queryParameters.getFirst("first"))-1;
         	query.setFirstResult(firstRecord);
         }
         if (queryParameters.containsKey("maxResults")) {
@@ -116,8 +119,31 @@ public abstract class BaseEntityService<T> {
 
     /**
      * <p>
+     *   A method for counting all entities of a given type
+     * </p>
+     *
+     * @param uriInfo application and request context information (see {@see UriInfo} class information for more details)
+     * @return
+     */
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Long> getCount(@Context UriInfo uriInfo) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<T> root = criteriaQuery.from(entityClass);
+        criteriaQuery.select(criteriaBuilder.count(root));
+        Predicate[] predicates = extractPredicates(uriInfo.getQueryParameters(), criteriaBuilder, root);
+        criteriaQuery.where(predicates);
+        Map<String, Long> result = new HashMap<String, Long>();
+        result.put("count", entityManager.createQuery(criteriaQuery).getSingleResult());
+        return result;
+    }
+
+    /**
+     * <p>
      *     Subclasses may choose to expand the set of supported query parameters (for adding more filtering
-     *     criteria) by overriding this method.
+     *     criteria on search and count) by overriding this method.
      * </p>
      * @param queryParameters - the HTTP query parameters received by the endpoint
      * @param criteriaBuilder - @{link CriteriaBuilder} used by the invoker
