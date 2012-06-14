@@ -9,7 +9,7 @@ define([
     var BookingsView = Backbone.View.extend({
         events:{
             "click i[data-tm-role='delete']":"deleteBooking",
-            "click a[data-tm-role='page']":"loadPage"
+            "click a[data-tm-role='page']":"refreshPage"
         },
         render:function () {
             var paginator = {};
@@ -19,12 +19,22 @@ define([
             utilities.applyTemplate($(this.el), bookingTableTemplate, {model:this.model.bookings, paginator:paginator});
             return this;
         },
-        loadPage: function(event) {
-            var page = $(event.currentTarget).data("tm-page");
+        refreshPage: function(event) {
+            if (!_.isUndefined(event)) {
+              this.loadPageByNumber($(event.currentTarget).data("tm-page"));
+            }
+            else {
+                this.loadPageByNumber(this.options.page);
+            }
+        },
+        loadPageByNumber: function(page) {
             var options = {};
-            options.first = (page-1)*this.options.pageSize + 1;
+            if (_.isNumber(page) && page > 0) {
+                this.options.page = page;
+            }
+            options.first = (this.options.page-1)*this.options.pageSize + 1;
             options.maxResults = this.options.pageSize;
-            this.options.page = page;
+
             var self = this;
             $.get(
                 "rest/bookings/count",
@@ -34,7 +44,7 @@ define([
                     self.model.bookings.fetch({data:options,
                         processData:true, success:function () {
                             self.render();
-                            $("a[data-tm-page='"+page+"']").addClass("active")
+                            $("a[data-tm-page='"+self.options.page+"']").addClass("active")
                         }});
                     }
                 });
@@ -42,8 +52,8 @@ define([
         },
         deleteBooking:function (event) {
             var id = $(event.currentTarget).data("tm-id");
-            if (confirm("Are you sure you want to delete booking " + this.model.get(id).get('id'))) {
-                this.model.get(id).destroy({wait:true});
+            if (confirm("Are you sure you want to delete booking " + id)) {
+                this.model.bookings.get(id).destroy({wait:true});
             };
         }
     });

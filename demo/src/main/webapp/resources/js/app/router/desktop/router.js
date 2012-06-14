@@ -56,13 +56,9 @@ define("router", [
             "venues/:id":"venueDetail",
             "book/:showId/:performanceId":"bookTickets",
             "bookings":"listBookings",
-            "bookings/:options":"listBookings",
+            "bookings/:id":"bookingDetail",
             "ignore":"ignore",
             "*actions":"defaultHandler"
-        },
-        initialize: function(options) {
-          // route bookings/:numericId to bookingDetail
-          this.route("/^bookings\/([0-9]+)$/","bookingsWithId",this.bookingDetail);
         },
         events:function () {
             var events = new Events();
@@ -93,19 +89,7 @@ define("router", [
             			   });
             utilities.viewManager.showView(createBookingView);
         },
-        listBookings:function (optionsQuery) {
-            var options = {};
-            if (optionsQuery != undefined) {
-                optionsQuery.replace(/[A-Z0-9]+?=(\w*)/gi, function (token) {
-                    options[ token.split('=').shift() ] = token.split('=').pop();
-                });
-            }
-            if (options.first == undefined) {
-                options.first = 1;
-            }
-            if (options.maxResults  == undefined) {
-                options.maxResults = 10;
-            }
+        listBookings:function () {
             $.get(
                 "rest/bookings/count",
                 function (data) {
@@ -113,20 +97,15 @@ define("router", [
                     var bookingsView = new BookingsView({
                         model:{bookings: bookings},
                         el:$("#content"),
-                        pageSize: options.maxResults,
+                        pageSize: 10,
                         page: 1,
                         count:data.count});
 
                     bookings.bind("destroy",
                         function () {
-                            bookings.fetch({
-                                data:options,
-                                processData:true,
-                                success:function () {
-                                    utilities.viewManager.showView(bookingsView);
-                                }});
+                            bookingsView.refreshPage();
                         });
-                    bookings.fetch({data:options,
+                    bookings.fetch({data:{first:1, maxResults:10},
                         processData:true, success:function () {
                             utilities.viewManager.showView(bookingsView);
                         }});
