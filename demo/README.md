@@ -1,10 +1,12 @@
 # TicketMonster - a JBoss example
 
-TicketMonster is an online ticketing demo application that gets you started with JBoss technologies, and helps you learn and evaluate them.
+TicketMonster is an online ticketing demo application that gets you started with JBoss technologies, in particular the [JBoss Developer Framework](http://jboss.org/jdf), and helps you learn and evaluate them.
 
 Here are a few instructions for building and running it.
 
 ## Generating the administration site
+
+_NOTE: failure in following this step will cause the link to `http://localhost:8080/ticket-monster/admin` to fail - the administration site is simply not there! It has to be generated first._
 
 Before building and running TicketMonster, you must generate the administration site with Forge.
 
