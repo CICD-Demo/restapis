@@ -33,11 +33,78 @@ index 2f61fb8..1522c99 100644
  			<h:outputText/>
  			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
 diff --git a/demo/src/main/webapp/admin/index.html b/demo/src/main/webapp/admin/index.html
-new file mode 100644
 index 0000000..4036f32
---- /dev/null
+--- a/demo/src/main/webapp/admin/index.html
 +++ b/demo/src/main/webapp/admin/index.html
-@@ -0,0 +1 @@
+@@ -1,68 +1 @@
+-<!DOCTYPE html>
+-<html>
+-<head>
+-    <title>Ticket Monster</title>
+-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0;">
+-
+-
+-    <link type="text/css" rel="stylesheet" href="../resources/css/screen.css"/>
+-    <link rel="stylesheet" href="../resources/css/bootstrap.css" type="text/css" media="all"/>
+-    <link rel="stylesheet" href="../resources/css/custom.css" type="text/css" media="all">
+-
+-    <link href='http://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'>
+-
+-    <!-- Add JavaScript library for IE6-8 support of HTML5 elements -->
+-    <!--[if lt IE 9]>
+-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+-    <![endif]-->
+-
+-</head>
+-<body>
+-
+-<!--
+-    Helper page, to be replaced by Forge generation
+--->
+-<div id="logo"><div class="wrap"><h1>Ticket Monster</h1></div></div>
+-<div id="container">
+-    <div id="menu">
+-        <div class="navbar">
+-            <div class="navbar-inner">
+-                <div class="container">
+-                    <ul class="nav">
+-                        <li><a href="#about">About</a></li>
+-                        <li><a href="#events">Events</a></li>
+-                        <li><a href="#venues">Venues</a></li>
+-                        <li><a href="#bookings">Bookings</a></li>
+-                        <li><a href="booking-monitor.html">Monitor</a></li>
+-                        <li><a href="admin">Administration</a></li>
+-                    </ul>
+-                </div>
+-            </div>
+-        </div>
+-    </div>
+-    <div id="content" class="container-fluid">
+-        <div class="well">
+-            <h2 class="page-header special-title">Don't Forget About Forge</h2>
+-
+-            <p>You must use JBoss Forge to generate the administration console. For doing so,
+-            follow the next steps:</p>
+-
+-            <ul>
+-                <li>Install JBoss Forge</li>
+-                <li>Start Forge by running the following command in the command prompt: <pre>forge</pre> command in your console</li>
+-                <li>Once the Forge prompt is up, run: <pre>run admin_layer.fsh</pre> (answering <i>yes</i> on questions concerning patches)</li>
+-                <li>Rebuild and redeploy</li>
+-            </ul>
+-
+-
+-        </div>
+-    </div>
+-</div>
+-
+-<footer style="">
+-    <div style="text-align: center;"><img src="resources/img/dualbrand_as7eap.png" alt="HTML5"/></div>
+-</footer>
+-
+-</body>
+-</html>
 +<meta http-equiv="refresh" content="0;url=../faces/admin/index.xhtml" />
 \ No newline at end of file
 diff --git a/demo/src/main/webapp/admin/index.xhtml b/demo/src/main/webapp/admin/index.xhtml
