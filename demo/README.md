@@ -83,11 +83,10 @@ You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
 
 1. Build TicketMonster using either: 
     * the default profile (with H2 database support)
-	
-	        mvn clean package
-	
-	* the `postgresql-openshift` profile (with PostgreSQL support) if the PotgreSQL cartrdige is enabled in OpenShift.
-	
+    
+            mvn clean package	
+    * the `postgresql-openshift` profile (with PostgreSQL support) if the PotgreSQL cartrdige is enabled in OpenShift.
+            
             mvn clean package -Ppostgresql-openshift
 			
 2. Copy the `target/ticket-monster.war`file in the OpenShift Git repository(located at `<root-of-openshift-application-git-repository>`).
