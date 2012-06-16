@@ -21,29 +21,46 @@ insert into MediaItem ( mediaType, url) values ( 'IMAGE', 'http://dl.dropbox.com
 insert into MediaItem ( mediaType, url) values ( 'IMAGE', 'http://dl.dropbox.com/u/8625587/ticketmonster/Giantsofthegame.png')
 insert into MediaItem ( mediaType, url) values ( 'IMAGE', 'http://dl.dropbox.com/u/8625587/ticketmonster/Punch%26Judy.png')
 
-
+--venue #1
 insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'Roy Thomson Hall', 'Toronto', 'Canada', '60 Simcoe Street','Roy Thomson Hall is the home of the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir.',4, 11000);
 
+--section #1
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'A', 'Premier platinum reserve',20, 100, 1);
+--section #2
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'B', 'Premier gold reserve', 20, 100, 1);
+--section #3
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'C', 'Premier silver reserve', 30, 100, 1);
+--section #4
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'D', 'General', 40, 100, 1);
 
+--venue #2
 insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'Sydney Opera House', 'Sydney', 'Australia', 'Bennelong point', 'The Sydney Opera House is a multi-venue performing arts centre in Sydney, New South Wales, Australia' ,3, 15030);
 
+--section #5
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S1', 'Front left', 50, 50, 2);
+--section #6
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S2', 'Front centre', 50, 50, 2);
+--section #7
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S3', 'Front right',50, 50, 2);
+--section #8
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S4', 'Rear left', 50, 50, 2);
+--section #9
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S5', 'Rear centre', 50, 50, 2);
+--section #10
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S6', 'Rear right', 50, 50, 2);
+--section #11
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S7', 'Balcony', 1, 30, 2);
 
+--venue #3
 insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'BMO Field', 'Toronto', 'Canada', '170 Princes Boulevard','BMO Field is a Canadian soccer stadium located in Exhibition Place in the city of Toronto.',5, 30000);
 
+--section #12
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'A', 'Premier platinum reserve',40, 100, 3);
+--section #13
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'B', 'Premier gold reserve', 40, 100, 3);
+--section #14
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'C', 'Premier silver reserve', 30, 200, 3);
+--section #15
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'D', 'General', 80, 200, 3);
 
 
@@ -73,24 +90,95 @@ insert into Event ( name, description, mediaitem_id, category_id) values ( 'Slap
 insert into Event ( name, description, mediaitem_id, category_id) values ( 'Giants of the Game', 'Your votes are in and the teams are assembled and coming to a stadium near you! Join Brendan ''Biceps'' Owen and the rest of the NBA''s leading players for this blockbuster East versus West all-star game. Who will join the rarefied air with past MVP greats like Shaquille O''Neal, LeBron James, and Kobe Bryant? Don''t wait to see the highlights when you can experience it live!', 21, 4);
 insert into Event ( name, description, mediaitem_id, category_id) values ( 'Punch and Judy (with a Twist)', 'You may not be at a British seaside but you heard right! Bring your family to witness a new twist on this traditional classic dating back to the 1600s ... only this time, Mr. Punch (and his stick) have met "The 1%." Cheer (or jeer) from the crowd when you think Punch should use his stick on Mr. 1%. Fans agree, "It''s the best way to release your outrage at the wealthiest 1% without  being arrested!".', 22, 2);
 
+--show #1
 insert into Show ( event_id, venue_id) values ( 1, 1);
+
+--performance #1
 insert into Performance ( show_id, date) values ( 1, '2013-04-01 19:00:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (1, 1, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (1, 2, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (1, 3, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (1, 4, null, 0);
+
+--performance #2
 insert into Performance ( show_id, date) values ( 1, '2013-04-02 19:00:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (2, 1, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (2, 2, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (2, 3, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (2, 4, null, 0);
 
+--show #2
 insert into Show ( event_id, venue_id) values ( 1, 2);
+
+--performance #3
 insert into Performance ( show_id, date) values ( 2, '2013-04-03 19:30:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (3, 5, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (3, 6, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (3, 7, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (3, 8, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (3, 9, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (3, 10, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (3, 11, null, 0);
+
+--performance #4
 insert into Performance ( show_id, date) values ( 2, '2013-04-04 19:30:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (4, 5, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (4, 6, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (4, 7, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (4, 8, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (4, 9, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (4, 10, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (4, 11, null, 0);
 
+--show #3
 insert into Show ( event_id, venue_id) values ( 2, 1);
+
+--performance #5
 insert into Performance ( show_id, date) values ( 3, '2013-04-05 17:00:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (5, 1, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (5, 2, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (5, 3, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (5, 4, null, 0);
+
+--performance #6
 insert into Performance ( show_id, date) values ( 3, '2013-04-05 19:30:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (6, 1, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (6, 2, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (6, 3, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (6, 4, null, 0);
 
+--show #4
 insert into Show ( event_id, venue_id) values ( 2, 2);
-insert into Performance ( show_id, date) values ( 4, '2013-04-07 17:00:00');
-insert into Performance ( show_id, date) values ( 4, '2013-04-07 19:30:00');
 
+--performance #7
+insert into Performance ( show_id, date) values ( 4, '2013-04-07 17:00:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (7, 5, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (7, 6, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (7, 7, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (7, 8, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (7, 9, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (7, 10, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (7, 11, null, 0);
+
+--performance #8
+insert into Performance ( show_id, date) values ( 4, '2013-04-07 19:30:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (8, 5, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (8, 6, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (8, 7, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (8, 8, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (8, 9, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (8, 10, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (8, 11, null, 0);
+
+--show #5
 insert into Show ( event_id, venue_id) values ( 3, 3);
+
+--performance #9
 insert into Performance ( show_id, date) values ( 5, '2013-05-11 21:00:00');
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (9, 12, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (9, 13, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (9, 14, null, 0);
+insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount) values (9, 15, null, 0);
 
 
 insert into TicketCategory ( description) values ( 'Adult');

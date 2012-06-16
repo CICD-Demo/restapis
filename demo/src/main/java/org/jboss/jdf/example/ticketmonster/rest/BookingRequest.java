@@ -1,7 +1,9 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 
@@ -58,5 +60,21 @@ public class BookingRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Utility method - computes the unique price category ids in the request
+     *
+     * @return
+     */
+    Set<Long> getUniquePriceCategoryIds() {
+        Set<Long> priceCategoryIds = new HashSet<Long>();
+        for (TicketRequest ticketRequest : getTicketRequests()) {
+            if (priceCategoryIds.contains(ticketRequest.getTicketPrice())) {
+                throw new RuntimeException("Duplicate price category id");
+            }
+            priceCategoryIds.add(ticketRequest.getTicketPrice());
+        }
+        return priceCategoryIds;
     }
 }

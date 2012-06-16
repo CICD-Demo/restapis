@@ -1,6 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.ws.rs.Path;
 
 import org.jboss.jdf.example.ticketmonster.model.Venue;
@@ -19,7 +19,7 @@ import org.jboss.jdf.example.ticketmonster.model.Venue;
  *     This is a stateless service, so a single shared instance can be used in this case.
  * </p>
  */
-@Singleton
+@Stateless
 public class VenueService extends BaseEntityService<Venue> {
 
     public VenueService() {

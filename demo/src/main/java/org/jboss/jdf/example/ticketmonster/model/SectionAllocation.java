@@ -3,6 +3,7 @@ package org.jboss.jdf.example.ticketmonster.model;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
@@ -129,6 +131,18 @@ public class SectionAllocation {
     }
 
     /**
+     * Post-load callback method initializes the allocation table if it not populated already
+     * for the entity
+     */
+    @PostLoad
+    void initialize() {
+    	if (this.allocated == null) {
+    		System.out.println("Allocated for " + section + " and " + performance + " is null");
+    		this.allocated = new boolean[this.section.getNumberOfRows()][this.section.getRowCapacity()];
+    	}
+    }
+
+    /**
      * Check if a particular seat is allocated in this section for this performance.
      * 
      * @return true if the seat is allocated, otherwise false
@@ -158,8 +172,6 @@ public class SectionAllocation {
                 int startSeat = findFreeGapStart(rowCounter, 0, seatCount);
                 // if a large enough block of seats is available
                 if (startSeat >= 0) {
-                    // Allocate the seats in the allocation matrix
-                    allocate(rowCounter, startSeat, seatCount);
                     // Create the list of allocated seats to return
                     for (int i = 1; i <= seatCount; i++) {
                         seats.add(new Seat(section, rowCounter + 1, startSeat + i));
@@ -173,8 +185,6 @@ public class SectionAllocation {
                 // if a seat is found
                 if (startSeat >= 0) {
                     do {
-                        // Allocate the seat
-                        allocate(rowCounter, startSeat, 1);
                         // Create the seat to return to the user
                         seats.add(new Seat(section, rowCounter + 1, startSeat + 1));
                         // Find the next free seat in the row
@@ -186,12 +196,17 @@ public class SectionAllocation {
                 }
             }
         }
-
         // Simple check to make sure we could actually allocate the required number of seats
         if (seats.size() == seatCount) {
             return seats;
         } else {
-            throw new SeatAllocationException("Cannot find the requested amount of seats");
+            return Collections.emptyList();
+        }
+    }
+
+    public void markOccupied(List<Seat> seats) {
+        for (Seat seat : seats) {
+            allocate(seat.getRowNumber()-1, seat.getNumber()-1, 1);
         }
     }
 

@@ -46,7 +46,7 @@
             <% for (i = Math.max(1, paginator.currentPage-2);
                     i <= Math.min(paginator.currentPage+2, paginator.totalPageCount);
                     i++) { %>
-            <li <%=(paginator.currentPage==i)?'class="active"':''%>><a data-tm-role="page" data-tm-page="<%=i%>"><%=i%></a></li>
+            <li class='<%=(paginator.currentPage==i)?"active":""%>'><a data-tm-role="page" data-tm-page="<%=i%>"><%=i%></a></li>
             <% } %>
             <% if ((paginator.currentPage + 3)< paginator.totalPageCount) { %>
             <li class="disabled"><a>...</a></li>

@@ -3,7 +3,7 @@ package org.jboss.jdf.example.ticketmonster.rest;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -27,7 +27,7 @@ import org.jboss.jdf.example.ticketmonster.model.Event;
  *     This is a stateless service, so a single shared instance can be used in this case.
  * </p>
  */
-@Singleton
+@Stateless
 public class EventService extends BaseEntityService<Event> {
 
     public EventService() {

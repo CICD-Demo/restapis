@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -109,23 +110,15 @@ public class Bot {
                 .append("\n");
             
         }
-        try {
-            bookingService.createBooking(bookingRequest);
+        Response response = bookingService.createBooking(bookingRequest);
+        if(response.getStatus() == Response.Status.OK.getStatusCode()) {
             message.append("SUCCESSFUL\n")
-                   .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        } catch (Exception e) {
-            WebApplicationException targetException = null;
-            if (e instanceof WebApplicationException) {
-                targetException = (WebApplicationException)e;
-            }
-            if (e.getCause() instanceof WebApplicationException) {
-                targetException = (WebApplicationException) e.getCause();
-            }
-            if (targetException != null) {
+                    .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        }
+        else {
                 message.append("FAILED:\n")
-                .append(targetException.getResponse().getEntity())
-                .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-            }
+                        .append(((Map<String, Object>) response.getEntity()).get("errors"))
+                        .append("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         }
         event.fire(message.toString());
     }

@@ -3,7 +3,7 @@ package org.jboss.jdf.example.ticketmonster.rest;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -21,7 +21,7 @@ import org.jboss.jdf.example.ticketmonster.model.Show;
  * @author Marius Bogoevici
  */
 @Path("/shows")
-@Singleton
+@Stateless
 public class ShowService extends BaseEntityService<Show> {
 
     public ShowService() {
