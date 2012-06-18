@@ -21,7 +21,7 @@ The accompanying tutorials  walk you through the various tools & technologies ne
 Before we dive into the code, let's discuss the requirements for the application.
 
 Use cases
-~~~~~~~~~
+---------
 
 We have grouped the current use cases in two major categories: end user oriented, and
 administrative.
@@ -45,7 +45,7 @@ image::gfx/ticket-monster-user-use-cases.png[]
 
 
 What can administrators do?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Administrators are more concerned the operation of the business. They will manage the _master data_:
 information about venues, events and shows, and will want to see how many tickets have been sold.
@@ -61,7 +61,7 @@ The use cases are:
 image::gfx/ticket-monster-administration-use-cases.png[]
 
 Architecture
-^^^^^^^^^^^^
+------------
 
 [[architecture-image]]
 .TicketMonster architecture
@@ -81,10 +81,10 @@ part of the application will be developed in GWT and showcases Errai's support f
 updates via client-server CDI eventing.
 
 How can you run it?
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Learn more
-~~~~~~~~~~
+----------
 
 The example is accompanied by a series of tutorials that will walk you through the process of
 creating the TicketMonster application from end to end.
