@@ -71,6 +71,7 @@ You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
 	(You can use the `arq-jbossas-remote` profile for running tests as well)
 
 3. This will deploy `target/ticket-monster.war` to the running instance of the server.
+4. Now you can see the application running at `http://localhost:8080/ticket-monster`
 
 ### Running TicketMonster in OpenShift
 
@@ -85,7 +86,7 @@ You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
     * the default profile (with H2 database support)
     
             mvn clean package	
-    * the `postgresql-openshift` profile (with PostgreSQL support) if the PotgreSQL cartrdige is enabled in OpenShift.
+    * the `postgresql-openshift` profile (with PostgreSQL support) if the PostgreSQL cartrdige is enabled in OpenShift.
             
             mvn clean package -Ppostgresql-openshift
 			
@@ -99,6 +100,8 @@ You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
 		git add deployments/ROOT.war
 		git commit -m "Deploy TicketMonster"
 		git push
+
+5. Now you can see the application running at `http://<app-name>-<domain-name>.rhcloud.com`
 
 _NOTE: this version of TicketMonster uses the *binary* deployment style._ 
 
