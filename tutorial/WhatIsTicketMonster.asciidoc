@@ -58,7 +58,7 @@ The use cases are:
 
 [[administration-use-cases-image]]
 .Administration use cases
-image::gfx/ticket-monster-user-use-cases.png[]
+image::gfx/ticket-monster-administration-use-cases.png[]
 
 Architecture
 ^^^^^^^^^^^^
@@ -82,8 +82,6 @@ updates via client-server CDI eventing.
 
 How can you run it?
 ~~~~~~~~~~~~~~~~~~~
-
-TODO
 
 Learn more
 ~~~~~~~~~~
