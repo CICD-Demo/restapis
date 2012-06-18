@@ -2,7 +2,7 @@
 
 TicketMonster is an online ticketing demo application that gets you started with JBoss technologies, in particular the [JBoss Developer Framework](http://jboss.org/jdf), and helps you learn and evaluate them.
 
-Here are a few instructions for building and running it.
+Here are a few instructions for building and running it. You can learn more about the example from the [tutorial](http://www.jboss.org/jdf/examples/get-started).
 
 ## Generating the administration site
 
