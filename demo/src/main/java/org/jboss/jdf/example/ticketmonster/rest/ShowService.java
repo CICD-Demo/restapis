@@ -21,6 +21,11 @@ import org.jboss.jdf.example.ticketmonster.model.Show;
  * @author Marius Bogoevici
  */
 @Path("/shows")
+/**
+ * <p>
+ *     This is a stateless service, we declare it as an EJB for transaction demarcation
+ * </p>
+ */
 @Stateless
 public class ShowService extends BaseEntityService<Show> {
 

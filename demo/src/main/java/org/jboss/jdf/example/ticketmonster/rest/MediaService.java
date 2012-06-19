@@ -14,7 +14,11 @@ import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 import org.jboss.jdf.example.ticketmonster.service.MediaManager;
 
 @Path("/media")
-@Stateless
+/**
+ * <p>
+ *     This is a stateless service, we declare it as an EJB for transaction demarcation
+ * </p>
+ */
 public class MediaService {
     
     @Inject

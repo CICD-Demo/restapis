@@ -24,7 +24,7 @@ import org.jboss.jdf.example.ticketmonster.model.Event;
 @Path("/events")
 /**
  * <p>
- *     This is a stateless service, so a single shared instance can be used in this case.
+ *     This is a stateless service, we declare it as an EJB for transaction demarcation
  * </p>
  */
 @Stateless

@@ -22,7 +22,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.jdf.example.ticketmonster.model.SeatAllocationException;
 import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.Cancelled;
 import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.Created;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
@@ -47,7 +46,7 @@ import org.jboss.jdf.example.ticketmonster.service.SeatAllocationService;
 @Path("/bookings")
 /**
  * <p>
- *     This is a stateless service, so a single shared instance can be used in this case.
+ *     This is a stateless service, we declare it as an EJB for transaction demarcation
  * </p>
  */
 @Stateless
