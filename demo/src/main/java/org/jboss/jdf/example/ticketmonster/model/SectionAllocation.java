@@ -137,7 +137,6 @@ public class SectionAllocation {
     @PostLoad
     void initialize() {
     	if (this.allocated == null) {
-    		System.out.println("Allocated for " + section + " and " + performance + " is null");
     		this.allocated = new boolean[this.section.getNumberOfRows()][this.section.getRowCapacity()];
     	}
     }
