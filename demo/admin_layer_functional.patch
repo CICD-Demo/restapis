@@ -279,3 +279,33 @@ index 0000000..535c93f
 +</body>
 +        </html>
 \ No newline at end of file
+diff --git a/demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java b/demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
+index 93b8bc3..9b6bf39 100644
+--- a/demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
++++ b/demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
+@@ -23,6 +23,8 @@ import javax.persistence.criteria.Predicate;
+ import javax.persistence.criteria.Root;
+ 
+ import org.jboss.jdf.example.ticketmonster.model.Performance;
++import org.jboss.jdf.example.ticketmonster.model.Section;
++import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
+ import org.jboss.jdf.example.ticketmonster.model.Show;
+ 
+ /**
+@@ -115,6 +117,9 @@ public class PerformanceBean implements Serializable
+          if (this.id == null)
+          {
+             this.entityManager.persist(this.performance);
++            for (Section s: this.performance.getShow().getVenue().getSections()) {
++                this.entityManager.persist(new SectionAllocation(this.performance, s));
++            }
+             return "search?faces-redirect=true";
+          }
+          else
+@@ -289,4 +294,4 @@ public class PerformanceBean implements Serializable
+       this.add = new Performance();
+       return added;
+    }
+-}
+\ No newline at end of file
++}
