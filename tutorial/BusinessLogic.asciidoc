@@ -353,30 +353,65 @@ public class SeatAllocationService implements Serializable {
     @Inject
     EntityManager entityManager;
 
-    public List<Seat> allocateSeats(Section section, Performance performance, int seatCount, boolean contiguous) {
-        SectionAllocation sectionAllocation = retrieveSectionAllocation(section, performance);
-        return sectionAllocation.allocateSeats(seatCount, contiguous);
+    public AllocatedSeats allocateSeats(Section section, Performance performance, int seatCount, boolean contiguous) {
+        SectionAllocation sectionAllocation = retrieveSectionAllocationExclusively(section, performance);
+        List<Seat> seats = sectionAllocation.allocateSeats(seatCount, contiguous);
+        return new AllocatedSeats(sectionAllocation, seats);
     }
 
-    private SectionAllocation retrieveSectionAllocation(Section section, Performance performance) {
-        SectionAllocation sectionAllocationStatus;
-        try {
-            sectionAllocationStatus = (SectionAllocation) entityManager.createQuery(
-                            "select s from SectionAllocation s where " +
-                            "s.performance.id = :performanceId and " +
-                            "s.section.id = :sectionId")
-                            .setParameter("performanceId", performance.getId())
-                            .setParameter("sectionId", section.getId())
-                            .getSingleResult();
-        } catch (NoResultException e) {
-            sectionAllocationStatus = new SectionAllocation(performance, section);
-            entityManager.persist(sectionAllocationStatus);
+    public void deallocateSeats(Section section, Performance performance, List<Seat> seats) {
+        SectionAllocation sectionAllocation = retrieveSectionAllocationExclusively(section, performance);
+        for (Seat seat : seats) {
+            if (!seat.getSection().equals(section)) {
+                throw new SeatAllocationException("All seats must be in the same section!");
+            }
+            sectionAllocation.deallocate(seat);
         }
+    }
+
+    private SectionAllocation retrieveSectionAllocationExclusively(Section section, Performance performance) {
+        SectionAllocation sectionAllocationStatus = (SectionAllocation) entityManager.createQuery(
+													"select s from SectionAllocation s where " +
+													"s.performance.id = :performanceId and " +
+													"s.section.id = :sectionId")
+													.setParameter("performanceId", performance.getId())
+													.setParameter("sectionId", section.getId())
+													.getSingleResult();
+        entityManager.lock(sectionAllocationStatus, LockModeType.PESSIMISTIC_WRITE);
         return sectionAllocationStatus;
     }
 }
 ------------------------------------------------------------------------------------------
 
+Next, we define the `AllocatedSeats` class that we use for storing seat reservations for a booking, before they are made persistent.
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/service/AllocatedSeats.java
+[source,java]
+------------------------------------------------------------------------------------------
+public class AllocatedSeats {
+
+    private final SectionAllocation sectionAllocation;
+
+    private final List<Seat> seats;
+
+    public AllocatedSeats(SectionAllocation sectionAllocation, List<Seat> seats) {
+        this.sectionAllocation = sectionAllocation;
+        this.seats = seats;
+    }
+
+    public SectionAllocation getSectionAllocation() {
+        return sectionAllocation;
+    }
+
+    public List<Seat> getSeats() {
+        return seats;
+    }
+
+    public void markOccupied() {
+        sectionAllocation.markOccupied(seats);
+    }
+}
+------------------------------------------------------------------------------------------
 
 Booking Monitor Service
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -527,6 +562,7 @@ Most of the JAX-RS service must provide both a (filtered) list of entities or in
  * <code>
  *   GET /widgets
  *   GET /widgets/:id
+ *   GET /widgets/count
  * </code>
  * </pre>
  *
@@ -640,6 +676,43 @@ of content (JSON, HTML, XML or others).
 
 Subclasses can also override the `extractPredicates` method and add own support for additional query parameters to `GET /rest/<entityRoot>` which can act as filter criteria.
 
+The `getAll` method supports retrieving a range of entities, which is especially useful when we need to handle very large sets of data, and use pagination. In those cases, we need to support counting entities as well, so we add a method that retrieves the entity count:
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
+[source,java]
+-----------------------------------------------------------------------------------------
+public abstract class BaseEntityService<T> {
+
+    ...
+
+    /**
+     * <p>
+     *   A method for counting all entities of a given type
+     * </p>
+     *
+     * @param uriInfo application and request context information (see {@see UriInfo} class information for more details)
+     * @return
+     */
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Long> getCount(@Context UriInfo uriInfo) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<T> root = criteriaQuery.from(entityClass);
+        criteriaQuery.select(criteriaBuilder.count(root));
+        Predicate[] predicates = extractPredicates(uriInfo.getQueryParameters(), criteriaBuilder, root);
+        criteriaQuery.where(predicates);
+        Map<String, Long> result = new HashMap<String, Long>();
+        result.put("count", entityManager.createQuery(criteriaQuery).getSingleResult());
+        return result;
+    }
+
+}
+-----------------------------------------------------------------------------------------
+
+We use the `@Path` annotation to map the new method to a sub-path of '/rest/<entityRoot>. Now all the JAX-RS endpoints that subclass `BaseEntityService` will be able to get entity counts from '/rest/<entityRoot>/count'. Just like `getAll`, this method also delegates to `extractPredicates`, so any customizations done there by subclasses 
+
 Next, we add a method for retrieving individual entities.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
@@ -671,7 +744,7 @@ public abstract class BaseEntityService<T> {
 }
 ------------------------------------------------------------------------------------------
 
-This method is similar to the `getAll` method, except that we use the `@Path` annotation to map it to a sub-path of '/rest/<entityRoot>'. The annotation attribute identifies the expected format of the URL (here, the last segment has to be a number) and binds a  portion of the URL to a variable (here named `id`). The `@PathParam` annotation allows the value of the variable to be passed as amethod argument. Data conversion is performed automatically.
+This method is similar to `getAll` and `getCount`, and we use the `@Path` annotation to map it to a sub-path of '/rest/<entityRoot>'. The annotation attribute identifies the expected format of the URL (here, the last segment has to be a number) and binds a  portion of the URL to a variable (here named `id`). The `@PathParam` annotation allows the value of the variable to be passed as amethod argument. Data conversion is performed automatically.
 
 Now, all the JAX-RS endpoints that subclass `BaseEntityService` will get two operations for free:
 
@@ -698,7 +771,7 @@ Adding support for retrieving venues is now extremely simple. All we do is exten
  *     This is a stateless service, so a single shared instance can be used in this case.
  * </p>
  */
-@Singleton
+@Stateless
 public class VenueService extends BaseEntityService<Venue> {
 
     public VenueService() {
@@ -734,10 +807,10 @@ This is done by overriding the `extractPredicates` method to handle any query pa
 @Path("/events")
 /**
  * <p>
- *     This is a stateless service, so a single shared instance can be used in this case.
+ *     This is a stateless service, we declare it as an EJB for transaction demarcation
  * </p>
  */
-@Singleton
+@Stateless
 public class EventService extends BaseEntityService<Event> {
 
     public EventService() {
@@ -792,10 +865,10 @@ To create a booking, we add a new method, which handles `POST` requests to `/res
 @Path("/bookings")
 /**
  * <p>
- *     This is a stateless service, so a single shared instance can be used in this case.
+ *     This is a stateless service, we declare it as an EJB for transaction demarcation
  * </p>
  */
-@Singleton
+@Stateless
 public class BookingService extends BaseEntityService<Booking> {
 
     @Inject
@@ -808,7 +881,7 @@ public class BookingService extends BaseEntityService<Booking> {
         super(Booking.class);
     }
     
-    /**
+   /**
      * <p>
      *   Create a booking. Data is contained in the bookingRequest object
      * </p>
@@ -824,30 +897,15 @@ public class BookingService extends BaseEntityService<Booking> {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createBooking(BookingRequest bookingRequest) {
         try {
-            // First, validate the posted data
-            // There will be more validation when persistence occurs
-
-        	Set<Long> TicketPrices = new HashSet<Long>();
-            for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
-                if (TicketPrices.contains(ticketRequest.getTicketPrice())) {
-                    throw new RuntimeException("Duplicate price category id");
-                }
-                TicketPrices.add(ticketRequest.getTicketPrice());
-            }
-
-            // First, load the entities that make up this booking's relationships
+            // identify the ticket price categories in this request
+            Set<Long> priceCategoryIds = bookingRequest.getUniquePriceCategoryIds();
+            
+            // load the entities that make up this booking's relationships
             Performance performance = getEntityManager().find(Performance.class, bookingRequest.getPerformance());
 
             // As we can have a mix of ticket types in a booking, we need to load all of them that are relevant, 
             // id
-            List<TicketPrice> ticketPrices = (List<TicketPrice>) getEntityManager()
-                    .createQuery("select p from TicketPrice p where p.id in :ids")
-                    .setParameter("ids", TicketPrices).getResultList();
-            // Now, map them by id
-            Map<Long, TicketPrice> ticketPricesById = new HashMap<Long, TicketPrice>();
-            for (TicketPrice ticketPrice : ticketPrices) {
-                ticketPricesById.put(ticketPrice.getId(), ticketPrice);
-            }
+            Map<Long, TicketPrice> ticketPricesById = loadTicketPrices(priceCategoryIds);
 
             // Now, start to create the booking from the posted data
             // Set the simple stuff first!
@@ -858,19 +916,25 @@ public class BookingService extends BaseEntityService<Booking> {
 
             // Now, we iterate over each ticket that was requested, and organize them by section and category
             // we want to allocate ticket requests that belong to the same section contiguously
-            Map<Section, Map<TicketCategory, TicketRequest>> ticketRequestsPerSection = new LinkedHashMap<Section, Map<TicketCategory, TicketRequest>>();
+            Map<Section, Map<TicketCategory, TicketRequest>> ticketRequestsPerSection
+                    = new TreeMap<Section, java.util.Map<TicketCategory, TicketRequest>>(SectionComparator.instance());
             for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
                 final TicketPrice ticketPrice = ticketPricesById.get(ticketRequest.getTicketPrice());
                 if (!ticketRequestsPerSection.containsKey(ticketPrice.getSection())) {
                     ticketRequestsPerSection
-                            .put(ticketPrice.getSection(), new LinkedHashMap<TicketCategory, TicketRequest>());
+                            .put(ticketPrice.getSection(), new HashMap<TicketCategory, TicketRequest>());
                 }
                 ticketRequestsPerSection.get(ticketPrice.getSection()).put(
                         ticketPricesById.get(ticketRequest.getTicketPrice()).getTicketCategory(), ticketRequest);
             }
 
             // Now, we can allocate the tickets
-            // Iterate over the sections
+            // Iterate over the sections, finding the candidate seats for allocation
+            // The process will acquire a write lock for a given section and performance
+            // Use deterministic ordering of sections to prevent deadlocks
+            Map<Section, AllocatedSeats> seatsPerSection = 
+			       new TreeMap<Section, org.jboss.jdf.example.ticketmonster.service.AllocatedSeats>(SectionComparator.instance());
+            List<Section> failedSections = new ArrayList<Section>();
             for (Section section : ticketRequestsPerSection.keySet()) {
                 int totalTicketsRequestedPerSection = 0;
                 // Compute the total number of tickets required (a ticket category doesn't impact the actual seat!)
@@ -879,29 +943,48 @@ public class BookingService extends BaseEntityService<Booking> {
                 for (TicketRequest ticketRequest : ticketRequestsByCategories.values()) {
                     totalTicketsRequestedPerSection += ticketRequest.getQuantity();
                 }
-                // try to allocate seats - if this fails, an exception will be thrown
-                List<Seat> seats = seatAllocationService.allocateSeats(section, performance, totalTicketsRequestedPerSection, true);
-                // allocation was successful, begin generating tickets
-                // associate each allocated seat with a ticket, assigning a price category to it
-                int seatCounter = 0;
-                // Now, add a ticket for each requested ticket to the booking
-                for (TicketCategory ticketCategory : ticketRequestsByCategories.keySet()) {
-                    final TicketRequest ticketRequest = ticketRequestsByCategories.get(ticketCategory);
-                    final TicketPrice ticketPrice = ticketPricesById.get(ticketRequest.getTicketPrice());
-                    for (int i = 0; i < ticketRequest.getQuantity(); i++) {
-                        Ticket ticket = new Ticket(seats.get(seatCounter + i), ticketCategory, ticketPrice.getPrice());
-                        // getEntityManager().persist(ticket);
-                        booking.getTickets().add(ticket);
-                    }
-                    seatCounter += ticketRequest.getQuantity();
+                // try to allocate seats
+                
+                AllocatedSeats allocatedSeats =
+				      seatAllocationService.allocateSeats(section, performance, totalTicketsRequestedPerSection, true);
+                if (allocatedSeats.getSeats().size() == totalTicketsRequestedPerSection) {
+                    seatsPerSection.put(section, allocatedSeats);
+                } else {
+                    failedSections.add(section);
                 }
             }
-            // Persist the booking, including cascaded relationships
-            booking.setPerformance(performance);
-            booking.setCancellationCode("abc");
-            getEntityManager().persist(booking);
-            newBookingEvent.fire(booking);
-            return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
+            if (failedSections.isEmpty()) {
+                for (Section section : seatsPerSection.keySet()) {
+                    // allocation was successful, begin generating tickets
+                    // associate each allocated seat with a ticket, assigning a price category to it
+                    final Map<TicketCategory, TicketRequest> ticketRequestsByCategories = ticketRequestsPerSection.get(section);
+                    AllocatedSeats allocatedSeats = seatsPerSection.get(section);
+                    allocatedSeats.markOccupied();
+                    int seatCounter = 0;
+                    // Now, add a ticket for each requested ticket to the booking
+                    for (TicketCategory ticketCategory : ticketRequestsByCategories.keySet()) {
+                        final TicketRequest ticketRequest = ticketRequestsByCategories.get(ticketCategory);
+                        final TicketPrice ticketPrice = ticketPricesById.get(ticketRequest.getTicketPrice());
+                        for (int i = 0; i < ticketRequest.getQuantity(); i++) {
+                            Ticket ticket =
+							      new Ticket(allocatedSeats.getSeats().get(seatCounter + i), ticketCategory, ticketPrice.getPrice());
+                            // getEntityManager().persist(ticket);
+                            booking.getTickets().add(ticket);
+                        }
+                        seatCounter += ticketRequest.getQuantity();
+                    }
+                }
+                // Persist the booking, including cascaded relationships
+                booking.setPerformance(performance);
+                booking.setCancellationCode("abc");
+                getEntityManager().persist(booking);
+                newBookingEvent.fire(booking);
+                return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
+            } else {
+                Map<String, Object> responseEntity = new HashMap<String, Object>();
+                responseEntity.put("errors", Collections.singletonList("Cannot allocate the requested number of seats!"));
+                return Response.status(Response.Status.BAD_REQUEST).entity(responseEntity).build();
+            }
         } catch (ConstraintViolationException e) {
             // If validation of the data failed using Bean Validation, then send an error
             Map<String, Object> errors = new HashMap<String, Object>();
@@ -910,13 +993,34 @@ public class BookingService extends BaseEntityService<Booking> {
                 errorMessages.add(constraintViolation.getMessage());
             }
             errors.put("errors", errorMessages);
-            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
+            // A WebApplicationException can wrap a response
+            // Throwing the exception causes an automatic rollback
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
         } catch (Exception e) {
             // Finally, handle unexpected exceptions
             Map<String, Object> errors = new HashMap<String, Object>();
             errors.put("errors", Collections.singletonList(e.getMessage()));
-            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
+            // A WebApplicationException can wrap a response
+            // Throwing the exception causes an automatic rollback
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
         }
+    }
+
+    /**
+     * Utility method for loading ticket prices
+     * @param priceCategoryIds
+     * @return
+     */
+    private Map<Long, TicketPrice> loadTicketPrices(Set<Long> priceCategoryIds) {
+        List<TicketPrice> ticketPrices = (List<TicketPrice>) getEntityManager()
+                .createQuery("select p from TicketPrice p where p.id in :ids")
+                .setParameter("ids", priceCategoryIds).getResultList();
+        // Now, map them by id
+        Map<Long, TicketPrice> ticketPricesById = new HashMap<Long, TicketPrice>();
+        for (TicketPrice ticketPrice : ticketPrices) {
+            ticketPricesById.put(ticketPrice.getId(), ticketPrice);
+        }
+        return ticketPricesById;
     }
 }
 ------------------------------------------------------------------------------------------

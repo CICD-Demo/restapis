@@ -99,8 +99,12 @@ Now, we create the main page of the application (which is the URL loaded by the 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0;">
 
+
     <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
     <link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">
+
+    <link href='http://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'>
     <script data-main="resources/js/main-desktop" src="resources/js/libs/require.js"></script>
 
     <!-- Add JavaScript library for IE6-8 support of HTML5 elements -->
@@ -115,17 +119,19 @@ Now, we create the main page of the application (which is the URL loaded by the 
     The main layout of the page - contains the menu and the 'content' &lt;div/&gt; in which all the
     views will render the content.
 -->
+<div id="logo"><div class="wrap"><h1>Ticket Monster</h1></div></div>
 <div id="container">
     <div id="menu">
         <div class="navbar">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand">JBoss Ticket Monster</a>
                     <ul class="nav">
+                        <li><a href="#about">About</a></li>
                         <li><a href="#events">Events</a></li>
                         <li><a href="#venues">Venues</a></li>
                         <li><a href="#bookings">Bookings</a></li>
-                        <li><a href="#about">About</a></li>
+                        <li><a href="booking-monitor.html">Monitor</a></li>
+                        <li><a href="admin">Administration</a></li>
                     </ul>
                 </div>
             </div>
@@ -136,7 +142,7 @@ Now, we create the main page of the application (which is the URL loaded by the 
 </div>
 
 <footer style="">
-    <div style="text-align: center;"><img src="resources/img/logo.png" alt="HTML5"/></div>
+    <div style="text-align: center;"><img src="resources/img/dualbrand_as7eap.png" alt="HTML5"/></div>
 </footer>
 
 </body>
@@ -180,7 +186,7 @@ define("backbone", [
 
 // Now we declare all the dependencies
 require([
-    'order!jquery', 
+    'order!jquery',
     'order!underscore',
     'order!backbone',
     'text',
@@ -216,7 +222,7 @@ define([
      * Used for CRUD operations against individual events
      */
     var Event = Backbone.Model.extend({
-        urlRoot:'rest/events' // the URL for perfoming CRUD operations
+        urlRoot:'rest/events' // the URL for performing CRUD operations
     });
     // export the Event class
     return Event;
@@ -301,14 +307,14 @@ define([
             var categories = _.uniq(
                 _.map(this.model.models, function(model){
                     return model.get('category')
-                }, function(item){
+                }), false, function(item){
                     return item.id
-                }));
+                });
             utilities.applyTemplate($(this.el), eventsTemplate, {categories:categories, model:this.model})
             $(this.el).find('.item:first').addClass('active');
             $(".collapse").collapse()
             $("a[rel='popover']").popover({trigger:'hover'});
-            return this
+            return this;
         },
         update:function () {
             $("a[rel='popover']").popover('hide')
@@ -333,20 +339,20 @@ The view is attached to a DOM element (the `el` property). When the `render` met
             %>
             <div class="accordion-group">
                 <div class="accordion-heading">
-                    <a class="accordion-toggle" style="color: #fff; background: #000;"
+                    <a class="accordion-toggle"
                        data-target="#category-<%=category.id%>-collapsible" data-toggle="collapse"
                        data-parent="#itemMenu"><%= category.description %></a>
                 </div>
                 <div id="category-<%=category.id%>-collapsible" class="collapse in accordion-body">
-                    <div id="category-<%=category.id%>" class="accordion-inner">
+                    <div id="category-<%- category.id%>" class="accordion-inner">
 
                         <%
                         _.each(model.models, function (model) {
                         if (model.get('category').id == category.id) {
                         %>
-                        <p><a href="#venues/<%=model.attributes.id%>" rel="popover"
-                              data-content="<%=model.attributes.description%>"
-                              data-original-title="<%=model.attributes.name%>"><%=model.attributes.name%></a></p>
+                        <p><a href="#events/<%- model.attributes.id%>" rel="popover"
+                              data-content="<%- model.attributes.description%>"
+                              data-original-title="<%- model.attributes.name%>"><%=model.attributes.name%></a></p>
                         <% }
                         });
                         %>
@@ -356,6 +362,7 @@ The view is attached to a DOM element (the `el` property). When the `render` met
             <% }); %>
         </div>
     </div>
+
     <div id='itemSummary' class="span9">
         <div class="row-fluid">
             <div class="span11">
@@ -407,11 +414,13 @@ define("router", [
     'jquery',
     'underscore',
     'backbone',
+	'utilities',
     'app/collections/events',
     'app/views/desktop/events',
 ],function ($,
             _,
             Backbone,
+			utilities,
             Events,
             EventsView) {
 
@@ -436,7 +445,7 @@ define("router", [
             // RESTful service
             events.bind("reset", 
                 function () { 
-                    eventsView.render();
+                     utilities.viewManager.showView(eventsView);
             }).fetch();
         });
 
@@ -517,12 +526,15 @@ define([
     eventDetailTemplate,
     mediaTemplate,
     eventVenueDescriptionTemplate) {
+
     var EventDetail = Backbone.View.extend({
+
         events:{
             "click input[name='bookButton']":"beginBooking",
             "change select[id='venueSelector']":"refreshShows",
             "change select[id='dayPicker']":"refreshTimes"
         },
+
         render:function () {
             $(this.el).empty()
             utilities.applyTemplate($(this.el), eventDetailTemplate, this.model.attributes);
@@ -535,22 +547,19 @@ define([
             var self = this
             $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows
-                $("#venueSelector").empty().append("<option value='0'>Select a venue</option>");
+                $("#venueSelector").empty().append("<option value='0' selected>Select a venue</option>");
                 $.each(shows, function (i, show) {
-                    $("#venueSelector").append("<option value='" + show.id + "'>" 
-                           + show.venue.address.city + " : " + show.venue.name + "</option>")
+                    $("#venueSelector").append("<option value='" + show.id + "'>" + show.venue.address.city + " : " + show.venue.name + "</option>")
                 });
                 $("#venueSelector").removeAttr('disabled')
-                if ($("#venueSelector").val()) {
-                    $("#venueSelector").change()
-                }
             })
+            return this;
         },
         beginBooking:function () {
-            require("router").navigate('/book/' + 
-                      $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
+            require("router").navigate('/book/' + $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
         },
         refreshShows:function (event) {
+            event.stopPropagation();
             $("#dayPicker").empty();
 
             var selectedShowId = event.currentTarget.value;
@@ -571,10 +580,8 @@ define([
                 $("#performanceTimes").removeAttr('disabled')
                 _.each(times, function (time) {
                     var date = new Date(time)
-                    $("#dayPicker").append("<option value='" + date.toYMD() + "'>" 
-                          + date.toPrettyStringWithoutTime() + 
-                          "</option>")
-                })
+                    $("#dayPicker").append("<option value='" + date.toYMD() + "'>" + date.toPrettyStringWithoutTime() + "</option>")
+                });
                 this.refreshTimes()
                 $("#bookingWhen").show(100)
             } else {
@@ -596,8 +603,7 @@ define([
                 $.each(this.selectedShow.performances, function (i, performance) {
                     var performanceDate = new Date(performance.date);
                     if (_.isEqual(performanceDate.toYMD(), selectedDate)) {
-                        $("#performanceTimes").append("<option value='" + performance.id + "'>" 
-                            + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
+                        $("#performanceTimes").append("<option value='" + performance.id + "'>" + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
                     }
                 })
             }
@@ -628,7 +634,7 @@ The corresponding templates for the three fragments rendered above are:
 [source,html]
 -------------------------------------------------------------------------------------------------------
 <div class="row-fluid" xmlns="http://www.w3.org/1999/html">
-    <h2 class="page-header"><%=name%></h2>
+    <h2 class="page-header special-title light-font"><%=name%></h2>
 </div>
 <div class="row-fluid">
     <div class="span4 well">
@@ -650,28 +656,14 @@ The corresponding templates for the three fragments rendered above are:
     </div>
     <div id='bookingWhen' style="display: none;" class="span2 well">
         <h3 class="page-header">When?</h3>
-        <select class="span2" id="dayPicker">
-            <option value="-1">Select a day</option>
-        </select>
+        <select class="span2" id="dayPicker"/>
         <select class="span2" id="performanceTimes"/>
-            <option value="-1">Select a time</option>
-        </select>
+
 
         <div id='bookingOption'><input name="bookButton" class="btn btn-primary" type="button"
                                        value="Order tickets"></div>
     </div>
 </div>
--------------------------------------------------------------------------------------------------------
-
-.src/main/webapp/resources/templates/desktop/event-venue-description.html
-[source,html]
--------------------------------------------------------------------------------------------------------
-<address>
-    <p><%= venue.description %></p>
-    <p><strong>Address:</strong></p>
-    <p><%= venue.address.street %></p>
-    <p><%= venue.address.city %>, <%= venue.address.country %></p>
-</address>
 -------------------------------------------------------------------------------------------------------
 
 .src/main/webapp/resources/templates/desktop/event-venue-description.html
@@ -715,7 +707,7 @@ define("router", [
             var eventDetailView = new EventDetailView({model:model, el:$("#content")});
             model.bind("change",
                 function () {
-                    eventDetailView.render();
+                    utilities.viewManager.showView(eventDetailView);
                 }).fetch();
         });
 });
@@ -773,12 +765,35 @@ define([
         onChange:function (event) {
             var value = event.currentTarget.value;
             var ticketPriceId = $(event.currentTarget).data("tm-id");
-            var modifiedModelEntry = _.find(this.model, function(item) { return item.ticketPrice.id == ticketPriceId});
+            var modifiedModelEntry = _.find(this.model, function (item) {
+                return item.ticketPrice.id == ticketPriceId
+            });
+            // update model
             if ($.isNumeric(value) && value > 0) {
                 modifiedModelEntry.quantity = parseInt(value);
             }
             else {
                 delete modifiedModelEntry.quantity;
+            }
+            // display error messages
+            if (value.length > 0 &&
+                   (!$.isNumeric(value)  // is a non-number, other than empty string
+                        || value <= 0 // is negative
+                        || parseFloat(value) != parseInt(value))) { // is not an integer
+                $("#error-input-"+ticketPriceId).empty().append("Please enter a positive integer value");
+                $("#ticket-category-fieldset-"+ticketPriceId).addClass("error")
+            } else {
+                $("#error-input-"+ticketPriceId).empty();
+                $("#ticket-category-fieldset-"+ticketPriceId).removeClass("error")
+            }
+            // are there any outstanding errors after this update?
+            // if yes, disable the input button
+            if (
+               $("div[id^='ticket-category-fieldset-']").hasClass("error") &&
+                   !_.isUndefined(modifiedModelEntry.quantity) ) {
+              $("input[name='add']").attr("disabled", true)
+            } else {
+              $("input[name='add']").removeAttr("disabled")
             }
         }
     });
@@ -793,7 +808,7 @@ define([
             utilities.applyTemplate($(this.el), ticketSummaryViewTemplate, this.model.bookingRequest);
         },
         removeEntry:function () {
-            this.model.tickets.splice(this.model.index, 1);
+            this.model.bookingRequest.tickets.splice(this.model.index, 1);
         }
     });
 
@@ -801,8 +816,9 @@ define([
 
         events:{
             "click input[name='submit']":"save",
-            "change select":"refreshPrices",
+            "change select[id='sectionSelect']":"refreshPrices",
             "keyup #email":"updateEmail",
+            "change #email":"updateEmail",
             "click input[name='add']":"addQuantities",
             "click i":"updateQuantities"
         },
@@ -829,6 +845,7 @@ define([
                 self.ticketSummaryView.render();
                 $("#sectionSelector").change();
             });
+            return this;
         },
         refreshPrices:function (event) {
             var ticketPrices = _.filter(this.show.ticketPrices, function (item) {
@@ -849,6 +866,7 @@ define([
             });
             bookingRequest.email = this.model.bookingRequest.email;
             bookingRequest.performance = this.model.performanceId
+            $("input[name='submit']").attr("disabled", true)
             $.ajax({url:"rest/bookings",
                 data:JSON.stringify(bookingRequest),
                 type:"POST",
@@ -868,13 +886,12 @@ define([
                     } else {
                         $("#request-summary").append('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><strong>Error! </strong>An error has occured</div>')
                     }
-
+                    $("input[name='submit']").removeAttr("disabled");
                 })
 
         },
         addQuantities:function () {
             var self = this;
-
             _.each(this.ticketCategoriesView.model, function (model) {
                 if (model.quantity != undefined) {
                     var found = false;
@@ -918,14 +935,18 @@ define([
         updateEmail:function (event) {
             if ($(event.currentTarget).is(':valid')) {
                 this.model.bookingRequest.email = event.currentTarget.value;
-
+                $("#error-email").empty();
             } else {
+                $("#error-email").empty().append("Please enter a valid e-mail address");
                 delete this.model.bookingRequest.email;
             }
             this.setCheckoutStatus();
         },
         setCheckoutStatus:function () {
-            if (this.model.bookingRequest.totals != undefined && this.model.bookingRequest.totals.tickets > 0 && this.model.bookingRequest.email != undefined && this.model.bookingRequest.email != '') {
+            if (this.model.bookingRequest.totals != undefined 
+				&& this.model.bookingRequest.totals.tickets > 0 
+				&& this.model.bookingRequest.email != undefined 
+				&& this.model.bookingRequest.email != '') {
                 $('input[name="submit"]').removeAttr('disabled');
             }
             else {
@@ -948,7 +969,7 @@ The corresponding templates for the views above are shown below:
 [source,html]
 -------------------------------------------------------------------------------------------------------
 <div class="row-fluid">
-    <h2 class="page-header">Booking #<%=booking.id%> confirmed!</h2>
+    <h2 class="special-title light-font">Booking #<%=booking.id%> confirmed!</h2>
 </div>
 <div class="row-fluid">
     <div class="span5 well">
@@ -995,18 +1016,18 @@ The corresponding templates for the views above are shown below:
 -------------------------------------------------------------------------------------------------------
 <div class="row-fluid">
     <div class="span12">
-        <h2><%=show.event.name%>
+        <h2 class="special-title light-font"><%=show.event.name%>
             <small><%=show.venue.name%>, <%=new Date(performance.date).toPrettyString()%></p></small>
         </h2>
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span5 well">
-        <h4 class="page-header">Select tickets</h4>
-
-        <div id="sectionSelectorPlaceholder" class="row-fluid">
+    <div class="span6 well">
+       <h3 class="page-header">Select tickets</h3>
+        <form class="form-horizontal">
+        <div id="sectionSelectorPlaceholder">
             <div class="control-group">
-                <label class="control-label" for="sectionSelect">Section</label>
+                <label class="control-label" for="sectionSelect"><strong>Section</strong></label>
                 <div class="controls">
                     <select id="sectionSelect">
                         <option value="-1" selected="true">Choose a section</option>
@@ -1017,16 +1038,20 @@ The corresponding templates for the views above are shown below:
                 </div>
             </div>
         </div>
-        <div id="ticketCategoriesViewPlaceholder" class="row-fluid"></div>
+        </form>
+        <div id="ticketCategoriesViewPlaceholder"></div>
     </div>
     <div id="request-summary" class="span5 offset1 well">
-        <h4 class="page-header">Order summary</h4>
+        <h3 class="page-header">Order summary</h3>
         <div id="ticketSummaryView" class="row-fluid"/>
-        <h4 class="page-header">Checkout</h4>
+        <h3 class="page-header">Checkout</h3>
         <div class="row-fluid">
+            <form class="form-search">
             <input type='email' id="email" placeholder="Email" required/>
             <input type='button' class="btn btn-primary" name="submit" value="Checkout"
-                   style="margin-bottom:9px;" disabled="true"/>
+                   disabled="true"/>
+            <p class="help-block error-notification"  id="error-email"></p>
+            </form>
         </div>
     </div>
 </div>
@@ -1036,30 +1061,34 @@ The corresponding templates for the views above are shown below:
 [source,html]
 -------------------------------------------------------------------------------------------------------
 <% if (ticketPrices.length > 0) { %>
-<% _.each(ticketPrices, function(ticketPrice) { %>
-<div id="ticket-category-input-<%=ticketPrice.id%>">
-    <div class="control-group">
-        <label class="control-label"><%=ticketPrice.ticketCategory.description%></label>
-
+<form class="form-horizontal">
+    <% _.each(ticketPrices, function(ticketPrice) { %>
+    <div class="control-group" id="ticket-category-fieldset-<%=ticketPrice.id%>">
+        <label class="control-label"><strong><%=ticketPrice.ticketCategory.description%></strong></label>
         <div class="controls">
             <div class="input-append">
-                <input class="span2" rel="tooltip" title="Enter value" type="number" min="1"
-                                             max="9"
-                                             data-tm-id="<%=ticketPrice.id%>"
-                                             placeholder="Number of tickets"
-                                             name="tickets-<%=ticketPrice.ticketCategory.id%>"/>
-                <span class="add-on" style="margin-bottom:9px">@ $<%=ticketPrice.price%></span>
+                <input class="span2" rel="tooltip" title="Enter value"
+                       data-tm-id="<%=ticketPrice.id%>"
+                       placeholder="Number of tickets"
+                       name="tickets-<%=ticketPrice.ticketCategory.id%>"/>
+                <span class="add-on">@ $<%=ticketPrice.price%></span>
+
+                <p class="help-block" id="error-input-<%=ticketPrice.id%>"></p>
             </div>
         </div>
     </div>
-</div>
-<% }) %>
+    <% }) %>
+<p>&nbsp;</p>
+
 <div class="control-group">
     <label class="control-label"/>
+
     <div class="controls">
-        <input type="button" class="btn btn-primary" name="add" value="Add tickets"/>
+        <input type="button" class="btn btn-primary" disabled="true" name="add" value="Add tickets"/>
     </div>
 </div>
+</div>
+</form>
 <% } %>
 -------------------------------------------------------------------------------------------------------
 
@@ -1135,7 +1164,7 @@ define("router", [
             			    bookingRequest:{tickets:[]}}, 
             			    el:$("#content")
             			   });
-            createBookingView.render();
+            utilities.viewManager.showView(createBookingView);
         }
 });
 -------------------------------------------------------------------------------------------------------
@@ -1309,7 +1338,7 @@ The first page in our application is the landing page. First, we add the templat
     <h3>Ticket Monster</h3>
 </div>
 <div data-role="content" align="center">
-    <img src="resources/gfx/icon_large.png"/>
+    <img src="resources/img/dualbrand_as7eap.png" width="300px"/>
     <h4 align="left">Find events</h4>
     <ul data-role="listview">
         <li>
@@ -1381,12 +1410,12 @@ define([
             var categories = _.uniq(
                 _.map(this.model.models, function(model){
                     return model.get('category')
-                }, function(item){
+                }), false, function(item){
                     return item.id
-                }));
-
+                });
             utilities.applyTemplate($(this.el), eventsView,  {categories:categories, model:this.model})
-            $(this.el).trigger('pagecreate')
+            $(this.el).trigger('pagecreate');
+            return this;
         }
     });
 
@@ -1465,7 +1494,7 @@ define("router",[
             var eventsView = new EventsView({model:events, el:$("#container")});
             events.bind("reset",
                 function () {
-                    eventsView.render();
+                    utilities.viewManager.showView(eventsView);
                 }).fetch();
         }
         ...
@@ -1526,6 +1555,7 @@ define(['backbone',
             $("#performanceTimes").empty();
             $("#performanceTimes").selectmenu('disable');
             $(this.el).trigger('pagecreate');
+            return this;
         },
         performanceSelected:function () {
             if ($("#performanceTimes").val() != 'Choose a show time ...') {
@@ -1689,7 +1719,7 @@ define("router",[
             var eventDetailView = new EventDetailView({model:model, el:$("#container")});
             model.bind("change",
                 function () {
-                    eventDetailView.render();
+                    utilities.viewManager.showView(eventDetailView);
                     $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
                 }).fetch();
         }
@@ -1909,6 +1939,7 @@ Next, we create the page fragment templates. First, the actual page:
     <p>
       <%=show.venue.name%>
     <p>
+
     <p>
       <small><%=new Date(performance.date).toPrettyString()%></small>
     </p>
@@ -1922,14 +1953,16 @@ Next, we create the page fragment templates. First, the actual page:
                 <% }) %>
             </select>
         </div>
+
     </div>
     <div id="ticketCategoriesViewPlaceholder" style="display:none;"/>
-    
+
     <div class="fieldcontain">
         <label>Contact email</label>
         <input type='email' name='email' placeholder="Email"/>
     </div>
 </div>
+
 <div data-role="footer" class="ui-bar">
     <a href="#" data-role="button" data-icon="delete">Cancel</a>
     <a id="confirmBooking" data-icon="check" data-role="button" disabled>Checkout</a>
@@ -1952,7 +1985,7 @@ Next, the fragment that contains the input form for tickets, which is re-rendere
         <input id="ticket-<%=ticketPrice.id%>" data-tm-id="<%=ticketPrice.id%>" type="number" placeholder="Enter value"
                name="tickets"/>
       </fieldset>
-   <% }) %>        
+   <% }) %>
    </form>
 <% } %>
 -------------------------------------------------------------------------------------------------------
@@ -2052,10 +2085,11 @@ Finally, we create the page that displays the booking confirmation:
         </tr>
         <% }) %>
         </tbody>
-    </table>
-</div>
+    </table></div>
 <div data-role="footer" class="ui-bar">
+
     <div class="ui-block-b"><a id="back" href="#" data-role="button" data-icon="back">Back</a></div>
+
 </div>
 -------------------------------------------------------------------------------------------------------
 
