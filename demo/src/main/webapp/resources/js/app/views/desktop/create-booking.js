@@ -36,12 +36,35 @@ define([
         onChange:function (event) {
             var value = event.currentTarget.value;
             var ticketPriceId = $(event.currentTarget).data("tm-id");
-            var modifiedModelEntry = _.find(this.model, function(item) { return item.ticketPrice.id == ticketPriceId});
+            var modifiedModelEntry = _.find(this.model, function (item) {
+                return item.ticketPrice.id == ticketPriceId
+            });
+            // update model
             if ($.isNumeric(value) && value > 0) {
                 modifiedModelEntry.quantity = parseInt(value);
             }
             else {
                 delete modifiedModelEntry.quantity;
+            }
+            // display error messages
+            if (value.length > 0 &&
+                   (!$.isNumeric(value)  // is a non-number, other than empty string
+                        || value <= 0 // is negative
+                        || parseFloat(value) != parseInt(value))) { // is not an integer
+                $("#error-input-"+ticketPriceId).empty().append("Please enter a positive integer value");
+                $("#ticket-category-fieldset-"+ticketPriceId).addClass("error")
+            } else {
+                $("#error-input-"+ticketPriceId).empty();
+                $("#ticket-category-fieldset-"+ticketPriceId).removeClass("error")
+            }
+            // are there any outstanding errors after this update?
+            // if yes, disable the input button
+            if (
+               $("div[id^='ticket-category-fieldset-']").hasClass("error") &&
+                   !_.isUndefined(modifiedModelEntry.quantity) ) {
+              $("input[name='add']").attr("disabled", true)
+            } else {
+              $("input[name='add']").removeAttr("disabled")
             }
         }
     });
@@ -140,7 +163,6 @@ define([
         },
         addQuantities:function () {
             var self = this;
-
             _.each(this.ticketCategoriesView.model, function (model) {
                 if (model.quantity != undefined) {
                     var found = false;
@@ -184,8 +206,9 @@ define([
         updateEmail:function (event) {
             if ($(event.currentTarget).is(':valid')) {
                 this.model.bookingRequest.email = event.currentTarget.value;
-
+                $("#error-email").empty();
             } else {
+                $("#error-email").empty().append("Please enter a valid e-mail address");
                 delete this.model.bookingRequest.email;
             }
             this.setCheckoutStatus();

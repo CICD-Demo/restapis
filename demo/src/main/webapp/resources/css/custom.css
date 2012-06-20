@@ -318,3 +318,7 @@ footer a {
 .pagination .active {
     font-weight: bold;
 }
+
+.error-notification {
+    color: #B94A48;
+}
