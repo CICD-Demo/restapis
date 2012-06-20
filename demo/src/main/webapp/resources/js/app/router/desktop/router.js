@@ -73,7 +73,7 @@ define("router", [
             var venuesView = new VenuesView({model:venues, el:$("#content")});
             venues.bind("reset",
                 function () {
-                    utilities.viewManager.showView(venuesView.render());
+                    utilities.viewManager.showView(venuesView);
                 }).fetch();
         },
         home:function () {
