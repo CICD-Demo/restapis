@@ -20,7 +20,7 @@ define([
     var TicketCategoriesView = Backbone.View.extend({
         id:'categoriesView',
         events:{
-            "change input":"onChange"
+            "keyup input":"onChange"
         },
         render:function () {
             if (this.model != null) {
