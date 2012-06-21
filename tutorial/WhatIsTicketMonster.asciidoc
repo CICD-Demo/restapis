@@ -21,13 +21,13 @@ The accompanying tutorials  walk you through the various tools & technologies ne
 Before we dive into the code, let's discuss the requirements for the application.
 
 Use cases
----------
+~~~~~~~~~
 
 We have grouped the current use cases in two major categories: end user oriented, and
 administrative.
 
 What can end users do?
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 The end users of the application want to attend some cool events. They will try
 to find shows, create bookings, or cancel bookings. The use cases are:
@@ -45,7 +45,7 @@ image::gfx/ticket-monster-user-use-cases.png[]
 
 
 What can administrators do?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Administrators are more concerned the operation of the business. They will manage the _master data_:
 information about venues, events and shows, and will want to see how many tickets have been sold.
@@ -61,7 +61,7 @@ The use cases are:
 image::gfx/ticket-monster-administration-use-cases.png[]
 
 Architecture
-------------
+~~~~~~~~~~~~
 
 [[architecture-image]]
 .TicketMonster architecture
@@ -81,12 +81,12 @@ part of the application will be developed in GWT and showcases Errai's support f
 updates via client-server CDI eventing.
 
 How can you run it?
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 Before building and running TicketMonster, you must generate the administration site with Forge. See link:AdminJSF.html[the tutorial] for details.
 
 Building TicketMonster
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 TicketMonster can be built from Maven, by runnning the following Maven command:
 
@@ -107,15 +107,14 @@ If you intend to deploy into link:http://openshift.com[OpenShift], you can use t
     mvn clean package -Ppostgresql-openshift
 	
 Running TicketMonster
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
 
 Running TicketMonster locally
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++++++++++++++++++++++++++++++
 
-Start JBoss Enterprise Application Platform 6 or JBoss AS 7 with the Web Profile
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+First, _start JBoss Enterprise Application Platform 6 or JBoss AS 7 with the Web Profile_.
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
@@ -123,8 +122,8 @@ Start JBoss Enterprise Application Platform 6 or JBoss AS 7 with the Web Profile
         For Linux:   JBOSS_HOME/bin/standalone.sh
         For Windows: JBOSS_HOME\bin\standalone.bat
 		
-Deploy TicketMonster
-++++++++++++++++++++
+Then, _deploy TicketMonster_.
+
 
 1. Make sure you have started the JBoss Server as described above.
 2. Type this command to build and deploy the archive into a running server instance.
@@ -137,16 +136,14 @@ Deploy TicketMonster
 4. Now you can see the application running at http://localhost:8080/ticket-monster.
 
 Running TicketMonster in OpenShift
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+++++++++++++++++++++++++++++++++++
 
-Create an OpenShift project
-+++++++++++++++++++++++++++
+First, _create an OpenShift project_.
 
 1. Make sure that you have an OpenShift domain and you have created an application using the `jbossas-7` cartridge (for more details, get started [here](https://openshift.redhat.com/app/getting_started)). If you want to use PostgreSQL, add the `postgresql-8.4` cartridge too.
 2. Ensure that the Git repository of the project is checked out.
 
-Building and deploying
-++++++++++++++++++++++
+Then, _build and deploy it_.
 
 1. Build TicketMonster using either: 
     * the default profile (with H2 database support)
@@ -171,7 +168,7 @@ Building and deploying
 5. Now you can see the application running at at `http://<app-name>-<domain-name>.rhcloud.com`
 
 Learn more
-----------
+~~~~~~~~~~
 
 The example is accompanied by a series of tutorials that will walk you through the process of
 creating the TicketMonster application from end to end.
