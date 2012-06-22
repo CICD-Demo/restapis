@@ -5,7 +5,7 @@
 
     <groupId>org.jboss.jdf.examples</groupId>
     <artifactId>ticket-monster</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2.Final</version>
     <packaging>war</packaging>
 
     <name>ticket-monster</name>
