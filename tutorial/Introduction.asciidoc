@@ -715,7 +715,7 @@ Insert the following block of code directly below the alert()
 
 ----------------------------------------------------------------------------------------------------
      $.getJSON("rest/events", function(events) {
-    // console.log("returned are " + results);
+    // console.log("returned are " + events);
     var listOfEvents = $("#listOfItems");
     listOfEvents.empty();
     $.each(events, function(index, event) {
