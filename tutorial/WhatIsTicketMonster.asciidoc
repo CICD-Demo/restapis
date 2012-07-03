@@ -83,7 +83,7 @@ updates via client-server CDI eventing.
 How can you run it?
 ~~~~~~~~~~~~~~~~~~~
 
-Before building and running TicketMonster, you must generate the administration site with Forge. See link:AdminJSF.html[the tutorial] for details.
+Before building and running TicketMonster, you must generate the administration site with Forge. See link:http://www.jboss.org/jdf/examples/ticket-monster/tutorial/AdminJSF[the tutorial] for details.
 
 Building TicketMonster
 ^^^^^^^^^^^^^^^^^^^^^^
