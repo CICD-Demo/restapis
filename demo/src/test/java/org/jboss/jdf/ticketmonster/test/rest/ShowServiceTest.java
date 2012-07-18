@@ -12,7 +12,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.jdf.example.ticketmonster.model.Show;
 import org.jboss.jdf.example.ticketmonster.rest.ShowService;
-import org.jboss.jdf.ticketmonster.test.rest.util.MockMultivaluedMap;
+import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,24 +43,24 @@ public class ShowServiceTest {
     public void testPagination() {
         
         // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
-        
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<java.lang.String, java.lang.String>();
+
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
         
         List<Show> shows = showService.getAll(queryParameters);
         assertNotNull(shows);
         assertEquals(1, shows.size());
-        assertEquals("Roy Thomson Hall", shows.get(0).getVenue().getName());
-        assertEquals("Shane's Sock Puppets", shows.get(0).getEvent().getName());
+        assertEquals("Sydney Opera House", shows.get(0).getVenue().getName());
+        assertEquals("Rock concert of the decade", shows.get(0).getEvent().getName());
     }
     
     @Test
     public void testGetShowsByVenue() {
         
         // Test getting shows by venue
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
-        
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<java.lang.String, java.lang.String>();
+
         queryParameters.add("venue", "1");
         
         List<Show> shows = showService.getAll(queryParameters);
@@ -75,8 +75,8 @@ public class ShowServiceTest {
     public void testGetShowsByEvent() {
         
         // Test getting shows by event
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
-        
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+
         queryParameters.add("event", "1");
         
         List<Show> shows = showService.getAll(queryParameters);

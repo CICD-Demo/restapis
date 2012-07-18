@@ -16,7 +16,7 @@ import org.jboss.jdf.example.ticketmonster.rest.EventService;
 import org.jboss.jdf.example.ticketmonster.rest.MediaService;
 import org.jboss.jdf.example.ticketmonster.service.MediaManager;
 import org.jboss.jdf.example.ticketmonster.service.MediaPath;
-import org.jboss.jdf.ticketmonster.test.rest.util.MockMultivaluedMap;
+import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,22 +66,21 @@ public class EventServiceTest {
     public void testPagination() {
         
         // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
-        
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
         
         List<Event> events = eventService.getAll(queryParameters);
         assertNotNull(events);
         assertEquals(1, events.size());
-        assertEquals("Brazil vs. Italy", events.get(0).getName());
+        assertEquals("Shane's Sock Puppets", events.get(0).getName());
     }
     
     @Test
     public void testGetEventsByCategory() {
         
         // Test getting events by venue
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<java.lang.String, java.lang.String>();
         
         queryParameters.add("category", "1");
         

@@ -2,7 +2,6 @@ package org.jboss.jdf.ticketmonster.test.rest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import org.jboss.jdf.example.ticketmonster.rest.BookingRequest;
 import org.jboss.jdf.example.ticketmonster.rest.BookingService;
 import org.jboss.jdf.example.ticketmonster.rest.ShowService;
 import org.jboss.jdf.example.ticketmonster.rest.TicketRequest;
-import org.jboss.jdf.ticketmonster.test.rest.util.MockMultivaluedMap;
+import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -129,7 +128,7 @@ public class BookingServiceTest {
     public void testPagination() {
 
         // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<java.lang.String, java.lang.String>();
 
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
@@ -137,8 +136,8 @@ public class BookingServiceTest {
         List<Booking> bookings = bookingService.getAll(queryParameters);
         assertNotNull(bookings);
         assertEquals(1, bookings.size());
-        assertEquals("Roy Thomson Hall", bookings.get(0).getPerformance().getShow().getVenue().getName());
-        assertEquals("Shane's Sock Puppets", bookings.get(0).getPerformance().getShow().getEvent().getName());
+        assertEquals("Sydney Opera House", bookings.get(0).getPerformance().getShow().getVenue().getName());
+        assertEquals("Rock concert of the decade", bookings.get(0).getPerformance().getShow().getEvent().getName());
     }
 
     @Test

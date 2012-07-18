@@ -12,7 +12,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.jdf.example.ticketmonster.model.Venue;
 import org.jboss.jdf.example.ticketmonster.rest.VenueService;
-import org.jboss.jdf.ticketmonster.test.rest.util.MockMultivaluedMap;
+import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,15 +41,15 @@ public class VenueServiceTest {
     public void testPagination() {
         
         // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
-        
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
         
         List<Venue> venues = venueService.getAll(queryParameters);
         assertNotNull(venues);
         assertEquals(1, venues.size());
-        assertEquals("BMO Field", venues.get(0).getName());
+        assertEquals("Sydney Opera House", venues.get(0).getName());
     }
 
 }
