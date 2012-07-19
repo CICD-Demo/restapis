@@ -47,6 +47,9 @@ discover how CDI, EJB and JAX-RS make it easy to define and wire together our se
 Preparations
 ------------
 
+Enabling CDI
+~~~~~~~~~~~~
+
 The first step for setting up our service architecture is to enable CDI in the deployment by creating a `beans.xml` file in the `WEB-INF` folder of the web application.
 
 .src/main/webapp/WEB-INF/beans.xml
@@ -83,15 +86,28 @@ runtime will do the rest for you: instantiating and wiring them together, as wel
 disposing of them as needed.
 =====================================================================================
 
+Adding utility classes
+~~~~~~~~~~~~~~~~~~~~~~
+
+Next, we add some helper classes providing low-level utilities for the application. We won't get in their implementation details here, but you can study their source code for details.
+
+Copy the following classes from the original example to `src/main/java/org/jboss/jdf/example/ticketmonster/util`:
+
+* `Base64`
+* `ForwardingMap`
+* `MultivaluedHashMap`
+* `Reflections`
+* `Resources`
+
 Internal Services
 -----------------
 
-We begin by implementing some helper services.
+We begin the service implementation by implementing some helper services.
 
 The Media Manager
 ~~~~~~~~~~~~~~~~~
 
-First, lets add support for managing media items, such as images. The persistence layer siimply stores URLs, referencing media items stored by online services. The URL look like link:http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg[].
+First, let's add support for managing media items, such as images. The persistence layer siimply stores URLs, referencing media items stored by online services. The URL look like link:http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg[].
 
 Now, we could use the URLs in our application, and retrieve these media items from the provider. However, we would prefer to cache these media items in order to improve application performance and increase resilience to external failures - this will allow us to run the application
 successfully even if the provider is down. The `MediaManager` is a good illustration of a business service; it performs the retrieval and caching of media objects, encapsulating the operation from the rest of the application.
@@ -322,7 +338,7 @@ public class MediaPath {
 }
 ------------------------------------------------------------------------------------------
 
-The service can be injected by type into the components that depend on it. However, in order to make it available to JSF vuews, we add a `@Named` annotation, which means the bean can be referenced as `mediaManager` as well.
+The service can be injected by type into the components that depend on it. However, in order to make it available to JSF views, we add a `@Named` annotation, which means the bean can be referenced as `mediaManager` as well.
 
 We should also control the lifecycle of this service. The `MediaManager` stores request-specific state, so should be scoped to the web request, the CDI `@RequestScoped` is perfect.
 
@@ -1178,6 +1194,7 @@ public class RESTDeployment {
                 .addPackage(BaseEntityService.class.getPackage())
                 .addPackage(MockMultivaluedMap.class.getPackage())
                 .addClass(SeatAllocationService.class)
+                .addClass(AllocatedSeats.class)
                 .addClass(MediaPath.class)
                 .addClass(MediaManager.class);
     }
@@ -1230,7 +1247,7 @@ public class VenueServiceTest {
     public void testPagination() {
         
         // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
@@ -1238,7 +1255,7 @@ public class VenueServiceTest {
         List<Venue> venues = venueService.getAll(queryParameters);
         assertNotNull(venues);
         assertEquals(1, venues.size());
-        assertEquals("BMO Field", venues.get(0).getName());
+        assertEquals("Sydney Opera House", venues.get(0).getName());
     }
 
 }
@@ -1351,7 +1368,7 @@ public class BookingServiceTest {
     public void testPagination() {
 
         // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MockMultivaluedMap<String, String>();
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<java.lang.String, java.lang.String>();
 
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
@@ -1359,10 +1376,10 @@ public class BookingServiceTest {
         List<Booking> bookings = bookingService.getAll(queryParameters);
         assertNotNull(bookings);
         assertEquals(1, bookings.size());
-        assertEquals("Roy Thomson Hall", bookings.get(0).getPerformance().getShow().getVenue().getName());
-        assertEquals("Shane's Sock Puppets", bookings.get(0).getPerformance().getShow().getEvent().getName());
+        assertEquals("Sydney Opera House", bookings.get(0).getPerformance().getShow().getVenue().getName());
+        assertEquals("Rock concert of the decade", bookings.get(0).getPerformance().getShow().getEvent().getName());
     }
-
+    
     @Test
     @InSequence(20)
     public void testDelete() {
