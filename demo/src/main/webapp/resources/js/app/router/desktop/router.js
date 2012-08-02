@@ -19,7 +19,8 @@ define("router", [
     'app/views/desktop/bookings',
     'app/views/desktop/event-detail',
     'app/views/desktop/venue-detail',
-    'app/views/desktop/booking-detail'
+    'app/views/desktop/booking-detail',
+    'text!../templates/desktop/main.html'
 ],function ($,
             _,
             Backbone,
@@ -37,7 +38,12 @@ define("router", [
             BookingsView,
             EventDetailView,
             VenueDetailView,
-            BookingDetailView) {
+            BookingDetailView,
+            MainTemplate) {
+
+    $(document).ready(new function() {
+       utilities.applyTemplate($('body'), MainTemplate)
+    })
 
     /**
      * The Router class contains all the routes within the application - 

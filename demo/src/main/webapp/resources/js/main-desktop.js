@@ -1,6 +1,6 @@
 /**
  * Shortcut alias definitions - will come in handy when declaring dependencies
- * Also, they allow you to keep the code free of any knowledge about library 
+ * Also, they allow you to keep the code free of any knowledge about library
  * locations and versions
  */
 require.config({
@@ -24,12 +24,28 @@ define("backbone", [
     return Backbone;
 });
 
+define("initializer", [
+    'jquery',
+    'utilities',
+    'text!../templates/mobile/main.html'
+], function ($,
+             utilities,
+             MainTemplate) {
+    $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
+    $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
+    $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
+});
+
+
 // Now we declare all the dependencies
 require([
     'order!jquery',
+    'text',
+    'order!initializer',
     'order!underscore',
     'order!backbone',
-    'text',
     'order!bootstrap',
     'order!router'
 ], function(){
