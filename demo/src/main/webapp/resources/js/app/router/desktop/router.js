@@ -5,6 +5,7 @@ define("router", [
     'jquery',
     'underscore',
     'backbone',
+    'configuration',
     'utilities',
     'app/models/booking',
     'app/models/event',
@@ -24,6 +25,7 @@ define("router", [
 ],function ($,
             _,
             Backbone,
+            config,
             utilities,
             Booking,
             Event,
@@ -97,7 +99,7 @@ define("router", [
         },
         listBookings:function () {
             $.get(
-                "rest/bookings/count",
+                config.baseUrl + "rest/bookings/count",
                 function (data) {
                     var bookings = new Bookings;
                     var bookingsView = new BookingsView({

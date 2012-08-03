@@ -2,12 +2,14 @@ define([
     'backbone',
     'utilities',
     'require',
+    'configuration',
     'text!../../../../templates/mobile/venue-detail.html',
     'text!../../../../templates/mobile/venue-event-description.html'
 ], function (
     Backbone,
     utilities,
     require,
+    config,
     venueDetail,
     venueEventDescription) {
 
@@ -25,7 +27,7 @@ define([
             $(this.el).trigger('create')
             $("#bookButton").addClass("ui-disabled")
             var self = this
-            $.getJSON("rest/shows?venue=" + this.model.get('id'), function (shows) {
+            $.getJSON(config.baseUrl + "rest/shows?venue=" + this.model.get('id'), function (shows) {
                 self.shows = shows;
                 $("#showSelector").empty().append("<option data-placeholder='true'>Choose an event ...</option>");
                 $.each(shows, function (i, show) {

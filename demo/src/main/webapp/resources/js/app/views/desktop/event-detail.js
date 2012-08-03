@@ -5,6 +5,7 @@ define([
     'text!../../../../templates/desktop/event-detail.html',
     'text!../../../../templates/desktop/media.html',
     'text!../../../../templates/desktop/event-venue-description.html',
+    'configuration',
     'bootstrap'
 ], function (
     Backbone,
@@ -12,7 +13,9 @@ define([
     require,
     eventDetailTemplate,
     mediaTemplate,
-    eventVenueDescriptionTemplate) {
+    eventVenueDescriptionTemplate,
+    config,
+    Bootstrap) {
 
     var EventDetail = Backbone.View.extend({
 
@@ -32,7 +35,7 @@ define([
             $("#performanceTimes").empty();
             $("#performanceTimes").attr('disabled', true)
             var self = this
-            $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
+            $.getJSON(config.baseUrl + "rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows
                 $("#venueSelector").empty().append("<option value='0' selected>Select a venue</option>");
                 $.each(shows, function (i, show) {

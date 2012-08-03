@@ -2,6 +2,7 @@ define([
     'backbone',
     'utilities',
     'require',
+    'configuration',
     'text!../../../../templates/desktop/booking-confirmation.html',
     'text!../../../../templates/desktop/create-booking.html',
     'text!../../../../templates/desktop/ticket-categories.html',
@@ -11,6 +12,7 @@ define([
     Backbone,
     utilities,
     require,
+    config,
     bookingConfirmationTemplate,
     createBookingTemplate,
     ticketEntriesTemplate,
@@ -96,7 +98,7 @@ define([
         render:function () {
 
             var self = this;
-            $.getJSON("rest/shows/" + this.model.showId, function (selectedShow) {
+            $.getJSON(config.baseUrl + "rest/shows/" + this.model.showId, function (selectedShow) {
 
                 self.currentPerformance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId;
@@ -138,14 +140,14 @@ define([
             bookingRequest.email = this.model.bookingRequest.email;
             bookingRequest.performance = this.model.performanceId
             $("input[name='submit']").attr("disabled", true)
-            $.ajax({url:"rest/bookings",
+            $.ajax({url: (config.baseUrl + "rest/bookings"),
                 data:JSON.stringify(bookingRequest),
                 type:"POST",
                 dataType:"json",
                 contentType:"application/json",
                 success:function (booking) {
                     this.model = {}
-                    $.getJSON('rest/shows/performance/' + booking.performance.id, function (retrievedPerformance) {
+                    $.getJSON(config.baseUrl +'rest/shows/performance/' + booking.performance.id, function (retrievedPerformance) {
                         utilities.applyTemplate($(self.el), bookingConfirmationTemplate, {booking:booking, performance:retrievedPerformance })
                     });
                 }}).error(function (error) {

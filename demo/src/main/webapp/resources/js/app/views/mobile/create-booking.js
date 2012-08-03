@@ -1,6 +1,7 @@
 define([
     'backbone',
     'utilities',
+    'configuration',
     'require',
     'text!../../../../templates/mobile/booking-details.html',
     'text!../../../../templates/mobile/create-booking.html',
@@ -10,6 +11,7 @@ define([
 ], function (
     Backbone,
     utilities,
+    config,
     require,
     bookingDetailsTemplate,
     createBookingTemplate,
@@ -82,7 +84,7 @@ define([
 
             bookingRequest.email = this.model.email;
             bookingRequest.performance = this.model.performanceId;
-            $.ajax({url:"rest/bookings",
+            $.ajax({url:(config.baseUrl + "rest/bookings"),
                 data:JSON.stringify(bookingRequest),
                 type:"POST",
                 dataType:"json",

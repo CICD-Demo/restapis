@@ -4,11 +4,12 @@
 define([
     // Backbone and the collection element type are dependencies
     'backbone',
-    'app/models/venue'
-], function (Backbone, Venue) {
+    'app/models/venue',
+    'configuration'
+], function (Backbone, Venue, config) {
 
     return Backbone.Collection.extend({
-        url:"rest/venues",
+        url: config.baseUrl + "rest/venues",
         model:Venue,
         id:"id",
         comparator:function (model) {

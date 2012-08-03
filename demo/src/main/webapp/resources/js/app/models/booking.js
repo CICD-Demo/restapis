@@ -3,15 +3,17 @@
  */
 define([
     // Backbone is a dependency
-    'backbone'
-], function (Backbone) {
+    'backbone',
+    'configuration'
+], function (Backbone,
+             config) {
 
     /**
      * The Booking model class definition
      * Used for CRUD operations against individual bookings
      */
     var Booking = Backbone.Model.extend({
-        urlRoot:'rest/bookings'
+        urlRoot: config.baseUrl + 'rest/bookings'
     });
 
     return Booking;

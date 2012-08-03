@@ -1,6 +1,7 @@
 define([
     'backbone',
     'utilities',
+    'configuration',
     'require',
     'text!../../../../templates/desktop/venue-detail.html',
     'text!../../../../templates/desktop/media.html',
@@ -9,6 +10,7 @@ define([
 ], function (
     Backbone,
     utilities,
+    config,
     require,
     venueDetailTemplate,
     mediaTemplate,
@@ -30,7 +32,7 @@ define([
             $("#performanceTimes").empty()
             $("#performanceTimes").attr('disabled', true)
             var self = this
-            $.getJSON("rest/shows?venue=" + this.model.get('id'), function (shows) {
+            $.getJSON(config.baseUrl + "rest/shows?venue=" + this.model.get('id'), function (shows) {
                 self.shows = shows
                 $("#eventSelector").empty().append("<option value='0' selected>Select an event</option>");
                 $.each(shows, function (i, show) {

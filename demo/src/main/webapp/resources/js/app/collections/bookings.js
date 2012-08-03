@@ -4,14 +4,15 @@
 define([
     // Backbone and the collection element type are dependencies
     'backbone',
-    'app/models/booking'
-], function (Backbone, Booking) {
+    'app/models/booking',
+    'configuration'
+], function (Backbone, Booking, config) {
 
     // Here we define the Bookings collection
     // We will use it for CRUD operations on Bookings
 
     var Bookings = Backbone.Collection.extend({
-        url:'rest/bookings',
+        url: config.baseUrl + 'rest/bookings',
         model: Booking,
         id:'id'
     });

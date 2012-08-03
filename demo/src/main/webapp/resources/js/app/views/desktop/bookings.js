@@ -1,9 +1,11 @@
 define([
     'backbone',
     'utilities',
+    'configuration',
     'text!../../../../templates/desktop/booking-table.html'
 ],function (Backbone,
             utilities,
+            config,
             bookingTableTemplate) {
 
     var BookingsView = Backbone.View.extend({
@@ -37,7 +39,7 @@ define([
 
             var self = this;
             $.get(
-                "rest/bookings/count",
+                config.baseUrl + "rest/bookings/count",
                 function (data) {
                     self.options.count = data.count;
                     if (self.options.count > 0 ) {
