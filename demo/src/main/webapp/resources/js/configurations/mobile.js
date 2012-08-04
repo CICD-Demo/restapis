@@ -6,6 +6,7 @@ var BASE_URL = "";
  * locations and versions
  */
 require.config({
+    baseUrl:"resources/js",
     paths: {
         jquery:'libs/jquery-1.7.1',
         jquerymobile:'libs/jquery.mobile-1.1.0',
