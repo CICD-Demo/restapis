@@ -1,5 +1,3 @@
-var BASE_URL = "";
-
 /**
  * Shortcut alias definitions - will come in handy when declaring dependencies
  * Also, they allow you to keep the code free of any knowledge about library
@@ -17,9 +15,17 @@ require.config({
     }
 });
 
-define("configuration", {
-        baseUrl : BASE_URL
-});
+define("configuration", function() {
+    if (TicketMonster != undefined && TicketMonster.config != undefined) {
+        return {
+            baseUrl: TicketMonster.config.baseRESTUrl
+        };
+    } else {
+        return {
+            baseUrl: ""
+        }
+    }
+})
 
 define('underscore',[
     'libs/underscore'
@@ -53,5 +59,9 @@ define("initializer", [
 // Now we declare all the dependencies
 require(['order!initializer', 'order!router'],
     function(){
-        console.log('all loaded')
-    });
+});
+
+define(["configuration"],function(configuration){
+    return {config: configuration };
+})
+

@@ -1,5 +1,3 @@
-var BASE_URL = "";
-
 /**
  * Shortcut alias definitions - will come in handy when declaring dependencies
  * Also, they allow you to keep the code free of any knowledge about library
@@ -28,7 +26,7 @@ define("backbone", [
 });
 
 define("configuration", {
-    baseUrl : BASE_URL
+    baseUrl : ""
 });
 
 define("initializer", [
