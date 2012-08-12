@@ -5,6 +5,6 @@ var TicketMonster = {
     }
 }
 
-require (["resources/js/libs/cordova-io-2.0.0.js","mobile"], function(cordovaIO, mobile) {
+require (["resources/js/libs/cordova-ios-2.0.0.js","mobile"], function() {
     // override baseUrl for RESTful services
 });
