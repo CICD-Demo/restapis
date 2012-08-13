@@ -1607,10 +1607,10 @@ index 5478a74..0d5601a 100644
 +                <div class="navbar-inner">
 +                    <div class="container">
 +                        <ul class="nav">
-+                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#about"><h:outputText value="About"/></h:outputLink></li>
-+                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#events"><h:outputText value="Events"/></h:outputLink></li>
-+                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#venues"><h:outputText value="Venues"/></h:outputLink></li>
-+                            <li><h:outputLink value="#{request.contextPath}/desktop-index.html#bookings"><h:outputText value="Bookings"/></h:outputLink></li>
++                            <li><h:outputLink value="#{request.contextPath}/index.html#about"><h:outputText value="About"/></h:outputLink></li>
++                            <li><h:outputLink value="#{request.contextPath}/index.html#events"><h:outputText value="Events"/></h:outputLink></li>
++                            <li><h:outputLink value="#{request.contextPath}/index.html#venues"><h:outputText value="Venues"/></h:outputLink></li>
++                            <li><h:outputLink value="#{request.contextPath}/index.html#bookings"><h:outputText value="Bookings"/></h:outputLink></li>
 +                            <li><h:outputLink value="#{request.contextPath}/booking-monitor.html"><h:outputText value="Monitor"/></h:outputLink></li>
 +                            <li><h:outputLink value="#{request.contextPath}/admin"><h:outputText value="Administration"/></h:outputLink></li>
 +                        </ul>
