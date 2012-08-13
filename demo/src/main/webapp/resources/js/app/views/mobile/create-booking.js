@@ -110,7 +110,7 @@ define([
 
             var self = this;
 
-            $.getJSON("rest/shows/" + this.model.showId, function (selectedShow) {
+            $.getJSON(config.baseUrl + "rest/shows/" + this.model.showId, function (selectedShow) {
                 self.model.performance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId;
                 });
