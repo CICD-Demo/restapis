@@ -31,13 +31,9 @@ define("configuration", {
 
 define("initializer", [
     'configuration',
-    'jquery',
-    'utilities',
-    'text!../templates/mobile/main.html'
+    'jquery'
 ], function (config,
-             $,
-             utilities,
-             MainTemplate) {
+             $) {
     $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
@@ -48,8 +44,6 @@ define("initializer", [
 
 // Now we declare all the dependencies
 require([
-    'order!jquery',
-    'text',
     'order!initializer',
     'order!underscore',
     'order!backbone',

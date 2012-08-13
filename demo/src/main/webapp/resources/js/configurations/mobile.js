@@ -16,7 +16,7 @@ require.config({
 });
 
 define("configuration", function() {
-    if (TicketMonster != undefined && TicketMonster.config != undefined) {
+    if (window.TicketMonster != undefined && TicketMonster.config != undefined) {
         return {
             baseUrl: TicketMonster.config.baseRESTUrl
         };
