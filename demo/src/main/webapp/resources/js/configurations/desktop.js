@@ -16,6 +16,15 @@ require.config({
     }
 });
 
+define("initializer", ["jquery"],
+    function ($) {
+    $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
+    $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
+});
+
+
 // Backbone is not AMD-ready, so a individual module is declared
 define("backbone", [
     // the order plugin is used to ensure that the modules are loaded in the right order
@@ -24,23 +33,6 @@ define("backbone", [
     'order!libs/backbone'], function(){
     return Backbone;
 });
-
-define("configuration", {
-    baseUrl : ""
-});
-
-define("initializer", [
-    'configuration',
-    'jquery'
-], function (config,
-             $) {
-    $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
-    $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
-    $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
-    $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
-    $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
-});
-
 
 // Now we declare all the dependencies
 require([
