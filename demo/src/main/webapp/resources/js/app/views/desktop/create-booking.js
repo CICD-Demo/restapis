@@ -1,5 +1,4 @@
 define([
-    'backbone',
     'utilities',
     'require',
     'configuration',
@@ -9,7 +8,6 @@ define([
     'text!../../../../templates/desktop/ticket-summary-view.html',
     'bootstrap'
 ],function (
-    Backbone,
     utilities,
     require,
     config,

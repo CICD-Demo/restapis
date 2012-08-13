@@ -2,11 +2,9 @@
  * Module for the Booking model
  */
 define([
-    // Backbone is a dependency
-    'backbone',
+    // Configuration is a dependency
     'configuration'
-], function (Backbone,
-             config) {
+], function (config) {
 
     /**
      * The Booking model class definition

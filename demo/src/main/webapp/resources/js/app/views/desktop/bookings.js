@@ -1,10 +1,8 @@
 define([
-    'backbone',
     'utilities',
     'configuration',
     'text!../../../../templates/desktop/booking-table.html'
-],function (Backbone,
-            utilities,
+],function (utilities,
             config,
             bookingTableTemplate) {
 

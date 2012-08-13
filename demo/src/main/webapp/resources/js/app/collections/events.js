@@ -2,11 +2,10 @@
  * Module for the Events collection
  */
 define([
-    // Backbone and the collection element type are dependencies
-    'backbone',
+    // BThe collection element type and configuration are dependencies
     'app/models/event',
     'configuration'
-], function (Backbone, Event, config) {
+], function (Event, config) {
     /**
      *  Here we define the Bookings collection
      *  We will use it for CRUD operations on Bookings

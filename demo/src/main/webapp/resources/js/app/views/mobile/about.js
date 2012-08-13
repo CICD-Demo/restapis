@@ -1,6 +1,4 @@
-define([
-    'backbone'
-], function (Backbone) {
+define([], function () {
 
     var AboutView = Backbone.View.extend({
         render:function () {

@@ -9,9 +9,18 @@ require.config({
         jquery:'libs/jquery-1.7.1',
         jquerymobile:'libs/jquery.mobile-1.1.0',
         text:'libs/text',
+        underscore:'libs/underscore',
+        backbone: 'libs/backbone',
         order: 'libs/order',
         utilities: 'app/utilities',
         router:'app/router/mobile/router'
+    },
+    // We shim Backbone since it doesn't declare an AMD module
+    shim: {
+        'backbone': {
+            deps: ['underscore', 'jquery'],
+            exports: 'Backbone'
+        }
     }
 });
 
@@ -26,21 +35,6 @@ define("configuration", function() {
         }
     }
 })
-
-define('underscore',[
-    'libs/underscore'
-], function(){
-    return _;
-});
-
-define("backbone", [
-    'order!jquery',
-    'order!underscore',
-    'order!libs/backbone'
-], function(){
-    return Backbone;
-});
-
 define("initializer", [
     'jquery',
     'utilities',
@@ -57,7 +51,10 @@ define("initializer", [
 
 
 // Now we declare all the dependencies
-require(['order!initializer', 'order!router'],
+require(['order!initializer',
+         'order!underscore',
+         'order!backbone',
+         'order!router'],
     function(){
 });
 

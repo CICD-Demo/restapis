@@ -1,9 +1,7 @@
 define([
-    'backbone',
     'utilities',
     'text!../../../../templates/desktop/venues.html'
 ], function (
-    Backbone,
     utilities,
     venuesTemplate) {
 

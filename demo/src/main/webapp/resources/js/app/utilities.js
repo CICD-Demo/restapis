@@ -1,7 +1,4 @@
-define('utilities',[
-    'underscore',
-    'backbone'
-], function (_, Backbone) {
+define(['order!underscore', 'order!backbone'], function (_) {
 
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const monthNames = ["January", "February", "March", "April", "May", "June",

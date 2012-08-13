@@ -1,5 +1,4 @@
 define([
-    'backbone',
     'utilities',
     'configuration',
     'require',
@@ -9,7 +8,6 @@ define([
     'text!../../../../templates/mobile/ticket-entries.html',
     'text!../../../../templates/mobile/ticket-summary-view.html'
 ], function (
-    Backbone,
     utilities,
     config,
     require,

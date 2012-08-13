@@ -1,11 +1,10 @@
-define(['backbone',
+define([
     'utilities',
     'require',
     'configuration',
     'text!../../../../templates/mobile/event-detail.html',
     'text!../../../../templates/mobile/event-venue-description.html'
 ], function (
-    Backbone,
     utilities,
     require,
     config,

@@ -1,9 +1,8 @@
 define([
-    'backbone',
     'utilities',
     'configuration',
     'text!../../../../templates/desktop/booking-details.html'
-], function (Backbone, utilities, config, BookingDetailsTemplate) {
+], function (utilities, config, BookingDetailsTemplate) {
 
     var BookingDetailView = Backbone.View.extend({
         render:function () {

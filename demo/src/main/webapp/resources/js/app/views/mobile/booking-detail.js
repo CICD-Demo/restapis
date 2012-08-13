@@ -1,9 +1,7 @@
 define([
-    'backbone',
     'utilities',
     'text!../../../../templates/mobile/booking-details.html'
 ], function (
-    Backbone,
     utilities,
     bookingDetailsTemplate) {
 

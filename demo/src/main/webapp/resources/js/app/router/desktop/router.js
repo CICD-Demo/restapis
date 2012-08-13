@@ -4,7 +4,6 @@
 define("router", [
     'jquery',
     'underscore',
-    'backbone',
     'configuration',
     'utilities',
     'app/models/booking',
@@ -24,7 +23,6 @@ define("router", [
     'text!../templates/desktop/main.html'
 ],function ($,
             _,
-            Backbone,
             config,
             utilities,
             Booking,

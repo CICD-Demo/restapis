@@ -2,10 +2,9 @@
  * The About view
  */
 define([
-    'backbone',
     'utilities',
     'text!../../../../templates/desktop/home.html'
-], function (Backbone, utilities, HomeTemplate) {
+], function (utilities, HomeTemplate) {
 
     var HomeView = Backbone.View.extend({
         render:function () {

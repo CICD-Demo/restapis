@@ -2,11 +2,10 @@
  * The module for a collection of Venues
  */
 define([
-    // Backbone and the collection element type are dependencies
-    'backbone',
+    // Configuration and the collection element type are dependencies
     'app/models/venue',
     'configuration'
-], function (Backbone, Venue, config) {
+], function (Venue, config) {
 
     return Backbone.Collection.extend({
         url: config.baseUrl + "rest/venues",

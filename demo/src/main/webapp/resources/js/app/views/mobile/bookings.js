@@ -1,10 +1,8 @@
 define([
-    'backbone',
     'utilities',
     'text!../../../../templates/mobile/booking-row.html',
     'require'
 ], function (
-    Backbone,
     utilities,
     bookingRowTemplate,
     require) {

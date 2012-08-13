@@ -2,9 +2,8 @@
  * Module for the Event model
  */
 define([ 
-    'backbone', // depends and imports Backbone
     'configuration'
-], function (Backbone, config) {
+], function (config) {
     /**
      * The Event model class definition
      * Used for CRUD operations against individual events

@@ -1,12 +1,10 @@
 define([
-    'backbone',
     'utilities',
     'require',
     'configuration',
     'text!../../../../templates/mobile/venue-detail.html',
     'text!../../../../templates/mobile/venue-event-description.html'
 ], function (
-    Backbone,
     utilities,
     require,
     config,

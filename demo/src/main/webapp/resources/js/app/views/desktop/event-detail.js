@@ -1,5 +1,4 @@
 define([
-    'backbone',
     'utilities',
     'require',
     'text!../../../../templates/desktop/event-detail.html',
@@ -8,7 +7,6 @@ define([
     'configuration',
     'bootstrap'
 ], function (
-    Backbone,
     utilities,
     require,
     eventDetailTemplate,
