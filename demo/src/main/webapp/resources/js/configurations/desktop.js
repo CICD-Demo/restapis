@@ -24,6 +24,9 @@ define("initializer", ["jquery"],
     $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
 });
 
+define("configuration", {
+    baseUrl : ""
+});
 
 // Backbone is not AMD-ready, so a individual module is declared
 define("backbone", [
@@ -40,6 +43,7 @@ require([
     'order!underscore',
     'order!backbone',
     'order!bootstrap',
+    'order!configuration',
     'order!router'
 ], function(){
     console.log('all loaded');
