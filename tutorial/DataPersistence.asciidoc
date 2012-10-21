@@ -325,7 +325,7 @@ An `Event` may occur at any number of venues, on various days and at various tim
 
 Venues are a separate grouping of entities, which, as mentioned, intersect with events via shows. Each venue consists of groupings of seats, each known as a `Section`.
 
-Every section, in every show is associated with a ticket category via the `TicketPriceCategory` entity.
+Every section, in every show is associated with a ticket category via the `TicketPrice` entity.
 
 Users must be able to book tickets for performances. A `Booking` is associated with a performance, and contains a collection of tickets.
 
@@ -934,8 +934,13 @@ Here's the full source for `Show`:
  * The event and venue form the natural id of this entity, and therefore must be unique. JPA requires us to use the class level
  * <code>@Table</code> constraint.
  * </p>
- * 
+ *
  */
+/*
+ * We suppress the warning about not specifying a serialVersionUID, as we are still developing this app, and want the JVM to
+ * generate the serialVersionUID for us. When we put this app into production, we'll generate and embed the serialVersionUID
+ */
+@SuppressWarnings("serial")
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "event_id", "venue_id" }))
 public class Show implements Serializable {
@@ -1004,15 +1009,13 @@ public class Show implements Serializable {
      * 
      * <p>
      * The <code>@OneToMany<code> JPA mapping establishes this relationship.
-     * Collection members are fetched eagerly, so that they can be accessed even after the
-     * entity has become detached. This relationship is bi-directional (a ticket price category
-     * knows which show it is part of), and the <code>mappedBy</code> attribute establishes this.
-     * We cascade all persistence operations to the set of performances, so, for example if a show
+     * This relationship is bi-directional (a ticket price category knows which show it is part of), and the <code>mappedBy</code>
+     * attribute establishes this. We cascade all persistence operations to the set of performances, so, for example if a show
      * is removed, then all of it's ticket price categories are also removed.
      * </p>
      */
     @OneToMany(mappedBy = "show", cascade = ALL, fetch = EAGER)
-    private Set<TicketPriceCategory> priceCategories = new HashSet<TicketPriceCategory>();
+    private Set<TicketPrice> ticketPrices = new HashSet<TicketPrice>();
 
     /* Boilerplate getters and setters */
 
@@ -1048,12 +1051,12 @@ public class Show implements Serializable {
         this.venue = venue;
     }
 
-    public Set<TicketPriceCategory> getPriceCategories() {
-        return priceCategories;
+    public Set<TicketPrice> getTicketPrices() {
+        return ticketPrices;
     }
 
-    public void setPriceCategories(Set<TicketPriceCategory> priceCategories) {
-        this.priceCategories = priceCategories;
+    public void setTicketPrices(Set<TicketPrice> ticketPrices) {
+        this.ticketPrices = ticketPrices;
     }
 
     /* toString(), equals() and hashCode() for Show, using the natural identity of the object */
