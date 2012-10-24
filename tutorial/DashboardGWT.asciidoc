@@ -138,7 +138,7 @@ Make sure that the appropriate Maven plugins are configured too, and your build 
 contains the following:
 
 .pom.xml
-[source.xml]
+[source,xml]
 ---------------------------------------------------------------------------------
 <build>
     <!-- Maven will append the version to the finalName (which is the
