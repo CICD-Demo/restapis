@@ -46,7 +46,7 @@ public class SectionAllocation {
      */
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private long id;
+    private Long id;
 
     /**
      * <p>
@@ -306,7 +306,7 @@ public class SectionAllocation {
         return section;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
