@@ -1,13 +1,3 @@
-:100644 100644 689cc8c... f9aa6c1... M	demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
-:100644 100644 d1afd7b... e62b752... M	demo/src/main/webapp/WEB-INF/web.xml
-:100644 100644 451479f... 2d0b264... M	demo/src/main/webapp/admin/event/view.xhtml
-:100644 100644 902113f... 4036f32... M	demo/src/main/webapp/admin/index.html
-:000000 100644 0000000... e51c763... A	demo/src/main/webapp/admin/index.xhtml
-:100644 100644 06edc33... 1b70606... M	demo/src/main/webapp/admin/venue/view.xhtml
-:100644 100644 b1c9bee... 834133c... M	demo/src/main/webapp/index.html
-:100644 000000 e51c763... 0000000... D	demo/src/main/webapp/index.xhtml
-:000000 100644 0000000... d4b24ae... A	demo/src/main/webapp/resources/tm/image.xhtml
-
 diff --git ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
 index 689cc8c..f9aa6c1 100644
 --- ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
@@ -147,43 +137,6 @@ index 902113f..4036f32 100644
 \ No newline at end of file
 +<meta http-equiv="refresh" content="0;url=../faces/admin/index.xhtml" />
 \ No newline at end of file
-diff --git ../demo/src/main/webapp/admin/index.xhtml ../demo/src/main/webapp/admin/index.xhtml
-new file mode 100644
-index 0000000..e51c763
---- /dev/null
-+++ ../demo/src/main/webapp/admin/index.xhtml
-@@ -0,0 +1,30 @@
-+<?xml version='1.0' encoding='UTF-8' ?>
-+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-+	xmlns:ui="http://java.sun.com/jsf/facelets"
-+	template="/resources/scaffold/pageTemplate.xhtml">
-+
-+	<ui:param name="pageTitle" value="Welcome to Forge" />
-+
-+	<ui:define name="header">
-+		Welcome to Forge
-+	</ui:define>
-+
-+	<ui:define name="main">
-+		<h2 class="success">
-+			Your application is running.
-+		</h2>
-+		<p>
-+			<a target="_blank"
-+				href="http://forge.jboss.org/docs/index.html">Documentation</a>
-+			| <a target="_blank"
-+				href="http://twitter.com/intent/tweet?text=I+just+built+and+deployed+a+webapp+using+%23Forge,+from+%23JBoss+-+Super+easy!+(+http://jboss.org/forge+)">Get
-+				Excited!</a><br /> <a target="_blank" href="http://jboss.org/forge"><br />
-+				Forge Project</a> | <a target="_blank"
-+				href="https://lists.jboss.org/mailman/listinfo/forge-users">User
-+				List</a> | <a target="_blank"
-+				href="https://issues.jboss.org/browse/FORGE">Report an issue</a>
-+		</p>
-+	</ui:define>
-+
-+</ui:composition>
-\ No newline at end of file
 diff --git ../demo/src/main/webapp/admin/venue/view.xhtml ../demo/src/main/webapp/admin/venue/view.xhtml
 index 06edc33..1b70606 100644
 --- ../demo/src/main/webapp/admin/venue/view.xhtml
@@ -210,7 +163,7 @@ diff --git ../demo/src/main/webapp/index.html ../demo/src/main/webapp/index.html
 index b1c9bee..834133c 100644
 --- ../demo/src/main/webapp/index.html
 +++ ../demo/src/main/webapp/index.html
-@@ -1 +1,37 @@
+@@ -1 +1,36 @@
 -<meta http-equiv="refresh" content="0;url=./faces/index.xhtml" /> 
 \ No newline at end of file
 +<!DOCTYPE html>
@@ -249,43 +202,6 @@ index b1c9bee..834133c 100644
 +<body>
 +</body>
 +</html>
-+
-diff --git ../demo/src/main/webapp/index.xhtml ../demo/src/main/webapp/index.xhtml
-deleted file mode 100644
-index e51c763..0000000
---- ../demo/src/main/webapp/index.xhtml
-+++ /dev/null
-@@ -1,30 +0,0 @@
--<?xml version='1.0' encoding='UTF-8' ?>
--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
--<ui:composition xmlns="http://www.w3.org/1999/xhtml"
--	xmlns:ui="http://java.sun.com/jsf/facelets"
--	template="/resources/scaffold/pageTemplate.xhtml">
--
--	<ui:param name="pageTitle" value="Welcome to Forge" />
--
--	<ui:define name="header">
--		Welcome to Forge
--	</ui:define>
--
--	<ui:define name="main">
--		<h2 class="success">
--			Your application is running.
--		</h2>
--		<p>
--			<a target="_blank"
--				href="http://forge.jboss.org/docs/index.html">Documentation</a>
--			| <a target="_blank"
--				href="http://twitter.com/intent/tweet?text=I+just+built+and+deployed+a+webapp+using+%23Forge,+from+%23JBoss+-+Super+easy!+(+http://jboss.org/forge+)">Get
--				Excited!</a><br /> <a target="_blank" href="http://jboss.org/forge"><br />
--				Forge Project</a> | <a target="_blank"
--				href="https://lists.jboss.org/mailman/listinfo/forge-users">User
--				List</a> | <a target="_blank"
--				href="https://issues.jboss.org/browse/FORGE">Report an issue</a>
--		</p>
--	</ui:define>
--
--</ui:composition>
 \ No newline at end of file
 diff --git ../demo/src/main/webapp/resources/tm/image.xhtml ../demo/src/main/webapp/resources/tm/image.xhtml
 new file mode 100644
