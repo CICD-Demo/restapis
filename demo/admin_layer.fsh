@@ -25,12 +25,12 @@ set ACCEPT_DEFAULTS false;
 
 if ( SHELL.promptBoolean("Apply manual functional changes described in tutorial?") ) {
     echo Applying manual changes described in tutorial based on admin_layer_functional.patch;
-    git apply --ignore-whitespace --ignore-space-change admin_layer_functional.patch;
+    git apply admin_layer_functional.patch;
 }
 
 if ( SHELL.promptBoolean("Apply manual visual changes?") ) {
     echo Applying manual visual changes based on admin_layer_graphics.patch;
-    git apply --ignore-whitespace --ignore-space-change --inaccurate-eof admin_layer_graphics.patch;
+    git apply admin_layer_graphics.patch;
 }
 
 if ( SHELL.promptBoolean("Deploy to JBoss AS 7?") ) {
