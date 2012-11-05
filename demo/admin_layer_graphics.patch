@@ -1122,26 +1122,25 @@ index 0000000..50294bc
 +    width: 25%;
 +}
 diff --git ../demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml ../demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml
-index 0ceecaa..13106f7 100644
+index 226ccd9..8ce5781 100644
 --- ../demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml
 +++ ../demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml
-@@ -6,66 +6,85 @@
+@@ -6,66 +6,86 @@
  <h:head>
  	<title>#{empty pageTitle ? '{#pageTitle}' : pageTitle}</title>
  	<link rel="icon" href="#{resource['favicon.ico']}" />
 +    <link href='http://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'/>
-+    <h:outputStylesheet name="forge-style.css" />
  	<h:outputStylesheet name="bootstrap.css" />
--	<h:outputStylesheet name="forge-style.css" />
+ 	<h:outputStylesheet name="forge-style.css" />
 +    <h:outputStylesheet name="css/screen.css" />
 +    <h:outputStylesheet name="css/custom-forge.css" />
  </h:head>
- 
+
  <h:body>
 -	<div class="navbar navbar-fixed-top">
 -		<div class="navbar-inner">
 -			<div class="container">
--				<a href="/admin/index.xhtml" class="brand">Demo</a>
+-				<h:link id="brandLink" outcome="/admin/index.xhtml" styleClass="brand">Demo</h:link>
 -				<div class="nav-collapse collapse">
 -					<ul class="nav">
 -						<li><a href="http://forge.jboss.org/docs/important_plugins/ui-scaffolding.html">How to Customize</a></li>
@@ -1150,37 +1149,37 @@ index 0ceecaa..13106f7 100644
 -			</div>
 -		</div>
 -	</div>
--
+
 -	<div class="container forgecontainer">
-+    <div id="logo"><div class="wrap"><h1>Ticket Monster</h1></div></div>
-+    <div id="menu">
-+        <div class="navbar">
-+            <div class="container">
-+                <div class="nav-collapse collapse">
-+                    <ul class="nav">
-+                        <li><h:outputLink
-+                                value="#{request.contextPath}/index.html#about"><h:outputText
-+                                value="About"/></h:outputLink></li>
-+                        <li><h:outputLink
-+                                value="#{request.contextPath}/index.html#events"><h:outputText
-+                                value="Events"/></h:outputLink></li>
-+                        <li><h:outputLink
-+                                value="#{request.contextPath}/index.html#venues"><h:outputText
-+                                value="Venues"/></h:outputLink></li>
-+                        <li><h:outputLink
-+                                value="#{request.contextPath}/index.html#bookings"><h:outputText
-+                                value="Bookings"/></h:outputLink></li>
-+                        <li><h:outputLink
-+                                value="#{request.contextPath}/booking-monitor.html"><h:outputText
-+                                value="Monitor"/></h:outputLink></li>
-+                        <li><h:outputLink value="#{request.contextPath}/admin"><h:outputText
-+                                value="Administration"/></h:outputLink></li>
-+                    </ul>
++        <div id="logo"><div class="wrap"><h1>Ticket Monster</h1></div></div>
++        <div id="menu">
++            <div class="navbar">
++                <div class="container">
++                    <div class="nav-collapse collapse">
++                        <ul class="nav">
++                            <li><h:outputLink
++                                    value="#{request.contextPath}/index.html#about"><h:outputText
++                                    value="About"/></h:outputLink></li>
++                            <li><h:outputLink
++                                    value="#{request.contextPath}/index.html#events"><h:outputText
++                                    value="Events"/></h:outputLink></li>
++                            <li><h:outputLink
++                                    value="#{request.contextPath}/index.html#venues"><h:outputText
++                                    value="Venues"/></h:outputLink></li>
++                            <li><h:outputLink
++                                    value="#{request.contextPath}/index.html#bookings"><h:outputText
++                                    value="Bookings"/></h:outputLink></li>
++                            <li><h:outputLink
++                                    value="#{request.contextPath}/booking-monitor.html"><h:outputText
++                                    value="Monitor"/></h:outputLink></li>
++                            <li><h:outputLink value="#{request.contextPath}/admin"><h:outputText
++                                    value="Administration"/></h:outputLink></li>
++                        </ul>
++                </div>
++                    </div>
 +                </div>
 +            </div>
-+        </div>
-+    </div>
-+    <div id="container">
++            <div id="container">
 +	<div id="wrapper" class="container forgecontainer">
  		<div id="navigation">
  			<h:link id="homeLink" outcome="/admin/index.xhtml">
@@ -1260,14 +1259,14 @@ index 0ceecaa..13106f7 100644
 +				<li>
 +					<h:link outcome="/admin/venue/search" value="Venue"/>
 +				</li>
- 			</ul>				
+ 			</ul>
  		</div>
- 
-@@ -80,7 +99,7 @@
+
+@@ -80,7 +100,7 @@
  			<ui:insert name="main" />
  		</div>
  	</div>
--		
+-
 +    </div>
  	<footer>
  		<div id="footer-wrapper">
