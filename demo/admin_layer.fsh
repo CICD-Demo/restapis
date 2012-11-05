@@ -1,8 +1,10 @@
 @/* Forge Script - Generates the administration view */;
 
+@v = SHELL.getEnvironment().getRuntimeVersion();
+
 @/* Clear the screen */;
 clear;
-    
+
 @/* This means less typing. If a script is automated, or is not meant to be interactive, use this command */; 
 set ACCEPT_DEFAULTS true;
 
@@ -24,14 +26,32 @@ scaffold from-entity org.jboss.jdf.example.ticketmonster.model.* --targetDir adm
 set ACCEPT_DEFAULTS false;
 
 if ( SHELL.promptBoolean("Apply manual functional changes described in tutorial?") ) {
-    echo Applying manual changes described in tutorial based on admin_layer_functional.patch;
-    git apply --ignore-whitespace --ignore-space-change admin_layer_functional.patch;
-    rm --force src/main/webapp/index.xhtml;
+    if (v.startsWith("1.1.")) {
+      echo Applying manual changes described in tutorial based on admin_layer_functional.patch;
+      git apply --ignore-whitespace --ignore-space-change patches/admin_layer_functional.patch;
+      rm --force src/main/webapp/index.xhtml;
+    }
+    else if (v.startsWith("1.0.")) {
+      echo Applying manual changes described in tutorial based on admin_layer_functional_1.0.patch;
+      git apply --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.0.patch;
+      rm --force src/main/webapp/index.xhtml;
+    } else {
+      @SHELL.println("The version " + v + " is not supported yet");
+    }
 }
 
 if ( SHELL.promptBoolean("Apply manual visual changes?") ) {
-    echo Applying manual visual changes based on admin_layer_graphics.patch;
-    git apply --ignore-whitespace --ignore-space-change admin_layer_graphics.patch;
+    if (v.startsWith("1.1.")) {
+      echo Applying manual visual changes based on admin_layer_graphics.patch;
+      git apply --ignore-whitespace --ignore-space-change patches/admin_layer_graphics.patch;
+    }
+    else if (v.startsWith("1.0.")) {
+       echo Applying manual visual changes based on admin_layer_graphics_1.0.patch;
+       git apply --ignore-whitespace --ignore-space-change patches/admin_layer_graphics_1.0.patch;
+    }
+    else {
+       @SHELL.println("The version " + v + " is not supported yet");
+    }
 }
 
 if ( SHELL.promptBoolean("Deploy to JBoss AS 7?") ) {
