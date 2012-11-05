@@ -19,13 +19,13 @@ Before building and running TicketMonster, you must generate the administration 
 
 3. Verify that the Forge plugin is installed by running
 
-        $ forge list-plugins
+            $ forge list-plugins
 
    and verifying that `org.richfaces.forge.richfaces-forge-plugin` is in the returned list.
 
 4.  If the outcome of the previous step was that the Richfaces plugin was not installed, do that now
 
-        $ forge install-plugin richfaces
+            $ forge install-plugin richfaces
 	
 5. From the JBoss Forge prompt, execute the script for generating the administration site
     
