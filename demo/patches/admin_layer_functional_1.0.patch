@@ -1,7 +1,7 @@
-diff --git ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
+diff --git src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
 index 689cc8c..f9aa6c1 100644
---- ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
-+++ ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
+--- src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
++++ src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
 @@ -25,6 +25,8 @@ import javax.persistence.criteria.Predicate;
  import javax.persistence.criteria.Root;
  
