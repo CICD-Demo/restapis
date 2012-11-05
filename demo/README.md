@@ -11,7 +11,7 @@ _NOTE: failure in following this step will cause the link to `http://localhost:8
 Before building and running TicketMonster, you must generate the administration site with Forge.
 
 1. Ensure that you have [JBoss Forge](http://jboss.org/forge) installed. The current version of
-   TicketMonster supports either version 1.0.6.Final or 1.1.1.Final.
+   TicketMonster supports either version 1.0.6.Final or 1.1.1.Final of JBoss Forge.
 
 2. Start JBoss Forge
 
@@ -21,10 +21,9 @@ Before building and running TicketMonster, you must generate the administration 
 
         $ forge list-plugins
 
-   and verifying that `org.richfaces.forge.richfaces-forge-plugin` is in the list of installed plugins.
+   and verifying that `org.richfaces.forge.richfaces-forge-plugin` is in the returned list.
 
-4.  If the outcome of the previous step was that the Richfaces plugin was not installed, install
-    it now by running
+4.  If the outcome of the previous step was that the Richfaces plugin was not installed, do that now
 
         $ forge install-plugin richfaces
 	
