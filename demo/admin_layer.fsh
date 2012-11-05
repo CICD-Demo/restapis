@@ -1,5 +1,6 @@
 @/* Forge Script - Generates the administration view */;
 
+@/* Detect Forge version */;
 @v = SHELL.getEnvironment().getRuntimeVersion();
 
 @/* Clear the screen */;
