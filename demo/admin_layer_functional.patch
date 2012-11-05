@@ -4,12 +4,12 @@ index 689cc8c..f9aa6c1 100644
 +++ ../demo/src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
 @@ -25,6 +25,8 @@ import javax.persistence.criteria.Predicate;
  import javax.persistence.criteria.Root;
- 
+
  import org.jboss.jdf.example.ticketmonster.model.Performance;
 +import org.jboss.jdf.example.ticketmonster.model.Section;
 +import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
  import org.jboss.jdf.example.ticketmonster.model.Show;
- 
+
  /**
 @@ -122,8 +124,13 @@ public class PerformanceBean implements Serializable
        {
@@ -40,27 +40,118 @@ index d1afd7b..e62b752 100644
 -  </welcome-file-list>
  </web-app>
 diff --git ../demo/src/main/webapp/admin/event/view.xhtml ../demo/src/main/webapp/admin/event/view.xhtml
-index 451479f..2d0b264 100644
+index 451479f..a10da01 100644
 --- ../demo/src/main/webapp/admin/event/view.xhtml
 +++ ../demo/src/main/webapp/admin/event/view.xhtml
-@@ -4,6 +4,7 @@
- 	xmlns:h="http://java.sun.com/jsf/html"
- 	xmlns:f="http://java.sun.com/jsf/core"
- 	xmlns:ui="http://java.sun.com/jsf/facelets"
-+	xmlns:tm="http://java.sun.com/jsf/composite/tm"
- 	template="/resources/scaffold/pageTemplate.xhtml">
- 
- 	<f:metadata>
-@@ -30,7 +31,8 @@
- 			<h:outputText/>
- 			<h:outputLabel for="eventBeanEventMediaItem" value="Media Item:"/>
- 			<h:link id="eventBeanEventMediaItem" outcome="/admin/mediaItem/view" value="#{eventBean.event.mediaItem}">
+@@ -1,53 +1,55 @@
+-<?xml version='1.0' encoding='UTF-8' ?>
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+-	xmlns:h="http://java.sun.com/jsf/html"
+-	xmlns:f="http://java.sun.com/jsf/core"
+-	xmlns:ui="http://java.sun.com/jsf/facelets"
+-	template="/resources/scaffold/pageTemplate.xhtml">
+-
+-	<f:metadata>
+-		<f:viewParam name="id" value="#{eventBean.id}"/>
+-		<f:event type="preRenderView" listener="#{eventBean.retrieve}"/>
+-	</f:metadata>
+-
+-	<ui:param name="pageTitle" value="View Event"/>
+-
+-	<ui:define name="header">
+-		Event
+-	</ui:define>
+-
+-	<ui:define name="subheader">
+-		View existing Event
+-	</ui:define>
+-
+-	<ui:define name="footer"/>
+-
+-	<ui:define name="main">
+-		<h:panelGrid columnClasses="label,component,required" columns="3">
+-			<h:outputLabel for="eventBeanEventName" value="Name:"/>
+-			<h:outputText id="eventBeanEventName" value="#{eventBean.event.name}"/>
+-			<h:outputText/>
+-			<h:outputLabel for="eventBeanEventMediaItem" value="Media Item:"/>
+-			<h:link id="eventBeanEventMediaItem" outcome="/admin/mediaItem/view" value="#{eventBean.event.mediaItem}">
 -				<f:param name="id" value="#{eventBean.event.mediaItem.id}"/>
-+				<tm:image media="#{mediaManager.getPath(eventBean.event.mediaItem)}" />
+-			</h:link>
+-			<h:outputText/>
+-			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
+-			<h:link id="eventBeanEventCategory" outcome="/admin/eventCategory/view" value="#{eventBean.event.category}">
+-				<f:param name="id" value="#{eventBean.event.category.id}"/>
+-			</h:link>
+-			<h:outputText/>
+-			<h:outputLabel for="eventBeanEventDescription" value="Description:"/>
+-			<h:outputText id="eventBeanEventDescription" value="#{eventBean.event.description}"/>
+-			<h:outputText/>
+-		</h:panelGrid>
+-
+-		<div class="buttons">
+-			<h:link value="View All" outcome="search" styleClass="btn btn-primary"/> 
+-			<h:link value="Edit" outcome="create" includeViewParams="true" styleClass="btn btn-primary"/>
+-			<h:link value="Create New" outcome="create" styleClass="btn btn-primary"/>
+-		</div>
+-	</ui:define>
+-
++<?xml version='1.0' encoding='UTF-8' ?>
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<ui:composition xmlns="http://www.w3.org/1999/xhtml"
++	xmlns:h="http://java.sun.com/jsf/html"
++	xmlns:f="http://java.sun.com/jsf/core"
++	xmlns:ui="http://java.sun.com/jsf/facelets"
++    xmlns:tm="http://java.sun.com/jsf/composite/tm"
++	template="/resources/scaffold/pageTemplate.xhtml">
++
++	<f:metadata>
++		<f:viewParam name="id" value="#{eventBean.id}"/>
++		<f:event type="preRenderView" listener="#{eventBean.retrieve}"/>
++	</f:metadata>
++
++	<ui:param name="pageTitle" value="View Event"/>
++
++	<ui:define name="header">
++		Event
++	</ui:define>
++
++	<ui:define name="subheader">
++		View existing Event
++	</ui:define>
++
++	<ui:define name="footer"/>
++
++	<ui:define name="main">
++		<h:panelGrid columnClasses="label,component,required" columns="3">
++			<h:outputLabel for="eventBeanEventName" value="Name:"/>
++			<h:outputText id="eventBeanEventName" value="#{eventBean.event.name}"/>
++			<h:outputText/>
++			<h:outputLabel for="eventBeanEventMediaItem" value="Media Item:"/>
++			<h:link id="eventBeanEventMediaItem" outcome="/admin/mediaItem/view" value="#{eventBean.event.mediaItem}">
++                <tm:image media="#{mediaManager.getPath(eventBean.event.mediaItem)}" />
 +                <f:param name="id" value="#{eventBean.event.mediaItem.id}"/>
- 			</h:link>
- 			<h:outputText/>
- 			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
++			</h:link>
++			<h:outputText/>
++			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
++			<h:link id="eventBeanEventCategory" outcome="/admin/eventCategory/view" value="#{eventBean.event.category}">
++				<f:param name="id" value="#{eventBean.event.category.id}"/>
++			</h:link>
++			<h:outputText/>
++			<h:outputLabel for="eventBeanEventDescription" value="Description:"/>
++			<h:outputText id="eventBeanEventDescription" value="#{eventBean.event.description}"/>
++			<h:outputText/>
++		</h:panelGrid>
++
++		<div class="buttons">
++			<h:link value="View All" outcome="search" styleClass="btn btn-primary"/> 
++			<h:link value="Edit" outcome="create" includeViewParams="true" styleClass="btn btn-primary"/>
++			<h:link value="Create New" outcome="create" styleClass="btn btn-primary"/>
++		</div>
++	</ui:define>
++
+ </ui:composition>
+\ No newline at end of file
 diff --git ../demo/src/main/webapp/admin/index.html ../demo/src/main/webapp/admin/index.html
 index 902113f..4036f32 100644
 --- ../demo/src/main/webapp/admin/index.html
@@ -137,30 +228,280 @@ index 902113f..4036f32 100644
 \ No newline at end of file
 +<meta http-equiv="refresh" content="0;url=../faces/admin/index.xhtml" />
 \ No newline at end of file
+diff --git ../demo/src/main/webapp/admin/index.xhtml ../demo/src/main/webapp/admin/index.xhtml
+new file mode 100644
+index 0000000..844aa67
+--- /dev/null
++++ ../demo/src/main/webapp/admin/index.xhtml
+@@ -0,0 +1,30 @@
++<?xml version='1.0' encoding='UTF-8' ?>
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<ui:composition xmlns="http://www.w3.org/1999/xhtml"
++	xmlns:ui="http://java.sun.com/jsf/facelets"
++	template="/resources/scaffold/pageTemplate.xhtml">
++
++	<ui:param name="pageTitle" value="Welcome to Forge" />
++
++	<ui:define name="header">
++		Welcome to Forge
++	</ui:define>
++
++	<ui:define name="main">
++		<h2 class="success">
++			Your application is running.
++		</h2>
++		<p>
++			<a target="_blank"
++				href="http://forge.jboss.org/docs/index.html">Documentation</a>
++			| <a target="_blank"
++				href="http://twitter.com/intent/tweet?text=I+just+built+and+deployed+a+webapp+using+%23Forge,+from+%23JBoss+-+Super+easy!+(+http://jboss.org/forge+)">Get
++				Excited!</a><br /> <a target="_blank" href="http://jboss.org/forge"><br />
++				Forge Project</a> | <a target="_blank"
++				href="https://community.jboss.org/en/forge">User
++				Forums</a> | <a target="_blank"
++				href="https://issues.jboss.org/browse/FORGE">Report an issue</a>
++		</p>
++	</ui:define>
++
++</ui:composition>
+\ No newline at end of file
 diff --git ../demo/src/main/webapp/admin/venue/view.xhtml ../demo/src/main/webapp/admin/venue/view.xhtml
-index 06edc33..1b70606 100644
+index 06edc33..e9730c8 100644
 --- ../demo/src/main/webapp/admin/venue/view.xhtml
 +++ ../demo/src/main/webapp/admin/venue/view.xhtml
-@@ -4,6 +4,7 @@
- 	xmlns:h="http://java.sun.com/jsf/html"
- 	xmlns:f="http://java.sun.com/jsf/core"
- 	xmlns:ui="http://java.sun.com/jsf/facelets"
-+	xmlns:tm="http://java.sun.com/jsf/composite/tm"
- 	xmlns:forgeview="http://jboss.org/forge/view"
- 	template="/resources/scaffold/pageTemplate.xhtml">
- 
-@@ -44,7 +45,8 @@
- 			<h:outputText/>
- 			<h:outputLabel for="venueBeanVenueMediaItem" value="Media Item:"/>
- 			<h:link id="venueBeanVenueMediaItem" outcome="/admin/mediaItem/view" value="#{venueBean.venue.mediaItem}">
+@@ -1,114 +1,116 @@
+-<?xml version='1.0' encoding='UTF-8' ?>
+-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+-	xmlns:h="http://java.sun.com/jsf/html"
+-	xmlns:f="http://java.sun.com/jsf/core"
+-	xmlns:ui="http://java.sun.com/jsf/facelets"
+-	xmlns:forgeview="http://jboss.org/forge/view"
+-	template="/resources/scaffold/pageTemplate.xhtml">
+-
+-	<f:metadata>
+-		<f:viewParam name="id" value="#{venueBean.id}"/>
+-		<f:event type="preRenderView" listener="#{venueBean.retrieve}"/>
+-	</f:metadata>
+-
+-	<ui:param name="pageTitle" value="View Venue"/>
+-
+-	<ui:define name="header">
+-		Venue
+-	</ui:define>
+-
+-	<ui:define name="subheader">
+-		View existing Venue
+-	</ui:define>
+-
+-	<ui:define name="footer"/>
+-
+-	<ui:define name="main">
+-		<h:panelGrid columnClasses="label,component,required" columns="3">
+-			<h:outputLabel for="venueBeanVenueName" value="Name:"/>
+-			<h:outputText id="venueBeanVenueName" value="#{venueBean.venue.name}"/>
+-			<h:outputText/>
+-			<h:outputLabel for="venueBeanVenueAddress" value="Address:"/>
+-			<h:panelGrid columnClasses="label,component,required" columns="3" id="venueBeanVenueAddress">
+-				<h:outputLabel for="venueBeanVenueAddressStreet" value="Street:"/>
+-				<h:outputText id="venueBeanVenueAddressStreet" value="#{venueBean.venue.address.street}"/>
+-				<h:outputText/>
+-				<h:outputLabel for="venueBeanVenueAddressCity" value="City:"/>
+-				<h:outputText id="venueBeanVenueAddressCity" value="#{venueBean.venue.address.city}"/>
+-				<h:outputText/>
+-				<h:outputLabel for="venueBeanVenueAddressCountry" value="Country:"/>
+-				<h:outputText id="venueBeanVenueAddressCountry" value="#{venueBean.venue.address.country}"/>
+-				<h:outputText/>
+-			</h:panelGrid>
+-			<h:outputText/>
+-			<h:outputLabel for="venueBeanVenueMediaItem" value="Media Item:"/>
+-			<h:link id="venueBeanVenueMediaItem" outcome="/admin/mediaItem/view" value="#{venueBean.venue.mediaItem}">
 -				<f:param name="id" value="#{venueBean.venue.mediaItem.id}"/>
-+               <tm:image media="#{mediaManager.getPath(venueBean.venue.mediaItem)}" />
-+               <f:param name="id" value="#{venueBean.venue.mediaItem.id}"/>
- 			</h:link>
- 			<h:outputText/>
- 			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
+-			</h:link>
+-			<h:outputText/>
+-			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
+-			<h:outputText id="venueBeanVenueDescription" value="#{venueBean.venue.description}"/>
+-			<h:outputText/>
+-			<h:outputLabel for="venueBeanVenueSections" value="Sections:"/>
+-			<h:dataTable id="venueBeanVenueSections" styleClass="data-table" value="#{forgeview:asList(venueBean.venue.sections)}" var="_item">
+-				<h:column>
+-					<f:facet name="header">
+-						<h:outputText value="Name"/>
+-					</f:facet>
+-					<h:link outcome="/admin/section/view">
+-						<f:param name="id" value="#{_item.id}"/>
+-						<h:outputText id="itemName" value="#{_item.name}"/>
+-					</h:link>
+-				</h:column>
+-				<h:column>
+-					<f:facet name="header">
+-						<h:outputText value="Description"/>
+-					</f:facet>
+-					<h:link outcome="/admin/section/view">
+-						<f:param name="id" value="#{_item.id}"/>
+-						<h:outputText id="itemDescription" value="#{_item.description}"/>
+-					</h:link>
+-				</h:column>
+-				<h:column>
+-					<f:facet name="header">
+-						<h:outputText value="Number Of Rows"/>
+-					</f:facet>
+-					<h:link outcome="/admin/section/view">
+-						<f:param name="id" value="#{_item.id}"/>
+-						<h:outputText id="itemNumberOfRows" value="#{_item.numberOfRows}"/>
+-					</h:link>
+-				</h:column>
+-				<h:column>
+-					<f:facet name="header">
+-						<h:outputText value="Row Capacity"/>
+-					</f:facet>
+-					<h:link outcome="/admin/section/view">
+-						<f:param name="id" value="#{_item.id}"/>
+-						<h:outputText id="itemRowCapacity" value="#{_item.rowCapacity}"/>
+-					</h:link>
+-				</h:column>
+-				<h:column>
+-					<f:facet name="header">
+-						<h:outputText value="Capacity"/>
+-					</f:facet>
+-					<h:link outcome="/admin/section/view">
+-						<f:param name="id" value="#{_item.id}"/>
+-						<h:outputText id="itemCapacity" value="#{_item.capacity}"/>
+-					</h:link>
+-				</h:column>
+-			</h:dataTable>
+-			<h:outputText/>
+-			<h:outputLabel for="venueBeanVenueCapacity" value="Capacity:"/>
+-			<h:outputText id="venueBeanVenueCapacity" value="#{venueBean.venue.capacity}"/>
+-			<h:outputText/>
+-		</h:panelGrid>
+-
+-		<div class="buttons">
+-			<h:link value="View All" outcome="search" styleClass="btn btn-primary"/> 
+-			<h:link value="Edit" outcome="create" includeViewParams="true" styleClass="btn btn-primary"/>
+-			<h:link value="Create New" outcome="create" styleClass="btn btn-primary"/>
+-		</div>
+-	</ui:define>
+-
++<?xml version='1.0' encoding='UTF-8' ?>
++<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++<ui:composition xmlns="http://www.w3.org/1999/xhtml"
++	xmlns:h="http://java.sun.com/jsf/html"
++	xmlns:f="http://java.sun.com/jsf/core"
++	xmlns:ui="http://java.sun.com/jsf/facelets"
++    xmlns:tm="http://java.sun.com/jsf/composite/tm"
++	xmlns:forgeview="http://jboss.org/forge/view"
++	template="/resources/scaffold/pageTemplate.xhtml">
++
++	<f:metadata>
++		<f:viewParam name="id" value="#{venueBean.id}"/>
++		<f:event type="preRenderView" listener="#{venueBean.retrieve}"/>
++	</f:metadata>
++
++	<ui:param name="pageTitle" value="View Venue"/>
++
++	<ui:define name="header">
++		Venue
++	</ui:define>
++
++	<ui:define name="subheader">
++		View existing Venue
++	</ui:define>
++
++	<ui:define name="footer"/>
++
++	<ui:define name="main">
++		<h:panelGrid columnClasses="label,component,required" columns="3">
++			<h:outputLabel for="venueBeanVenueName" value="Name:"/>
++			<h:outputText id="venueBeanVenueName" value="#{venueBean.venue.name}"/>
++			<h:outputText/>
++			<h:outputLabel for="venueBeanVenueAddress" value="Address:"/>
++			<h:panelGrid columnClasses="label,component,required" columns="3" id="venueBeanVenueAddress">
++				<h:outputLabel for="venueBeanVenueAddressStreet" value="Street:"/>
++				<h:outputText id="venueBeanVenueAddressStreet" value="#{venueBean.venue.address.street}"/>
++				<h:outputText/>
++				<h:outputLabel for="venueBeanVenueAddressCity" value="City:"/>
++				<h:outputText id="venueBeanVenueAddressCity" value="#{venueBean.venue.address.city}"/>
++				<h:outputText/>
++				<h:outputLabel for="venueBeanVenueAddressCountry" value="Country:"/>
++				<h:outputText id="venueBeanVenueAddressCountry" value="#{venueBean.venue.address.country}"/>
++				<h:outputText/>
++			</h:panelGrid>
++			<h:outputText/>
++			<h:outputLabel for="venueBeanVenueMediaItem" value="Media Item:"/>
++			<h:link id="venueBeanVenueMediaItem" outcome="/admin/mediaItem/view" value="#{venueBean.venue.mediaItem}">
++                <tm:image media="#{mediaManager.getPath(venueBean.venue.mediaItem)}" />
++                <f:param name="id" value="#{venueBean.venue.mediaItem.id}"/>
++			</h:link>
++			<h:outputText/>
++			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
++			<h:outputText id="venueBeanVenueDescription" value="#{venueBean.venue.description}"/>
++			<h:outputText/>
++			<h:outputLabel for="venueBeanVenueSections" value="Sections:"/>
++			<h:dataTable id="venueBeanVenueSections" styleClass="data-table" value="#{forgeview:asList(venueBean.venue.sections)}" var="_item">
++				<h:column>
++					<f:facet name="header">
++						<h:outputText value="Name"/>
++					</f:facet>
++					<h:link outcome="/admin/section/view">
++						<f:param name="id" value="#{_item.id}"/>
++						<h:outputText id="itemName" value="#{_item.name}"/>
++					</h:link>
++				</h:column>
++				<h:column>
++					<f:facet name="header">
++						<h:outputText value="Description"/>
++					</f:facet>
++					<h:link outcome="/admin/section/view">
++						<f:param name="id" value="#{_item.id}"/>
++						<h:outputText id="itemDescription" value="#{_item.description}"/>
++					</h:link>
++				</h:column>
++				<h:column>
++					<f:facet name="header">
++						<h:outputText value="Number Of Rows"/>
++					</f:facet>
++					<h:link outcome="/admin/section/view">
++						<f:param name="id" value="#{_item.id}"/>
++						<h:outputText id="itemNumberOfRows" value="#{_item.numberOfRows}"/>
++					</h:link>
++				</h:column>
++				<h:column>
++					<f:facet name="header">
++						<h:outputText value="Row Capacity"/>
++					</f:facet>
++					<h:link outcome="/admin/section/view">
++						<f:param name="id" value="#{_item.id}"/>
++						<h:outputText id="itemRowCapacity" value="#{_item.rowCapacity}"/>
++					</h:link>
++				</h:column>
++				<h:column>
++					<f:facet name="header">
++						<h:outputText value="Capacity"/>
++					</f:facet>
++					<h:link outcome="/admin/section/view">
++						<f:param name="id" value="#{_item.id}"/>
++						<h:outputText id="itemCapacity" value="#{_item.capacity}"/>
++					</h:link>
++				</h:column>
++			</h:dataTable>
++			<h:outputText/>
++			<h:outputLabel for="venueBeanVenueCapacity" value="Capacity:"/>
++			<h:outputText id="venueBeanVenueCapacity" value="#{venueBean.venue.capacity}"/>
++			<h:outputText/>
++		</h:panelGrid>
++
++		<div class="buttons">
++			<h:link value="View All" outcome="search" styleClass="btn btn-primary"/> 
++			<h:link value="Edit" outcome="create" includeViewParams="true" styleClass="btn btn-primary"/>
++			<h:link value="Create New" outcome="create" styleClass="btn btn-primary"/>
++		</div>
++	</ui:define>
++
+ </ui:composition>
+\ No newline at end of file
 diff --git ../demo/src/main/webapp/index.html ../demo/src/main/webapp/index.html
-index b1c9bee..834133c 100644
+index b1c9bee..ba1b595 100644
 --- ../demo/src/main/webapp/index.html
 +++ ../demo/src/main/webapp/index.html
 @@ -1 +1,36 @@
@@ -185,15 +526,15 @@ index b1c9bee..834133c 100644
 +        var loader = document.createElement("script")
 +        loader.setAttribute("src", "resources/js/libs/require.js");
 +        if ( navigator.userAgent == "TicktetMonster Cordova Webview iOS" ) {
-+			environment="hybrid-ios"
++            environment="hybrid-ios"
 +        }
 +        else if ( navigator.userAgent == "TicketMonster Cordova Webview Android" ) {
-+			environment="hybrid-android"
++            environment="hybrid-android"
 +        }
 +        else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
-+           environment = "mobile"
++            environment = "mobile"
 +        } else {
-+           environment = "desktop"
++            environment = "desktop"
 +        };
 +        loader.setAttribute("data-main","resources/js/configurations/" + environment);
 +        document.head.appendChild(loader)
@@ -205,32 +546,32 @@ index b1c9bee..834133c 100644
 \ No newline at end of file
 diff --git ../demo/src/main/webapp/resources/tm/image.xhtml ../demo/src/main/webapp/resources/tm/image.xhtml
 new file mode 100644
-index 0000000..d4b24ae
+index 0000000..ceafffb
 --- /dev/null
 +++ ../demo/src/main/webapp/resources/tm/image.xhtml
 @@ -0,0 +1,25 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
++        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 +<html xmlns="http://www.w3.org/1999/xhtml"
-+	xmlns:h="http://java.sun.com/jsf/html"
-+	xmlns:composite="http://java.sun.com/jsf/composite">
++      xmlns:h="http://java.sun.com/jsf/html"
++      xmlns:composite="http://java.sun.com/jsf/composite">
 +<head>
-+<title>Cached Image</title>
++    <title>Cached Image</title>
 +</head>
 +<body>
 +
-+	<composite:interface>
-+		<composite:attribute name="media"
-+			type="org.jboss.jdf.example.ticketmonster.service.MediaPath" />
-+		<composite:attribute name="id" type="java.lang.String" />
-+	</composite:interface>
++<composite:interface>
++    <composite:attribute name="media"
++                         type="org.jboss.jdf.example.ticketmonster.service.MediaPath" />
++    <composite:attribute name="id" type="java.lang.String" />
++</composite:interface>
 +
-+	<composite:implementation>
-+		<h:graphicImage value="#{cc.attrs.media.url}"
-+			rendered="#{!cc.attrs.media.cached}" />
-+		<h:graphicImage value="/rest/media/cache/#{cc.attrs.media.url}"
-+			rendered="#{cc.attrs.media.cached}" />
-+	</composite:implementation>
++<composite:implementation>
++    <h:graphicImage value="#{cc.attrs.media.url}"
++                    rendered="#{!cc.attrs.media.cached}" />
++    <h:graphicImage value="/rest/media/cache/#{cc.attrs.media.url}"
++                    rendered="#{cc.attrs.media.cached}" />
++</composite:implementation>
 +
 +</body>
 +</html>
