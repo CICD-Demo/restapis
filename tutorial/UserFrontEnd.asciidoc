@@ -59,7 +59,7 @@ In this application we use the templating support provided by "underscore.js".
 Mobile and desktop versions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The page flow and structure, as well as feature set, are slightly different for mobile and desktop therefore we will build two variants of the single-page-application, one for desktop and one for mobile. As the application variants are very similar, we will cover the desktop version of the application first, and then we will explain what is different in the mobile version.
+The page flow and structure, as well as feature set, are slightly different for mobile and desktop, and therefore we will build two variants of the single-page-application, one for desktop and one for mobile. As the application variants are very similar, we will cover the desktop version of the application first, and then we will explain what is different in the mobile version.
 
 Setting up the structure
 ------------------------
@@ -70,7 +70,7 @@ Before we start developing the user interface, we need to set up the general app
 .File structure for our web application
 image::gfx/ui-file-structure.png[]
 
-We put stylesheets in `resources/css` folder, images in `resources/img`, and HTML view templates in `resources/templates`. `resources/js` contains the JavaScript code, split between `resource/js/lib` - which contains the libraries used by the application and `resources/js/app` which contains the application code. The latter will contain the application modules, in subsequent subdirectories, for models, collections, routers and views.
+We put stylesheets in `resources/css` folder, images in `resources/img`, and HTML view templates in `resources/templates`. `resources/js` contains the JavaScript code, split between `resources/js/lib` - which contains the libraries used by the application, `resources/js/app` - which contains the application code, and `resources/configurations` which contains module definitions for the different versions of the application - i.e. mobile and desktop. The `resources/js/app` folder will contain the application modules, in subsequent subdirectories, for models, collections, routers and views.
 
 The first step in implementing our solution is adding the stylesheets and JavaScript libraries to the `resources/css` and `resources/js/lib`:
 
@@ -89,7 +89,7 @@ Bootstrap::
 
 Now, we create the main page of the application (which is the URL loaded by the browser):
 
-.src/main/webapp/desktop-index.html
+.src/main/webapp/index.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
 <!DOCTYPE html>
@@ -97,24 +97,179 @@ Now, we create the main page of the application (which is the URL loaded by the 
 <head>
     <title>Ticket Monster</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0;">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
 
+    <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
-    <link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>
-    <link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">
-
-    <link href='http://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'>
-    <script data-main="resources/js/main-desktop" src="resources/js/libs/require.js"></script>
-
-    <!-- Add JavaScript library for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
+    <!--
+         A simple check on the client. For touch devices or small-resolution screens)
+         show the mobile client. By enabling the mobile client on a small-resolution screen
+         we allow for testing outside a mobile device (like for example the Mobile Browser
+         simulator in JBoss Tools and JBoss Developer Studio).
+      -->
+    <script type="text/javascript">
+        var loader = document.createElement("script")
+        loader.setAttribute("src", "resources/js/libs/require.js");
+        if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
+           environment = "mobile"
+        } else {
+           environment = "desktop"
+        };
+        loader.setAttribute("data-main","resources/js/configurations/" + environment);
+        document.head.appendChild(loader)
+    </script>
 </head>
 <body>
+</body>
+</html>
+-------------------------------------------------------------------------------------------------------
 
+As you can see, the page does not contain much. It detects the current client (mobile or destktop) based on its capabilities (touch or not) and loads the JavaScript code of the page from an AMD module defined in the `resources/js/configurations` folder using `require.js`. In the case of the desktop client, the code is loaded from `resources/js/configurations/desktop.js`.
+
+.src/main/webapp/resources/js/configurations/desktop.js
+[source,javascript]
+-------------------------------------------------------------------------------------------------------
+/**
+ * Shortcut alias definitions - will come in handy when declaring dependencies
+ * Also, they allow you to keep the code free of any knowledge about library
+ * locations and versions
+ */
+requirejs.config({
+    baseUrl: "resources/js",
+    paths: {
+        jquery:'libs/jquery-1.7.1',
+        underscore:'libs/underscore',
+        text:'libs/text',
+        order:'libs/order',
+        bootstrap: 'libs/bootstrap',
+        backbone: 'libs/backbone',
+        utilities: 'app/utilities'
+    },
+    // We shim Backbone since it doesn't declare an AMD module
+    shim: {
+        'backbone': {
+            deps: ['jquery', 'underscore'],
+            exports: 'Backbone'
+        }
+    }
+});
+
+define("initializer", ["jquery"],
+    function ($) {
+    $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
+    $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
+});
+
+// Now we declare all the dependencies
+require([
+    'order!initializer',
+    'order!underscore',
+    'order!backbone'
+], function(){
+});
+
+define("configuration", {
+    baseUrl : ""
+});
+-------------------------------------------------------------------------------------------------------
+
+The module loads all the utility libraries, converting them to AMD modules where necessary (like it is the case for Backbone). It also defines two modules of its own - an initializer that loads the application stylesheets for the page, and the `configuration` module that allows customizing the REST service URLs (this will become in handy in a further tutorial).
+
+Before we add any functionality, let us create a first landing page. We will begin by setting up a critical piece of the application, the router.
+
+Routing
+~~~~~~~
+
+The outer allows for navigation in our application via bookmarkable URLs, and we will define it as follows:
+
+.src/main/webapp/resources/js/app/router/desktop/router.js
+[source, javascript]
+-------------------------------------------------------------------------------------------------------
+/**
+ * A module for the router of the desktop application
+ */
+define("router", [
+    'jquery',
+    'underscore',
+    'configuration',
+    'utilities',
+    'text!../templates/desktop/main.html'
+],function ($,
+            _,
+            config,
+            utilities,
+            MainTemplate) {
+
+    $(document).ready(new function() {
+       utilities.applyTemplate($('body'), MainTemplate)
+    })
+
+    /**
+     * The Router class contains all the routes within the application - 
+     * i.e. URLs and the actions that will be taken as a result.
+     *
+     * @type {Router}
+     */
+
+    var Router = Backbone.Router.extend({
+        routes:{
+        }
+    });
+
+    // Create a router instance
+    var router = new Router();
+
+    //Begin routing
+    Backbone.history.start();
+
+    return router;
+});
+-------------------------------------------------------------------------------------------------------
+
+Remember, this is a single page application. You can either navigate using urls such as `http://localhost:8080/ticket-monster/desktop-index.html#events` or using relative urls (from within the application, this being exactly what the main menu does). The fragment after the hash sign represents the url within the single page, on which the router will act, according to the mappings set up in the `routes` property.
+
+The main module needs to load it. Because the router depends on all the other components (models, collections and views) of the application, directly or indirectly, it is the only component that is explicitly loaded in the `main-desktop` definition, which we change as follows:
+
+.src/main/webapp/resources/js/main-desktop.js
+[source,javascript]
+-------------------------------------------------------------------------------------------------------
+requirejs.config({
+    baseUrl: "resources/js",
+    paths: {
+        jquery:'libs/jquery-1.7.1',
+        underscore:'libs/underscore',
+        text:'libs/text',
+        order:'libs/order',
+        bootstrap: 'libs/bootstrap',
+        backbone: 'libs/backbone',
+        utilities: 'app/utilities',
+        router:'app/router/desktop/router'
+    },
+    // We shim Backbone since it doesn't declare an AMD module
+    shim: {
+        'backbone': {
+            deps: ['jquery', 'underscore'],
+            exports: 'Backbone'
+        }
+    }
+});
+  ...
+
+require([
+    'order!initializer',
+    'order!underscore',
+    'order!backbone',
+    'order!router'
+], function(){
+});
+-------------------------------------------------------------------------------------------------------
+
+During the router set up, we load the page template for the entire application. TicketMonster uses a templating library in order to separate application logic from it's actual graphical content. The actual HTML is described in template files, which are applied by the application, when necessary, on a DOM element - effectively populating it's content. So the general content of the page, as described in the `body` element is described in a template file too. Let us define it.
+
+./src/main/webapp/resources/templates/desktop/main.html
+-------------------------------------------------------------------------------------------------------
 <!--
     The main layout of the page - contains the menu and the 'content' &lt;div/&gt; in which all the
     views will render the content.
@@ -144,59 +299,75 @@ Now, we create the main page of the application (which is the URL loaded by the 
 <footer style="">
     <div style="text-align: center;"><img src="resources/img/dualbrand_as7eap.png" alt="HTML5"/></div>
 </footer>
-
-</body>
-</html>
 -------------------------------------------------------------------------------------------------------
 
-As you can see, the page does not contain much. It loads the custom stylesheet of the application, as well as the one required by Bootstrap, sets up instructions for loading the application scripts and defines the general structure of the page.  
+The actual HTML code of the template contains a menu definition which will be present on all the pages, as well as an empty element named `content`, which is the placeholder for the application views. When a view is displayed, it will apply a template and populate the `content` element.
 
-The actual HTML code of the page contains a menu definition which will be present on all the pages, as well as an empty element named `content`, which is the placeholder for the application views. When a view is displayed, it will apply a template and populate the `content` element.
+Setting up the initial views
+----------------------------
 
-The JavaScript code of the page is loaded by `require.js`, according to the module definition contained in `resources/js/main-desktop.js`:
+Let us complete our application setup by creating an initial landing page. The first thing that we will need to do is to add a view component. 
 
-.src/main/webapp/resources/js/main-desktop.js
+.src/main/resources/js/app/views/desktop/home.js
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
- * Shortcut alias definitions - will come in handy when declaring dependencies
- * Also, they allow you to keep the code free of any knowledge about library 
- * locations and versions
+ * The About view
  */
-require.config({
-    paths: {
-        jquery:'libs/jquery-1.7.1',
-        underscore:'libs/underscore',
-        text:'libs/text',
-        order:'libs/order',
-        bootstrap: 'libs/bootstrap',
-        utilities: 'app/utilities',
-        router
-    }
-});
+define([
+    'utilities',
+    'text!../../../../templates/desktop/home.html'
+], function (utilities, HomeTemplate) {
 
-// Backbone is not AMD-ready, so a individual module is declared
-define("backbone", [
-    // the order plugin is used to ensure that the modules are loaded in the right order
-    'order!jquery',
-    'order!underscore',
-    'order!libs/backbone'], function(){
-    return Backbone;
-});
+    var HomeView = Backbone.View.extend({
+        render:function () {
+            utilities.applyTemplate($(this.el),HomeTemplate,{});
+            return this;
+        }
+    });
 
-// Now we declare all the dependencies
-require([
-    'order!jquery',
-    'order!underscore',
-    'order!backbone',
-    'text',
-    'order!bootstrap',
-], function(){
-    console.log('all loaded')
+    return HomeView;
 });
 -------------------------------------------------------------------------------------------------------
 
-The module loads all the utility libraries. Later on, when we will have written the application code, it will be loaded here as well.
+Functionally, this is a very basic component - it only renders the splash page of the application, but it helps us
+introduce a new concept that will be heavily used throughout the application views. One main role of a view is to 
+describe the logic for manipulating the page content. It will do so by defining a function named `render` which
+will be invoked by the application. In this very simple case, all that the view does is to create the content of the splash page. You can proceed by copying the content of `src/main/webapp/resources/templates/desktop/home.html` to your
+project.
+
+[TIP]
+
+.Backbone Views
+========================================================================
+Views are logical representations of user interface elements that can
+interact with data components, such as models in an event-driven fashion.
+Apart from defining the logical structure of your user interface, views handle
+events resulting from the user interaction (e.g. clicking a DOM element or selecting
+an element into a list), translating them into logical actions inside the 
+application.
+========================================================================
+
+Once we defined a view, we must tell the router to navigate to it whenever requested. We will add the following mapping to the router:
+
+.src/main/webapp/resources/js/app/router/desktop/router.js
+[source, javascript]
+-------------------------------------------------------------------------------------------------------
+    var Router = Backbone.Router.extend({
+        routes : { 
+            "":"home",
+            "about":"home"
+        },
+        home : function () {
+            utilities.viewManager.showView(new HomeView({el:$("#content")}));
+        }
+    });
+-------------------------------------------------------------------------------------------------------
+
+We have just told the router to invoke the `home` function whenever the user navigates to the root of the application or
+uses a `#about` hash. The method will simply cause the `HomeView` defined above to render.
+
+Now you can navigate to `http://localhost:8080/ticket-monster/#about` or `http://localhost:8080/ticket-monster` and see the results.
 
 Displaying Events
 -----------------
@@ -215,14 +386,14 @@ We a Backbone model for holding event data. Nearly all domain entities (booking,
  * Module for the Event model
  */
 define([ 
-    'backbone' // depends and imports Backbone
-], function (Backbone) {
+    'configuration'
+], function (config) {
     /**
      * The Event model class definition
      * Used for CRUD operations against individual events
      */
     var Event = Backbone.Model.extend({
-        urlRoot:'rest/events' // the URL for performing CRUD operations
+        urlRoot: config.baseUrl + 'rest/events' // the URL for performing CRUD operations
     });
     // export the Event class
     return Event;
@@ -251,16 +422,16 @@ We define a Backbone collection for handling groups of events (like the events l
  * Module for the Events collection
  */
 define([
-    // Backbone and the collection element type are dependencies
-    'backbone',
-    'app/models/event'
-], function (Backbone, Event) {
+    // BThe collection element type and configuration are dependencies
+    'app/models/event',
+    'configuration'
+], function (Event, config) {
     /**
      *  Here we define the Bookings collection
      *  We will use it for CRUD operations on Bookings
      */
     var Events = Backbone.Collection.extend({
-        url:"rest/events", // the URL for performing CRUD operations
+        url: config.baseUrl + "rest/events", // the URL for performing CRUD operations
         model: Event,
         id:"id", // the 'id' property of the model is the identifier
         comparator:function (model) {
@@ -278,7 +449,7 @@ By mapping the model and collection to a REST endpoint you can perform CRUD oper
 .Backbone Collections
 ========================================================================
 Collections are ordered sets of models. They can handle events which are
-fired as a result of a change to a individual member, and can perform 
+fired as a result of a change to a individual member, and can perform
 CRUD operations for syncing up contents against RESTful services.
 ========================================================================
 
@@ -291,11 +462,9 @@ Now that we have implemented the data components of the example, we need to crea
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
-    'backbone',
     'utilities',
     'text!../../../../templates/desktop/events.html'
 ], function (
-    Backbone,
     utilities,
     eventsTemplate) {
 
@@ -312,6 +481,7 @@ define([
                 });
             utilities.applyTemplate($(this.el), eventsTemplate, {categories:categories, model:this.model})
             $(this.el).find('.item:first').addClass('active');
+            $(".carousel").carousel()
             $(".collapse").collapse()
             $("a[rel='popover']").popover({trigger:'hover'});
             return this;
@@ -325,7 +495,7 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-The view is attached to a DOM element (the `el` property). When the `render` method is invoked, it manipulates the DOM and renders the view. We could have achieved this by writing these instructions directly in the method, but that would make it hard to change the page design later on. Instead, we create a template and apply it, thus separating the HTML view code from the view implementation. 
+As we explained, earlier, the view is attached to a DOM element (the `el` property). When the `render` method is invoked, it manipulates the DOM and renders the view. We could have achieved this by writing these instructions directly in the method, but that would make it hard to change the page design later on. Instead, we create a template and apply it, thus separating the HTML view code from the view implementation. 
 
 .src/main/webapp/resources/templates/desktop/events.html
 [source,html]
@@ -397,109 +567,33 @@ As well as applying the template and preparing the data that will be used to fil
 
 A view can also listen to events fired by the children of it's root element (`el`). In this case, the `update` method is configured to listen to clicks on anchors. The configuration occurs within the `events` property of the class. 
 
-Now that the views are in place, we need to add a routing rule to the application. We create the router and add our first routes.
-
-Routing
-~~~~~~~
-
-We will continue by defining a router which provides bookmarkable URLs for the various locations in our application.
+Now that the views are in place, we need to add another routing rule to the application. 
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
 [source, javascript]
 -------------------------------------------------------------------------------------------------------
-/**
- * A module for the router of the desktop application
- */
-define("router", [
-    'jquery',
-    'underscore',
-    'backbone',
-	'utilities',
-    'app/collections/events',
-    'app/views/desktop/events',
-],function ($,
-            _,
-            Backbone,
-			utilities,
-            Events,
-            EventsView) {
-
-    /**
-     * The Router class contains all the routes within the application - 
-     * i.e. URLs and the actions that will be taken as a result.
-     *
-     * @type {Router}
-     */
-
     var Router = Backbone.Router.extend({
-        routes:{
-            "":"events", // listen to #events
-            "events":"events" // listen to #events
+        routes : { 
+            ...,
+            "events":"events"
         },
+        ...,
         events:function () {
-        	//initialize the events collection
-            var events = new Events(); 
-            // create an events view
+            var events = new Events();
             var eventsView = new EventsView({model:events, el:$("#content")});
-            // render the view when the collection elements are fetched from the
-            // RESTful service
-            events.bind("reset", 
-                function () { 
-                     utilities.viewManager.showView(eventsView);
-            }).fetch();
-        });
-
-    // Create a router instance
-    var router = new Router();
-
-    // Begin routing
-    Backbone.history.start();
-
-    return router;
-});
+            events.bind("reset",
+                function () {
+                    utilities.viewManager.showView(eventsView);
+                }).fetch();
+        }
+    });
 -------------------------------------------------------------------------------------------------------
 
-Remember, this is a single page application. You can either navigate using urls such as `http://localhost:8080/ticket-monster/desktop-index.html#events` or using relative urls (from within the application, this being exactly what the main menu does). The fragment after the hash sign represents the url within the single page, on which the router will act. 
-
-The `routes` property maps urls to controller function. In the example above, we have two controller functions.
-
-`events` handles the `#events` fragment and will retrieve the events in our application via a REST call. We don't manually perform the REST call as it is triggered the by invocation of `fetch` on the `Events` collection, as discussed earlier. 
+The `events` function handles the `#events` fragment and will retrieve the events in our application via a REST call. We don't manually perform the REST call as it is triggered the by invocation of `fetch` on the `Events` collection, as discussed earlier.
 
 The `reset` event on the collection is invoked when the data from the server is received, and the collection is populated. This triggers the rendering of the events view (which is bound to the `#content` div). 
 
 The whole process is event orientated - the models, views and controllers interact through events.
-
-Once the router has been defined, all that remains is to cause it to be loaded by the main module definition. Because the router depends on all the other components (models, collections and views) of the application, directly or indirectly, it is the only component that is explicitly loaded in the `main-desktop` definition, which we change as follows:
-
-.src/main/webapp/resources/js/main-desktop.js
-[source,javascript]
--------------------------------------------------------------------------------------------------------
-require.config({
-    paths: {
-        jquery:'libs/jquery-1.7.1',
-        underscore:'libs/underscore',
-        text:'libs/text',
-        order:'libs/order',
-        bootstrap: 'libs/bootstrap',
-        utilities: 'app/utilities',
-        router:'app/router/desktop/router'
-    }
-});
-
-  ...
-
-// Now we declare all the dependencies
-require([
-    'order!jquery', 
-    'order!underscore',
-    'order!backbone',
-    'text',
-    'order!bootstrap',
-    'router'
-], function(){
-    console.log('all loaded')
-});
--------------------------------------------------------------------------------------------------------
 
 Viewing a single event
 ----------------------
@@ -512,20 +606,21 @@ We already have the models in place so all we need to do is to create the additi
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
-    'backbone',
     'utilities',
     'require',
     'text!../../../../templates/desktop/event-detail.html',
     'text!../../../../templates/desktop/media.html',
     'text!../../../../templates/desktop/event-venue-description.html',
+    'configuration',
     'bootstrap'
 ], function (
-    Backbone,
     utilities,
     require,
     eventDetailTemplate,
     mediaTemplate,
-    eventVenueDescriptionTemplate) {
+    eventVenueDescriptionTemplate,
+    config,
+    Bootstrap) {
 
     var EventDetail = Backbone.View.extend({
 
@@ -545,7 +640,7 @@ define([
             $("#performanceTimes").empty();
             $("#performanceTimes").attr('disabled', true)
             var self = this
-            $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
+            $.getJSON(config.baseUrl + "rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows
                 $("#venueSelector").empty().append("<option value='0' selected>Select a venue</option>");
                 $.each(shows, function (i, show) {
@@ -689,12 +784,14 @@ define("router", [
     ...
     'app/models/event',
 	...,
-    'app/views/desktop/event-detail'
+    'app/views/desktop/event-detail',
+    ...
 ],function (
 			...
             Event,
             ...
-            EventDetailView) {
+            EventDetailView,
+            ...) {
 
     var Router = Backbone.Router.extend({
         routes:{
@@ -709,11 +806,11 @@ define("router", [
                 function () {
                     utilities.viewManager.showView(eventDetailView);
                 }).fetch();
-        });
+        }
 });
 -------------------------------------------------------------------------------------------------------
 
-As you can see, this is very similar to the previous view and route, except that now the application can accept URLs (e.g. `http://localhost:8080/ticket-monster/desktop-index#events/1`). This URL can be entered directly into the browser, or it can be navigated to as a relative path (e.g. `#events/1`) from within the applicaton.
+As you can see, this is very similar to the previous view and route, except that now the application can accept parameterized URLs (e.g. `http://localhost:8080/ticket-monster/desktop-index#events/1`). This URL can be entered directly into the browser, or it can be navigated to as a relative path (e.g. `#events/1`) from within the applicaton.
 
 With this in place, all that remains is to implement the final view of this use case, creating the bookings.
 
@@ -728,18 +825,18 @@ First, we add the new view:
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
-    'backbone',
     'utilities',
     'require',
+    'configuration',
     'text!../../../../templates/desktop/booking-confirmation.html',
     'text!../../../../templates/desktop/create-booking.html',
     'text!../../../../templates/desktop/ticket-categories.html',
     'text!../../../../templates/desktop/ticket-summary-view.html',
     'bootstrap'
 ],function (
-    Backbone,
     utilities,
     require,
+    config,
     bookingConfirmationTemplate,
     createBookingTemplate,
     ticketEntriesTemplate,
@@ -789,8 +886,8 @@ define([
             // are there any outstanding errors after this update?
             // if yes, disable the input button
             if (
-               $("div[id^='ticket-category-fieldset-']").hasClass("error") &&
-                   !_.isUndefined(modifiedModelEntry.quantity) ) {
+               $("div[id^='ticket-category-fieldset-']").hasClass("error") ||
+                   _.isUndefined(modifiedModelEntry.quantity) ) {
               $("input[name='add']").attr("disabled", true)
             } else {
               $("input[name='add']").removeAttr("disabled")
@@ -825,7 +922,7 @@ define([
         render:function () {
 
             var self = this;
-            $.getJSON("rest/shows/" + this.model.showId, function (selectedShow) {
+            $.getJSON(config.baseUrl + "rest/shows/" + this.model.showId, function (selectedShow) {
 
                 self.currentPerformance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId;
@@ -851,8 +948,11 @@ define([
             var ticketPrices = _.filter(this.show.ticketPrices, function (item) {
                 return item.section.id == event.currentTarget.value;
             });
+            var sortedTicketPrices = _.sortBy(ticketPrices, function(ticketPrice) {
+                return ticketPrice.ticketCategory.description;
+            });
             var ticketPriceInputs = new Array();
-            _.each(ticketPrices, function (ticketPrice) {
+            _.each(sortedTicketPrices, function (ticketPrice) {
                 ticketPriceInputs.push({ticketPrice:ticketPrice});
             });
             this.ticketCategoriesView.model = ticketPriceInputs;
@@ -867,14 +967,14 @@ define([
             bookingRequest.email = this.model.bookingRequest.email;
             bookingRequest.performance = this.model.performanceId
             $("input[name='submit']").attr("disabled", true)
-            $.ajax({url:"rest/bookings",
+            $.ajax({url: (config.baseUrl + "rest/bookings"),
                 data:JSON.stringify(bookingRequest),
                 type:"POST",
                 dataType:"json",
                 contentType:"application/json",
                 success:function (booking) {
                     this.model = {}
-                    $.getJSON('rest/shows/performance/' + booking.performance.id, function (retrievedPerformance) {
+                    $.getJSON(config.baseUrl +'rest/shows/performance/' + booking.performance.id, function (retrievedPerformance) {
                         utilities.applyTemplate($(self.el), bookingConfirmationTemplate, {booking:booking, performance:retrievedPerformance })
                     });
                 }}).error(function (error) {
@@ -943,10 +1043,7 @@ define([
             this.setCheckoutStatus();
         },
         setCheckoutStatus:function () {
-            if (this.model.bookingRequest.totals != undefined 
-				&& this.model.bookingRequest.totals.tickets > 0 
-				&& this.model.bookingRequest.email != undefined 
-				&& this.model.bookingRequest.email != '') {
+            if (this.model.bookingRequest.totals != undefined && this.model.bookingRequest.totals.tickets > 0 && this.model.bookingRequest.email != undefined && this.model.bookingRequest.email != '') {
                 $('input[name="submit"]').removeAttr('disabled');
             }
             else {
@@ -1065,6 +1162,7 @@ The corresponding templates for the views above are shown below:
     <% _.each(ticketPrices, function(ticketPrice) { %>
     <div class="control-group" id="ticket-category-fieldset-<%=ticketPrice.id%>">
         <label class="control-label"><strong><%=ticketPrice.ticketCategory.description%></strong></label>
+
         <div class="controls">
             <div class="input-append">
                 <input class="span2" rel="tooltip" title="Enter value"
@@ -1078,6 +1176,7 @@ The corresponding templates for the views above are shown below:
         </div>
     </div>
     <% }) %>
+
 <p>&nbsp;</p>
 
 <div class="control-group">
@@ -1158,12 +1257,12 @@ define("router", [
         ...
         bookTickets:function (showId, performanceId) {
             var createBookingView = 
-            	new CreateBookingView({
-            		model:{ showId:showId, 
-            			    performanceId:performanceId, 
-            			    bookingRequest:{tickets:[]}}, 
-            			    el:$("#content")
-            			   });
+                new CreateBookingView({
+                    model:{ showId:showId, 
+                            performanceId:performanceId, 
+                            bookingRequest:{tickets:[]}}, 
+                            el:$("#content")
+                           });
             utilities.viewManager.showView(createBookingView);
         }
 });
@@ -1200,79 +1299,90 @@ jQuery Mobile::
 
 (If you have already built the desktop application, some files may already be in place.) 
 
-Next, we add the mobile main page.
+For mobile clients, the main page will display the mobile version of the application, by loading the mobile AMD module of the application. Let us create it.
 
-.src/main/webapp/mobile-index.html
-[source,html]
--------------------------------------------------------------------------------------------------------
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ticket Monster - mobile version</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
-
-    <link rel="stylesheet" href="resources/css/jquery.mobile-1.1.0.css"/>
-    <link rel="stylesheet" href="resources/css/m.screen.css"/>
-    <script data-main="resources/js/main-mobile" src="resources/js/libs/require.js"></script>
-</head>
-<body>
-
-<div id="container" data-role="page" data-ajax="false"></div>
-
-</body>
-</html>
--------------------------------------------------------------------------------------------------------
-
-As you can see, this page is simple. We just load the stylesheets for the application, and then we use `require.js` to load the JavaScript code and page fragments. All the pages will render inside the `container` element, which has a `data-role` attribute with the `page` value, as with any jQuery Mobile application. 
-
-Now, we add it the module loader.
-
-.src/main/webapp/resources/js/main-mobile.js
+./src/main/webapp/resources/js/configurations/mobile.js
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
  * Shortcut alias definitions - will come in handy when declaring dependencies
- * Also, they allow you to keep the code free of any knowledge about library 
+ * Also, they allow you to keep the code free of any knowledge about library
  * locations and versions
  */
 require.config({
+    baseUrl:"resources/js",
     paths: {
         jquery:'libs/jquery-1.7.1',
         jquerymobile:'libs/jquery.mobile-1.1.0',
         text:'libs/text',
+        underscore:'libs/underscore',
+        backbone: 'libs/backbone',
         order: 'libs/order',
-        utilities: 'app/utilities',
-        router:'app/router/mobile/router'
+        utilities: 'app/utilities'
+    },
+    // We shim Backbone since it doesn't declare an AMD module
+    shim: {
+        'backbone': {
+            deps: ['underscore', 'jquery'],
+            exports: 'Backbone'
+        }
     }
 });
 
-define('underscore',[
-    'libs/underscore'
-], function(){
-    return _;
-});
-
-define("backbone", [
-    'order!jquery',
-    'order!underscore',
-    'order!libs/backbone'
-], function(){
-    return Backbone;
+define("configuration", function() {
+    if (window.TicketMonster != undefined && TicketMonster.config != undefined) {
+        return {
+            baseUrl: TicketMonster.config.baseRESTUrl
+        };
+    } else {
+        return {
+            baseUrl: ""
+        }
+    }
+})
+define("initializer", [
+    'jquery',
+    'utilities',
+    'text!../templates/mobile/main.html'
+], function ($,
+             utilities,
+             MainTemplate) {
+    $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.1.0.css"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/m.screen.css"/>');
+    $(document).bind("mobileinit", function () {
+        utilities.applyTemplate($('body'), MainTemplate)
+    });
 });
 
 
 // Now we declare all the dependencies
-require(['router'],
-       function(){
-    console.log('all loaded')
+require(['order!initializer',
+         'order!underscore',
+         'order!backbone'],
+    function(){
 });
+
+define(["configuration"],function(configuration){
+    return {config: configuration };
+})
 -------------------------------------------------------------------------------------------------------
 
 In this application, we combine Backbone and jQuery Mobile. Each framework has its own strengths; jQuery Mobile provides UI components and touch support, whilst Backbone provides MVC support. There is some overlap between the two, as jQuery Mobile provides its own navigation mechanism which we disable. 
 
-In the router code we make customizations in order to get the two frameworks working together - disabling the jQuery Mobile navigation and adding the `defaultHandler` to the router for handling jQuery Mobile transitions between internal pages (such as the ones generated by a nested listview).
+
+We also define a special initializer module (`initializer`) that, when loaded, adds the stylesheets and applies the template for the general structure of the page in the `body` element. Let us add the template definition.
+
+.src/main/webapp/resources/templates/mobile/main.html
+[source,html]
+-------------------------------------------------------------------------------------------------------
+<!--
+    The main layout of the page - contains the menu and the 'content' &lt;div/&gt; in which all the
+    views will render the content.
+-->
+<div id="container" data-role="page" data-ajax="false"></div>
+-------------------------------------------------------------------------------------------------------
+
+Next, we create the application router.
 
 .src/main/webapp/resources/js/app/router/mobile/router.js
 [source,javascript]
@@ -1285,14 +1395,13 @@ define("router",[
     'jquery',
     'jquerymobile',
     'underscore',
-    'backbone',
-    'utilities'
+    'utilities',
+    'text!../templates/mobile/home-view.html'
 ],function ($,
             jqm,
             _,
-            Backbone,
-            Booking,
-            utilities) {
+            utilities,
+            HomeViewTemplate) {
 
     // prior to creating an starting the router, we disable jQuery Mobile's own routing mechanism
     $.mobile.hashListeningEnabled = false;
@@ -1306,12 +1415,10 @@ define("router",[
      * @type {Router}
      */
     var Router = Backbone.Router.extend({
-    	//no routes added yet
-    	defaultHandler:function (actions) {
+        defaultHandler:function (actions) {
             if ("" != actions) {
                 $.mobile.changePage("#" + actions, {transition:'slide', changeHash:false, allowSamePageTransition:true});
             }
-        }
     });
 
     // Create a router instance
@@ -1324,8 +1431,9 @@ define("router",[
 });
 -------------------------------------------------------------------------------------------------------
 
-The router also will also interact with additional libraries and will declare them as its dependencies, rather than specifying
-them in the main loader. 
+In the router code we make customizations in order to get the two frameworks working together - disabling the jQuery Mobile navigation and adding the `defaultHandler` to the router for handling jQuery Mobile transitions between internal pages (such as the ones generated by a nested listview).
+
+Next, we need to create a first page.
 
 The landing page
 ~~~~~~~~~~~~~~~~
@@ -1397,11 +1505,9 @@ First, we display a list of events (just as in the desktop view). Since mobile i
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
-    'backbone',
     'utilities',
     'text!../../../../templates/mobile/events.html'
 ], function (
-    Backbone,
     utilities,
     eventsView) {
 
@@ -1513,15 +1619,16 @@ Now, we create the view to display an event:
 .src/main/webapp/resources/js/app/views/mobile/event-detail.js
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
-define(['backbone',
+define([
     'utilities',
     'require',
+    'configuration',
     'text!../../../../templates/mobile/event-detail.html',
     'text!../../../../templates/mobile/event-venue-description.html'
 ], function (
-    Backbone,
     utilities,
     require,
+    config,
     eventDetail,
     eventVenueDescription) {
 
@@ -1538,7 +1645,7 @@ define(['backbone',
             $(this.el).trigger('create')
             $("#bookButton").addClass("ui-disabled")
             var self = this;
-            $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
+            $.getJSON(config.baseUrl + "rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows;
                 $("#showSelector").empty().append("<option data-placeholder='true'>Choose a venue ...</option>");
                 $.each(shows, function (i, show) {
@@ -1742,8 +1849,8 @@ First, we create the views:
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 define([
-    'backbone',
     'utilities',
+    'configuration',
     'require',
     'text!../../../../templates/mobile/booking-details.html',
     'text!../../../../templates/mobile/create-booking.html',
@@ -1751,8 +1858,8 @@ define([
     'text!../../../../templates/mobile/ticket-entries.html',
     'text!../../../../templates/mobile/ticket-summary-view.html'
 ], function (
-    Backbone,
     utilities,
+    config,
     require,
     bookingDetailsTemplate,
     createBookingTemplate,
@@ -1825,7 +1932,7 @@ define([
 
             bookingRequest.email = this.model.email;
             bookingRequest.performance = this.model.performanceId;
-            $.ajax({url:"rest/bookings",
+            $.ajax({url:(config.baseUrl + "rest/bookings"),
                 data:JSON.stringify(bookingRequest),
                 type:"POST",
                 dataType:"json",
@@ -1853,7 +1960,7 @@ define([
 
             var self = this;
 
-            $.getJSON("rest/shows/" + this.model.showId, function (selectedShow) {
+            $.getJSON(config.baseUrl + "rest/shows/" + this.model.showId, function (selectedShow) {
                 self.model.performance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId;
                 });
@@ -2118,56 +2225,20 @@ define("router", [
         },
         ...
         bookTickets:function (showId, performanceId) {
-            var createBookingView = new CreateBookingView({
-            			model:{showId:showId, performanceId:performanceId, 				
-            			bookingRequest:{tickets:[]}}, 
-            			el:$("#container")
-            });
-            createBookingView.render();
+            var createBookingView = 
+                 new CreateBookingView(
+                      { model: { 
+                            showId:showId, 
+                            performanceId:performanceId, 
+                            bookingRequest:{tickets:[]}}, 
+                            el:$("#container")
+                      });
+            utilities.viewManager.showView(createBookingView);
         },
         ...
         );
 });
 -------------------------------------------------------------------------------------------------------
-
-Device detection
-------------------
-
-We have created two distinct single-page applications and can point users to any of them easily. But instead of requiring that the user work out which page they want, we should redirect them to the correct page based on the device that they have.
-
-We use Modernizr.js, a JavaScript library that help us detect device capabilities. You can use Modernizer.js for much more thank just desktop vs. mobile detection. It can also identify which features from the HTML5 set are supported by a particular browser at runtime, which is extremely helpful for implementing progressive enhancement in applications.
-
-First step we copy `modernizr.js` into `src/main/webapp/resources/js/libs`. Then, we add `src/main/webapp/index.html`, with the following content:
-
-.src/main/webapp/index.html
-[source,html]
--------------------------------------------------------------------------------------------------------
-<!DOCTYPE html>
-<html>
-<head>
-    <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
-
-	<!-- 
-		A simple check on the client. For touch devices or small-resolution screens
-		show the mobile client. By enabling the mobile client on a small-resolution screen 
-		we allow for testing outside a mobile device (like for example the Mobile Browser 
-		simulator in JBoss Tools and JBoss Developer Studio).
-	 -->
-    <script type="text/javascript">
-        if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
-            location.replace('mobile-index.html')
-        } else {
-            location.replace('desktop-index.html')
-        };
-    </script>
-</head>
-<body>
-
-</body>
-</html>
--------------------------------------------------------------------------------------------------------
-
-Now we can navigate to `http://localhost:8080/ticket-monster/` with either a mobile device or a desktop browser, and be redirected to the appropriate page.
 
 More Resources
 --------------
