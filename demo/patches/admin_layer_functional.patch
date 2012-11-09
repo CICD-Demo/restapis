@@ -1,7 +1,7 @@
-diff --git src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
+diff --git ./src/ma/java/org/jboss/jdf/examples/view/PerformanceBean.java ./src/ma/java/org/jboss/jdf/examples/view/PerformanceBean.java
 index 689cc8c..f9aa6c1 100644
---- src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
-+++ src/main/java/org/jboss/jdf/examples/view/PerformanceBean.java
+--- ./src/ma/java/org/jboss/jdf/examples/view/PerformanceBean.java
++++ ./src/ma/java/org/jboss/jdf/examples/view/PerformanceBean.java
 @@ -25,6 +25,8 @@ import javax.persistence.criteria.Predicate;
  import javax.persistence.criteria.Root;
 
@@ -27,10 +27,10 @@ index 689cc8c..f9aa6c1 100644
           }
           else
           {
-diff --git src/main/webapp/WEB-INF/web.xml src/main/webapp/WEB-INF/web.xml
+diff --git ./src/ma/webapp/WEB-INF/web.xml ./src/ma/webapp/WEB-INF/web.xml
 index d1afd7b..e62b752 100644
---- src/main/webapp/WEB-INF/web.xml
-+++ src/main/webapp/WEB-INF/web.xml
+--- ./src/ma/webapp/WEB-INF/web.xml
++++ ./src/ma/webapp/WEB-INF/web.xml
 @@ -32,7 +32,4 @@
    <session-config>
      <session-timeout>30</session-timeout>
@@ -39,10 +39,10 @@ index d1afd7b..e62b752 100644
 -    <welcome-file>faces/index.xhtml</welcome-file>
 -  </welcome-file-list>
  </web-app>
-diff --git src/main/webapp/admin/index.html src/main/webapp/admin/index.html
+diff --git ./src/ma/webapp/admin/index.html ./src/ma/webapp/admin/index.html
 index 902113f..4036f32 100644
---- src/main/webapp/admin/index.html
-+++ src/main/webapp/admin/index.html
+--- ./src/ma/webapp/admin/index.html
++++ ./src/ma/webapp/admin/index.html
 @@ -1,68 +1 @@
 -<!DOCTYPE html>
 -<html>
@@ -115,11 +115,11 @@ index 902113f..4036f32 100644
 \ No newline at end of file
 +<meta http-equiv="refresh" content="0;url=../faces/admin/index.xhtml" />
 \ No newline at end of file
-diff --git src/main/webapp/admin/index.xhtml src/main/webapp/admin/index.xhtml
+diff --git ./src/ma/webapp/admin/index.xhtml ./src/ma/webapp/admin/index.xhtml
 new file mode 100644
 index 0000000..844aa67
 --- /dev/null
-+++ src/main/webapp/admin/index.xhtml
++++ ./src/ma/webapp/admin/index.xhtml
 @@ -0,0 +1,30 @@
 +<?xml version='1.0' encoding='UTF-8' ?>
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -152,10 +152,10 @@ index 0000000..844aa67
 +
 +</ui:composition>
 \ No newline at end of file
-diff --git src/main/webapp/admin/event/view.xhtml src/main/webapp/admin/event/view.xhtml
+diff --git ./src/ma/webapp/admin/event/view.xhtml ./src/ma/webapp/admin/event/view.xhtml
 index 451479f..b952db0 100644
---- src/main/webapp/admin/event/view.xhtml
-+++ src/main/webapp/admin/event/view.xhtml
+--- ./src/ma/webapp/admin/event/view.xhtml
++++ ./src/ma/webapp/admin/event/view.xhtml
 @@ -4,6 +4,7 @@
  	xmlns:h="http://java.sun.com/jsf/html"
  	xmlns:f="http://java.sun.com/jsf/core"
@@ -172,10 +172,10 @@ index 451479f..b952db0 100644
  			</h:link>
  			<h:outputText/>
  			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
-diff --git src/main/webapp/admin/venue/view.xhtml src/main/webapp/admin/venue/view.xhtml
+diff --git ./src/ma/webapp/admin/venue/view.xhtml ./src/ma/webapp/admin/venue/view.xhtml
 index 06edc33..6676fbf 100644
---- src/main/webapp/admin/venue/view.xhtml
-+++ src/main/webapp/admin/venue/view.xhtml
+--- ./src/ma/webapp/admin/venue/view.xhtml
++++ ./src/ma/webapp/admin/venue/view.xhtml
 @@ -4,6 +4,7 @@
  	xmlns:h="http://java.sun.com/jsf/html"
  	xmlns:f="http://java.sun.com/jsf/core"
@@ -194,10 +194,10 @@ index 06edc33..6676fbf 100644
  			</h:link>
  			<h:outputText/>
  			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
-diff --git src/main/webapp/index.html src/main/webapp/index.html
+diff --git ./src/ma/webapp/index.html ./src/ma/webapp/index.html
 index b1c9bee..ba1b595 100644
---- src/main/webapp/index.html
-+++ src/main/webapp/index.html
+--- ./src/ma/webapp/index.html
++++ ./src/ma/webapp/index.html
 @@ -1 +1,36 @@
 -<meta http-equiv="refresh" content="0;url=./faces/index.xhtml" /> 
 \ No newline at end of file
@@ -238,11 +238,11 @@ index b1c9bee..ba1b595 100644
 +</body>
 +</html>
 \ No newline at end of file
-diff --git src/main/webapp/resources/tm/image.xhtml src/main/webapp/resources/tm/image.xhtml
+diff --git ./src/ma/webapp/resources/tm/image.xhtml ./src/ma/webapp/resources/tm/image.xhtml
 new file mode 100644
 index 0000000..ceafffb
 --- /dev/null
-+++ src/main/webapp/resources/tm/image.xhtml
++++ ./src/ma/webapp/resources/tm/image.xhtml
 @@ -0,0 +1,25 @@
 +<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 +        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -1,8 +1,8 @@
-diff --git src/main/webapp/resources/css/bootstrap-nav.css src/main/webapp/resources/css/bootstrap-nav.css
+diff --git ./src/main/webapp/resources/css/bootstrap-nav.css ./src/main/webapp/resources/css/bootstrap-nav.css
 new file mode 100644
 index 0000000..a1659e2
 --- /dev/null
-+++ src/main/webapp/resources/css/bootstrap-nav.css
++++ ./src/main/webapp/resources/css/bootstrap-nav.css
 @@ -0,0 +1,683 @@
 +/*!
 + * Bootstrap v2.0.3
@@ -688,11 +688,11 @@ index 0000000..a1659e2
 +    right: 13px;
 +}
 \ No newline at end of file
-diff --git src/main/webapp/resources/css/custom-forge.css src/main/webapp/resources/css/custom-forge.css
+diff --git ./src/main/webapp/resources/css/custom-forge.css ./src/main/webapp/resources/css/custom-forge.css
 new file mode 100644
 index 0000000..50294bc
 --- /dev/null
-+++ src/main/webapp/resources/css/custom-forge.css
++++ ./src/main/webapp/resources/css/custom-forge.css
 @@ -0,0 +1,423 @@
 +@charset "UTF-8";
 +/* Custom for Ticket Monster */
@@ -1117,10 +1117,10 @@ index 0000000..50294bc
 +    white-space: nowrap;
 +    width: 25%;
 +}
-diff --git src/main/webapp/resources/scaffold/pageTemplate.xhtml src/main/webapp/resources/scaffold/pageTemplate.xhtml
+diff --git ./src/main/webapp/resources/scaffold/pageTemplate.xhtml ./src/main/webapp/resources/scaffold/pageTemplate.xhtml
 index 0ceecaa..13106f7 100644
---- src/main/webapp/resources/scaffold/pageTemplate.xhtml
-+++ src/main/webapp/resources/scaffold/pageTemplate.xhtml
+--- ./src/main/webapp/resources/scaffold/pageTemplate.xhtml
++++ ./src/main/webapp/resources/scaffold/pageTemplate.xhtml
 @@ -6,66 +6,85 @@
  <h:head>
  	<title>#{empty pageTitle ? '{#pageTitle}' : pageTitle}</title>
