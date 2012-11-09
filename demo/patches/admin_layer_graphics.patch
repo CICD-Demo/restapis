@@ -1,7 +1,3 @@
-:000000 100644 0000000... a1659e2... A	demo/src/main/webapp/resources/css/bootstrap-nav.css
-:000000 100644 0000000... 50294bc... A	demo/src/main/webapp/resources/css/custom-forge.css
-:100644 100644 0ceecaa... 13106f7... M	demo/src/main/webapp/resources/scaffold/pageTemplate.xhtml
-
 diff --git src/main/webapp/resources/css/bootstrap-nav.css src/main/webapp/resources/css/bootstrap-nav.css
 new file mode 100644
 index 0000000..a1659e2
