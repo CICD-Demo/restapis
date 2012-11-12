@@ -1369,8 +1369,9 @@ define(["configuration"],function(configuration){
 
 In this application, we combine Backbone and jQuery Mobile. Each framework has its own strengths; jQuery Mobile provides UI components and touch support, whilst Backbone provides MVC support. There is some overlap between the two, as jQuery Mobile provides its own navigation mechanism which we disable. 
 
-
 We also define a special initializer module (`initializer`) that, when loaded, adds the stylesheets and applies the template for the general structure of the page in the `body` element. Let us add the template definition.
+
+We also define a `configuration` module which allows the customizaton of the base URLs for RESTful invocations. This module does not play any role in the mobile web version. We will come to it, however, when discussing hybrid applications.
 
 .src/main/webapp/resources/templates/mobile/main.html
 [source,html]
