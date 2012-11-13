@@ -29,13 +29,13 @@ set ACCEPT_DEFAULTS false;
 if ( SHELL.promptBoolean("Apply manual functional changes described in tutorial?") ) {
     if (v.startsWith("1.1.")) {
       echo Applying manual changes described in tutorial based on admin_layer_functional.patch;
-      git apply --ignore-whitespace --ignore-space-change patches/admin_layer_functional.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional.patch;
       cp src/main/webapp/index.xhtml src/main/webapp/admin/index.xhtml;
       rm --force src/main/webapp/index.xhtml;
     }
     else if (v.startsWith("1.0.")) {
       echo Applying manual changes described in tutorial based on admin_layer_functional_1.0.patch;
-      git apply --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.0.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.0.patch;
       cp src/main/webapp/index.xhtml src/main/webapp/admin/index.xhtml;
       rm --force src/main/webapp/index.xhtml;
     } else {
