@@ -3,7 +3,8 @@
  */
 define([
     'app/models/booking',
-    'configuration'
+    'configuration',
+    'backbone'
 ], function (Booking, config) {
 
     // Here we define the Bookings collection

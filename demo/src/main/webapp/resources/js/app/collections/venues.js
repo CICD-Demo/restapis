@@ -4,7 +4,8 @@
 define([
     // Configuration and the collection element type are dependencies
     'app/models/venue',
-    'configuration'
+    'configuration',
+    'backbone'
 ], function (Venue, config) {
 
     return Backbone.Collection.extend({

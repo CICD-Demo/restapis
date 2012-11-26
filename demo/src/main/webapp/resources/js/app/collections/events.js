@@ -4,7 +4,8 @@
 define([
     // BThe collection element type and configuration are dependencies
     'app/models/event',
-    'configuration'
+    'configuration',
+    'backbone'
 ], function (Event, config) {
     /**
      *  Here we define the Bookings collection

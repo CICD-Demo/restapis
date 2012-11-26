@@ -3,7 +3,8 @@
  */
 define([
     // Configuration is a dependency
-    'configuration'
+    'configuration',
+    'backbone'
 ], function (config) {
 
     /**

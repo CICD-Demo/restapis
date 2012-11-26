@@ -2,7 +2,8 @@
  * Module for the Venue model
  */
 define([
-    'configuration'
+    'configuration',
+    'backbone'
 ], function (config) {
 
     /**

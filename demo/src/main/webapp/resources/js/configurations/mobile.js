@@ -34,7 +34,8 @@ define("configuration", function() {
             baseUrl: ""
         }
     }
-})
+});
+
 define("initializer", [
     'jquery',
     'utilities',
@@ -60,5 +61,5 @@ require(['order!initializer',
 
 define(["configuration"],function(configuration){
     return {config: configuration };
-})
+});
 

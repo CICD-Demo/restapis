@@ -2,7 +2,8 @@
  * Module for the Event model
  */
 define([ 
-    'configuration'
+    'configuration',
+    'backbone'
 ], function (config) {
     /**
      * The Event model class definition

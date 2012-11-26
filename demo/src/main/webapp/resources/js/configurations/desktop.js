@@ -35,8 +35,6 @@ define("initializer", ["jquery"],
 // Now we declare all the dependencies
 require([
     'order!initializer',
-    'order!underscore',
-    'order!backbone',
     'order!router'
 ], function(){
 });
