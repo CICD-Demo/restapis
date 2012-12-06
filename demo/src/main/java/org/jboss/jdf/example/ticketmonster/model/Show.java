@@ -71,11 +71,11 @@ public class Show implements Serializable {
 
     /**
      * <p>
-     * The event of which this show is an instance. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     * The venue where this show takes place. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
      * </p>
      * 
      * <p>
-     * The <code>@NotNull</code> Bean Validation constraint means that the event must be specified.
+     * The <code>@NotNull</code> Bean Validation constraint means that the venue must be specified.
      * </p>
      */
     @ManyToOne

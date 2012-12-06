@@ -20,8 +20,10 @@ The tutorial will show you how to perform all these steps in JBoss Developer Stu
 screenshots that guide you through. For those of you who prefer to watch and learn, the included
 videos show you how we performed all the steps.
 
-TicketMonster contains 14 entities, of varying complexity. In this tutorial we'll classify
-the entities, and walk through designing and creating one of each group.  
+TicketMonster contains 14 entities, of varying complexity. In the introduction, you have seen
+the basic steps for creating a couple of entities (`Event` and `Venue`) and interacting with them.
+In this  tutorial we'll go deeper into domain model design, we'll classify the entities, and
+walk through designing and creating one of each group.
 
 [[YourFirstEntity]]
 Your first entity
@@ -385,7 +387,7 @@ Events
 
 In <<YourFirstEntity>> we saw how to build simple entites with properties, identify and apply constraints using Bean Validation, identify the natural id and add a synthetic id. From now on we'll assume you know how to build simple entities - for each new entity that we build, we will start with it's basic structure and properties filled in.
 
-So, here is our starting point for Event:
+So, here is our starting point for Event (where we left at the end of the introduction, and including some comments reflecting the explanations above):
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/Event.java
 [source,java]
@@ -779,11 +781,11 @@ public class Show {
 
     /**
      * <p>
-     * The event of which this show is an instance. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
+     * The venue where this show takes place. The <code>@ManyToOne<code> JPA mapping establishes this relationship.
      * </p>
      * 
      * <p>
-     * The <code>@NotNull</code> Bean Validation constraint means that the event must be specified.
+     * The <code>@NotNull</code> Bean Validation constraint means that the venue must be specified.
      * </p>
      */
     @ManyToOne
@@ -1222,7 +1224,10 @@ Venue
 
 Now, let's build out the entities to represent the venue.
 
-We start by adding an entity to represent the venue. A venue needs to have a name, a description, a capacity, an address, an associated media item and a set sections in which people can sit.
+We start by adding an entity to represent the venue. A venue needs to have a name, a description,
+a capacity, an address, an associated media item and a set sections in which people can sit.  If
+you completed the introduction chapter, you should already have some of these properties set, so
+we will update the `Venue` class to look like in the definition below.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/Venue.java
 [source,java]
@@ -1596,6 +1601,18 @@ Populating test data
 Whilst we develop our application, it's useful to be able to populate the database with test data. Luckily, Hibernate makes this easy. Just add a file called `import.sql` onto the classpath of your application (we keep it in `src/main/resources/import.sql`). In it, we just write standard sql statements suitable for the database we are using. To do this, you need to know the generated column and table names for your entities. The best way to work these out is to look at the h2console.
 
 The h2console is included in the JBoss AS quickstarts, along with instructions on how to use it. For more information, see http://jboss.org/jdf/quickstarts/jboss-as-quickstart/h2-console/
+
+[TIP]
+.Where do I look for my data?
+=====================================================================================
+The database URL is `jdbc:h2:mem:ticket-monster`. After
+you have downloaded `h2console.war` and deployed it on the server, make sure that the
+application is running on the server and use this value to connect to your running application's
+database.
+[[h2console_settings]]
+.h2console settings
+image::gfx/h2console_settings.png[]
+=====================================================================================
 
 Conclusion
 ----------
