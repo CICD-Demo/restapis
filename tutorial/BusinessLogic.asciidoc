@@ -771,7 +771,7 @@ Now, all the JAX-RS endpoints that subclass `BaseEntityService` will get two ope
 Retrieving Venues
 ~~~~~~~~~~~~~~~~~
 
-Adding support for retrieving venues is now extremely simple. All we do is extend the base class, passing the entity type to the superclass constructor.
+Adding support for retrieving venues is now extremely simple. We make the `VenueService` class to extend `BaseEntityService`, passing the entity type to the superclass constructor. We remove the old code which is not needed anymore.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueService.java
 [source,java]
@@ -807,7 +807,7 @@ Now, we can retrieve venues from URLs like `/rest/venues` or `rest/venues/1`.
 Retrieving Events
 ~~~~~~~~~~~~~~~~~
 
-Just like `VenueService`, `EventService` is a direct subclass of `BaseEntityService` with the added twist that it supports querying events by category. We can use URLs like `/rest/events?category=1` to retrieve all concerts, for example (`1` is the category id of concerts).
+Just like `VenueService`, the `EventService` implementation we use for TicketMonster is a direct subclass of `BaseEntityService` (remove any code left from the 'Introduction' chapter), with the added twist that it supports querying events by category. We can use URLs like `/rest/events?category=1` to retrieve all concerts, for example (`1` is the category id of concerts). 
 
 This is done by overriding the `extractPredicates` method to handle any query parameters (in this case, the `category` parameter).
 

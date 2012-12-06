@@ -792,5 +792,43 @@ image::gfx/introduction/mobile_browsersim_bofa_source.png[]
 
 Conclusion
 ----------
-This concludes our introduction to building HTML5 Mobile Web applications using Java EE 6 with Forge and JBoss Developer Studio.   At this point, you should feel confident enough to tackle any of the additional exercises to learn how the TicketMonster sample application is constructed.
+This concludes our introduction to building HTML5 Mobile Web applications using Java EE 6 with Forge and JBoss Developer Studio. At this point, you should feel confident enough to tackle any of the additional exercises to learn how the TicketMonster sample application is constructed.
+
+Cleaning up the generated code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To move forth with our tutorial, and implement TicketMonster, we need to clean up some of the archetype-generated code. The Member functionality, while useful for ilustrating the general setup of a Java EE 6 web application, will not be part of TicketMonster. 
+
+Now that we are through with the introduction bits and we have generated the project structure, we can go on and delete the unneeded packages, classes, and resources.
+
+* All the Member-related persistence and business code 
+
+    * `src/main/java/org/jboss/jdf/example/ticketmonster/controller`
+    * `src/main/java/org/jboss/jdf/example/ticketmonster/data`
+    * `src/main/java/org/jboss/jdf/example/ticketmonster/model/Member.java`
+    * `src/main/java/org/jboss/jdf/example/ticketmonster/rest/MemberResourceRESTService.java`
+    * `src/main/java/org/jboss/jdf/example/ticketmonster/service/MemberRegistration.java`
+
+*  Generated web content
+    * `src/main/webapp/index.html`
+    * `src/main/webapp/index.xhtml`
+    * `src/main/webapp/WEB-INF/templates/default.xhtml`
+
+* JSF configuration (we will re-add it via Forge)
+
+    * `src/main/webapp/WEB-INF/faces-config.xml`
+
+* Prototype mobile application (we will generate a proper mobile interface)
+
+    * `src/main/webapp/mobile.html`
+
+Also, update the `src/main/resources/import.sql` file and remove the following line:
+
+    insert into Member (id, name, email, phone_number) values (0, 'John Smith', 'john.smith@mailinator.com', '2125551212') 
+The data file should contain only the Event data import:
+
+    insert into Event (id, name, description, major, picture, version) values (1, 'Shane''s Sock Puppets', 'This critically acclaimed masterpiece...', true, 'http://dl.dropbox.com/u/65660684/640px-Carnival_Puppets.jpg', 1);
+    insert into Event (id, name, description, major, picture, version) values (2, 'Rock concert of the decade', 'Get ready to rock...', true, 'http://dl.dropbox.com/u/65660684/640px-Weir%2C_Bob_(2007)_2.jpg', 1);
+
+
 

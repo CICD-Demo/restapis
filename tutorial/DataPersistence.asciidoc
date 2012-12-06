@@ -21,7 +21,7 @@ screenshots that guide you through. For those of you who prefer to watch and lea
 videos show you how we performed all the steps.
 
 TicketMonster contains 14 entities, of varying complexity. In this tutorial we'll classify
-the entities, and walk through designing and creating one of each group.
+the entities, and walk through designing and creating one of each group.  
 
 [[YourFirstEntity]]
 Your first entity
@@ -1545,7 +1545,7 @@ In this example, we are using the in-memory H2 database, which is very easy to s
     xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
     <!-- The datasource is bound into JNDI at this location. We reference 
         this in META-INF/persistence.xml -->
-    <datasource jndi-name="java:jboss/datasources/TicketMonsterDS"
+    <datasource jndi-name="java:jboss/datasources/ticket-monsterDS"
         pool-name="ticket-monster" enabled="true" use-java-context="true">
         <connection-url>jdbc:h2:mem:ticket-monster;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1</connection-url>
         <driver>h2</driver>
@@ -1559,7 +1559,7 @@ In this example, we are using the in-memory H2 database, which is very easy to s
 
 The datasource configures an H2 in-memory database, called _ticket-monster_, and registeres a datasource in JNDI at the address:
 
-    java:jboss/datasources/TicketMonsterDS
+    java:jboss/datasources/ticket-monsterDS
 
 Now we need to configure JPA to use the datasource. This is done in `src/main/resources/META-INF/persistence.xml`:
 
@@ -1576,7 +1576,7 @@ Now we need to configure JPA to use the datasource. This is done in `src/main/re
          data source, this example data source is just for development and testing! -->
       <!-- The datasource is deployed as WEB-INF/ticket-monster-ds.xml, you
          can find it in the source at src/main/webapp/WEB-INF/ticket-monster-ds.xml -->
-      <jta-data-source>java:jboss/datasources/TicketMonsterDS</jta-data-source>
+      <jta-data-source>java:jboss/datasources/ticket-monsterDS</jta-data-source>
       <properties>
          <!-- Properties for Hibernate -->
          <property name="hibernate.hbm2ddl.auto" value="create-drop" />
