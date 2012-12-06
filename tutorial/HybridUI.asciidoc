@@ -8,7 +8,7 @@ You finished creating the front-end for your application, and it has mobile supp
 
 You will learn how to:
 
-* make changes to an existing web application for being transformed into a native application;
+* make changes to an existing web application to allow it to be deployed as a hybrid mobile application;
 * create a native application for Android with Apache Cordova;
 * create a native application for iOS with Apache Cordova;
 
@@ -25,13 +25,13 @@ In this example, we use Apache Cordova to implement a hybrid application using t
 Tweak your application for remote access
 --------------------------------------
 
-Before we actually get to make the application hybrid, we need to make some changes in the way in which it accesses remote services. Please note that at the start of this tutorial, the changes are already implemented in the user front end, but we will show you the specific areas of code where we did just that.
+Before we make the application hybrid, we need to make some changes in the way in which it accesses remote services. Note that the changes have already been implemented in the user front end, here we show you the code that we needed to modify.
 
-In the web version of the application the client code is deployed together with the server-side code, so the models and collections (and generally any piece of code that does REST service invocations) can use URLs relative to the root of the application: all resources are serviced from the same server, so the browser will do the correct invocation. This is also consistent with the same origin policy, to prevent cross-site scripting attacks.
+In the web version of the application the client code is deployed together with the server-side code, so the models and collections (and generally any piece of code that will perform REST service invocations) can use URLs relative to the root of the application: all resources are serviced from the same server, so the browser will do the correct invocation. This also respects the same origin policy enforced by default by browsers, to prevent cross-site scripting attacks.
 
-Once the client code is deployed separately from the services, the REST invocations must use absolute URLs (we will see the same-origin policy implications and how to solve that a bit further). Furthermore, since the location of the application deployment can change during the lifetime of the application, it must be configurable.
+If the client code is deployed separately from the services, the REST invocations must use absolute URLs (we will cover the impact on the same-origin policy later). Futhermore, since we want to be able to deploy the application to different hosts without rebuilding the source, it must be configurable.
 
-You already have caught a glimpse of this in the user front end chapter. We allowed for it by defining the `configuration` module for the mobile version of the application. 
+You already caught a glimpse of this in the user front end chapter, where we defined the `configuration` module for the mobile version of the application. 
 
 .src/main/webapp/resources/js/configurations/mobile.js
 [source,javascript]
@@ -51,7 +51,7 @@ define("configuration", function() {
 ...
 -------------------------------------------------------------------------------------------------------
 
-This module has a `baseURL` property that is either set to an empty string for relative URLs or to an actual prefix value, depending on whether a global variabile named `TicketMonster` has already been defined, and it has a `baseRESTUrl`
+This module has a `baseURL` property that is either set to an empty string for relative URLs or to a prefix, such as a domain name, depending on whether a global variabile named `TicketMonster` has already been defined, and it has a `baseRESTUrl`
 property.
 
 All our code that performs REST services invocations depends on this module, thus the base REST URL can be configured in a single place and injected throughout the code, as in the following code example:
@@ -78,10 +78,10 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-The prefix is applied in a similar fashion to all the other modules that perform REST service invocations. You don't need to do anything additional right now, because the code we created in the user front end tutorial is already defined like this. However, as said earlier, for mobile web applications that use relative URLs exclusively, introducing some form of URL customization is a requirement for being able to migrate them in a hybrid form. 
+The prefix is used in a similar fashion by all the other modules that perform REST service invocations. You don't need to do anything right now, because the code we created in the user front end tutorial was written like this originally. Be warned, if you have a mobile web application that uses any relative URLs, you will need to refactor them to include some form of URL configuration. 
 
-Downloading Phonegap
---------------------
+Downloading Apache Cordova
+--------------------------
 
 The next step is downloading and installing Apache Cordova. Download the distribution from `http://phonegap.com/download` and unzip it. 
 
@@ -146,8 +146,7 @@ image::gfx/add-cordova-jar.png[]
 
 Once you have finished creating the project, navigate to the `assets` directory. Now we need to create a `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply create a symbolic link to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application).
 
-    $ 
-
+    $ ln -s www $TICKET_MONSTER_HOME/demo/src/main/webapp
 
 Inside the Android project, modify permissions and additional configurations to `AndroidManifest.xml` to look as follows
 
@@ -355,11 +354,11 @@ For the purpose of this tutorial, we assume that the 'cordova' directory which i
 
 Now we create a symbolic link inside the 'ios' directory to the original TicketMonster project, with the name `www`.
 
-    $ ln -s www $TICKET_MONSTER_HOME/
+    $ ln -s www $TICKET_MONSTER_HOME/demo/src/main/webapp
 
-Now we can open the created project in Xcode. 
+Now we open the created project in Xcode. 
 
-Just as in the case of the Android application, we will customize the user agent information that gets passed on to the browser. We will use this information to load the proper JavaScript library. So we will adjust the `initialize` method in the generated code to that effect.
+Just as in the case of the Android application, we customize the user agent information that gets passed on to the browser. We will use this information to load the proper JavaScript library. So we will adjust the `initialize` method in the generated code to that effect.
 
 
 .Classes/AppDelegate.m
@@ -383,7 +382,7 @@ The Cordova library for iOS is already included in the generated project.
 Adding Apache Cordova for iOS to TicketMonster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First, we will copy the Apache Cordova JavaScript library to the project. From the directory where you unzipped the distribution, copy the `lib\ios\cordova-2.0.0.js` file to the `src/main/webapp/resources/js/libs' folder, renaming it to `cordova-ios-2.0.0.js`, to avoid naming conflicts with other platforms (such as Android which we already implemented as part of this tutorial).
+First, we copy the Apache Cordova JavaScript library to the project. From the directory where you unzipped the distribution, copy the `lib\ios\cordova-2.0.0.js` file to the `src/main/webapp/resources/js/libs' folder, renaming it to `cordova-ios-2.0.0.js`, to avoid naming conflicts with other platforms (such as Android which we already implemented as part of this tutorial).
 
 Next, we need to load the library in the application. We will create a separate module, that will load the rest of the mobile application, as well as the Apache Cordova JavaScript library for iOS. We also need to configure a base URL for the application. For this example, we will use the URL of the cloud deployment of TicketMonster.
 
