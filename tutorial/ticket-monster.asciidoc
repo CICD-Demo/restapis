@@ -18,3 +18,5 @@ include::AdminJSF.asciidoc[]
 
 include::DashboardGWT.asciidoc[]
 
+include::HybridUI.asciidoc[]
+
