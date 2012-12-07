@@ -20,7 +20,11 @@ Hybrid mobile applications are developed in HTML5 - unlike native applications t
 
 Besides wrapping the browser process, the native shell also allows access to native device capabilities, such as the accelerometer, GPS, contact list, etc., made available to the application through JavaScript libraries.
 
-In this example, we use Apache Cordova to implement a hybrid application using the existing HTML5 mobile front-end for TicketMonster.
+In this example, we use Apache Cordova to implement a hybrid application using the existing HTML5 mobile front-end for TicketMonster, interacting with the RESTful services of a TicketMonster deployment running on JBoss A7 or JBoss EAP.
+
+[[ticket_monster_hybrid]]
+.Architecture of hybrid TicketMonster
+image::gfx/ticket_monster_hybrid.png[]
 
 Tweak your application for remote access
 --------------------------------------
@@ -94,8 +98,8 @@ While migrating TicketMonster, we will work with the files in the `lib` director
 Creating an Android hybrid mobile application
 ----------------------------------------------
 
-Creating an Android project using Phonegap
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Creating an Android project using Apache Cordova
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First, we will create an Android project in JBDS. The prerequisites for that are having the Android SDK installed locally , as well as the Android (ADT) plugin for Eclipse installed in JBDS.
 
@@ -343,8 +347,8 @@ Also, we assume that you have installed and extracted Apache Cordova already as 
 
 The last step is to install the `CordovaLib` library using the `.dmg` installer found in the `lib/ios` directory of the Apache Cordova distribution.
 
-Creating an iOS project using Phonegap
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Creating an iOS project using Apache Cordova
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First, we need to create an iOS project. In order to do so we run the `create` command, to be found in the `lib/ios/bin` of your Apache Cordova distribution. Run the command with the following parameters:
 
@@ -450,6 +454,8 @@ Conclusion
 -----------
 
 This concludes our tutorial for building a hybrid application with Apache Cordova. You have seen how we have turned a working HTML5 web application into one that can run natively on Android and iOS.
+
+For more details, as well as an example of deploying to a physical device, consult the link:http://aerogear.org/docs/guides/HTML5ToHybridWithCordova/[Aerogear tutorial on the same topic]. 
 
 
 
