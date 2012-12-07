@@ -128,7 +128,7 @@ Now we can create a new Android project.
         TicketMonster
     package::
         org.jboss.jdf.ticketmonster.android
-
++
 [[android-app-project-package]]
 .Entering the application name, project name and package
 image::gfx/android-app-project-package.png[]
@@ -138,12 +138,14 @@ image::gfx/android-app-project-package.png[]
 
 4. Select `BlankActivity` as the activity type.
 +
+
 [[android-activity-type]]
 .Select activity type
- image::gfx/android-activity-type.png[]
+image::gfx/android-activity-type.png[]
 
 5. Name the newly created activity `TicketMonsterActivity`.
 +
+
 [[android-activity-name]]
 .Name the new activity
 image::gfx/android-activity-name.png[]
