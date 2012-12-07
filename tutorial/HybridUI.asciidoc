@@ -12,7 +12,6 @@ You will learn how to:
 * create a native application for Android with Apache Cordova;
 * create a native application for iOS with Apache Cordova;
 
-
 What are hybrid mobile applications ?
 -------------------------------------
 
@@ -97,6 +96,15 @@ While migrating TicketMonster, we will work with the files in the `lib` director
 
 Creating an Android hybrid mobile application
 ----------------------------------------------
+
+[TIP]
+.What do you need for Android?
+=====================================================================================
+For building the Android version of the application you need to install the Android 
+Developer Tools, which require an Eclipse instance (3.6.2 or later), and can run on 
+Windows (XP, Vista, 7), Mac OS X (10.5.8 or later), Linux (with GNU C Library - glibc 2.7 or
+later, 64-bit distributions having installed the libraries for running 32-bit applications).
+=====================================================================================
 
 Creating an Android project using Apache Cordova
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
