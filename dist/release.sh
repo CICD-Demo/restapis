@@ -36,7 +36,7 @@ OPTIONS:
 EOF
 }
 
-notifyEmail()
+notify_email()
 {
    echo "***** Performing Ticket Monster release notifications"
    echo "*** Notifying JBoss EAP team"
@@ -44,8 +44,8 @@ notifyEmail()
    echo "Email from: " $EMAIL_FROM
    echo "Email to: " $EAP_EMAIL_TO
    echo "Subject: " $subject
-   # send email using /bin/mail
-   echo "See \$subject :-)" | /usr/bin/env mail -r "$EMAIL_FROM" -s "$subject" "$EAP_EMAIL_TO"
+   # send email using sendmail
+   printf "Subject: $subject\nSee \$subject :)\n" | /usr/bin/env sendmail -f "$EMAIL_FROM" "$EMAIL_TO"
 
 }
 
@@ -60,7 +60,7 @@ release()
    $DIR/release-utils.sh -p $RELEASEVERSION
    read -p "Do you want to send release notifcations to $EAP_EMAIL_TO[y/N]? " yn
    case $yn in
-       [Yy]* ) notifyEmail;;
+       [Yy]* ) notify_email;;
        * ) exit;
    esac
 }
