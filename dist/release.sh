@@ -14,9 +14,9 @@ DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 VERSION_REGEX='([0-9]*)\.([0-9]*)([a-zA-Z0-9\.]*)'
 
 # EAP team email subject
-EAP_SUBJECT="\${RELEASEVERSION} of Ticket Monster released, please merge with https://github.com/jboss-eap/ticket-monster, tag and add to EAP maven repo build"
+EMAIL_SUBJECT="\${RELEASEVERSION} of Ticket Monster released, please merge with https://github.com/jboss-eap/ticket-monster, tag and add to EAP maven repo build"
 # EAP team email To ?
-EAP_EMAIL_TO="pgier@redhat.com kpiwko@redhat.com lvogel@redhat.com"
+EMAIL_TO="pgier@redhat.com kpiwko@redhat.com lvogel@redhat.com"
 EMAIL_FROM="\"JDF Publish Script\" <benevides@redhat.com>"
 
 
@@ -40,7 +40,7 @@ notify_email()
 {
    echo "***** Performing Ticket Monster release notifications"
    echo "*** Notifying JBoss EAP team"
-   subject=`eval echo $EAP_SUBJECT`
+   subject=`eval echo $EMAIL_SUBJECT`
    echo "Email from: " $EMAIL_FROM
    echo "Email to: " $EAP_EMAIL_TO
    echo "Subject: " $subject
