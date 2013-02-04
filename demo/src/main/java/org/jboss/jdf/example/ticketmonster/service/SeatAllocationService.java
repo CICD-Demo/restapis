@@ -3,7 +3,6 @@ package org.jboss.jdf.example.ticketmonster.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import org.infinispan.Cache;
@@ -13,7 +12,11 @@ import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.transaction.LockingMode;
 import org.infinispan.transaction.TransactionMode;
 import org.infinispan.transaction.lookup.JBossTransactionManagerLookup;
-import org.jboss.jdf.example.ticketmonster.model.*;
+import org.jboss.jdf.example.ticketmonster.model.Performance;
+import org.jboss.jdf.example.ticketmonster.model.Seat;
+import org.jboss.jdf.example.ticketmonster.model.SeatAllocationException;
+import org.jboss.jdf.example.ticketmonster.model.Section;
+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
 
 /**
  *

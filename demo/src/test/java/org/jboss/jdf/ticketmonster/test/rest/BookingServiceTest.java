@@ -23,6 +23,7 @@ import org.jboss.jdf.example.ticketmonster.rest.*;
 import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,7 +54,7 @@ public class BookingServiceTest {
         bookingService.createBooking(br3);
     }
     
-    @Test
+    @Test @Ignore
     @InSequence(10)
     public void testGetBookings() {
         checkBooking1();
