@@ -32,7 +32,7 @@
             line below to use version 1.0.0.M10-redhat-1 which is a release certified 
             to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 
             maven repository. -->
-        <jboss.bom.version>1.0.1.Final</jboss.bom.version>
+        <jboss.bom.version>1.0.4.Final</jboss.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
     </properties>
 
@@ -260,6 +260,13 @@
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <type>pom</type>
             <scope>test</scope>
         </dependency>
 
