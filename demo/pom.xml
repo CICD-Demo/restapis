@@ -32,7 +32,7 @@
             line below to use version 1.0.0.M10-redhat-1 which is a release certified 
             to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 
             maven repository. -->
-        <jboss.bom.version>1.0.4.Final</jboss.bom.version>
+        <jboss.bom.version>1.0.5.CR2</jboss.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
     </properties>
 
@@ -90,7 +90,19 @@
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+       
         <!-- Import the Common Annotations API (JSR-250), we use provided 
             scope as the API is included in JBoss AS 7 -->
         <dependency>
@@ -214,8 +226,12 @@
                     <groupId>
                         org.jboss.weld.servlet
                     </groupId>
-                    <artifactId>weld-servlet</artifactId>
+                    <artifactId>weld-servlet-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.errai</groupId>
+                    <artifactId>errai-cdi-jetty</artifactId>
+                </exclusion>               
             </exclusions>
         </dependency>
 
@@ -322,7 +338,7 @@
                 <plugin>
                     <groupId>org.jboss.as.plugins</groupId>
                     <artifactId>jboss-as-maven-plugin</artifactId>
-                    <version>7.1.1.Final</version>
+                    <version>7.3.Final</version>
                 </plugin>
 
                 <plugin>
