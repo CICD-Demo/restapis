@@ -10,8 +10,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BookingMonitorService;
+import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Show;
+import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BookingMonitorService;
 
 /**
  * Implementation of {@link BookingMonitorService}.
@@ -38,14 +39,14 @@ public class BookingMonitorServiceImpl implements BookingMonitorService {
     @Override
     public Map<Long, Long> retrieveOccupiedCounts() {
         Map <Long, Long> occupiedCounts = new HashMap<Long, Long>();
-  
+        
         Query occupiedCountsQuery = entityManager.createQuery("" +
-            		"select s.performance.id, SUM(s.occupiedCount) from SectionAllocation s " +
-            		"WHERE s.performance.date > current_timestamp GROUP BY s.performance.id");
+            		"select b.performance.id, SIZE(b.tickets) from Booking b " +
+            		"WHERE b.performance.date > current_timestamp GROUP BY b.performance.id");
         
         List<Object[]> results = occupiedCountsQuery.getResultList();
         for (Object[] result : results) {
-            occupiedCounts.put((Long) result[0], (Long) result[1]); 
+            occupiedCounts.put((Long) result[0], ((Integer) result[1]).longValue()); 
         }
         
         return occupiedCounts;
