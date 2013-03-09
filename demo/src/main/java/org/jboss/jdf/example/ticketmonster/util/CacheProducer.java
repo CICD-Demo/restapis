@@ -59,7 +59,6 @@ public class CacheProducer {
         GlobalConfiguration glob = new GlobalConfigurationBuilder()
                 .nonClusteredDefault() //Helper method that gets you a default constructed GlobalConfiguration, preconfigured for use in LOCAL mode
                 .globalJmxStatistics().enable() //This method allows enables the jmx statistics of the global configuration.
-                .transport().defaultTransport()
                 .build(); //Builds  the GlobalConfiguration object
         Configuration loc = new ConfigurationBuilder()
                 .jmxStatistics().enable() //Enable JMX statistics
