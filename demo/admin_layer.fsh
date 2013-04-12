@@ -11,7 +11,7 @@ set ACCEPT_DEFAULTS true;
 
 @/* Enable scaffolding from entities */;
 
-scaffold setup;
+scaffold setup --targetDir admin;
 
 @/* Enable RichFaces for wizzy widgets from entities */;
 
@@ -21,6 +21,10 @@ richfaces setup;
 @/* Scaffold CRUD views for the entities that an admin would start drilling down into the data model from */;
 
 scaffold from-entity org.jboss.jdf.example.ticketmonster.model.* --targetDir admin;
+
+@/* Add in the version of Guava that works with Errai until a version of RichFaces has a more current version */;
+
+project add-dependency com.google.guava:guava:12.0:compile
 
 @/* Ask the user whether they want to patch in the changes described in the tutorial */;
 
