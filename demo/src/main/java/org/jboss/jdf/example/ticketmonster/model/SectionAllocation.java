@@ -208,7 +208,7 @@ public class SectionAllocation implements Serializable {
 
         if (seats.size() == seatCount) {
             for (Seat seat : seats) {
-                allocate(seat.getRowNumber() - 1, seat.getNumber() - 1, 1, getExpirationTimestamp());
+                allocate(seat.getRowNumber() - 1, seat.getNumber() - 1, 1, expirationTimestamp());
             }
             return seats;
         } else {
@@ -318,7 +318,7 @@ public class SectionAllocation implements Serializable {
         return id;
     }
 
-    private long getExpirationTimestamp() {
+    private long expirationTimestamp() {
         return System.currentTimeMillis() + EXPIRATION_TIME;
     }
 
