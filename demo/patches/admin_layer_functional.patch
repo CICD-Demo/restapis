@@ -110,10 +110,10 @@ index 0000000..ceafffb
 +</body>
 +</html>
 \ No newline at end of file
-diff --git ../demo/src/main/webapp/admin/venue/view.xhtml ../demo/src/main/webapp/admin/venue/view.xhtml
+diff --git ../demo/src/main/webapp/WEB-INF/web.xml ../demo/src/main/webapp/WEB-INF/web.xml
 index 06edc33..6676fbf 100644
---- src/main/webapp/WEB-INF/web.xml
-+++ src/main/webapp/WEB-INF/web.xml
+--- ../demo/src/main/webapp/WEB-INF/web.xml
++++ ../demo/src/main/webapp/WEB-INF/web.xml
 @@ -32,7 +32,4 @@
    <session-config>
      <session-timeout>30</session-timeout>
