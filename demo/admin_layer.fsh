@@ -15,15 +15,12 @@ scaffold setup;
 
 @/* Enable RichFaces for wizzy widgets from entities */;
 
-richfaces setup; 
+richfaces setup;
+
 
 @/* Scaffold CRUD views for the entities that an admin would start drilling down into the data model from */;
 
 scaffold from-entity org.jboss.jdf.example.ticketmonster.model.* --targetDir admin;
-
-@/* Add in the version of Guava that works with Errai until a version of RichFaces has a more current version */;
-
-project add-dependency com.google.guava:guava:12.0:compile
 
 @/* Ask the user whether they want to patch in the changes described in the tutorial */;
 
@@ -37,7 +34,6 @@ if ( SHELL.promptBoolean("Apply manual functional changes described in tutorial?
       rm --force src/main/webapp/index.xhtml;
     } else if (v.startsWith("1.1.") || v.startsWith("1.2")) {
       echo Applying manual changes described in tutorial based on admin_layer_functional.patch;
-      mv src/main/webapp/index.xhtml src/main/webapp/admin/index.xhtml;
       git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional.patch;
     } else {
       @SHELL.println("The version " + v + " is not supported yet, attempting to apply latest patch");
