@@ -144,7 +144,7 @@ insert into Event ( name, description, mediaitem_id, category_id) values ( 'Punc
 insert into Show ( event_id, venue_id) values ( 1, 1);
 
 -- Performance 1
-insert into Performance ( show_id, date) values ( 1, '2013-04-01 19:00:00');
+insert into Performance ( show_id, date) values ( 1, '2013-10-01 19:00:00');
 
 -- SectionAllocation 1
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (1, 1, null, 0, 1);
@@ -153,7 +153,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (1, 4, null, 0, 1);
 
 -- Performance 2
-insert into Performance ( show_id, date) values ( 1, '2013-04-02 19:00:00');
+insert into Performance ( show_id, date) values ( 1, '2013-10-02 19:00:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (2, 1, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (2, 2, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (2, 3, null, 0, 1);
@@ -163,7 +163,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into Show ( event_id, venue_id) values ( 1, 2);
 
 -- Performance 3
-insert into Performance ( show_id, date) values ( 2, '2013-04-03 19:30:00');
+insert into Performance ( show_id, date) values ( 2, '2013-10-03 19:30:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (3, 5, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (3, 6, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (3, 7, null, 0, 1);
@@ -173,7 +173,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (3, 11, null, 0, 1);
 
 -- Performance #4
-insert into Performance ( show_id, date) values ( 2, '2013-04-04 19:30:00');
+insert into Performance ( show_id, date) values ( 2, '2013-10-04 19:30:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (4, 5, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (4, 6, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (4, 7, null, 0, 1);
@@ -186,14 +186,14 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into Show ( event_id, venue_id) values ( 2, 1);
 
 -- Performance 5
-insert into Performance ( show_id, date) values ( 3, '2013-04-05 17:00:00');
+insert into Performance ( show_id, date) values ( 3, '2013-10-05 17:00:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (5, 1, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (5, 2, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (5, 3, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (5, 4, null, 0, 1);
 
 -- Performance 6
-insert into Performance ( show_id, date) values ( 3, '2013-04-05 19:30:00');
+insert into Performance ( show_id, date) values ( 3, '2013-10-05 19:30:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (6, 1, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (6, 2, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (6, 3, null, 0, 1);
@@ -203,7 +203,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into Show ( event_id, venue_id) values ( 2, 2);
 
 -- Performance 7
-insert into Performance ( show_id, date) values ( 4, '2013-04-07 17:00:00');
+insert into Performance ( show_id, date) values ( 4, '2013-10-07 17:00:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (7, 5, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (7, 6, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (7, 7, null, 0, 1);
@@ -213,7 +213,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (7, 11, null, 0, 1);
 
 -- Performance 8
-insert into Performance ( show_id, date) values ( 4, '2013-04-07 19:30:00');
+insert into Performance ( show_id, date) values ( 4, '2013-10-07 19:30:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (8, 5, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (8, 6, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (8, 7, null, 0, 1);
@@ -226,7 +226,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into Show ( event_id, venue_id) values ( 3, 3);
 
 -- Performance 9
-insert into Performance ( show_id, date) values ( 5, '2013-05-11 21:00:00');
+insert into Performance ( show_id, date) values ( 5, '2013-11-11 21:00:00');
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (9, 12, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (9, 13, null, 0, 1);
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (9, 14, null, 0, 1);
