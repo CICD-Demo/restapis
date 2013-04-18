@@ -32,6 +32,7 @@ import org.jboss.jdf.example.ticketmonster.model.TicketCategory;
 import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
 import org.jboss.jdf.example.ticketmonster.service.AllocatedSeats;
 import org.jboss.jdf.example.ticketmonster.service.SeatAllocationService;
+import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 
 /**
  * <p>
@@ -62,6 +63,15 @@ public class BookingService extends BaseEntityService<Booking> {
     
     public BookingService() {
         super(Booking.class);
+    }
+    
+    @DELETE
+    public Response deleteAllBookings() {
+    	List<Booking> bookings = getAll(new MultivaluedHashMap<String, String>());
+    	for (Booking booking : bookings) {
+    		deleteBooking(booking.getId());
+    	}
+        return Response.ok().build();
     }
 
     /**
