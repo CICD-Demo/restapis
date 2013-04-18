@@ -53,9 +53,9 @@ Library ::
     The data grid nodes are embedded in the application. In this case, we need to add the core data grid libraries as a dependency to the project.
 
 Remote client-server ::
-    The data grid nodes are started separately and accessed through a client library. It is this library that will be added as a dependency. 
+    The data grid nodes are started separately and accessed through a client library. Only the client library is added as a dependency.
 
-For TicketMonster, we will use the library access pattern, as in this particular case we can benefit from the simpler setup. For a more detailed description of the pros and cons of each access pattern, you can read a more detailed explanation in the project documentation. In any case, switching from one mode to the other is non-intrusive, the only major difference being the infrastructure setup. 
+For TicketMonster, we will use the library access pattern, as in this particular case we can benefit from the simpler setup. For a more detailed description of the pros and cons of each access pattern, you can read a more detailed explanation in link:https://docs.jboss.org/author/display/ISPN51/Infinispan+Server+Modules#InfinispanServerModules-ServerModules[the product documentation] . In any case, switching from one mode to the other is non-intrusive, the only major difference being the infrastructure setup. 
 
 Next, we will begin by adding the JBoss Developer Framework Bill of Materials (BOM) that describes the correct version for the Infinispan artifacts. 
 
@@ -83,6 +83,7 @@ Next, we will add the `infinispan-core` library to the project.
 
 
 Next, we will include the Infinispan library in the project.
+
 .pom.xml
 [source,xml]
 ---------------------------------------------------------------------------------
@@ -106,7 +107,7 @@ Configuring the infrastructure
 
 First, we will create a producer and disposer for the Infinispan cache manager, where we define the global cache configuration and set up default options for the caches used in the application. The cache manager is unique for the application and to the data grid node, so we will create it as an application scoped bean.
 
-.src/main/org/jboss/jdf/example/ticketmonster/util/CacheProducer
+.src/main/org/jboss/jdf/example/ticketmonster/util/CacheProducer.java
 [source,java]
 ---------------------------------------------------------------------------------
 /**
@@ -115,6 +116,9 @@ First, we will create a producer and disposer for the Infinispan cache manager, 
  */
 @ApplicationScoped
 public class CacheProducer {
+    
+    @Inject @DataDir
+    private String dataDir;
 
     @Produces
     @ApplicationScoped
@@ -122,7 +126,6 @@ public class CacheProducer {
         GlobalConfiguration glob = new GlobalConfigurationBuilder()
                 .nonClusteredDefault() //Helper method that gets you a default constructed GlobalConfiguration, preconfigured for use in LOCAL mode
                 .globalJmxStatistics().enable() //This method allows enables the jmx statistics of the global configuration.
-                .transport().defaultTransport()
                 .build(); //Builds  the GlobalConfiguration object
         Configuration loc = new ConfigurationBuilder()
                 .jmxStatistics().enable() //Enable JMX statistics
@@ -132,7 +135,7 @@ public class CacheProducer {
                 .lockingMode(LockingMode.PESSIMISTIC)
                 .locking().isolationLevel(IsolationLevel.REPEATABLE_READ) //Sets the isolation level of locking
                 .eviction().maxEntries(4).strategy(EvictionStrategy.LIRS) //Sets  4 as maximum number of entries in a cache instance and uses the LIRS strategy - an efficient low inter-reference recency set replacement policy to improve buffer cache performance
-                .loaders().passivation(false).addFileCacheStore().purgeOnStartup(true) //Disable passivation and adds a FileCacheStore that is Purged on Startup
+                .loaders().passivation(false).addFileCacheStore().location(dataDir + File.separator + "TicketMonster-CacheStore").purgeOnStartup(true) //Disable passivation and adds a FileCacheStore that is Purged on Startup
                 .build(); //Builds the Configuration object
         return new DefaultCacheManager(glob, loc, true);
 
@@ -263,12 +266,10 @@ public class SeatAllocationService {
             sectionAllocation.deallocate(seat);
         }
         cache.replace(sectionAllocationKey, sectionAllocation);
-   
     }
 
     /**
      * Mark the seats as being allocated
-     * @param performance
      * @param allocatedSeats
      */
     public void finalizeAllocation(AllocatedSeats allocatedSeats) {
@@ -397,7 +398,7 @@ allocated temporarily::
 
 So, when a cart expires and is removed from the cache, the seats it held become available again. With these changes, the updated implementation of the `SectionAllocation` class will be as follows:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/SectionAllocation.java
+.src/main/java/org/jboss/jdf/example/ticketmonster/model/SectionAllocation.java
 [source,java]
 ---------------------------------------------------------------------------------
 @Entity
@@ -505,8 +506,8 @@ public class SectionAllocation implements Serializable {
      */
     @PostLoad
     void initialize() {
-        if (this.allocated == null) {
-            this.allocated = new long[this.section.getNumberOfRows()][this.section.getRowCapacity()];
+      if (this.allocated == null) {
+        this.allocated = new long[this.section.getNumberOfRows()][this.section.getRowCapacity()];
             for (long[] seatStates : allocated) {
                 Arrays.fill(seatStates, 0l);
             }
@@ -571,7 +572,7 @@ public class SectionAllocation implements Serializable {
 
         if (seats.size() == seatCount) {
             for (Seat seat : seats) {
-                allocate(seat.getRowNumber() - 1, seat.getNumber() - 1, 1, getExpirationTimestamp());
+                allocate(seat.getRowNumber() - 1, seat.getNumber() - 1, 1, expirationTimestamp());
             }
             return seats;
         } else {
@@ -681,7 +682,7 @@ public class SectionAllocation implements Serializable {
         return id;
     }
 
-    private long getExpirationTimestamp() {
+    private long expirationTimestamp() {
         return System.currentTimeMillis() + EXPIRATION_TIME;
     }
 
@@ -729,9 +730,9 @@ public class CartStore {
 }
 ---------------------------------------------------------------------------------
 
-Now you can go on and implement the RESTful service for managing carts.
+Now we can go on and implement the RESTful service for managing carts.
 
-First, you will implement the CRUD operations - adding and reading carts, as a thin layer on top of the `CartStore`. Because cart data is not tied to a web session, users can create as many carts as they want without having to worry about cleaning up the web session. Moreover, the web component of the application has a stateless architecture, which means that it can scale elastically across multiple machines - the responsibility of distributing data across nodes falling to the data grid itself.
+First, we will implement the CRUD operations - adding and reading carts, as a thin layer on top of the `CartStore`. Because cart data is not tied to a web session, users can create as many carts as they want without having to worry about cleaning up the web session. Moreover, the web component of the application has a stateless architecture, which means that it can scale elastically across multiple machines - the responsibility of distributing data across nodes falling to the data grid itself.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/CartService.java
 [source,java]
@@ -782,7 +783,7 @@ public class CartService {
 
 The `openCart` method allows opening a cart by posting a simple JSON document containing the reference to a an existing performance to `http://localhost:8080/ticket-monster/rest/carts`. The `getCart` method allows accessing the cart contents from an URL of the form `http://localhost:8080/ticket-monster/rest/carts/<cartId>`. Thus, the carts themselves become web resources. In true RESTful fashion, if the cart cannot be found, a "Resource Not Found" error will be thrown by the server.
 
- Next, you will add the ability of adding or removing seats from a cart. This will be done as an additional RESTful endpoint, that allows user to post ticket (or seat) requests to an existing cart, at the URL `http://localhost:8080/ticket-monster/rest/carts/<cartId>`. Whenever such a POST request is received, the `CartService` will delegate to the SeatAllocationService to adjust the current allocation, returning the cart contents (including the temporarily assigned seats) at the end.
+ Next, we will add the ability of adding or removing seats from a cart. This will be done as an additional RESTful endpoint, that allows user to post ticket (or seat) requests to an existing cart, at the URL `http://localhost:8080/ticket-monster/rest/carts/<cartId>`. Whenever such a POST request is received, the `CartService` will delegate to the SeatAllocationService to adjust the current allocation, returning the cart contents (including the temporarily assigned seats) at the end.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/CartService.java
 [source,java]
@@ -812,15 +813,15 @@ public class CartService {
     @POST
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Cart addTicketRequest(@PathParam("id") String id, TicketRequest... ticketRequests){
+    public Cart addTicketRequest(@PathParam("id") String id, TicketReservationRequest... ticketRequests){
         Cart cart = cartStore.getCart(id);
 
-        for (TicketRequest ticketRequest : ticketRequests) {
+        for (TicketReservationRequest ticketRequest : ticketRequests) {
             TicketPrice ticketPrice = entityManager.find(TicketPrice.class, ticketRequest.getTicketPrice());
             Iterator<SeatAllocation> iterator = cart.getSeatAllocations().iterator();
             while (iterator.hasNext()) {
                 SeatAllocation seatAllocation = iterator.next();
-                if (seatAllocation.getTicketRequest().getTicketPrice() == ticketRequest.getTicketPrice()){
+                if (seatAllocation.getTicketRequest().getTicketPrice().getId().equals(ticketRequest.getTicketPrice())){
                     seatAllocationService.deallocateSeats(ticketPrice.getSection(), cart.getPerformance(), seatAllocation.getAllocatedSeats());
                     ticketRequest.setQuantity(ticketRequest.getQuantity() + seatAllocation.getTicketRequest().getQuantity());
                     iterator.remove();
@@ -828,7 +829,7 @@ public class CartService {
             }
             if (ticketRequest.getQuantity() > 0 ) {
             AllocatedSeats allocatedSeats = seatAllocationService.allocateSeats(ticketPrice.getSection(), cart.getPerformance(), ticketRequest.getQuantity(), true);
-            cart.getSeatAllocations().add(new SeatAllocation(new TicketRequest(ticketPrice.getId(), ticketRequest.getQuantity()), allocatedSeats.getSeats()));
+            cart.getSeatAllocations().add(new SeatAllocation(new TicketRequest(ticketPrice, ticketRequest.getQuantity()), allocatedSeats.getSeats()));
             }
         }
         return cart;
@@ -880,7 +881,7 @@ public class CartService {
 
             for (SeatAllocation seatAllocation : cart.getSeatAllocations()) {
                 for (Seat seat : seatAllocation.getAllocatedSeats()) {
-                    TicketPrice ticketPrice = entityManager.find(TicketPrice.class, seatAllocation.getTicketRequest().getTicketPrice());
+                    TicketPrice ticketPrice = seatAllocation.getTicketRequest().getTicketPrice();
                     booking.getTickets().add(new Ticket(seat, ticketPrice.getTicketCategory(), ticketPrice.getPrice()));
                 }
                 seatAllocationService.finalizeAllocation(cart.getPerformance(), seatAllocation.getAllocatedSeats());
@@ -1267,12 +1268,12 @@ define("router", [
         },
         bookTickets:function (showId, performanceId) {
             var createBookingView = 
-                new CreateBookingView({
-                    model:{ showId:showId, 
-                            performanceId:performanceId, 
-                            bookingRequest:{seatAllocations:[]}},
-                            el:$("#content")
-                           });
+              new CreateBookingView({
+                model:{ showId:showId, 
+                      performanceId:performanceId, 
+                      bookingRequest:{seatAllocations:[]}},
+                      el:$("#content")
+                     });
             utilities.viewManager.showView(createBookingView);
         },
         listBookings:function () {
@@ -1440,7 +1441,7 @@ Next, we will update the booking details view template.
 </div>
 ---------------------------------------------------------------------------------
 
-Finally, you will need to update the booking confirmation page.
+Finally, we will need to update the booking confirmation page.
 
 .src/main/webapp/resources/templates/desktop/booking-confirmation.html
 [source, html]
@@ -1487,7 +1488,6 @@ Finally, you will need to update the booking confirmation page.
 </div>
 <div class="row-fluid" style="padding-bottom:30px;">
     <div class="span2"><a href="#">Home</a></div>
-</div>n2"><a href="#bookings">Back</a></div>
 </div>
 ---------------------------------------------------------------------------------
 
@@ -1496,4 +1496,4 @@ This is it!
 Conclusion
 ----------
 
-You have successfully converted your application from one that relies exclusively on relational persistence to using a NoSQL (key-value) data store for a part of its data. You have identified the use cases where the switch is mostly likely to result in performance improvements, including the changes in application functionality that can benefit from this conversion. You have learned how to set up the infrastructure, distinguish between the different configuration options, and use the API.   
+You have successfully converted your application from one that relies exclusively on relational persistence to using a NoSQL (key-value) data store for a part of its data. You have identified the use cases where the switch is mostly likely to result in performance improvements, including the changes in application functionality that can benefit from this conversion. You have learned how to set up the infrastructure, distinguish between the different configuration options, and use the API.

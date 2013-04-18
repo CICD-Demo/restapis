@@ -80,7 +80,7 @@ public class CartService {
      */
     @GET
     @Path("/{id}")
-    public Cart getCart(String id) {
+    public Cart getCart(@PathParam("id") String id) {
         Cart cart = cartStore.getCart(id);
         if (cart != null) {
            return cart;
@@ -100,15 +100,15 @@ public class CartService {
     @POST
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Cart addTicketRequest(@PathParam("id") String id, TicketRequest... ticketRequests){
+    public Cart addTicketRequest(@PathParam("id") String id, TicketReservationRequest... ticketRequests){
         Cart cart = cartStore.getCart(id);
 
-        for (TicketRequest ticketRequest : ticketRequests) {
+        for (TicketReservationRequest ticketRequest : ticketRequests) {
             TicketPrice ticketPrice = entityManager.find(TicketPrice.class, ticketRequest.getTicketPrice());
             Iterator<SeatAllocation> iterator = cart.getSeatAllocations().iterator();
             while (iterator.hasNext()) {
                 SeatAllocation seatAllocation = iterator.next();
-                if (seatAllocation.getTicketRequest().getTicketPrice() == ticketRequest.getTicketPrice()){
+                if (seatAllocation.getTicketRequest().getTicketPrice().getId().equals(ticketRequest.getTicketPrice())){
                     seatAllocationService.deallocateSeats(ticketPrice.getSection(), cart.getPerformance(), seatAllocation.getAllocatedSeats());
                     ticketRequest.setQuantity(ticketRequest.getQuantity() + seatAllocation.getTicketRequest().getQuantity());
                     iterator.remove();
@@ -116,7 +116,7 @@ public class CartService {
             }
             if (ticketRequest.getQuantity() > 0 ) {
             AllocatedSeats allocatedSeats = seatAllocationService.allocateSeats(ticketPrice.getSection(), cart.getPerformance(), ticketRequest.getQuantity(), true);
-            cart.getSeatAllocations().add(new SeatAllocation(new TicketRequest(ticketPrice.getId(), ticketRequest.getQuantity()), allocatedSeats.getSeats()));
+            cart.getSeatAllocations().add(new SeatAllocation(new TicketRequest(ticketPrice, ticketRequest.getQuantity()), allocatedSeats.getSeats()));
             }
         }
         return cart;
@@ -158,7 +158,7 @@ public class CartService {
 
             for (SeatAllocation seatAllocation : cart.getSeatAllocations()) {
                 for (Seat seat : seatAllocation.getAllocatedSeats()) {
-                    TicketPrice ticketPrice = entityManager.find(TicketPrice.class, seatAllocation.getTicketRequest().getTicketPrice());
+                    TicketPrice ticketPrice = seatAllocation.getTicketRequest().getTicketPrice();
                     booking.getTickets().add(new Ticket(seat, ticketPrice.getTicketCategory(), ticketPrice.getPrice()));
                 }
                 seatAllocationService.finalizeAllocation(cart.getPerformance(), seatAllocation.getAllocatedSeats());
