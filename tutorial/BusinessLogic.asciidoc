@@ -86,6 +86,29 @@ behavior. `@JsonIgnoreProperties` from Jackson will be used to suppress serializ
 and deserialization of one of the fields involved in the cycle.
 =======================================================================================
 
+=== Verifying the versions of the JBoss BOMs
+
+The next step is to verify if we're using the right version of the JBoss BOMs in the project.
+Using the right versions of the BOMs ensures that you work against a known set of tested dependencies.
+Verify that the property `jboss.bom.version` contains the value `1.0.7.CR8` or higher:
+
+.pom.xml
+[source,xml]
+---------------------------------------------------------------------------------
+<project ...>  
+    ...  
+    <properties>
+        ...
+        <jboss.bom.version>1.0.7.CR8</jboss.bom.version>
+        ...
+    </properties>
+    ...
+</project>
+---------------------------------------------------------------------------------
+
+Doing so will ensure that ShrinkWrap Resolvers 2.0.0.Final is present in the test classpath.
+This would be used in the Arquillian tests for the application.
+
 === Enabling CDI
 
 
