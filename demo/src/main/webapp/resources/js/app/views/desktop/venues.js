@@ -16,9 +16,9 @@ define([
                 }));
             utilities.applyTemplate($(this.el), venuesTemplate, {cities: cities, model:this.model});
             $(this.el).find('.item:first').addClass('active');
-            $(".carousel").carousel()
+            $(".carousel").carousel();
             $(".collapse").collapse();
-            $("a[rel='popover']").popover({trigger:'hover'});
+            $("a[rel='popover']").popover({trigger:'hover',container:'body'});
             return this;
         },
         update:function () {
