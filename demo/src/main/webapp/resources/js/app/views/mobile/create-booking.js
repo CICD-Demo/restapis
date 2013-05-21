@@ -163,6 +163,8 @@ define([
                     partial.tickets += model.quantity;
                     partial.price += model.quantity * model.ticketPrice.price;
                     return partial;
+                } else {
+                	return partial;
                 }
             }, {tickets:0, price:0.0});
             this.model.email = $("input[type='email']").val();
