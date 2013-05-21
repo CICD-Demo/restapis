@@ -192,6 +192,13 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
     background-color:#c9c7c7;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
 }
+@media screen and (min-width:0\0) {
+	#itemMenu {
+    	background-color:#c9c7c7;
+    	/* Removes the box-shadow from IE due to glitches involving transitions */
+    	box-shadow : none;
+	}
+}
 .accordion-group {
     border-radius:0px;
     border:0px;
