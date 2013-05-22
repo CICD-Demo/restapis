@@ -102,7 +102,9 @@ public class MediaManager {
      * cachable, it is first cached in the tmp directory, and then path to load it is returned.
      */
     private MediaPath createPath(MediaItem mediaItem) {
-        if (!mediaItem.getMediaType().isCacheable()) {
+    	if(mediaItem == null) {
+    		return createCachedMedia(Reflections.getResource("not_available.jpg").toExternalForm(), IMAGE);
+    	} else if (!mediaItem.getMediaType().isCacheable()) {
             if (checkResourceAvailable(mediaItem)) {
                 return new MediaPath(mediaItem.getUrl(), false, mediaItem.getMediaType());
             } else {
