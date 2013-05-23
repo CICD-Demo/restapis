@@ -18,6 +18,14 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.NumericField;
+import org.jboss.jdf.example.ticketmonster.model.search.PriceMinBridge;
+
 /**
  * <p>
  * A show is an instance of an event taking place at a particular venue. A show can have multiple performances.
@@ -42,6 +50,7 @@ import javax.validation.constraints.NotNull;
 @SuppressWarnings("serial")
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "event_id", "venue_id" }))
+@Indexed
 public class Show implements Serializable {
 
     /* Declaration of fields */
@@ -64,6 +73,7 @@ public class Show implements Serializable {
      */
     @ManyToOne
     @NotNull
+    @IndexedEmbedded
     private Event event;
 
     /**
@@ -77,6 +87,7 @@ public class Show implements Serializable {
      */
     @ManyToOne
     @NotNull
+    @IndexedEmbedded
     private Venue venue;
 
     /**
@@ -114,6 +125,8 @@ public class Show implements Serializable {
      * </p>
      */
     @OneToMany(mappedBy = "show", cascade = ALL, fetch = EAGER)
+    @Field(name="ticketPrices.min", analyze=Analyze.NO,
+        bridge=@FieldBridge(impl=PriceMinBridge.class))
     private Set<TicketPrice> ticketPrices = new HashSet<TicketPrice>();
 
     /* Boilerplate getters and setters */

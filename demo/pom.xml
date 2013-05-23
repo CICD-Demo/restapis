@@ -210,6 +210,28 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Add Hibernate Search as a dependency -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>4.3.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-engine</artifactId>
+            <version>4.3.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-analyzers</artifactId>
+            <version>4.3.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

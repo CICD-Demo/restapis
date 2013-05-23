@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -55,6 +57,7 @@ public class EventCategory implements Serializable {
      */
     @Column(unique=true)
     @NotEmpty
+    @Field(analyze=Analyze.NO)
     private String description;
 
     /* Boilerplate getters and setters */

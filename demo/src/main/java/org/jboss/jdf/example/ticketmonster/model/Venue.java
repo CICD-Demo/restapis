@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -58,11 +60,13 @@ public class Venue implements Serializable {
      */
     @Column(unique = true)
     @NotEmpty
+    @Field
     private String name;
 
     /**
      * The address of the venue
      */
+    @IndexedEmbedded
     private Address address = new Address();
 
     /**
