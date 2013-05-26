@@ -53,7 +53,9 @@ public class MediaManager {
     private static final File tmpDir;
 
     static {
-        tmpDir = new File(System.getProperty("java.io.tmpdir"), "org.jboss.jdf.examples.ticket-monster");
+        String dataDir = System.getenv("OPENSHIFT_DATA_DIR");
+        String parentDir = dataDir != null ? dataDir : System.getProperty("java.io.tmpdir");
+        tmpDir = new File(parentDir, "org.jboss.jdf.examples.ticket-monster");
         if (tmpDir.exists()) {
             if (tmpDir.isFile())
                 throw new IllegalStateException(tmpDir.getAbsolutePath() + " already exists, and is a file. Remove it.");
