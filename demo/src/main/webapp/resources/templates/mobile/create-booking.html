@@ -17,7 +17,7 @@
         <div data-role="fieldcontain">
             <label for="sectionSelect">Section</label>
             <select id="sectionSelect">
-                <option value="-1" selected="true">Choose a section</option>
+                <option value="-1" selected>Choose a section</option>
                 <% _.each(sections, function(section) { %>
                 <option value="<%=section.id%>"><%=section.name%> - <%=section.description%></option>
                 <% }) %>
@@ -25,7 +25,7 @@
         </div>
 
     </div>
-    <div id="ticketCategoriesViewPlaceholder" style="display:none;"/>
+    <div id="ticketCategoriesViewPlaceholder" style="display:none;"></div>
 
     <div class="fieldcontain">
         <label>Contact email</label>
