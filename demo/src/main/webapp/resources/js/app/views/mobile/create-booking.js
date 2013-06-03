@@ -82,13 +82,15 @@ define([
                 self.model.performance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId;
                 });
+                self.model.email = self.model.email || ""; 
                 var id = function (item) {return item.id;};
                 // prepare a list of sections to populate the dropdown
                 var sections = _.uniq(_.sortBy(_.pluck(selectedShow.ticketPrices, 'section'), id), true, id);
 
                 utilities.applyTemplate($(self.el), createBookingTemplate, { show:selectedShow,
                     performance:self.model.performance,
-                    sections:sections});
+                    sections:sections,
+                    email:self.model.email});
                 $(self.el).trigger('pagecreate');
                 self.ticketCategoriesView = new TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder") });
                 self.model.show = selectedShow;
