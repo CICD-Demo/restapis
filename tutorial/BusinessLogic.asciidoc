@@ -48,10 +48,49 @@ discover how CDI, EJB and JAX-RS make it easy to define and wire together our se
 Preparations
 ------------
 
+Adding Jackson Core
+~~~~~~~~~~~~~~~~~~~
+
+The first step for setting up our service architecture is to add Jackson Core as a dependency in the project. Adding Jackson Core as a provided dependency will enable you to use the Jackson annotations in the project. This is necessary to obtain a certain degree of control over the content of the JSON responses.
+
+.pom.xml
+[source,xml]
+---------------------------------------------------------------------------------
+<project ...>  
+    ...  
+    <dependencies>
+        <!-- This is the dependency for Jackson Core, which we use for 
+            fine tuning the content of the JSON responses -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.8.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+---------------------------------------------------------------------------------
+
+[NOTE]
+.Why do you need the Jackson annotations?
+=======================================================================================
+JAX-RS does not specify mediatype-agnostic annotations for certain use cases. You will 
+encounter atleast one of them in the project. The object graph contains 
+cyclic/bi-directional relationships among entities like `Venue`, `Section`, `Show`, 
+`Performance` and `TicketPrice`. JSON representations for these objects will need 
+tweaking to avoid stack oVerflow errors and the like, at runtime.
+
+JBoss Enterprise Application 6 amd JBoss AS 7 uses Jackson to perform serialization and 
+dserialization of objects, thus requiring use of Jackson annotations to modify this 
+behavior. `@JsonIgnoreProperties` from Jackson will be used to suppress serialization 
+and deserialization of one of the fields involved in the cycle.
+=======================================================================================
+
 Enabling CDI
 ~~~~~~~~~~~~
 
-The first step for setting up our service architecture is to enable CDI in the deployment by creating a `beans.xml` file in the `WEB-INF` folder of the web application.
+The next step is to enable CDI in the deployment by creating a `beans.xml` file in the `WEB-INF` folder of the web application.
 
 .src/main/webapp/WEB-INF/beans.xml
 [source,xml]

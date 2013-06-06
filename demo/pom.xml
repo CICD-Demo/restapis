@@ -294,6 +294,8 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- This is the dependency for Jackson Core, which we use for 
+            fine tuning the content of the JSON responses -->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
