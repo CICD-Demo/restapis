@@ -48,7 +48,7 @@ public class MediaItem implements Serializable {
 
     /**
      * <p>
-     * The type of the media, required to render the media item corectly.
+     * The type of the media, required to render the media item correctly.
      * </p>
      * 
      * <p>

@@ -512,7 +512,7 @@ public class BookingMonitor {
 
 As soon as Errai has completed its initialization process, the `Booking Monitor#createAndShowUI()` method is invoked (`@AfterInitialization` tells Errai to call it). In this case the method will fetch initial data from the server using Errai RPC and construct the user interface. To carry out the remote procedure call, we use an injected `Caller` for the remote interface `BookingMonitorService` which is part of the `org.jboss.jdf.example.ticketmonster.monitor.client.shared` package and whose implementation `BookingMonitorServiceImpl` has been explained in the previous chapter.
 
-In order for the booking status to be updated in real-time, the class must be notified when a change has occured. If you have built the service layer already, you may remember that the JAX-RS `BookingService` class will fire CDI events whenever a booking has been created or cancelled. Now we need to listen to those events.
+In order for the booking status to be updated in real-time, the class must be notified when a change has occurred. If you have built the service layer already, you may remember that the JAX-RS `BookingService` class will fire CDI events whenever a booking has been created or cancelled. Now we need to listen to those events.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/monitor/client/local/BookingMonitor.java
 [source, java]

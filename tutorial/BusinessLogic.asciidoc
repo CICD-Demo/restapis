@@ -81,7 +81,7 @@ cyclic/bi-directional relationships among entities like `Venue`, `Section`, `Sho
 `Performance` and `TicketPrice`. JSON representations for these objects will need 
 tweaking to avoid stack oVerflow errors and the like, at runtime.
 
-JBoss Enterprise Application 6 amd JBoss AS 7 uses Jackson to perform serialization and 
+JBoss Enterprise Application 6 and JBoss AS 7 uses Jackson to perform serialization and 
 dserialization of objects, thus requiring use of Jackson annotations to modify this 
 behavior. `@JsonIgnoreProperties` from Jackson will be used to suppress serialization 
 and deserialization of one of the fields involved in the cycle.
@@ -147,7 +147,7 @@ We begin the service implementation by implementing some helper services.
 The Media Manager
 ~~~~~~~~~~~~~~~~~
 
-First, let's add support for managing media items, such as images. The persistence layer siimply stores URLs, referencing media items stored by online services. The URL look like link:http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg[].
+First, let's add support for managing media items, such as images. The persistence layer simply stores URLs, referencing media items stored by online services. The URL look like link:http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg[].
 
 Now, we could use the URLs in our application, and retrieve these media items from the provider. However, we would prefer to cache these media items in order to improve application performance and increase resilience to external failures - this will allow us to run the application
 successfully even if the provider is down. The `MediaManager` is a good illustration of a business service; it performs the retrieval and caching of media objects, encapsulating the operation from the rest of the application.
@@ -348,7 +348,7 @@ public class MediaManager {
 }
 ------------------------------------------------------------------------------------------
 
-The service delegates to a number of internal methods that do the heavy lifting, but exposes a simple API, to the external observer it simply converts the `MediaItem` entities into `MediaPath` data structures, that can be used by the application to load the binary data of the media item. The service will retrieve and cache the data locally in the filesystem, if possible (e.g. streamed videos aren't cachable!).
+The service delegates to a number of internal methods that do the heavy lifting, but exposes a simple API, to the external observer it simply converts the `MediaItem` entities into `MediaPath` data structures, that can be used by the application to load the binary data of the media item. The service will retrieve and cache the data locally in the filesystem, if possible (e.g. streamed videos aren't cacheable!).
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaPath.java
 [source,java]
@@ -805,7 +805,7 @@ public abstract class BaseEntityService<T> {
 }
 -----------------------------------------------------------------------------------------
 
-This method is similar to `getAll` and `getCount`, and we use the `@Path` annotation to map it to a sub-path of '/rest/<entityRoot>'. The annotation attribute identifies the expected format of the URL (here, the last segment has to be a number) and binds a  portion of the URL to a variable (here named `id`). The `@PathParam` annotation allows the value of the variable to be passed as amethod argument. Data conversion is performed automatically.
+This method is similar to `getAll` and `getCount`, and we use the `@Path` annotation to map it to a sub-path of '/rest/<entityRoot>'. The annotation attribute identifies the expected format of the URL (here, the last segment has to be a number) and binds a  portion of the URL to a variable (here named `id`). The `@PathParam` annotation allows the value of the variable to be passed as a method argument. Data conversion is performed automatically.
 
 Now, all the JAX-RS endpoints that subclass `BaseEntityService` will get two operations for free:
 
@@ -1527,7 +1527,7 @@ If you have followed the instructions in the introduction and used the Maven arc
 
 If you haven't used the archetype, or the profiles don't exist, create them.
 
-Each profile defines a different Arquillian container. In both cases the tests execute in an application server instance. In one case (`arq-jbossas-managed`) the server instance is started and stopped by the test suite, whils in the other (`arq-jbossas-remote`), the test suite expects an already started server instance.
+Each profile defines a different Arquillian container. In both cases the tests execute in an application server instance. In one case (`arq-jbossas-managed`) the server instance is started and stopped by the test suite, while in the other (`arq-jbossas-remote`), the test suite expects an already started server instance.
 
 Once these profiles are defined, we can execute the tests in two ways:
 

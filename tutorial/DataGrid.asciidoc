@@ -218,7 +218,7 @@ public class SeatAllocationService {
     private Cache<SectionAllocationKey, SectionAllocation> cache;
 
     /**
-     * We inject the {@link EmbeddedCacheManager} and retri
+     * We inject the {@link EmbeddedCacheManager} and retrieve a {@link Cache} instance.
      *
      * @param manager
      */
@@ -357,7 +357,7 @@ public class Cart implements Serializable  {
 }
 ---------------------------------------------------------------------------------
 
-A `Cart` contains `SeatAllocation`s - collections of `Seats`s corresponding to a particular `TicketRequest` (which represents a number of seats requested for a particular perfomance).
+A `Cart` contains `SeatAllocation`s - collections of `Seats`s corresponding to a particular `TicketRequest` (which represents a number of seats requested for a particular performance).
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/SeatAllocation.java
 [source,java]
@@ -783,7 +783,7 @@ public class CartService {
 
 The `openCart` method allows opening a cart by posting a simple JSON document containing the reference to a an existing performance to `http://localhost:8080/ticket-monster/rest/carts`. The `getCart` method allows accessing the cart contents from an URL of the form `http://localhost:8080/ticket-monster/rest/carts/<cartId>`. Thus, the carts themselves become web resources. In true RESTful fashion, if the cart cannot be found, a "Resource Not Found" error will be thrown by the server.
 
- Next, we will add the ability of adding or removing seats from a cart. This will be done as an additional RESTful endpoint, that allows user to post ticket (or seat) requests to an existing cart, at the URL `http://localhost:8080/ticket-monster/rest/carts/<cartId>`. Whenever such a POST request is received, the `CartService` will delegate to the SeatAllocationService to adjust the current allocation, returning the cart contents (including the temporarily assigned seats) at the end.
+Next, we will add the ability of adding or removing seats from a cart. This will be done as an additional RESTful endpoint, that allows user to post ticket (or seat) requests to an existing cart, at the URL `http://localhost:8080/ticket-monster/rest/carts/<cartId>`. Whenever such a POST request is received, the `CartService` will delegate to the SeatAllocationService to adjust the current allocation, returning the cart contents (including the temporarily assigned seats) at the end.
 
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/CartService.java
 [source,java]

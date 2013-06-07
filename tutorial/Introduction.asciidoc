@@ -801,7 +801,7 @@ This concludes our introduction to building HTML5 Mobile Web applications using 
 Cleaning up the generated code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Before we proceed with the tutorial and implement TicketMonster, we need to clean up some of the archetype-generated code. The Member management code, while useful for ilustrating the general setup of a Java EE 6 web application, will not be part of TicketMonster, so we can safely remove some packages, classes, and resources:
+Before we proceed with the tutorial and implement TicketMonster, we need to clean up some of the archetype-generated code. The Member management code, while useful for illustrating the general setup of a Java EE 6 web application, will not be part of TicketMonster, so we can safely remove some packages, classes, and resources:
 
 * All the Member-related persistence and business code:
 

@@ -354,7 +354,7 @@ Luckily, JPA has native support for enums, all we need to do is add the `@Enumer
 
     /**
      * <p>
-     * The type of the media, required to render the media item corectly.
+     * The type of the media, required to render the media item correctly.
      * </p>
      * 
      * <p>
@@ -385,7 +385,7 @@ The rest of `MediaItem` shouldn't present a challenge to you. If you are buildin
 Events
 ~~~~~~
 
-In <<YourFirstEntity>> we saw how to build simple entites with properties, identify and apply constraints using Bean Validation, identify the natural id and add a synthetic id. From now on we'll assume you know how to build simple entities - for each new entity that we build, we will start with it's basic structure and properties filled in.
+In <<YourFirstEntity>> we saw how to build simple entities with properties, identify and apply constraints using Bean Validation, identify the natural id and add a synthetic id. From now on we'll assume you know how to build simple entities - for each new entity that we build, we will start with it's basic structure and properties filled in.
 
 So, here is our starting point for Event (where we left at the end of the introduction, and including some comments reflecting the explanations above):
 
@@ -1562,7 +1562,7 @@ In this example, we are using the in-memory H2 database, which is very easy to s
 </datasources>
 -------------------------------------------------------------------------------------------------------
 
-The datasource configures an H2 in-memory database, called _ticket-monster_, and registeres a datasource in JNDI at the address:
+The datasource configures an H2 in-memory database, called _ticket-monster_, and registers a datasource in JNDI at the address:
 
     java:jboss/datasources/ticket-monsterDS
 

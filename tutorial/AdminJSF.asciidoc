@@ -114,7 +114,7 @@ You can either scaffold the entities one-by-one, which allows to control which U
     scaffold from-entity org.jboss.jdf.example.ticketmonster.model.* --targetDir admin --overwrite
 
 **************************************************************************************
-Forge asks us whether we want to overwrite every file - which get's a bit tedious! 
+Forge asks us whether we want to overwrite every file - which gets a bit tedious! 
 Specifying `--overwrite` allows Forge to overwrite files without prompt - much better!
 **************************************************************************************
 

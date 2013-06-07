@@ -32,7 +32,7 @@ public class SeatAllocationService {
     private Cache<SectionAllocationKey, SectionAllocation> cache;
 
     /**
-     * We inject the {@link EmbeddedCacheManager} and retri
+     * We inject the {@link EmbeddedCacheManager} and retrieve a {@link Cache} instance.
      *
      * @param manager
      */
