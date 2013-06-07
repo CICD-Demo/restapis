@@ -70,9 +70,9 @@ Before we start developing the user interface, we need to set up the general app
 .File structure for our web application
 image::gfx/ui-file-structure.png[]
 
-We put stylesheets in `resources/css` folder, images in `resources/img`, and HTML view templates in `resources/templates`. `resources/js` contains the JavaScript code, split between `resources/js/lib` - which contains the libraries used by the application, `resources/js/app` - which contains the application code, and `resources/configurations` which contains module definitions for the different versions of the application - i.e. mobile and desktop. The `resources/js/app` folder will contain the application modules, in subsequent subdirectories, for models, collections, routers and views.
+We put stylesheets in `resources/css` folder, images in `resources/img`, and HTML view templates in `resources/templates`. `resources/js` contains the JavaScript code, split between `resources/js/libs` - which contains the libraries used by the application, `resources/js/app` - which contains the application code, and `resources/js/configurations` which contains module definitions for the different versions of the application - i.e. mobile and desktop. The `resources/js/app` folder will contain the application modules, in subsequent subdirectories, for models, collections, routers and views.
 
-The first step in implementing our solution is adding the stylesheets and JavaScript libraries to the `resources/css` and `resources/js/lib`:
+The first step in implementing our solution is adding the stylesheets and JavaScript libraries to the `resources/css` and `resources/js/libs`:
 
 require.js::
     AMD support, along with the plugins:
@@ -124,7 +124,7 @@ Now, we create the main page of the application (which is the URL loaded by the 
 </html>
 -------------------------------------------------------------------------------------------------------
 
-As you can see, the page does not contain much. It detects the current client (mobile or destktop) based on its capabilities (touch or not) and loads the JavaScript code of the page from an AMD module defined in the `resources/js/configurations` folder using `require.js`. In the case of the desktop client, the code is loaded from `resources/js/configurations/desktop.js`.
+As you can see, the page does not contain much. It detects the current client (mobile or desktop) based on its capabilities (touch or not) and loads the JavaScript code of the page from an AMD module defined in the `resources/js/configurations` folder using `require.js`. In the case of the desktop client, the code is loaded from `resources/js/configurations/desktop.js`.
 
 .src/main/webapp/resources/js/configurations/desktop.js
 [source,javascript]
@@ -1323,7 +1323,7 @@ The mobile version of the application uses approximately the same architecture a
 Setting up the structure
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The first step in implementing our solution is to copy the CSS and JavaScript libraries to `resources/css` and `resources/js/lib`:
+The first step in implementing our solution is to copy the CSS and JavaScript libraries to `resources/css` and `resources/js/libs`:
 
 require.js::
     AMD support, along with the plugins:
@@ -1464,6 +1464,7 @@ define("router",[
             if ("" != actions) {
                 $.mobile.changePage("#" + actions, {transition:'slide', changeHash:false, allowSamePageTransition:true});
             }
+        }
     });
 
     // Create a router instance
