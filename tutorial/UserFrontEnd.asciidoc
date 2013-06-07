@@ -100,31 +100,44 @@ Now, we create the main page of the application (which is the URL loaded by the 
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
 
     <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
-
-    <!--
-         A simple check on the client. For touch devices or small-resolution screens)
-         show the mobile client. By enabling the mobile client on a small-resolution screen
-         we allow for testing outside a mobile device (like for example the Mobile Browser
-         simulator in JBoss Tools and JBoss Developer Studio).
-      -->
-    <script type="text/javascript">
-        var loader = document.createElement("script")
-        loader.setAttribute("src", "resources/js/libs/require.js");
-        if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
-           environment = "mobile"
-        } else {
-           environment = "desktop"
-        };
-        loader.setAttribute("data-main","resources/js/configurations/" + environment);
-        document.head.appendChild(loader)
-    </script>
+    <script type="text/javascript" src="resources/js/libs/require.js"
+            data-main="resources/js/configurations/loader"></script>
 </head>
 <body>
 </body>
 </html>
 -------------------------------------------------------------------------------------------------------
 
-As you can see, the page does not contain much. It detects the current client (mobile or desktop) based on its capabilities (touch or not) and loads the JavaScript code of the page from an AMD module defined in the `resources/js/configurations` folder using `require.js`. In the case of the desktop client, the code is loaded from `resources/js/configurations/desktop.js`.
+As you can see, the page does not contain much. It loads Modernizr (for HTML5 and CSS3 feature detection) and RequireJS (for loading JavaScript modules in an asynchronous manner). Once RequireJS is loaded by the browser, it will configure itself to use a `baseUrl` of `resources/js/configurations` (specified via the `data-main` attribute on the `script` tag). All scripts loaded by RequireJS will use this `baseUrl` unless specified otherwise.
+
+RequireJS will then load a script having a module ID of `loader` (again, specified via the `data-main` attribute):
+
+.src/main/webapp/resources/js/configurations/loader.js
+[source,javascript]
+-------------------------------------------------------------------------------------------------------
+//detect the appropriate module to load
+define(function () {
+
+    /*
+     A simple check on the client. For touch devices or small-resolution screens)
+     show the mobile client. By enabling the mobile client on a small-resolution screen
+     we allow for testing outside a mobile device (like for example the Mobile Browser
+     simulator in JBoss Tools and JBoss Developer Studio).
+     */
+
+    var environment;
+
+    if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
+        environment = "mobile"
+    } else {
+        environment = "desktop"
+    }
+
+    require([environment]);
+});
+-------------------------------------------------------------------------------------------------------
+
+This script detects the current client (mobile or desktop) based on its capabilities (touch or not) and loads another JavaScript module (`desktop` or `mobile`) defined in the `resources/js/configurations` folder (aka the `baseUrl`) depending on the detected features. In the case of the desktop client, the code is loaded from `resources/js/configurations/desktop.js`.
 
 .src/main/webapp/resources/js/configurations/desktop.js
 [source,javascript]
@@ -1415,7 +1428,7 @@ In this application, we combine Backbone and jQuery Mobile. Each framework has i
 
 We also define a special initializer module (`initializer`) that, when loaded, adds the stylesheets and applies the template for the general structure of the page in the `body` element. Let us add the template definition.
 
-We also define a `configuration` module which allows the customizaton of the base URLs for RESTful invocations. This module does not play any role in the mobile web version. We will come to it, however, when discussing hybrid applications.
+We also define a `configuration` module which allows the customization of the base URLs for RESTful invocations. This module does not play any role in the mobile web version. We will come to it, however, when discussing hybrid applications.
 
 .src/main/webapp/resources/templates/mobile/main.html
 [source,html]

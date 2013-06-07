@@ -302,47 +302,34 @@ require (["resources/js/libs/cordova-android-2.7.0.js","mobile"], function() {
 });
 -------------------------------------------------------------------------------------------------------
 
-The final step will involve adjusting `src/main/webapp/index.html` to load this module when running on Android, using the user agent setting we have already configured in the project.
+The final step will involve adjusting `src/main/webapp/resources/js/configurations/loader.js` to load this module when running on Android, using the user agent setting we have already configured in the project.
 
-.src/main/webapp/index.html
-[source,html]
+.src/main/webapp/resources/js/configurations/loader.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ticket Monster</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
+//detect the appropriate module to load
+define(function () {
 
-    <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
+    /*
+     A simple check on the client. For touch devices or small-resolution screens)
+     show the mobile client. By enabling the mobile client on a small-resolution screen
+     we allow for testing outside a mobile device (like for example the Mobile Browser
+     simulator in JBoss Tools and JBoss Developer Studio).
+     */
 
-    <!--
-         A simple check on the client. For touch devices or small-resolution screens)
-         show the mobile client. By enabling the mobile client on a small-resolution screen
-         we allow for testing outside a mobile device (like for example the Mobile Browser
-         simulator in JBoss Tools and JBoss Developer Studio).
-      -->
-    <script type="text/javascript">
-        var loader = document.createElement("script")
-        loader.setAttribute("src", "resources/js/libs/require.js");
-        if (navigator.userAgent.indexOf("TicketMonster Cordova Webview iOS") > -1) {
-            environment = "hybrid-ios"
-        }
-        else if (navigator.userAgent.indexOf("TicketMonster Cordova Webview Android") > -1) {
-            environment = "hybrid-android"
-        }
-        else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
-            environment = "mobile"
-        } else {
-            environment = "desktop"
-        }
-        loader.setAttribute("data-main","resources/js/configurations/" + environment);
-        document.head.appendChild(loader)
-    </script>
-</head>
-<body>
-</body>
-</html>
+    var environment;
+
+    if (navigator.userAgent.indexOf("TicketMonster Cordova Webview Android") > -1) {
+        environment = "hybrid-android"
+    }
+    else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
+        environment = "mobile"
+    } else {
+        environment = "desktop"
+    }
+
+    require([environment]);
+});
 -------------------------------------------------------------------------------------------------------
 
 Now you are ready to run the application. Right-click on project _Run as_->__Android Application__.
@@ -442,47 +429,37 @@ require (["resources/js/libs/cordova-ios-2.7.0.js","mobile"], function() {
 });
 -------------------------------------------------------------------------------------------------------
 
-Finally, we edit the landing page to add support for iOS.
+Finally, we once again edit the JavaScript `loader` module to add support for iOS.
 
-.src/main/webapp/index.html
-[source,html]
+.src/main/webapp/resources/js/configurations/loader.js
+[source,javascript]
 -------------------------------------------------------------------------------------------------------
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ticket Monster</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
+//detect the appropriate module to load
+define(function () {
 
-    <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
+    /*
+     A simple check on the client. For touch devices or small-resolution screens)
+     show the mobile client. By enabling the mobile client on a small-resolution screen
+     we allow for testing outside a mobile device (like for example the Mobile Browser
+     simulator in JBoss Tools and JBoss Developer Studio).
+     */
 
-    <!--
-         A simple check on the client. For touch devices or small-resolution screens)
-         show the mobile client. By enabling the mobile client on a small-resolution screen
-         we allow for testing outside a mobile device (like for example the Mobile Browser
-         simulator in JBoss Tools and JBoss Developer Studio).
-      -->
-    <script type="text/javascript">
-        var loader = document.createElement("script")
-        loader.setAttribute("src", "resources/js/libs/require.js");
-        if ( navigator.userAgent == "TicktetMonster Cordova Webview iOS" ) {
-            environment="hybrid-ios"
-        }
-        else if ( navigator.userAgent == "TicketMonster Cordova Webview Android" ) {
-            environment="hybrid-android"
-        }
-        else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
-           environment = "mobile"
-        } else {
-           environment = "desktop"
-        };
-        loader.setAttribute("data-main","resources/js/configurations/" + environment);
-        document.head.appendChild(loader)
-    </script>
-</head>
-<body>
-</body>
-</html>
+    var environment;
+
+    if (navigator.userAgent.indexOf("TicketMonster Cordova Webview iOS") > -1) {
+        environment = "hybrid-ios"
+    }
+    else if (navigator.userAgent.indexOf("TicketMonster Cordova Webview Android") > -1) {
+        environment = "hybrid-android"
+    }
+    else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
+        environment = "mobile"
+    } else {
+        environment = "desktop"
+    }
+
+    require([environment]);
+});
 -------------------------------------------------------------------------------------------------------
 
 Now you are ready to run the application. Select a simulator and run (Cmd-R).
