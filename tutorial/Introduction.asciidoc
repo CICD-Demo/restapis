@@ -225,7 +225,7 @@ The initial project includes the following Java packages:
 `.data`::
     contains a class which uses `@Produces` and `@Named` to return the list of members for `index.xhtml`
 `.model`::
-    contains the JPA entity class, a POJO annotated with `@Entity`, annodated with Bean Validation (JSR 303) constraints
+    contains the JPA entity class, a POJO annotated with `@Entity`, annotated with Bean Validation (JSR 303) constraints
 `.rest`::
     contains the JAX-RS endpoints, POJOs annotated with `@Path`
 `.service`::
@@ -247,12 +247,16 @@ Under src you will find:
     establishes that this project contains JPA entities and it identifies the datasource, which is deployed alongside the project. It also includes the `hibernate.hbm2dll.auto` property set to `create-drop` by default. 
 
 `test/java/test`::
-    provides the `.test` package that contains `MemberRegistrationTest.java`, an Arquillian based test that runs both fomm within JBoss Developer Studio via *Run As -> JUnit Test* and at the command line:
-    
-    mvn test –Parq-jbossas-remote
+    provides the `.test` package that contains `MemberRegistrationTest.java`, an Arquillian based test that runs both from within JBoss Developer Studio via *Run As -> JUnit Test* and at the command line:
+    +
+    +
+    `mvn test –Parq-jbossas-remote`
+    +
+    +
+    Note that you will need to start the JBoss Enterprise Application Platform 6 or JBoss AS 7 server before running the test.
    
 `src/main/webapp`::
-    contains `index.xhtml`, the JSF-based user interface for the sample application.  If you double-click on that file you will see Visual Page Editor allows you to visually navigate through the file and see the source simultaneously.  Changes to the source are immediately reflected in the visual pane.
+    contains `index.xhtml`, the JSF-based user interface for the sample application.  If you double-click on that file you will see Visual Page Editor allows you to visually navigate through the file and see the source simultaneously. Changes to the source are immediately reflected in the visual pane.
 
 [[visual_page_editor_image]]
 .Visual Page Editor
