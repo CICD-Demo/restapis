@@ -331,7 +331,7 @@ To generate an entity, use these commands:
 
     entity --named Event --package org.jboss.jdf.example.ticketmonster.model
     field string --named name
-    validation setup
+    validation setup --provider JAVA_EE
     constraint NotNull --onProperty name
     constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
     field string --named description
@@ -380,7 +380,7 @@ image::gfx/introduction/forge_added_name.png[scaledwidth="90%"]
 
 From this point forward, we will assume you have the basics of using Forge's interactive command line. The remaining commands to run are:
 
-    validation setup
+    validation setup --provider JAVA_EE
     constraint NotNull --onProperty name
     constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
     field string --named description
