@@ -26,6 +26,7 @@ requirejs.config({
 
 define("initializer", ["jquery"],
     function ($) {
+	$.ajaxSetup({cache:false});
     $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');

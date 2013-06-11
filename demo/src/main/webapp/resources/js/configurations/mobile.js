@@ -43,6 +43,7 @@ define("initializer", [
 ], function ($,
              utilities,
              MainTemplate) {
+	$.ajaxSetup({cache:false});
     $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.3.1.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/m.screen.css"/>');
     $(document).bind("mobileinit", function () {
