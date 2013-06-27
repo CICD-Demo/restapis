@@ -1,5 +1,4 @@
 = What is TicketMonster?
-
 :Author: Marius Bogoevici
 
 TicketMonster is an example application that focuses on Java EE6 - JSF 2, JPA 2, CDI and JAX-RS

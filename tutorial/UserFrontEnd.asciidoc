@@ -1,5 +1,4 @@
 = Building The User UI Using HTML5
-
 :Author: Marius Bogoevici
 
 == What Will You Learn Here?

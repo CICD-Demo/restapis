@@ -1,5 +1,4 @@
 = Adding a data grid
-
 :Author: Marius Bogoevici
 
 == What Will You Learn Here?

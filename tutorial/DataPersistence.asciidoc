@@ -1,5 +1,4 @@
 = Building the persistence layer with JPA2 and Bean Validation
-
 :Author: Pete Muir
 
 == What will you learn here?

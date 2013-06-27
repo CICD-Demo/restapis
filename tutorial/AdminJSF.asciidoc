@@ -1,5 +1,4 @@
 = Building the Administration UI using Forge
-
 :Author: Pete Muir
 
 == What Will You Learn Here?
