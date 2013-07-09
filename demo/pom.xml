@@ -32,7 +32,7 @@
             line below to use version 1.0.0.M10-redhat-1 which is a release certified 
             to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 
             maven repository. -->
-        <jboss.bom.version>1.0.5.CR2</jboss.bom.version>
+        <jboss.bom.version>1.0.7.CR8</jboss.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
     </properties>
 

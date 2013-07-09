@@ -7,8 +7,7 @@ import org.jboss.jdf.example.ticketmonster.service.*;
 import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
 import org.jboss.jdf.ticketmonster.test.TicketMonsterDeployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 public class RESTDeployment {
 
@@ -26,9 +25,9 @@ public class RESTDeployment {
                 .addClass(AllocatedSeats.class)
                 .addClass(MediaPath.class)
                 .addClass(MediaManager.class)
-                .addAsLibraries(DependencyResolvers.use(MavenDependencyResolver.class)
-                        .loadMetadataFromPom("pom.xml")
-                        .artifact("org.infinispan:infinispan-core").scope("test").resolveAsFiles());
+                .addAsLibraries(Maven.resolver()
+                        .loadPomFromFile("pom.xml")
+                        .resolve("org.infinispan:infinispan-core").withTransitivity().asFile());
     }
     
 }
