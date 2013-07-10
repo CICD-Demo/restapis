@@ -1326,7 +1326,7 @@ The other use cases: a booking starting from venues and view existing bookings a
 `src/main/webapp/resources/js/app/views/desktop` and the remainder of `src/main/webapp/resources/js/app/routers/desktop/router.js`.
 
 
-==Mobile view
+== Mobile view
 
 
 The mobile version of the application uses approximately the same architecture as the desktop version. Any differences are due to the functional changes in the mobile version and the use of jQuery mobile. 

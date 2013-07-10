@@ -334,8 +334,7 @@ define(function () {
 
 Now you are ready to run the application. Right-click on project _Run as_->__Android Application__.
 
-Creating an iOS hybrid mobile application
-------------------------------------------
+== Creating an iOS hybrid mobile application
 
 In order to create the iOS hybrid mobile version of the application make you sure you have the following software installed:
 
@@ -464,7 +463,7 @@ define(function () {
 
 Now you are ready to run the application. Select a simulator and run (Cmd-R).
 
-=== Conclusion
+== Conclusion
 
 
 This concludes our tutorial for building a hybrid application with Apache Cordova. You have seen how we have turned a working HTML5 web application into one that can run natively on Android and iOS.
