@@ -18,7 +18,7 @@ TARGET=target/guides
 MASTER=ticket-monster.asciidoc
 
 OUTPUT_FORMATS=("xml" "epub" "pdf")
-OUTPUT_CMDS=("asciidoc -d book -b docbook -o \${output_filename} \$MASTER" "a2x -d book -f epub -D \$dir \$MASTER" "a2x -d book --dblatex-opts \"-s custom-asciidoc-dblatex.sty -P latex.output.revhistory=0\" -D \$dir \$MASTER")
+OUTPUT_CMDS=("asciidoctor -d book -b docbook -o \${output_filename} \$MASTER" "a2x -d book -f epub -D \$dir \$MASTER" "a2x -d book --dblatex-opts \"-s custom-asciidoc-dblatex.sty -P latex.output.revhistory=0\" -D \$dir \$MASTER")
 
 echo "** Building tutorial"
 
@@ -36,7 +36,7 @@ for file in *.asciidoc
 do
    output_filename=$dir/${file//.asciidoc/.$output_format}
    echo "**** Processing $file > ${output_filename}"
-   asciidoctor -d book -b html5 -a toc2 -a pygments -o ${output_filename} $file
+   asciidoctor -d book -b html5 -a toc2 -a copycss -a source-highlighter=highlightjs -o ${output_filename} $file
 done
 
 for ((i=0; i < ${#OUTPUT_FORMATS[@]}; i++))
