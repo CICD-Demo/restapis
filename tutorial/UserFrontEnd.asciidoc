@@ -1492,8 +1492,8 @@ In the router code we make customizations in order to get the two frameworks wor
 
 Next, we need to create a first page.
 
-The landing page
-~~~~~~~~~~~~~~~~
+=== The landing page
+
 The first page in our application is the landing page. First, we add the template for it:
 
 .src/main/webapp/resources/templates/mobile/home-view.html
@@ -1553,7 +1553,7 @@ define("router",[
 
 Because jQuery Mobile navigation is disabled, we must tell jQuery Mobile explicitly to enhance the page content in order to create the mobile view. Here, we trigger the jQuery Mobile `pagecreate` event explicitly to ensure that the page gets the appropriate look and feel.
 
-===The events view
+=== The events view
 
 
 First, we display a list of events (just as in the desktop view). Since mobile interfaces are more constrained, we will just show a simple list view:

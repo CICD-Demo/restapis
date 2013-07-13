@@ -31,8 +31,9 @@ Open a command line and navigate to the root directory of this quickstart.
 
 Launch Forge by typing the following command:
 
-    forge
-
+----
+forge
+----
 
 === Required Forge Plugins
 
@@ -41,11 +42,17 @@ Forge comes with a number of built in plugins, including the "scaffold" plugin, 
 
 Forge also includes a powerful plugin management system. The RichFaces plugin isn't bundled with Forge, but it's easy to install. First use the `forge find-plugin` command to locate it
 
-    forge find-plugin richfaces
+[source,fsh]
+----
+forge find-plugin richfaces
+----
 
 In this case, the plugin is just called `richfaces` - easy! We can install it using the `forge install-plugin` command:
 
-    forge install-plugin richfaces
+[source,fsh]
+----
+forge install-plugin richfaces
+----
 
 This will download, compile and install the RichFaces plugin.
 
@@ -57,7 +64,10 @@ Forge is a powerful rapid application development (aimed at Java EE 6) and proje
 
 When you `cd` into a project with Forge, it inspects the project, and detects what technologies you are using in the project. Let's see this in action:
 
-    project list-facets
+[source,fsh]
+----
+project list-facets
+----
 
 Those facets detected are colored green.
 
@@ -86,7 +96,10 @@ you want to regenerate the Admin UI. The script will also prompt you to applyTo 
 
 First, we need to add Scaffold to the project. Run:
 
-    scaffold setup --targetDir admin
+[source,fsh]
+----
+scaffold setup --targetDir admin
+----
 
 to instruct Forge to generate the css, images and templates used by the scaffolded UI. Forge also adds an error page to be used when a 404 or a 500 error is encountered.
 
@@ -96,7 +109,10 @@ image::gfx/forge-scaffold-setup.png[]
 
 Now, we need to add RichFaces to the project. Run:
 
-    richfaces setup
+[source,fsh]
+----
+richfaces setup
+----
 
 You'll be prompted for the version of RichFaces to use. Choose version `4.0.0.Final` (the default), by pressing *Enter*.
 
@@ -110,7 +126,10 @@ image::gfx/forge-richfaces-setup.png[]
 
 You can either scaffold the entities one-by-one, which allows to control which UIs are generated, or you can generate a CRUD UI for all the entities. We'll do the latter:
 
-    scaffold from-entity org.jboss.jdf.example.ticketmonster.model.* --targetDir admin --overwrite
+[source,fsh]
+----
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.* --targetDir admin --overwrite
+----
 
 **************************************************************************************
 Forge asks us whether we want to overwrite every file - which gets a bit tedious! 
@@ -125,8 +144,9 @@ We now have a CRUD UI for all the entities used in TicketMonster!
 
 Let's test our UI on our local JBoss AS instance. As usual, we'll build and deploy using Maven:
 
-    mvn clean package jboss-as:deploy
-
+----
+mvn clean package jboss-as:deploy
+----
 
 == Make some changes to the UI
 
@@ -247,7 +267,9 @@ Let's go ahead and use this component to display the image in `src/main/webapp/a
 
 We can test these changes by running
 
-    mvn clean package jboss-as:deploy
+----
+mvn clean package jboss-as:deploy
+----
 
 as usual.
 

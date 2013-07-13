@@ -160,7 +160,9 @@ image::gfx/add-cordova-jar.png[]
 
 Once you have finished creating the project, navigate to the `assets` directory. Now we need to create a `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply create a symbolic link to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application).
 
-    $ ln -s $TICKET_MONSTER_HOME/demo/src/main/webapp www
+----
+$ ln -s $TICKET_MONSTER_HOME/demo/src/main/webapp www
+----
 
 Inside the Android project, modify permissions and additional configurations to `AndroidManifest.xml` to look as follows
 
@@ -350,8 +352,7 @@ Mac OS X Lion or later (10.7+), mainly for running Xcode.
 
 Also, we assume that you have installed and extracted Apache Cordova already as described in a previous section.
 
-Creating an iOS project using Apache Cordova
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== Creating an iOS project using Apache Cordova
 
 First, we need to create an iOS project. In order to do so we run the `create` command, to be found in the `lib/ios/bin` of your Apache Cordova distribution. Run the command with the following parameters:
 
@@ -370,11 +371,15 @@ The `create` script for Cordova/iOS will create a `www` sub-directory in the 'io
 
 Delete the `www` sub-directory under the TicketMonster, since we will not be using the underlying sources
 
-    $ rm -rf $TICKET_MONSTER_HOME/cordova/ios/www
+----
+$ rm -rf $TICKET_MONSTER_HOME/cordova/ios/www
+----
 
 We then create a symbolic link inside the 'ios' directory to the original TicketMonster project, with the name `www`.
 
-    $ ln -s $TICKET_MONSTER_HOME/demo/src/main/webapp www
+----
+$ ln -s $TICKET_MONSTER_HOME/demo/src/main/webapp www
+----
 
 Now we open the created project in Xcode. 
 
@@ -469,9 +474,3 @@ Now you are ready to run the application. Select a simulator and run (Cmd-R).
 This concludes our tutorial for building a hybrid application with Apache Cordova. You have seen how we have turned a working HTML5 web application into one that can run natively on Android and iOS.
 
 For more details, as well as an example of deploying to a physical device, consult the link:http://aerogear.org/docs/guides/HTML5ToHybridWithCordova/[Aerogear tutorial on the same topic]. 
-
-
-
-
-
-

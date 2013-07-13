@@ -1540,11 +1540,15 @@ You can now execute the test suite from the command line by running the Maven bu
 
 After ensuring that the `JBOSS_HOME` environment variable is set to a valid JBoss AS7 installation directory), you can run the following command:
 
-    mvn clean test -Parq-jbossas-managed
+----
+mvn clean test -Parq-jbossas-managed
+----
 
 Or, after starting a JBoss AS7 instance, you can run the following command
 
-    mvn clean test -Parq-jbossas-remote
+----
+mvn clean test -Parq-jbossas-remote
+----
 
 These tests execute as part of the Maven build and can be easily included in an automated build and test harness.
 
@@ -1571,6 +1575,3 @@ The test suite will run, deploying the test classes to the application server, e
 [[eclipse-green-bar]]
 .Running the tests
 image::gfx/eclipse-green-bar.png[scaledwidth="50%"]
-
-
-

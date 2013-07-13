@@ -328,15 +328,18 @@ Forge is a command-oriented rapid application development tool that allows you t
 
 To generate an entity, use these commands:
 
-    entity --named Event --package org.jboss.jdf.example.ticketmonster.model
-    field string --named name
-    validation setup --provider JAVA_EE
-    constraint NotNull --onProperty name
-    constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
-    field string --named description
-    constraint Size --onProperty description --min 20 --max 1000 --message "Must be > 20 and < 1000"
-    field boolean --named major
-    field string --named picture
+[source,fsh]
+----------------------------------------------------------------------------
+entity --named Event --package org.jboss.jdf.example.ticketmonster.model
+field string --named name
+validation setup --provider JAVA_EE
+constraint NotNull --onProperty name
+constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
+field string --named description
+constraint Size --onProperty description --min 20 --max 1000 --message "Must be > 20 and < 1000"
+field boolean --named major
+field string --named picture
+----------------------------------------------------------------------------
 
 Let's work through this, step by step.
 
@@ -379,13 +382,16 @@ image::gfx/introduction/forge_added_name.png[scaledwidth="90%"]
 
 From this point forward, we will assume you have the basics of using Forge's interactive command line. The remaining commands to run are:
 
-    validation setup --provider JAVA_EE
-    constraint NotNull --onProperty name
-    constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
-    field string --named description
-    constraint Size --onProperty description --min 20 --max 1000 --message "Must be > 20 and < 1000"
-    field boolean --named major
-    field string --named picture
+[source,fsh]
+----------------------------------------------------------------------------
+validation setup --provider JAVA_EE
+constraint NotNull --onProperty name
+constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
+field string --named description
+constraint Size --onProperty description --min 20 --max 1000 --message "Must be > 20 and < 1000"
+field boolean --named major
+field string --named picture
+----------------------------------------------------------------------------
 
 
 The easiest way to see the results of Forge operating on the `Event.java` JPA Entity is to use the *Outline View* of JBoss Developer Studio. It is normally on the right-side of the IDE when using the JBoss Perspective.
@@ -406,10 +412,11 @@ The `hibernate.hbm2ddl.auto=create-drop` property indicates that all database ta
 
 The `import.sql` file contains SQL statements that will inject sample data into your initial database structure.  Add the following insert statements:
 
-
-    insert into Event (id, name, description, major, picture, version) values (1, 'Shane''s Sock Puppets', 'This critically acclaimed masterpiece...', true, 'http://dl.dropbox.com/u/65660684/640px-Carnival_Puppets.jpg', 1);
-    insert into Event (id, name, description, major, picture, version) values (2, 'Rock concert of the decade', 'Get ready to rock...', true, 'http://dl.dropbox.com/u/65660684/640px-Weir%2C_Bob_(2007)_2.jpg', 1);
-
+[source,sql]
+----------------------------------------------------------------------------------------------------
+insert into Event (id, name, description, major, picture, version) values (1, 'Shane''s Sock Puppets', 'This critically acclaimed masterpiece...', true, 'http://dl.dropbox.com/u/65660684/640px-Carnival_Puppets.jpg', 1);
+insert into Event (id, name, description, major, picture, version) values (2, 'Rock concert of the decade', 'Get ready to rock...', true, 'http://dl.dropbox.com/u/65660684/640px-Weir%2C_Bob_(2007)_2.jpg', 1);
+----------------------------------------------------------------------------------------------------
 
 == Adding a new entity using JBoss Developer Studio
 
@@ -716,16 +723,17 @@ Now the secret sauce to connecting your front-end to your back-end is simply edi
 
 Insert the following block of code directly below the alert()
 
+[source,javascript]
 ----------------------------------------------------------------------------------------------------
-     $.getJSON("rest/events", function(events) {
-    // console.log("returned are " + events);
-    var listOfEvents = $("#listOfItems");
-    listOfEvents.empty();
-    $.each(events, function(index, event) {
+    $.getJSON("rest/events", function(events) {
+        // console.log("returned are " + events);
+        var listOfEvents = $("#listOfItems");
+        listOfEvents.empty();
+        $.each(events, function(index, event) {
             // console.log(event.name);
             listOfEvents.append("<li><a href='#'>" + event.name + "</a>");
-    });
-    listOfEvents.listview("refresh");
+        });
+        listOfEvents.listview("refresh");
     });
 ----------------------------------------------------------------------------------------------------
 
@@ -826,12 +834,15 @@ Before we proceed with the tutorial and implement TicketMonster, we need to clea
 
 Also, we will update the `src/main/resources/import.sql` file and remove the `Member` entity insertion:
 
-    insert into Member (id, name, email, phone_number) values (0, 'John Smith', 'john.smith@mailinator.com', '2125551212' 
+[source,sql]
+----------------------------------------------------------------------------------------------------
+insert into Member (id, name, email, phone_number) values (0, 'John Smith', 'john.smith@mailinator.com', '2125551212' 
+----------------------------------------------------------------------------------------------------
 
 The data file should contain only the Event data import:
 
-    insert into Event (id, name, description, major, picture, version) values (1, 'Shane''s Sock Puppets', 'This critically acclaimed masterpiece...', true, 'http://dl.dropbox.com/u/65660684/640px-Carnival_Puppets.jpg', 1);
-    insert into Event (id, name, description, major, picture, version) values (2, 'Rock concert of the decade', 'Get ready to rock...', true, 'http://dl.dropbox.com/u/65660684/640px-Weir%2C_Bob_(2007)_2.jpg', 1);
-
-
-
+[source,sql]
+----------------------------------------------------------------------------------------------------
+insert into Event (id, name, description, major, picture, version) values (1, 'Shane''s Sock Puppets', 'This critically acclaimed masterpiece...', true, 'http://dl.dropbox.com/u/65660684/640px-Carnival_Puppets.jpg', 1);
+insert into Event (id, name, description, major, picture, version) values (2, 'Rock concert of the decade', 'Get ready to rock...', true, 'http://dl.dropbox.com/u/65660684/640px-Weir%2C_Bob_(2007)_2.jpg', 1);
+----------------------------------------------------------------------------------------------------

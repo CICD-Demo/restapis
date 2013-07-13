@@ -47,6 +47,7 @@ version for the Errai artifacts. Make sure that you have the following in the `d
 ---------------------------------------------------------------------------------
 
 Next, we check if the GWT and Errai artifacts are included in the project.
+
 .pom.xml
 [source,xml]
 ---------------------------------------------------------------------------------

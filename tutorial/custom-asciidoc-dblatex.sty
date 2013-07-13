@@ -25,6 +25,13 @@
 \definecolor{comment}{rgb}{0, 0.456, 0}
 \definecolor{keyword}{rgb}{0.5, 0, 0.5}
 
+% To handle upquotes in the docbook
+\usepackage{upquote}
+
+% For source listings
+\usepackage{fancyvrb}
+\usepackage[T1]{fontenc}
+
 % JavaScript is not part of the listings package...
 % but thankfully this page shows how to add it:
 % http://lenaherrmann.net/2010/05/20/javascript-syntax-highlighting-in-the-latex-listings-package
@@ -39,7 +46,19 @@
   morestring=[b]"
 } 
 
+% Forge Shell Script
+% Add other Forge plugins as keywords if needed
+\lstdefinelanguage{fsh}{
+  keywords={forge, project, entity, field, validation, constraint, scaffold, richfaces},
+  sensitive=false,
+  comment=[s][\color{blue}\ttfamily]{@/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+}
+
 % Parameters for formatting code (affects all code listings)
+% Break at whitespace instead of arbitrary characters
+% Prevents arrows from occurring on line breaks
 \lstset{
   backgroundcolor=\color{canvas},
   basicstyle=\ttfamily\small\color{code},
@@ -47,5 +66,13 @@
   identifierstyle=\color{black},
   keywordstyle=\color{keyword}\bfseries,
   ndkeywordstyle=\color{keyword}\bfseries,
-  stringstyle=\color{blue}\ttfamily
+  stringstyle=\color{blue}\ttfamily,
+  showspaces=false,
+  breakatwhitespace=true,
+  breaklines=true,
+  showstringspaces=false,
+  stringstyle=\itshape,
+  keepspaces=true,
+  captionpos=t,
+  prebreak=\space
 }

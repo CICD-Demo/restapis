@@ -21,8 +21,6 @@ Before we dive into the code, let's discuss the requirements for the application
 
 === Use cases
 
-
-
 We have grouped the current use cases in two major categories: end user oriented, and
 administrative.
 
@@ -90,21 +88,29 @@ Before building and running TicketMonster, you must generate the administration 
 
 TicketMonster can be built from Maven, by runnning the following Maven command:
 
-    mvn clean package
+----
+mvn clean package
+----
 		
 If you want to run the Arquillian tests as part of the build, you can enable one of the two available Arquillian profiles.
 
 For running the tests in an _already running_ application server instance, use the `arq-jbossas-remote` profile.
 
-    mvn clean package -Parq-jbossas-remote
+----
+mvn clean package -Parq-jbossas-remote
+----
 
 If you want the test runner to _start_ an application server instance, use the `arq-jbossas-managed` profile. You must set up the `JBOSS_HOME` property to point to the server location, or update the `src/main/test/resources/arquillian.xml` file.
 
-    mvn clean package -Parq-jbossas-managed
+----
+mvn clean package -Parq-jbossas-managed
+----
 
 If you intend to deploy into link:http://openshift.com[OpenShift], you can use the `postgresql-openshift` profile:
 
-    mvn clean package -Ppostgresql-openshift
+----
+mvn clean package -Ppostgresql-openshift
+----
 	
 ==== Running TicketMonster
 
@@ -118,19 +124,23 @@ First, _start JBoss Enterprise Application Platform 6 or JBoss AS 7 with the Web
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
-
-        For Linux:   JBOSS_HOME/bin/standalone.sh
-        For Windows: JBOSS_HOME\bin\standalone.bat
++
+----
+For Linux:   JBOSS_HOME/bin/standalone.sh
+For Windows: JBOSS_HOME\bin\standalone.bat
+----
 		
 Then, _deploy TicketMonster_.
 
 
 1. Make sure you have started the JBoss Server as described above.
 2. Type this command to build and deploy the archive into a running server instance.
-
-        mvn clean package jboss-as:deploy
-	
-	(You can use the `arq-jbossas-remote` profile for running tests as well)
++
+----
+mvn clean package jboss-as:deploy
+----
++
+(You can use the `arq-jbossas-remote` profile for running tests as well)
 
 3. This will deploy `target/ticket-monster.war` to the running instance of the server.
 4. Now you can see the application running at http://localhost:8080/ticket-monster.
@@ -147,29 +157,39 @@ Then, _build and deploy it_.
 
 1. Build TicketMonster using either: 
     * the default profile (with H2 database support)
-    
-            mvn clean package	
++
+----
+mvn clean package
+----
     
 	* the `postgresql-openshift` profile (with PostgreSQL support) if the PostgreSQL cartrdige is enabled in OpenShift.
-            
-            mvn clean package -Ppostgresql-openshift
++
+----            
+mvn clean package -Ppostgresql-openshift
+----
 			
-2. Copy the `target/ticket-monster.war` file in the OpenShift Git repository(located at `<root-of-openshift-application-git-repository>`).
-
-	    cp target/ticket-monster.war <root-of-openshift-application-git-repository>/deployments/ROOT.war
+2. Copy the `target/ticket-monster.war` file in the OpenShift Git repository (located at `<root-of-openshift-application-git-repository>`).
++
+----
+cp target/ticket-monster.war <root-of-openshift-application-git-repository>/deployments/ROOT.war
+----
 
 3. Navigate to `<root-of-openshift-application-git-repository>` folder
 
 4. Remove the existing `src` folder and `pom.xml` file. 
-
-        git rm -r src
-        git rm pom.xml
++
+----
+git rm -r src
+git rm pom.xml
+----
 
 5.  Add the copied file to the repository, commit and push to Openshift
-        
-		git add deployments/ROOT.war
-		git commit -m "Deploy TicketMonster"
-		git push
++
+----        
+git add deployments/ROOT.war
+git commit -m "Deploy TicketMonster"
+git push
+----
 		
 6. Now you can see the application running at at `http://<app-name>-<domain-name>.rhcloud.com`
 
@@ -189,4 +209,3 @@ After reading this series you will understand how to:
 * thoroughly test your project using JUnit and Arquillian;
 
 Throughout the series, you will be shown how to achieve these goals using JBoss Developer Studio.
-
