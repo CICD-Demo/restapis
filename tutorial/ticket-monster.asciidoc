@@ -5,7 +5,6 @@ ifdef::asciidoctor[]
 // put Asciidoctor-specific settings here
 endif::asciidoctor[]
 
-[preface]
 include::WhatIsTicketMonster.asciidoc[]
 
 include::Introduction.asciidoc[]
