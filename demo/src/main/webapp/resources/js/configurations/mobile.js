@@ -15,11 +15,15 @@ require.config({
         utilities: 'app/utilities',
         router:'app/router/mobile/router'
     },
-    // We shim Backbone since it doesn't declare an AMD module
+    // We shim Backbone.js and Underscore.js since they don't declare AMD modules
     shim: {
         'backbone': {
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
+        },
+        
+        'underscore': {
+        	exports: '_'
         }
     }
 });
@@ -32,7 +36,7 @@ define("configuration", function() {
     } else {
         return {
             baseUrl: ""
-        }
+        };
     }
 });
 
@@ -46,21 +50,17 @@ define("initializer", [
 	$.ajaxSetup({cache:false});
     $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.3.1.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/m.screen.css"/>');
+    // Bind to mobileinit before loading jQueryMobile
     $(document).bind("mobileinit", function () {
-        utilities.applyTemplate($('body'), MainTemplate)
+        // Prior to creating and starting the router, we disable jQuery Mobile's own routing mechanism
+        $.mobile.hashListeningEnabled = false;
+        $.mobile.linkBindingEnabled = false;
+        $.mobile.pushStateEnabled = false;
+        utilities.applyTemplate($('body'), MainTemplate);
     });
+    // Then (load jQueryMobile and) start the router to finally start the app
+    require(['router']);
 });
-
 
 // Now we declare all the dependencies
-require(['order!initializer',
-         'order!underscore',
-         'order!backbone',
-         'order!router'],
-    function(){
-});
-
-define(["configuration"],function(configuration){
-    return {config: configuration };
-});
-
+require(['initializer']);

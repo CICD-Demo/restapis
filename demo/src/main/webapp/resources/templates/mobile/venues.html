@@ -9,7 +9,7 @@
         %>
         <div data-role="collapsible">
             <h2><%= city %></h2>
-            <ul id="cityMenu" data-role="listview">
+            <ul id="cityMenu" data-role="listview" data-inset="true">
             <%
             _.each(model.models, function (model) {
                 if (model.get('address').city == city) {

@@ -42,11 +42,6 @@ define("router",[
             BookingDetailView,
             HomeViewTemplate) {
 
-    // prior to creating an starting the router, we disable jQuery Mobile's own routing mechanism
-    $.mobile.hashListeningEnabled = false;
-    $.mobile.linkBindingEnabled = false;
-    $.mobile.pushStateEnabled = false;
-
     /**
      * The Router class contains all the routes within the application - i.e. URLs and the actions
      * that will be taken as a result.
@@ -54,6 +49,9 @@ define("router",[
      * @type {Router}
      */
     var Router = Backbone.Router.extend({
+    	initialize: function() {
+    		Backbone.history.start();
+    	},
         routes:{
             "":"home",
             "events":"events",
@@ -141,12 +139,6 @@ define("router",[
                 }).fetch();
         }
     });
-
-    // Create a router instance
-    var router = new Router();
-
-    // Begin routing
-    Backbone.history.start();
-
-    return router;
+    
+    return new Router();
 });

@@ -9,17 +9,20 @@ requirejs.config({
         jquery:'libs/jquery-1.9.1',
         underscore:'libs/underscore',
         text:'libs/text',
-        order:'libs/order',
         bootstrap: 'libs/bootstrap',
         backbone: 'libs/backbone',
         utilities: 'app/utilities',
         router:'app/router/desktop/router'
     },
-    // We shim Backbone since it doesn't declare an AMD module
+    // We shim Backbone.js and Underscore.js since they don't declare AMD modules
     shim: {
         'backbone': {
             deps: ['jquery', 'underscore'],
             exports: 'Backbone'
+        },
+        
+        'underscore': {
+        	exports: '_'
         }
     }
 });
@@ -35,8 +38,8 @@ define("initializer", ["jquery"],
 
 // Now we declare all the dependencies
 require([
-    'order!initializer',
-    'order!router'
+    'initializer',
+    'router'
 ], function(){
 });
 
