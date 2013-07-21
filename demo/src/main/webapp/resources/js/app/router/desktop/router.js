@@ -69,18 +69,18 @@ define("router", [
         events:function () {
             var events = new Events();
             var eventsView = new EventsView({model:events, el:$("#content")});
-            events.bind("reset",
+            events.on("reset",
                 function () {
                     utilities.viewManager.showView(eventsView);
-                }).fetch();
+                }).fetch({reset:true});
         },
         venues:function () {
             var venues = new Venues;
             var venuesView = new VenuesView({model:venues, el:$("#content")});
-            venues.bind("reset",
+            venues.on("reset",
                 function () {
                     utilities.viewManager.showView(venuesView);
-                }).fetch();
+                }).fetch({reset:true});
         },
         home:function () {
             utilities.viewManager.showView(new HomeView({el:$("#content")}));
@@ -107,11 +107,12 @@ define("router", [
                         page: 1,
                         count:data.count});
 
-                    bookings.bind("destroy",
+                    bookings.on("destroy",
                         function () {
                             bookingsView.refreshPage();
                         });
-                    bookings.fetch({data:{first:1, maxResults:10},
+                    bookings.fetch({reset:true,
+                    	data:{first:1, maxResults:10},
                         processData:true, success:function () {
                             utilities.viewManager.showView(bookingsView);
                         }});
@@ -122,7 +123,7 @@ define("router", [
         eventDetail:function (id) {
             var model = new Event({id:id});
             var eventDetailView = new EventDetailView({model:model, el:$("#content")});
-            model.bind("change",
+            model.on("change",
                 function () {
                     utilities.viewManager.showView(eventDetailView);
                 }).fetch();
@@ -130,7 +131,7 @@ define("router", [
         venueDetail:function (id) {
             var model = new Venue({id:id});
             var venueDetailView = new VenueDetailView({model:model, el:$("#content")});
-            model.bind("change",
+            model.on("change",
                 function () {
                     utilities.viewManager.showView(venueDetailView);
                 }).fetch();
@@ -138,7 +139,7 @@ define("router", [
         bookingDetail:function (id) {
             var bookingModel = new Booking({id:id});
             var bookingDetailView = new BookingDetailView({model:bookingModel, el:$("#content")});
-            bookingModel.bind("change",
+            bookingModel.on("change",
                 function () {
                     utilities.viewManager.showView(bookingDetailView);
                 }).fetch();

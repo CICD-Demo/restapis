@@ -81,18 +81,18 @@ define("router",[
         events:function () {
             var events = new Events;
             var eventsView = new EventsView({model:events, el:$("#container")});
-            events.bind("reset",
+            events.on("reset",
                 function () {
                     utilities.viewManager.showView(eventsView);
-                }).fetch();
+                }).fetch({reset:true});
         },
         venues:function () {
             var venues = new Venues;
             var venuesView = new VenuesView({model:venues, el:$("#container")});
-            venues.bind("reset",
+            venues.on("reset",
                 function () {
                     utilities.viewManager.showView(venuesView);
-                }).fetch();
+                }).fetch({reset:true});
         },
         about:function () {
             new AboutView({el:$("#container")}).render();
@@ -104,18 +104,18 @@ define("router",[
         listBookings:function () {
             var bookings = new Bookings();
             var bookingsView = new BookingsView({model:bookings, el:$("#container")});
-            bookings.bind("reset",
+            bookings.on("reset",
                 function () {
                     utilities.viewManager.showView(bookingsView);
-                }).bind("destroy",
+                }).on("destroy",
                 function () {
-                    this.fetch();
-                }).fetch();
+                    this.fetch({reset:true});
+                }).fetch({reset:true});
         },
         eventDetail:function (id) {
             var model = new Event({id:id});
             var eventDetailView = new EventDetailView({model:model, el:$("#container")});
-            model.bind("change",
+            model.on("change",
                 function () {
                     utilities.viewManager.showView(eventDetailView);
                     $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
@@ -124,7 +124,7 @@ define("router",[
         venueDetail:function (id) {
             var model = new Venue({id:id});
             var venueDetailView = new VenueDetailView({model:model, el:$("#container")});
-            model.bind("change",
+            model.on("change",
                 function () {
                     utilities.viewManager.showView(venueDetailView);
                     $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
@@ -133,7 +133,7 @@ define("router",[
         bookingDetail:function (id) {
             var bookingModel = new Booking({id:id});
             var bookingDetailView = new BookingDetailView({model:bookingModel, el:$("#content")});
-            bookingModel.bind("change",
+            bookingModel.on("change",
                 function () {
                     utilities.viewManager.showView(bookingDetailView);
                 }).fetch();

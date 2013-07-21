@@ -41,7 +41,8 @@ define([
                 function (data) {
                     self.options.count = data.count;
                     if (self.options.count > 0 ) {
-                    self.model.bookings.fetch({data:options,
+                    self.model.bookings.fetch({reset:true,
+                    	data:options,
                         processData:true, success:function () {
                             self.render();
                             $("a[data-tm-page='"+self.options.page+"']").addClass("active")
