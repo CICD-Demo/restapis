@@ -21,6 +21,7 @@ import org.hibernate.search.annotations.SpatialMode;
  * 
  * @author Marius Bogoevici
  * @author Pete Muir
+ * @author Emmanuel Bernard
  */
 @SuppressWarnings("serial")
 @Embeddable
