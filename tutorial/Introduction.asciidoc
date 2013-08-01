@@ -89,8 +89,7 @@ You can skip the step in the installation wizard that allows you to install JBos
 =================================================================
 For a deeper dive into the world of Maven and how it is used with
 JBoss Developer Studio and JBoss Enterprise Application 
-Platform 6 (or JBoss Tools and JBoss AS 7) review 
-link: http://vimeo.com/39796236[this video].
+Platform 6 (or JBoss Tools and JBoss AS 7) review http://vimeo.com/39796236[this video].
 =================================================================
 
 Now that everything is properly installed, configured, running and verified to work, let's build something "from scratch".
@@ -704,17 +703,168 @@ image::gfx/introduction/new_html_file_correct_location.png[]
 
 Select *Next*.
 
-On the *Select HTML Template* page of the *New HTML File* wizard, select *HTML5 jQuery Mobile Page*.  This template will get you off to a fast start using jQuery Mobile.
+On the *Select HTML Template* page of the *New HTML File* wizard, select *New HTML File (5)*.  This template will get you started with a boilerplate HTML5 document.
 
 [[select_html_template]]
-.Select HTML5 jQuery Mobile Template
+.Select New HTML File (5) Template
 image::gfx/introduction/select_html_template.png[]
 
 Select *Finish*.
 
-The document must start with `<!DOCTYPE html>` as this identifies the page as HTML 5 based. For this particular phase of the tutorial, we are not introducing a bunch of HTML 5 specific concepts like the new form fields (type=email), websockets or the new CSS capabilities.  For now, we simply wish to get our mobile application completed as soon as possible.  The good news is that jQuery and jQuery Mobile make the consumption of a RESTful endpoint very simple.  
+The document must start with `<!DOCTYPE html>` as this identifies the page as HTML 5 based. For this particular phase of the tutorial, we are not introducing a bunch of HTML 5 specific concepts like the new form fields (type=email), websockets or the new CSS capabilities.  For now, we simply wish to get our mobile application completed as soon as possible.  The good news is that jQuery and jQuery Mobile make the consumption of a RESTful endpoint very simple.
 
-You might notice that in the *Visual Page Editor*, the visual portion is not that attractive, this is because the majority of jQuery Mobile magic happens at runtime and our visual page editor simply displays the HTML without embellishment.  
+You will now notice the Palette View visible in the JBoss perspective. This view contains a collection of popular jQuery Mobile widgets that can be dragged and dropped into the HTML pages to speed up construction of jQuery Mobile pages.
+
+[[jquery_mobile_palette]]
+.The jQuery Mobile Palette
+image::gfx/introduction/jquery_mobile_palette.png[]
+
+[TIP]
+=================================================================
+For a deeper dive into the jQuery Mobile palette feature in 
+JBoss Developer Studio review http://vimeo.com/67480300[this video].
+=================================================================
+
+Let us first set the title of the HTML5 document as:
+
+[source,html]
+----------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>TicketMonster</title>
+</head>
+<body>
+
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+
+We shall now add the jQuery and jQuery Mobile JavaScript and CSS files to the HTML document. Luckily for us we can do this by clicking the _JS/CSS_ widget in the palette.
+
+[[js_css_widget]]
+.Click the JS/CSS widget
+image::gfx/introduction/js_css_widget.png[]
+
+This results in the following document with the jQuery JavaScript file and the jQuery Mobile JavaScript and CSS files being added to the _head_ element.  
+
+[source,html]
+----------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>TicketMonster</title>
+</head>
+<body>
+
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+
+We shall now proceed to setup the page layout. Click the _page_ widget in the palette to do so. Ensure that the cursor is in the `<body>` element of the document when you do so.
+
+[[jquery_mobile_page_widget]]
+.Click the page widget
+image::gfx/introduction/jquery_mobile_page_widget.png[]
+
+[CAUTION]
+=================================================================
+When you click some of the widgets in the palette, it is important
+to have the cursor in the right element of the document.
+Failing to observe this will result in the widget being added in 
+undesired locations. Alternatively, you can drag and drop the 
+widget to the desired location in the document.
+=================================================================
+
+This opens a dialog to configure the jQuery Mobile page.
+
+[[jquery_mobile_page]]
+.Create a new jQuery Mobile page
+image::gfx/introduction/jquery_mobile_page.png[]
+
+Set the page title as "TicketMonster", footer as blank, and the ID as "page1". Click *Finish* to add a new jQuery Mobile page to the document. The layout is now established.
+
+[source,html]
+----------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>TicketMonster</title>
+</head>
+<body>
+	<div data-role="page" id="page1">
+		<div data-role="header">
+			<h1>TicketMonster</h1>
+		</div>
+		<div data-role="content">
+			<p>Page content goes here.</p>
+		</div>
+		<div data-role="footer">
+			<h4></h4>
+		</div>
+	</div>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+
+To populate the page content, remove the paragraph element: `<p>Page content goes here.</p>` to start with a blank content section. Click the _Listview_ widget in the palette to start populating the content section.
+
+[[jquery_mobile_listview_widget]]
+.Click the Listview widget
+image::gfx/introduction/jquery_mobile_listview_widget.png[]
+
+This opens a new dialog to configure the jQuery Mobile listview widget.
+
+[[jquery_mobile_listview]]
+.Add a jQuery Mobile Listview widget
+image::gfx/introduction/jquery_mobile_listview.png[]
+
+Select the inset checkbox to display the list as an inset list. Inset lists do not span the entire widget of the display. Set the ID as "listOfItems". Retain the number of items in the list as three, and also their labels, but modify the URL values to '#'. Retain the default values for the other fields, and click *Finish*. This will create a listview widget with 3 item entries in the list. The jQuery Mobile page is now structurally complete.
+
+[source,html]
+----------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+	<meta charset="UTF-8">
+	<title>TicketMonster</title>
+</head>
+<body>
+	<div data-role="page" id="page1">
+		<div data-role="header">
+			<h1>TicketMonster</h1>
+		</div>
+		<div data-role="content">
+			<ul data-role="listview" id="listOfItems" data-inset="true">
+				<li><a href="#">Item 1</a></li>
+				<li><a href="#">Item 2</a></li>
+				<li><a href="#">Item 3</a></li>
+			</ul>
+		</div>
+		<div data-role="footer">
+			<h4></h4>
+		</div>
+	</div>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+
+You might notice that in the *Visual Page Editor*, the visual portion is not that attractive, this is because the majority of jQuery Mobile magic happens at runtime and our visual page editor simply displays the HTML without embellishment.
 
 Visit link:http://localhost:8080/ticket-monster/mobile.html[].
 
@@ -724,7 +874,7 @@ Note: Normally HTML files are deployed automatically, if you find it missing,
 just use Full Publish or Run As Run on Server as demonstrated in previous steps.
 =================================================================================
 
-As soon as the page loads, you will be prompted with an alert box with "Ready to Go".  This alert box is generated from JavaScript that is associated with the pageinit event.
+As soon as the page loads, you can view the jQuery Mobile enhanced page.
 
 [[jquery_mobile_template_image]]
 .jQuery Mobile Template
@@ -732,26 +882,35 @@ image::gfx/introduction/jquery_mobile_template.png[]
 
 One side benefit of using a HTML5 + jQuery-based front-end to your application is that it allows for fast turnaround in development.  Simply edit the HTML file, save the file and refresh your browser.  
 
-Now the secret sauce to connecting your front-end to your back-end is simply editing the pageinit JavaScript event and including an invocation of the previously created Events JAX-RS service.
+Now the secret sauce to connecting your front-end to your back-end is simply observing the jQuery Mobile _pageinit_ JavaScript event and including an invocation of the previously created Events JAX-RS service.
 
-Insert the following block of code directly below the alert()
+Insert the following block of code as the last item in the `<head>` element
 
-[source,javascript]
+[source,html]
 ----------------------------------------------------------------------------------------------------
-    $.getJSON("rest/events", function(events) {
-        // console.log("returned are " + events);
-        var listOfEvents = $("#listOfItems");
-        listOfEvents.empty();
-        $.each(events, function(index, event) {
-            // console.log(event.name);
-            listOfEvents.append("<li><a href='#'>" + event.name + "</a>");
+<head>
+    ...
+    <title>TicketMonster</title>
+    <script type="text/javascript">
+        $(document).on("pageinit", "#page1", function(event){ 
+            $.getJSON("rest/events", function(events) {
+                // console.log("returned are " + events);
+                var listOfEvents = $("#listOfItems");
+                listOfEvents.empty();
+                $.each(events, function(index, event) {
+                    // console.log(event.name);
+                    listOfEvents.append("<li><a href='#'>" + event.name + "</a>");
+                });
+                listOfEvents.listview("refresh");
+            });
         });
-        listOfEvents.listview("refresh");
-    });
+    </script>
+</head>
 ----------------------------------------------------------------------------------------------------
 
 Note:
 
+* On triggering _pageinit_ on the page having id "page1"
 * using `$.getJSON("rest/events")` to hit the `EventService.java`
 * a commented out `// console.log`, causes problems in IE
 * Getting a reference to `listOfItems` which is declared in the HTML using an `id` attribute
