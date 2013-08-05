@@ -107,7 +107,7 @@ public class SectionAllocation implements Serializable {
      * </p>
      */
     @Lob
-    private long allocated[][];
+    private long[][] allocated;
 
     /**
      * <p>
