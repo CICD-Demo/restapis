@@ -3,31 +3,29 @@ package org.jboss.jdf.example.ticketmonster.service;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ejb.Asynchronous;
+import javax.ejb.Singleton;
 import javax.ejb.Timer;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.BotService;
-import org.jboss.jdf.example.ticketmonster.monitor.client.shared.qualifier.BotMessage;
 import org.jboss.jdf.example.ticketmonster.rest.BookingService;
 import org.jboss.jdf.example.ticketmonster.util.CircularBuffer;
 import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
+import org.jboss.jdf.example.ticketmonster.util.qualifier.BotMessage;
 
 /**
- * Implementation of {@link BotService}.
- * 
- * Errai's @Service annotation exposes this service as an RPC endpoint.
+ * A Bot service that acts as a Facade for the Bot, providing methods to control the Bot state as well as to obtain the current
+ * state of the Bot.
  * 
  * @author Christian Sadilek <csadilek@redhat.com>
  * @author Pete Muir
+ * @author Vineet Reynolds
  */
-@ApplicationScoped
-@Service
-public class BotServiceImpl implements BotService {
+@Singleton
+public class BotService {
 
     private static final int MAX_LOG_SIZE = 50;
 
@@ -35,23 +33,23 @@ public class BotServiceImpl implements BotService {
 
     @Inject
     private Bot bot;
-    
+
     @Inject
     private BookingService bookingService;
-    
+
     @Inject
     private Logger logger;
-    
-    @Inject @BotMessage
+
+    @Inject
+    @BotMessage
     private Event<String> event;
 
     private Timer timer;
 
-    public BotServiceImpl() {
+    public BotService() {
         log = new CircularBuffer<String>(MAX_LOG_SIZE);
     }
 
-    @Override
     public void start() {
         synchronized (bot) {
             if (timer == null) {
@@ -61,7 +59,6 @@ public class BotServiceImpl implements BotService {
         }
     }
 
-    @Override
     public void stop() {
         synchronized (bot) {
             if (timer != null) {
@@ -71,14 +68,16 @@ public class BotServiceImpl implements BotService {
             }
         }
     }
-    
-    @Override
+
+    @Asynchronous
     public void deleteAll() {
         synchronized (bot) {
             stop();
-            for (Booking booking : bookingService.getAll(MultivaluedHashMap.<String, String>empty())) {
+            for (Booking booking : bookingService.getAll(MultivaluedHashMap
+                .<String, String> empty())) {
                 bookingService.deleteBooking(booking.getId());
-                event.fire("Deleted booking " + booking.getId() + " for " + booking.getContactEmail() + "\n");
+                event.fire("Deleted booking " + booking.getId() + " for "
+                    + booking.getContactEmail() + "\n");
             }
         }
     }
@@ -87,9 +86,12 @@ public class BotServiceImpl implements BotService {
         log.add(bookingRequest);
     }
 
-    @Override
     public List<String> fetchLog() {
         return log.getContents();
+    }
+
+    public boolean isBotActive() {
+        return (timer != null);
     }
 
 }

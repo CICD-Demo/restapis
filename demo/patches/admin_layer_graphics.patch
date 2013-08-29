@@ -1,5 +1,5 @@
 diff --git ../demo/src/main/webapp/admin/app.html ../demo/src/main/webapp/admin/app.html
-index 1814b12..bb98de9 100644
+index 1814b12..5e2c0b6 100644
 --- ../demo/src/main/webapp/admin/app.html
 +++ ../demo/src/main/webapp/admin/app.html
 @@ -4,17 +4,29 @@
@@ -28,7 +28,7 @@ index 1814b12..bb98de9 100644
 +                            <li><a href="../index.html#events">Events</a></li>
 +                            <li><a href="../index.html#venues">Venues</a></li>
 +                            <li><a href="../index.html#bookings">Bookings</a></li>
-+                            <li><a href="../booking-monitor.html">Monitor</a></li>
++                            <li><a href="../index.html#monitor">Monitor</a></li>
 +                            <li><a href="#">Administration</a></li>
 +                        </ul>
 +                    </div>

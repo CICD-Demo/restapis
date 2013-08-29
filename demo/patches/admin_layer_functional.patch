@@ -196,6 +196,22 @@ index f786568..26818f8 100644
 +   }
  }
 \ No newline at end of file
+diff --git ../demo/src/main/webapp/WEB-INF/web.xml ../demo/src/main/webapp/WEB-INF/web.xml
+deleted file mode 100644
+index c55d67a..0000000
+--- ../demo/src/main/webapp/WEB-INF/web.xml
++++ /dev/null
+@@ -1,10 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+-  <display-name>ticket-monster</display-name>
+-  <session-config>
+-    <session-timeout>30</session-timeout>
+-  </session-config>
+-  <welcome-file-list>
+-    <welcome-file>/index.html</welcome-file>
+-  </welcome-file-list>
+-</web-app>
 diff --git ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js
 index 8bb871b..8fecbce 100644
 --- ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js
