@@ -47,6 +47,8 @@ define("initializer", [
 ], function ($,
              utilities,
              MainTemplate) {
+    // Configure jQuery to append timestamps to requests, to bypass browser caches
+    // Important for MSIE
 	$.ajaxSetup({cache:false});
     $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.3.1.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/m.screen.css"/>');
@@ -63,4 +65,5 @@ define("initializer", [
 });
 
 // Now we declare all the dependencies
+// This loads and runs the 'initializer' module.
 require(['initializer']);

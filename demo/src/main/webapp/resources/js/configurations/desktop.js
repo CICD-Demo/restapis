@@ -27,8 +27,9 @@ requirejs.config({
     }
 });
 
-define("initializer", ["jquery"],
-    function ($) {
+define("initializer", ["jquery"], function ($) {
+    // Configure jQuery to append timestamps to requests, to bypass browser caches
+    // Important for MSIE
 	$.ajaxSetup({cache:false});
     $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
@@ -37,6 +38,7 @@ define("initializer", ["jquery"],
 });
 
 // Now we declare all the dependencies
+// This loads and runs the 'initializer' and 'router' modules.
 require([
     'initializer',
     'router'

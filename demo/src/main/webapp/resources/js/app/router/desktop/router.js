@@ -53,6 +53,10 @@ define("router", [
      */
 
     var Router = Backbone.Router.extend({
+        initialize: function() {
+            //Begin dispatching routes
+            Backbone.history.start();
+        },
         routes:{
             "":"home",
             "about":"home",
@@ -149,9 +153,6 @@ define("router", [
 
     // Create a router instance
     var router = new Router();
-
-    //Begin routing
-    Backbone.history.start();
 
     return router;
 });

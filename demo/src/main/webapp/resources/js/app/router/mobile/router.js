@@ -1,5 +1,5 @@
 /**
- * A module for the router of the desktop application.
+ * A module for the router of the mobile application.
  *
  */
 define("router",[
@@ -50,6 +50,7 @@ define("router",[
      */
     var Router = Backbone.Router.extend({
     	initialize: function() {
+            //Begin dispatching routes
     		Backbone.history.start();
     	},
         routes:{
@@ -140,5 +141,8 @@ define("router",[
         }
     });
     
-    return new Router();
+    // Create a router instance
+    var router = new Router();
+    
+    return router;
 });

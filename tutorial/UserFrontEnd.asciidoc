@@ -74,9 +74,8 @@ We put stylesheets in `resources/css` folder, images in `resources/img`, and HTM
 The first step in implementing our solution is adding the stylesheets and JavaScript libraries to the `resources/css` and `resources/js/libs`:
 
 require.js::
-    AMD support, along with the plugins:
+    AMD support, along with the plugin:
 ** text - for loading text files, in our case the HTML templates
-** order - for enforcing load ordering if necessary
 jQuery::
     general purpose library for HTML traversal and manipulation
 Underscore::
@@ -152,33 +151,40 @@ requirejs.config({
         jquery:'libs/jquery-1.9.1',
         underscore:'libs/underscore',
         text:'libs/text',
-        order:'libs/order',
         bootstrap: 'libs/bootstrap',
         backbone: 'libs/backbone',
         utilities: 'app/utilities',
         router:'app/router/desktop/router'
     },
-    // We shim Backbone since it doesn't declare an AMD module
+    // We shim Backbone.js and Underscore.js since they don't declare AMD modules
     shim: {
         'backbone': {
             deps: ['jquery', 'underscore'],
             exports: 'Backbone'
+        },
+        
+        'underscore': {
+            exports: '_'
         }
     }
 });
 
 define("initializer", ["jquery"],
     function ($) {
+    // Configure jQuery to append timestamps to requests, to bypass browser caches
+    // Important for MSIE
+    $.ajaxSetup({cache:false});
     $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
     $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
 });
 
-// Now we declare all the dependencies
+// Now we load the dependencies
+// This loads and runs the 'initializer' and 'router' modules.
 require([
-    'order!initializer',
-    'order!router'
+    'initializer',
+    'router'
 ], function(){
 });
 
@@ -226,6 +232,10 @@ define("router", [
      */
 
     var Router = Backbone.Router.extend({
+        initialize: function() {
+            //Begin dispatching routes
+            Backbone.history.start();
+        },
         routes:{
         }
     });
@@ -233,14 +243,11 @@ define("router", [
     // Create a router instance
     var router = new Router();
 
-    //Begin routing
-    Backbone.history.start();
-
     return router;
 });
 -------------------------------------------------------------------------------------------------------
 
-Remember, this is a single page application. You can either navigate using urls such as `http://localhost:8080/ticket-monster/desktop-index.html#events` or using relative urls (from within the application, this being exactly what the main menu does). The fragment after the hash sign represents the url within the single page, on which the router will act, according to the mappings set up in the `routes` property.
+Remember, this is a single page application. You can either navigate using urls such as `http://localhost:8080/ticket-monster/index.html#events` or using relative urls (from within the application, this being exactly what the main menu does). The fragment after the hash sign represents the url within the single page, on which the router will act, according to the mappings set up in the `routes` property.
 
 The main module needs to load it. Because the router depends on all the other components (models, collections and views) of the application, directly or indirectly, it is the only component that is explicitly loaded in the `desktop` definition, which we change as follows:
 
@@ -259,11 +266,15 @@ requirejs.config({
         utilities: 'app/utilities',
         router:'app/router/desktop/router'
     },
-    // We shim Backbone since it doesn't declare an AMD module
+    // We shim Backbone.js and Underscore.js since they don't declare AMD modules
     shim: {
         'backbone': {
             deps: ['jquery', 'underscore'],
             exports: 'Backbone'
+        },
+        
+        'underscore': {
+            exports: '_'
         }
     }
 });
@@ -365,7 +376,9 @@ Once we defined a view, we must tell the router to navigate to it whenever reque
 .src/main/webapp/resources/js/app/router/desktop/router.js
 [source, javascript]
 -------------------------------------------------------------------------------------------------------
+    ...
     var Router = Backbone.Router.extend({
+        ...
         routes : { 
             "":"home",
             "about":"home"
@@ -374,6 +387,7 @@ Once we defined a view, we must tell the router to navigate to it whenever reque
             utilities.viewManager.showView(new HomeView({el:$("#content")}));
         }
     });
+    ...
 -------------------------------------------------------------------------------------------------------
 
 We have just told the router to invoke the `home` function whenever the user navigates to the root of the application or
@@ -584,6 +598,7 @@ Now that the views are in place, we need to add another routing rule to the appl
 [source, javascript]
 -------------------------------------------------------------------------------------------------------
     var Router = Backbone.Router.extend({
+        ...
         routes : { 
             ...,
             "events":"events"
@@ -805,6 +820,7 @@ define("router", [
             ...) {
 
     var Router = Backbone.Router.extend({
+        ...
         routes:{
             ...
             "events/:id":"eventDetail",
@@ -818,10 +834,12 @@ define("router", [
                     utilities.viewManager.showView(eventDetailView);
                 }).fetch();
         }
-});
+    }
+    ...
+);
 -------------------------------------------------------------------------------------------------------
 
-As you can see, this is very similar to the previous view and route, except that now the application can accept parameterized URLs (e.g. `http://localhost:8080/ticket-monster/desktop-index#events/1`). This URL can be entered directly into the browser, or it can be navigated to as a relative path (e.g. `#events/1`) from within the applicaton.
+As you can see, this is very similar to the previous view and route, except that now the application can accept parameterized URLs (e.g. `http://localhost:8080/ticket-monster/index#events/1`). This URL can be entered directly into the browser, or it can be navigated to as a relative path (e.g. `#events/1`) from within the applicaton.
 
 With this in place, all that remains is to implement the final view of this use case, creating the bookings.
 
@@ -1302,6 +1320,7 @@ define("router", [
             ) {
 
     var Router = Backbone.Router.extend({
+        ...
         routes:{
             ...
             "book/:showId/:performanceId":"bookTickets",
@@ -1317,7 +1336,9 @@ define("router", [
                            });
             utilities.viewManager.showView(createBookingView);
         }
-});
+    }
+    ...
+);
 -------------------------------------------------------------------------------------------------------
 
 This concludes the implementation of the booking use case. We started by listing the available events, continued by selecting a venue and performance time, and ended by choosing tickets and completing the order.
@@ -1337,9 +1358,8 @@ The mobile version of the application uses approximately the same architecture a
 The first step in implementing our solution is to copy the CSS and JavaScript libraries to `resources/css` and `resources/js/libs`:
 
 require.js::
-    AMD support, along with the plugins:
+    AMD support, along with the plugin:
 ** text - for loading text files, in our case the HTML templates
-** order - for enforcing load ordering if necessary
 jQuery::
     general purpose library for HTML traversal and manipulation
 Underscore::
@@ -1373,11 +1393,15 @@ require.config({
         utilities: 'app/utilities',
         router:'app/router/mobile/router'
     },
-    // We shim Backbone since it doesn't declare an AMD module
+    // We shim Backbone.js and Underscore.js since they don't declare AMD modules
     shim: {
         'backbone': {
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
+        },
+        
+        'underscore': {
+            exports: '_'
         }
     }
 });
@@ -1390,7 +1414,7 @@ define("configuration", function() {
     } else {
         return {
             baseUrl: ""
-        }
+        };
     }
 });
 
@@ -1401,32 +1425,33 @@ define("initializer", [
 ], function ($,
              utilities,
              MainTemplate) {
+    // Configure jQuery to append timestamps to requests, to bypass browser caches
+    // Important for MSIE
+    $.ajaxSetup({cache:false});
     $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.3.1.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/m.screen.css"/>');
+    // Bind to mobileinit before loading jQueryMobile
     $(document).bind("mobileinit", function () {
-        utilities.applyTemplate($('body'), MainTemplate)
+        // Prior to creating and starting the router, we disable jQuery Mobile's own routing mechanism
+        $.mobile.hashListeningEnabled = false;
+        $.mobile.linkBindingEnabled = false;
+        $.mobile.pushStateEnabled = false;
+        utilities.applyTemplate($('body'), MainTemplate);
     });
+    // Then (load jQueryMobile and) start the router to finally start the app
+    require(['router']);
 });
-
 
 // Now we declare all the dependencies
-require(['order!initializer',
-         'order!underscore',
-         'order!backbone',
-         'order!router'],
-    function(){
-});
-
-define(["configuration"],function(configuration){
-    return {config: configuration };
-});
+// This loads and runs the 'initializer' module.
+require(['initializer']);
 -------------------------------------------------------------------------------------------------------
 
-In this application, we combine Backbone and jQuery Mobile. Each framework has its own strengths; jQuery Mobile provides UI components and touch support, whilst Backbone provides MVC support. There is some overlap between the two, as jQuery Mobile provides its own navigation mechanism which we disable. 
-
-We also define a special initializer module (`initializer`) that, when loaded, adds the stylesheets and applies the template for the general structure of the page in the `body` element. Let us add the template definition.
+In this application, we combine Backbone and jQuery Mobile. Each framework has its own strengths; jQuery Mobile provides UI components and touch support, whilst Backbone provides MVC support. There is some overlap between the two, as jQuery Mobile provides its own navigation mechanism which we disable.
 
 We also define a `configuration` module which allows the customization of the base URLs for RESTful invocations. This module does not play any role in the mobile web version. We will come to it, however, when discussing hybrid applications.
+
+We also define a special initializer module (`initializer`) that, when loaded, adds the stylesheets and applies the template for the general structure of the page in the `body` element. In the initializer module we make customizations in order to get the two frameworks working together - disabling the jQuery Mobile navigation. Let us add the template definition for the template loaded by the initializer module.
 
 .src/main/webapp/resources/templates/mobile/main.html
 [source,html]
@@ -1444,7 +1469,7 @@ Next, we create the application router.
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
- * A module for the router of the desktop application.
+ * A module for the router of the mobile application.
  *
  */
 define("router",[
@@ -1459,11 +1484,6 @@ define("router",[
             utilities,
             HomeViewTemplate) {
 
-    // prior to creating an starting the router, we disable jQuery Mobile's own routing mechanism
-    $.mobile.hashListeningEnabled = false;
-    $.mobile.linkBindingEnabled = false;
-    $.mobile.pushStateEnabled = false;
-
     /**
      * The Router class contains all the routes within the application - i.e. URLs and the actions
      * that will be taken as a result.
@@ -1471,6 +1491,10 @@ define("router",[
      * @type {Router}
      */
     var Router = Backbone.Router.extend({
+        initialize: function() {
+            //Begin dispatching routes
+            Backbone.history.start();
+        },
         defaultHandler:function (actions) {
             if ("" != actions) {
                 $.mobile.changePage("#" + actions, {transition:'slide', changeHash:false, allowSamePageTransition:true});
@@ -1481,14 +1505,11 @@ define("router",[
     // Create a router instance
     var router = new Router();
 
-    // Begin routing
-    Backbone.history.start();
-
     return router;
 });
 -------------------------------------------------------------------------------------------------------
 
-In the router code we make customizations in order to get the two frameworks working together - disabling the jQuery Mobile navigation and adding the `defaultHandler` to the router for handling jQuery Mobile transitions between internal pages (such as the ones generated by a nested listview).
+In the router code we add the `defaultHandler` to the router for handling jQuery Mobile transitions between internal pages (such as the ones generated by a nested listview).
 
 Next, we need to create a first page.
 
@@ -1522,7 +1543,7 @@ Now we have to add the page to the router:
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
- * A module for the router of the desktop application.
+ * A module for the router of the mobile application.
  *
  */
 define("router",[
@@ -1534,6 +1555,7 @@ define("router",[
 
 	...
     var Router = Backbone.Router.extend({
+        ...
         routes:{
             "":"home"
         },
@@ -1646,6 +1668,7 @@ define("router",[
 
 	...
     var Router = Backbone.Router.extend({
+        ...
         routes:{
         	...
             "events":"events"
@@ -1872,6 +1895,7 @@ define("router",[
 
 	...
     var Router = Backbone.Router.extend({
+        ...
         routes:{
         	...
             "events/:id":"eventDetail",
@@ -2275,6 +2299,7 @@ define("router", [
             ...) {
 
     var Router = Backbone.Router.extend({
+        ...
         routes:{
             ...
             "book/:showId/:performanceId":"bookTickets",
@@ -2293,7 +2318,8 @@ define("router", [
             utilities.viewManager.showView(createBookingView);
         },
         ...
-        );
+        });
+    ...
 });
 -------------------------------------------------------------------------------------------------------
 
