@@ -7,7 +7,7 @@ require.config({
     baseUrl:"resources/js",
     paths: {
         jquery:'libs/jquery-1.9.1',
-        jquerymobile:'libs/jquery.mobile-1.3.1',
+        jquerymobile:'libs/jquery.mobile-1.3.2',
         text:'libs/text',
         underscore:'libs/underscore',
         backbone: 'libs/backbone',
@@ -50,7 +50,7 @@ define("initializer", [
     // Configure jQuery to append timestamps to requests, to bypass browser caches
     // Important for MSIE
 	$.ajaxSetup({cache:false});
-    $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.3.1.css"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.3.2.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/m.screen.css"/>');
     // Bind to mobileinit before loading jQueryMobile
     $(document).bind("mobileinit", function () {
