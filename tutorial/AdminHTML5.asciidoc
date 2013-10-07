@@ -85,7 +85,11 @@ As you can see, Forge has detected all the technologies we are using, such as JP
 *************************************************************************************
 Forge supports the execution of scripts. The generation of the CRUD UI is provided
 as a Forge script in TicketMonster, so you don't need to type the commands everytime
-you want to regenerate the Admin UI. The script will also prompt you to applyTo run the script:
+you want to regenerate the Admin UI. The script will also prompt you to apply all 
+changes to the generated CRUD UI that listed later in this chapter. This would relieve 
+us of the need to manually type in the changes.
+
+To run the script:
 
     run admin_layer.fsh
 *************************************************************************************

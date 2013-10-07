@@ -402,7 +402,7 @@ public class MediaPath {
 }
 ------------------------------------------------------------------------------------------
 
-The service can be injected by type into the components that depend on it. However, in order to make it available to JSF views, we add a `@Named` annotation, which means the bean can be referenced as `mediaManager` as well.
+The service can be injected by type into the components that depend on it.
 
 We should also control the lifecycle of this service. The `MediaManager` stores request-specific state, so should be scoped to the web request, the CDI `@RequestScoped` is perfect.
 
@@ -410,7 +410,6 @@ We should also control the lifecycle of this service. The `MediaManager` stores 
 [source,java]
 ------------------------------------------------------------------------------------------
    ...
-@Named
 @RequestScoped
 public class MediaManager {
    ...

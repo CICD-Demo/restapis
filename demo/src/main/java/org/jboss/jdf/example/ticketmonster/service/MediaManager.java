@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
 
 import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 import org.jboss.jdf.example.ticketmonster.model.MediaType;
@@ -43,7 +42,6 @@ import org.jboss.jdf.example.ticketmonster.util.Reflections;
  * @author Pete Muir
  * 
  */
-@Named
 @RequestScoped
 public class MediaManager {
 
