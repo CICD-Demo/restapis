@@ -27,7 +27,7 @@ angular.module('ticketmonster').controller('NewBookingController', function ($sc
         $scope.performanceSelectionList = $.map(items, function(item) {
             return ( {
                 value : item.id,
-                text : item.date
+                text : item.displayTitle
             });
         });
     });

@@ -212,6 +212,19 @@ index c55d67a..0000000
 -    <welcome-file>/index.html</welcome-file>
 -  </welcome-file-list>
 -</web-app>
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js
+index 91ddde7..a310cf0 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js
+@@ -37,7 +37,7 @@ angular.module('ticketmonster').controller('EditBookingController', function($sc
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.date
++                        text : item.displayTitle
+                     };
+                     if($scope.booking.performance && item.id == $scope.booking.performance.id) {
+                         $scope.performanceSelection = labelObject;
 diff --git ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js
 index 8bb871b..8fecbce 100644
 --- ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js
@@ -318,6 +331,19 @@ index bc0cbeb..25d8d57 100644
                      };
                      if($scope.venue.mediaItem && item.id == $scope.venue.mediaItem.id) {
                          $scope.mediaItemSelection = labelObject;
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js
+index d68a202..f0cedad 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js
+@@ -27,7 +27,7 @@ angular.module('ticketmonster').controller('NewBookingController', function ($sc
+         $scope.performanceSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.date
++                text : item.displayTitle
+             });
+         });
+     });
 diff --git ../demo/src/main/webapp/admin/scripts/controllers/newEventController.js ../demo/src/main/webapp/admin/scripts/controllers/newEventController.js
 index 069b0c3..6a9bc4f 100644
 --- ../demo/src/main/webapp/admin/scripts/controllers/newEventController.js
@@ -424,6 +450,19 @@ index 1e61887..7cc3c12 100644
              });
          });
      });
+diff --git ../demo/src/main/webapp/admin/views/Booking/search.html ../demo/src/main/webapp/admin/views/Booking/search.html
+index 490fe51..a9cedc7 100644
+--- ../demo/src/main/webapp/admin/views/Booking/search.html
++++ ../demo/src/main/webapp/admin/views/Booking/search.html
+@@ -31,7 +31,7 @@
+     <div class="control-group">
+         <label for="performance" class="control-label">Performance</label>
+         <div class="controls">
+-            <select id="performance" name="performance" ng-model="search.performance" ng-options="p as p.date for p in performanceList">
++            <select id="performance" name="performance" ng-model="search.performance" ng-options="p as p.displayTitle for p in performanceList">
+                 <option value="">Choose a Performance</option>
+             </select>
+         </div>
 diff --git ../demo/src/main/webapp/admin/views/Event/detail.html ../demo/src/main/webapp/admin/views/Event/detail.html
 index 9f6de06..eacaa82 100644
 --- ../demo/src/main/webapp/admin/views/Event/detail.html
