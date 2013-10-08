@@ -72,6 +72,18 @@ index 6be5911..c13535d 100644
 +
  }
 \ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java
+index cbbd4bb..e033a29 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java
+@@ -80,6 +80,7 @@ public class BookingDTO implements Serializable
+          if (found == false)
+          {
+              iterTickets.remove();
++             em.remove(ticket);
+          }
+       }
+       Iterator<NestedTicketDTO> iterDtoTickets = this.getTickets().iterator();
 diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
 index 6282eb2..af8ab5b 100644
 --- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
@@ -166,10 +178,44 @@ index 259f9ca..37d54f0 100644
  }
 \ No newline at end of file
 diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
-index f786568..26818f8 100644
+index f786568..40ae71d 100644
 --- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
 +++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
-@@ -23,6 +23,7 @@ public class ShowDTO implements Serializable
+@@ -1,19 +1,24 @@
+ package org.jboss.jdf.example.ticketmonster.rest.dto;
+ 
+ import java.io.Serializable;
+-import org.jboss.jdf.example.ticketmonster.model.Show;
+-import javax.persistence.EntityManager;
+-import java.util.Set;
+ import java.util.HashSet;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedTicketPriceDTO;
+-import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
+ import java.util.Iterator;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedEventDTO;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedPerformanceDTO;
+-import org.jboss.jdf.example.ticketmonster.model.Performance;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedVenueDTO;
++import java.util.List;
++import java.util.Set;
++
++import javax.persistence.EntityManager;
++import javax.persistence.criteria.CriteriaBuilder;
++import javax.persistence.criteria.CriteriaQuery;
++import javax.persistence.criteria.Predicate;
++import javax.persistence.criteria.Root;
+ import javax.xml.bind.annotation.XmlRootElement;
+ 
++import org.jboss.jdf.example.ticketmonster.model.Booking;
++import org.jboss.jdf.example.ticketmonster.model.Performance;
++import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
++import org.jboss.jdf.example.ticketmonster.model.Show;
++import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
++
+ @XmlRootElement
+ public class ShowDTO implements Serializable
+ {
+@@ -23,6 +28,7 @@ public class ShowDTO implements Serializable
     private NestedEventDTO event;
     private Set<NestedPerformanceDTO> performances = new HashSet<NestedPerformanceDTO>();
     private NestedVenueDTO venue;
@@ -177,7 +223,7 @@ index f786568..26818f8 100644
  
     public ShowDTO()
     {
-@@ -49,6 +50,7 @@ public class ShowDTO implements Serializable
+@@ -49,6 +55,7 @@ public class ShowDTO implements Serializable
              this.performances.add(new NestedPerformanceDTO(element));
           }
           this.venue = new NestedVenueDTO(entity.getVenue());
@@ -185,7 +231,61 @@ index f786568..26818f8 100644
        }
     }
  
-@@ -229,4 +231,9 @@ public class ShowDTO implements Serializable
+@@ -79,6 +86,7 @@ public class ShowDTO implements Serializable
+          if (found == false)
+          {
+             iterTicketPrices.remove();
++            em.remove(ticketPrice);
+          }
+       }
+       Iterator<NestedTicketPriceDTO> iterDtoTicketPrices = this
+@@ -138,6 +146,17 @@ public class ShowDTO implements Serializable
+          if (found == false)
+          {
+             iterPerformances.remove();
++            List<SectionAllocation> sectionAllocations = findSectionAllocationsByPerformance(performance, em);
++            for(SectionAllocation sectionAllocation: sectionAllocations)
++            {
++                em.remove(sectionAllocation);
++            }
++            List<Booking> bookings = findBookingsByPerformance(performance, em);
++            for(Booking booking: bookings)
++            {
++                em.remove(booking);
++            }
++            em.remove(performance);
+          }
+       }
+       Iterator<NestedPerformanceDTO> iterDtoPerformances = this
+@@ -180,6 +199,27 @@ public class ShowDTO implements Serializable
+       return entity;
+    }
+    
++   public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance, EntityManager em)
++   {
++      CriteriaQuery<SectionAllocation> criteria = em
++            .getCriteriaBuilder().createQuery(SectionAllocation.class);
++      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return em.createQuery(
++            criteria.select(from).where(performanceIsSame)).getResultList();
++   }
++   
++   public List<Booking> findBookingsByPerformance(Performance performance, EntityManager em)
++   {
++      CriteriaQuery<Booking> criteria = em.getCriteriaBuilder().createQuery(Booking.class);
++      Root<Booking> from = criteria.from(Booking.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return em.createQuery(
++            criteria.select(from).where(performanceIsSame)).getResultList();
++   }
++
+    public Long getId()
+    {
+       return this.id;
+@@ -229,4 +269,9 @@ public class ShowDTO implements Serializable
     {
        this.venue = venue;
     }
@@ -196,6 +296,91 @@ index f786568..26818f8 100644
 +   }
  }
 \ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
+index d209fab..c60ac50 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
+@@ -1,17 +1,24 @@
+ package org.jboss.jdf.example.ticketmonster.rest.dto;
+ 
+ import java.io.Serializable;
+-import org.jboss.jdf.example.ticketmonster.model.Venue;
+-import javax.persistence.EntityManager;
+-import java.util.Set;
+ import java.util.HashSet;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedSectionDTO;
+-import org.jboss.jdf.example.ticketmonster.model.Section;
+ import java.util.Iterator;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.AddressDTO;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedMediaItemDTO;
++import java.util.List;
++import java.util.Set;
++
++import javax.persistence.EntityManager;
++import javax.persistence.criteria.CriteriaBuilder;
++import javax.persistence.criteria.CriteriaQuery;
++import javax.persistence.criteria.Predicate;
++import javax.persistence.criteria.Root;
+ import javax.xml.bind.annotation.XmlRootElement;
+ 
++import org.jboss.jdf.example.ticketmonster.model.Section;
++import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
++import org.jboss.jdf.example.ticketmonster.model.Show;
++import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
++import org.jboss.jdf.example.ticketmonster.model.Venue;
++
+ @XmlRootElement
+ public class VenueDTO implements Serializable
+ {
+@@ -72,6 +79,19 @@ public class VenueDTO implements Serializable
+          if (found == false)
+          {
+             iterSections.remove();
++            List<SectionAllocation> sectionAllocations = findSectionAllocationBySection(section, em);
++            for(SectionAllocation sectionAllocation: sectionAllocations)
++            {
++                em.remove(sectionAllocation);
++            }
++            List<TicketPrice> ticketPrices = findTicketPricesBySection(section, em);
++            for(TicketPrice ticketPrice: ticketPrices)
++            {
++                Show show = ticketPrice.getShow();
++                show.getTicketPrices().remove(ticketPrice);
++                em.remove(ticketPrice);
++            }
++            em.remove(section);
+          }
+       }
+       Iterator<NestedSectionDTO> iterDtoSections = this.getSections()
+@@ -122,6 +142,28 @@ public class VenueDTO implements Serializable
+       return entity;
+    }
+    
++   public List<SectionAllocation> findSectionAllocationBySection(Section section, EntityManager em)
++   {
++      CriteriaQuery<SectionAllocation> criteria = em
++            .getCriteriaBuilder().createQuery(SectionAllocation.class);
++      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate sectionIsSame = builder.equal(from.get("section"), section);
++      return em.createQuery(
++            criteria.select(from).where(sectionIsSame)).getResultList();
++   }
++   
++   public List<TicketPrice> findTicketPricesBySection(Section section, EntityManager em)
++   {
++      CriteriaQuery<TicketPrice> criteria = em
++            .getCriteriaBuilder().createQuery(TicketPrice.class);
++      Root<TicketPrice> from = criteria.from(TicketPrice.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate sectionIsSame = builder.equal(from.get("section"), section);
++      return em.createQuery(
++            criteria.select(from).where(sectionIsSame)).getResultList();
++   }
++
+    public Long getId()
+    {
+       return this.id;
 diff --git ../demo/src/main/webapp/WEB-INF/web.xml ../demo/src/main/webapp/WEB-INF/web.xml
 deleted file mode 100644
 index c55d67a..0000000
