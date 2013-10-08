@@ -1,16 +1,23 @@
 package org.jboss.jdf.example.ticketmonster.rest.dto;
 
 import java.io.Serializable;
-import org.jboss.jdf.example.ticketmonster.model.Venue;
-import javax.persistence.EntityManager;
-import java.util.Set;
 import java.util.HashSet;
-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedSectionDTO;
-import org.jboss.jdf.example.ticketmonster.model.Section;
 import java.util.Iterator;
-import org.jboss.jdf.example.ticketmonster.rest.dto.AddressDTO;
-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedMediaItemDTO;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.jboss.jdf.example.ticketmonster.model.Section;
+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
+import org.jboss.jdf.example.ticketmonster.model.Show;
+import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
+import org.jboss.jdf.example.ticketmonster.model.Venue;
 
 @XmlRootElement
 public class VenueDTO implements Serializable
@@ -72,6 +79,19 @@ public class VenueDTO implements Serializable
          if (found == false)
          {
             iterSections.remove();
+            List<SectionAllocation> sectionAllocations = findSectionAllocationBySection(section, em);
+            for(SectionAllocation sectionAllocation: sectionAllocations)
+            {
+                em.remove(sectionAllocation);
+            }
+            List<TicketPrice> ticketPrices = findTicketPricesBySection(section, em);
+            for(TicketPrice ticketPrice: ticketPrices)
+            {
+                Show show = ticketPrice.getShow();
+                show.getTicketPrices().remove(ticketPrice);
+                em.remove(ticketPrice);
+            }
+            em.remove(section);
          }
       }
       Iterator<NestedSectionDTO> iterDtoSections = this.getSections()
@@ -120,6 +140,28 @@ public class VenueDTO implements Serializable
       entity.setCapacity(this.capacity);
       entity = em.merge(entity);
       return entity;
+   }
+   
+   public List<SectionAllocation> findSectionAllocationBySection(Section section, EntityManager em)
+   {
+      CriteriaQuery<SectionAllocation> criteria = em
+            .getCriteriaBuilder().createQuery(SectionAllocation.class);
+      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
+      CriteriaBuilder builder = em.getCriteriaBuilder();
+      Predicate sectionIsSame = builder.equal(from.get("section"), section);
+      return em.createQuery(
+            criteria.select(from).where(sectionIsSame)).getResultList();
+   }
+   
+   public List<TicketPrice> findTicketPricesBySection(Section section, EntityManager em)
+   {
+      CriteriaQuery<TicketPrice> criteria = em
+            .getCriteriaBuilder().createQuery(TicketPrice.class);
+      Root<TicketPrice> from = criteria.from(TicketPrice.class);
+      CriteriaBuilder builder = em.getCriteriaBuilder();
+      Predicate sectionIsSame = builder.equal(from.get("section"), section);
+      return em.createQuery(
+            criteria.select(from).where(sectionIsSame)).getResultList();
    }
 
    public Long getId()

@@ -79,7 +79,8 @@ public class BookingDTO implements Serializable
          }
          if (found == false)
          {
-            iterTickets.remove();
+             iterTickets.remove();
+             em.remove(ticket);
          }
       }
       Iterator<NestedTicketDTO> iterDtoTickets = this.getTickets().iterator();

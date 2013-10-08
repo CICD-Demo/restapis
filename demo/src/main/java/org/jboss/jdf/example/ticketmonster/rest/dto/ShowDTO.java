@@ -1,18 +1,23 @@
 package org.jboss.jdf.example.ticketmonster.rest.dto;
 
 import java.io.Serializable;
-import org.jboss.jdf.example.ticketmonster.model.Show;
-import javax.persistence.EntityManager;
-import java.util.Set;
 import java.util.HashSet;
-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedTicketPriceDTO;
-import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
 import java.util.Iterator;
-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedEventDTO;
-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedPerformanceDTO;
-import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedVenueDTO;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.jboss.jdf.example.ticketmonster.model.Booking;
+import org.jboss.jdf.example.ticketmonster.model.Performance;
+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
+import org.jboss.jdf.example.ticketmonster.model.Show;
+import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
 
 @XmlRootElement
 public class ShowDTO implements Serializable
@@ -81,6 +86,7 @@ public class ShowDTO implements Serializable
          if (found == false)
          {
             iterTicketPrices.remove();
+            em.remove(ticketPrice);
          }
       }
       Iterator<NestedTicketPriceDTO> iterDtoTicketPrices = this
@@ -140,6 +146,17 @@ public class ShowDTO implements Serializable
          if (found == false)
          {
             iterPerformances.remove();
+            List<SectionAllocation> sectionAllocations = findSectionAllocationsByPerformance(performance, em);
+            for(SectionAllocation sectionAllocation: sectionAllocations)
+            {
+                em.remove(sectionAllocation);
+            }
+            List<Booking> bookings = findBookingsByPerformance(performance, em);
+            for(Booking booking: bookings)
+            {
+                em.remove(booking);
+            }
+            em.remove(performance);
          }
       }
       Iterator<NestedPerformanceDTO> iterDtoPerformances = this
@@ -180,6 +197,27 @@ public class ShowDTO implements Serializable
       }
       entity = em.merge(entity);
       return entity;
+   }
+   
+   public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance, EntityManager em)
+   {
+      CriteriaQuery<SectionAllocation> criteria = em
+            .getCriteriaBuilder().createQuery(SectionAllocation.class);
+      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
+      CriteriaBuilder builder = em.getCriteriaBuilder();
+      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
+      return em.createQuery(
+            criteria.select(from).where(performanceIsSame)).getResultList();
+   }
+   
+   public List<Booking> findBookingsByPerformance(Performance performance, EntityManager em)
+   {
+      CriteriaQuery<Booking> criteria = em.getCriteriaBuilder().createQuery(Booking.class);
+      Root<Booking> from = criteria.from(Booking.class);
+      CriteriaBuilder builder = em.getCriteriaBuilder();
+      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
+      return em.createQuery(
+            criteria.select(from).where(performanceIsSame)).getResultList();
    }
 
    public Long getId()
