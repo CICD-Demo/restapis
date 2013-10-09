@@ -940,8 +940,10 @@ define([
 
     var TicketCategoriesView = Backbone.View.extend({
         id:'categoriesView',
+        intervalDuration : 100,
+        formValues : [],
         events:{
-            "keyup input":"onChange"
+            "change input":"onChange"
         },
         render:function () {
             if (this.model != null) {
@@ -952,6 +954,7 @@ define([
             } else {
                 $(this.el).empty();
             }
+            this.watchForm();
             return this;
         },
         onChange:function (event) {
@@ -987,6 +990,28 @@ define([
             } else {
               $("input[name='add']").removeAttr("disabled")
             }
+        },
+        watchForm: function() {
+            if($("#sectionSelectorPlaceholder").length) {
+                var self = this;
+                $("input[name*='tickets']").each( function(index,element) {
+                    if(element.value !== self.formValues[element.name]) {
+                        self.formValues[element.name] = element.value;
+                        $("input[name='"+element.name+"']").change();
+                    }
+                });
+                this.timerObject = setTimeout(function() {
+                    self.watchForm();
+                }, this.intervalDuration);
+            } else {
+                this.onClose();
+            }
+        },
+        onClose: function() {
+            if(this.timerObject) {
+                clearTimeout(this.timerObject);
+                delete this.timerObject;
+            }
         }
     });
 
@@ -1017,10 +1042,11 @@ define([
 
     var CreateBookingView = Backbone.View.extend({
 
+        intervalDuration : 100,
+        formValues : [],
         events:{
             "click input[name='submit']":"save",
             "change select[id='sectionSelect']":"refreshPrices",
-            "keyup #email":"updateEmail",
             "change #email":"updateEmail",
             "click input[name='add']":"addQuantities"
         },
@@ -1053,7 +1079,8 @@ define([
                             self.show = selectedShow;
                             self.ticketCategoriesView.render();
                             self.ticketSummaryView.render();
-                            $("#sectionSelector").change();
+                            $("#sectionSelect").change();
+                            self.watchForm();
                         });
                     }
                 }
@@ -1150,13 +1177,32 @@ define([
             view.setCheckoutStatus();
         },
         updateEmail:function (event) {
-            if ($(event.currentTarget).is(':valid')) {
-                this.model.bookingRequest.email = event.currentTarget.value;
-                $("#error-email").empty();
-            } else {
-                $("#error-email").empty().append("Please enter a valid e-mail address");
-                delete this.model.bookingRequest.email;
+          // jQuery 1.9 does not handle pseudo CSS selectors like :valid :invalid, anymore
+          var validElements;
+          try {
+            validElements = $(".form-search").get(0).querySelectorAll(":valid");
+            for (var ctr=0; ctr < validElements.length; ctr++) {
+                if (event.currentTarget === validElements[ctr]) {
+                        this.model.bookingRequest.email = event.currentTarget.value;
+                        $("#error-email").empty();
+                    } else {
+                        $("#error-email").empty().append("Please enter a valid e-mail address");
+                        delete this.model.bookingRequest.email;
+                    }
             }
+          }
+          catch(e) {
+            // For browsers like IE9 that do fail on querySelectorAll for CSS pseudo selectors,
+            // we use the regex defined in the HTML5 spec.
+            var emailRegex = new RegExp("[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*");
+            if(emailRegex.test(event.currentTarget.value)) {
+              this.model.bookingRequest.email = event.currentTarget.value;
+                    $("#error-email").empty();
+        } else {
+          $("#error-email").empty().append("Please enter a valid e-mail address");
+                    delete this.model.bookingRequest.email;
+        }
+          }
             this.setCheckoutStatus();
         },
         setCheckoutStatus:function () {
@@ -1166,6 +1212,28 @@ define([
             else {
                 $('input[name="submit"]').attr('disabled', true);
             }
+        },
+        watchForm: function() {
+            if($("#email").length) {
+                var self = this;
+                var element = $("#email");
+                if(element.val() !== self.formValues["email"]) {
+                    self.formValues["email"] = element.val();
+                    $("#email").change();
+                }
+                this.timerObject = setTimeout(function() {
+                    self.watchForm();
+                }, this.intervalDuration);
+            } else {
+                this.onClose();
+            }
+        },
+        onClose: function() {
+            if(this.timerObject) {
+                clearTimeout(this.timerObject);
+                delete this.timerObject;
+            }
+            this.ticketCategoriesView.close();
         }
     });
 

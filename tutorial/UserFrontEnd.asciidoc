@@ -874,8 +874,10 @@ define([
 
     var TicketCategoriesView = Backbone.View.extend({
         id:'categoriesView',
+        intervalDuration : 100,
+        formValues : [],
         events:{
-            "keyup input":"onChange"
+            "change input":"onChange"
         },
         render:function () {
             if (this.model != null) {
@@ -886,6 +888,7 @@ define([
             } else {
                 $(this.el).empty();
             }
+            this.watchForm();
             return this;
         },
         onChange:function (event) {
@@ -921,6 +924,28 @@ define([
             } else {
               $("input[name='add']").removeAttr("disabled")
             }
+        },
+        watchForm: function() {
+            if($("#sectionSelectorPlaceholder").length) {
+                var self = this;
+                $("input[name*='tickets']").each( function(index,element) {
+                    if(element.value !== self.formValues[element.name]) {
+                        self.formValues[element.name] = element.value;
+                        $("input[name='"+element.name+"']").change();
+                    }
+                });
+                this.timerObject = setTimeout(function() {
+                    self.watchForm();
+                }, this.intervalDuration);
+            } else {
+                this.onClose();
+            }
+        },
+        onClose: function() {
+            if(this.timerObject) {
+                clearTimeout(this.timerObject);
+                delete this.timerObject;
+            }
         }
     });
 
@@ -933,65 +958,47 @@ define([
             var self = this;
             utilities.applyTemplate($(this.el), ticketSummaryViewTemplate, this.model.bookingRequest);
         },
-        removeEntry:function (event) {
-           var index = $(event.currentTarget).data("index");
-           var ticketPriceId = this.model.bookingRequest.seatAllocations[index].ticketRequest.ticketPrice.id;
-           var self = this;
-           $.ajax({url: (config.baseUrl + "rest/carts/" + this.model.cartId),
-                data: JSON.stringify([{ticketPrice:ticketPriceId, quantity:-1}]),
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json",
-                success: function(cart) {
-                    self.owner.refreshSummary(cart, self.owner)
-                }
-           });
+        removeEntry:function () {
+            this.model.bookingRequest.tickets.splice(this.model.index, 1);
         }
     });
 
     var CreateBookingView = Backbone.View.extend({
 
+        intervalDuration : 100,
+        formValues : [],
         events:{
             "click input[name='submit']":"save",
             "change select[id='sectionSelect']":"refreshPrices",
             "keyup #email":"updateEmail",
             "change #email":"updateEmail",
-            "click input[name='add']":"addQuantities"
+            "click input[name='add']":"addQuantities",
+            "click i":"updateQuantities"
         },
         render:function () {
 
             var self = this;
-            $.ajax({url: (config.baseUrl + "rest/carts"),
-                    data:JSON.stringify({performance:this.model.performanceId}),
-                    type:"POST",
-                    dataType:"json",
-                    contentType:"application/json",
-                    success: function (cart) {
-                        self.model.cartId = cart.id;
-                        $.getJSON(config.baseUrl + "rest/shows/" + self.model.showId, function (selectedShow) {
+            $.getJSON(config.baseUrl + "rest/shows/" + this.model.showId, function (selectedShow) {
 
-                            self.currentPerformance = _.find(selectedShow.performances, function (item) {
-                                return item.id == self.model.performanceId;
-                            });
+                self.currentPerformance = _.find(selectedShow.performances, function (item) {
+                    return item.id == self.model.performanceId;
+                });
 
-                            var id = function (item) {return item.id;};
-                            // prepare a list of sections to populate the dropdown
-                            var sections = _.uniq(_.sortBy(_.pluck(selectedShow.ticketPrices, 'section'), id), true, id);
-                            utilities.applyTemplate($(self.el), createBookingTemplate, {
-                                sections:sections,
-                                show:selectedShow,
-                                performance:self.currentPerformance});
-                            self.ticketCategoriesView = new TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder")});
-                            self.ticketSummaryView = new TicketSummaryView({model:self.model, el:$("#ticketSummaryView")});
-                            self.ticketSummaryView.owner = self;
-                            self.show = selectedShow;
-                            self.ticketCategoriesView.render();
-                            self.ticketSummaryView.render();
-                            $("#sectionSelector").change();
-                        });
-                    }
-                }
-            );
+                var id = function (item) {return item.id;};
+                // prepare a list of sections to populate the dropdown
+                var sections = _.uniq(_.sortBy(_.pluck(selectedShow.ticketPrices, 'section'), id), true, id);
+                utilities.applyTemplate($(self.el), createBookingTemplate, {
+                    sections:sections,
+                    show:selectedShow,
+                    performance:self.currentPerformance});
+                self.ticketCategoriesView = new TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder") });
+                self.ticketSummaryView = new TicketSummaryView({model:self.model, el:$("#ticketSummaryView")});
+                self.show = selectedShow;
+                self.ticketCategoriesView.render();
+                self.ticketSummaryView.render();
+                $("#sectionSelector").change();
+                self.watchForm();
+            });
             return this;
         },
         refreshPrices:function (event) {
@@ -1011,11 +1018,14 @@ define([
         save:function (event) {
             var bookingRequest = {ticketRequests:[]};
             var self = this;
+            bookingRequest.ticketRequests = _.map(this.model.bookingRequest.tickets, function (ticket) {
+                return {ticketPrice:ticket.ticketPrice.id, quantity:ticket.quantity}
+            });
             bookingRequest.email = this.model.bookingRequest.email;
             bookingRequest.performance = this.model.performanceId
             $("input[name='submit']").attr("disabled", true)
-            $.ajax({url: (config.baseUrl + "rest/carts/" + this.model.cartId + "/checkout"),
-                data:JSON.stringify({email:this.model.bookingRequest.email}),
+            $.ajax({url: (config.baseUrl + "rest/bookings"),
+                data:JSON.stringify(bookingRequest),
                 type:"POST",
                 dataType:"json",
                 contentType:"application/json",
@@ -1037,78 +1047,55 @@ define([
                 })
 
         },
-        calculateTotals:function () {
+        addQuantities:function () {
+            var self = this;
+            _.each(this.ticketCategoriesView.model, function (model) {
+                if (model.quantity != undefined) {
+                    var found = false;
+                    _.each(self.model.bookingRequest.tickets, function (ticket) {
+                        if (ticket.ticketPrice.id == model.ticketPrice.id) {
+                            ticket.quantity += model.quantity;
+                            found = true;
+                        }
+                    });
+                    if (!found) {
+                        self.model.bookingRequest.tickets.push({ticketPrice:model.ticketPrice, quantity:model.quantity});
+                    }
+                }
+            });
+            this.ticketCategoriesView.model = null;
+            $('option:selected', 'select').removeAttr('selected');
+            this.ticketCategoriesView.render();
+            this.updateQuantities();
+        },
+        updateQuantities:function () {
             // make sure that tickets are sorted by section and ticket category
-            this.model.bookingRequest.seatAllocations.sort(function (t1, t2) {
-                if (t1.ticketRequest.ticketPrice.section.id != t2.ticketRequest.ticketPrice.section.id) {
-                    return t1.ticketRequest.ticketPrice.section.id - t2.ticketRequest.ticketPrice.section.id;
+            this.model.bookingRequest.tickets.sort(function (t1, t2) {
+                if (t1.ticketPrice.section.id != t2.ticketPrice.section.id) {
+                    return t1.ticketPrice.section.id - t2.ticketPrice.section.id;
                 }
                 else {
-                    return t1.ticketRequest.ticketPrice.ticketCategory.id - t2.ticketRequest.ticketPrice.ticketCategory.id;
+                    return t1.ticketPrice.ticketCategory.id - t2.ticketPrice.ticketCategory.id;
                 }
             });
 
-            this.model.bookingRequest.totals = _.reduce(this.model.bookingRequest.seatAllocations, function (totals, seatAllocation) {
-                var ticketRequest = seatAllocation.ticketRequest;
+            this.model.bookingRequest.totals = _.reduce(this.model.bookingRequest.tickets, function (totals, ticketRequest) {
                 return {
                     tickets:totals.tickets + ticketRequest.quantity,
                     price:totals.price + ticketRequest.quantity * ticketRequest.ticketPrice.price
                 };
             }, {tickets:0, price:0.0});
-        },
-        addQuantities:function () {
-            var self = this;
-            var ticketRequests = [];
-            _.each(this.ticketCategoriesView.model, function (model) {
-                if (model.quantity != undefined) {
-                    ticketRequests.push({ticketPrice:model.ticketPrice.id, quantity:model.quantity})
-                }
-            });
-            $.ajax({url: (config.baseUrl + "rest/carts/" + this.model.cartId),
-                data:JSON.stringify(ticketRequests),
-                type:"POST",
-                dataType:"json",
-                contentType:"application/json",
-                success: function(cart) {
-                   self.refreshSummary(cart, self)
-                }}
-            );
-        },
-        refreshSummary: function(cart, view) {
-            view.model.bookingRequest.seatAllocations = cart.seatAllocations;
-            view.ticketCategoriesView.model = null;
-            $('option:selected', 'select').removeAttr('selected');
-            view.calculateTotals();
-            view.ticketCategoriesView.render();
-            view.ticketSummaryView.render();
-            view.setCheckoutStatus();
+
+            this.ticketSummaryView.render();
+            this.setCheckoutStatus();
         },
         updateEmail:function (event) {
-            // jQuery 1.9 does not handle pseudo CSS selectors like :valid :invalid, anymore
-            var validElements;
-            try {
-                validElements = $(".form-search").get(0).querySelectorAll(":valid");
-                for (var ctr=0; ctr < validElements.length; ctr++) {
-                    if (event.currentTarget === validElements[ctr]) {
-                        this.model.bookingRequest.email = event.currentTarget.value;
-                        $("#error-email").empty();
-                    } else {
-                        $("#error-email").empty().append("Please enter a valid e-mail address");
-                        delete this.model.bookingRequest.email;
-                    }
-                }
-            }
-            catch(e) {
-                // For browsers like IE9 that do fail on querySelectorAll for CSS pseudo selectors,
-                // we use the regex defined in the HTML5 spec.
-                var emailRegex = new RegExp("[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*");
-                if(emailRegex.test(event.currentTarget.value)) {
-                    this.model.bookingRequest.email = event.currentTarget.value;
-                    $("#error-email").empty();
-                } else {
-                    $("#error-email").empty().append("Please enter a valid e-mail address");
-                    delete this.model.bookingRequest.email;
-                }
+            if ($(event.currentTarget).is(':valid')) {
+                this.model.bookingRequest.email = event.currentTarget.value;
+                $("#error-email").empty();
+            } else {
+                $("#error-email").empty().append("Please enter a valid e-mail address");
+                delete this.model.bookingRequest.email;
             }
             this.setCheckoutStatus();
         },
@@ -1119,6 +1106,28 @@ define([
             else {
                 $('input[name="submit"]').attr('disabled', true);
             }
+        },
+        watchForm: function() {
+            if($("#email").length) {
+                var self = this;
+                var element = $("#email");
+                if(element.val() !== self.formValues["email"]) {
+                    self.formValues["email"] = element.val();
+                    $("#email").change();
+                }
+                this.timerObject = setTimeout(function() {
+                    self.watchForm();
+                }, this.intervalDuration);
+            } else {
+                this.onClose();
+            }
+        },
+        onClose: function() {
+            if(this.timerObject) {
+                clearTimeout(this.timerObject);
+                delete this.timerObject;
+            }
+            this.ticketCategoriesView.close();
         }
     });
 

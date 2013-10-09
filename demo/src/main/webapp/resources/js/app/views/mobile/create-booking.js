@@ -57,11 +57,13 @@ define([
     var CreateBookingView = Backbone.View.extend({
 
         currentView: "CreateBooking",
+        intervalDuration : 100,
+        formValues : [],
         events:{
             "click a[id='confirmBooking']":"checkout",
             "change select":"refreshPrices",
-            "blur input[type='number']":"updateForm",
-            "blur input[name='email']":"updateForm",
+            "change input[type='number']":"updateForm",
+            "change input[name='email']":"updateForm",
             "click a[id='saveBooking']":"saveBooking",
             "click a[id='goBack']":"back",
             "click a[data-action='delete']":"deleteBooking"
@@ -97,6 +99,7 @@ define([
                 self.ticketCategoriesView.render();
                 $('a[id="confirmBooking"]').addClass('ui-disabled');
                 $("#sectionSelector").change();
+                self.watchForm();
             });
 
         },
@@ -207,6 +210,28 @@ define([
             this.model.bookingRequest.totals = this.computeTotals(this.model.bookingRequest.tickets);
             this.renderConfirmBooking();
             return false;
+        },
+        watchForm: function() {
+            if($("#sectionSelect").length) {
+                var self = this;
+                $("input").each( function(index,element) {
+                    if(element.value !== self.formValues[element.name]) {
+                        self.formValues[element.name] = element.value;
+                        $("input[name='"+element.name+"']").change();
+                    }
+                });
+                this.timerObject = setTimeout(function() {
+                    self.watchForm();
+                }, this.intervalDuration);
+            } else {
+                this.onClose();
+            }
+        },
+        onClose: function() {
+            if(this.timerObject) {
+                clearTimeout(this.timerObject);
+                delete this.timerObject;
+            }
         }
     });
     return CreateBookingView;

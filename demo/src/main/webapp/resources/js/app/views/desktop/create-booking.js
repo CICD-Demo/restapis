@@ -19,13 +19,11 @@ define([
 
     var TicketCategoriesView = Backbone.View.extend({
         id:'categoriesView',
-        events:{
-            "keyup input":"onChange",
-            "blur input":"onChange",
-            "change input":"onChange"
-        },
         intervalDuration : 100,
         formValues : [],
+        events:{
+            "change input":"onChange"
+        },
         render:function () {
             if (this.model != null) {
                 var ticketPrices = _.map(this.model, function (item) {
@@ -35,7 +33,7 @@ define([
             } else {
                 $(this.el).empty();
             }
-            this.updateForm();
+            this.watchForm();
             return this;
         },
         onChange:function (event) {
@@ -72,7 +70,7 @@ define([
               $("input[name='add']").removeAttr("disabled")
             }
         },
-        updateForm: function() {
+        watchForm: function() {
             if($("#sectionSelectorPlaceholder").length) {
                 var self = this;
                 $("input[name*='tickets']").each( function(index,element) {
@@ -82,7 +80,7 @@ define([
                     }
                 });
                 this.timerObject = setTimeout(function() {
-                    self.updateForm();
+                    self.watchForm();
                 }, this.intervalDuration);
             } else {
                 this.onClose();
@@ -123,15 +121,14 @@ define([
 
     var CreateBookingView = Backbone.View.extend({
 
+        intervalDuration : 100,
+        formValues : [],
         events:{
             "click input[name='submit']":"save",
             "change select[id='sectionSelect']":"refreshPrices",
-            "keyup #email":"updateEmail",
             "change #email":"updateEmail",
             "click input[name='add']":"addQuantities"
         },
-        intervalDuration : 100,
-        formValues : [],
         render:function () {
 
             var self = this;
@@ -162,7 +159,7 @@ define([
                             self.ticketCategoriesView.render();
                             self.ticketSummaryView.render();
                             $("#sectionSelect").change();
-                            self.updateForm();
+                            self.watchForm();
                         });
                     }
                 }
@@ -295,7 +292,7 @@ define([
                 $('input[name="submit"]').attr('disabled', true);
             }
         },
-        updateForm: function() {
+        watchForm: function() {
             if($("#email").length) {
                 var self = this;
                 var element = $("#email");
@@ -304,7 +301,7 @@ define([
                     $("#email").change();
                 }
                 this.timerObject = setTimeout(function() {
-                    self.updateForm();
+                    self.watchForm();
                 }, this.intervalDuration);
             } else {
                 this.onClose();
