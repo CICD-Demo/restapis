@@ -27,13 +27,15 @@
         <jboss.home>${env.JBOSS_HOME}</jboss.home>
         <!-- Define the version of JBoss' Java EE 6 APIs and Tools we want 
             to import. -->
-        <!-- <jboss.bom.version>1.0.0.M10</jboss.bom.version> -->
+        <!-- <jboss.bom.version>1.0.4.Final-redhat-9</jboss.bom.version> -->
         <!-- Alternatively, comment out the above line, and un-comment the 
-            line below to use version 1.0.0.M10-redhat-1 which is a release certified 
-            to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 
+            line below to use version 1.0.4.Final-redhat-9 which is a release certified 
+            to work with JBoss EAP 6.1.1. It requires you have access to the JBoss EAP 6.1.1 
             maven repository. -->
-        <jboss.bom.version>1.0.7.CR8</jboss.bom.version>
+        <jboss.bom.version>1.0.7.Final</jboss.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
+        <!-- Version of Jackson, since we do not rely on the RESTEasy BOM from EAP (yet). -->
+        <jackson.version>1.9.9</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -212,7 +214,7 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.9</version>
+            <version>${jackson.version}</version>
             <scope>provided</scope>
         </dependency>
 
