@@ -61,6 +61,20 @@
             <input id="address.country" name="address.country" type="text" ng-model="venue.address.country" placeholder="Enter the Venue Country"></input>
         </div>
     </div>
+    <div class="control-group" ng-class="{error: VenueForm.address.latitude.$invalid}">
+        <label for="address.latitude" class="control-label">Latitude</label>
+        <div id="address.latitudeControls" class="controls">
+            <input id="address.latitude" name="address.latitude" type="number" ng-model="venue.address.latitude" placeholder="Enter the Venue Latitude"></input>
+            <span class="help-inline" ng-show="VenueForm.address.latitude.$error.number">not a number</span>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: VenueForm.address.longitude.$invalid}">
+        <label for="address.longitude" class="control-label">Longitude</label>
+        <div id="address.longitudeControls" class="controls">
+            <input id="address.longitude" name="address.longitude" type="number" ng-model="venue.address.longitude" placeholder="Enter the Venue Longitude"></input>
+            <span class="help-inline" ng-show="VenueForm.address.longitude.$error.number">not a number</span>
+        </div>
+    </div>
     <div class="control-group">
         <div class="controls">
             <button id="saveVenue" name="saveVenue" class="btn btn-primary" ng-disabled="isClean() || VenueForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>

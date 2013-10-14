@@ -54,6 +54,18 @@
             <input id="address.country" name="address.country" type="text" ng-model="search.address.country" placeholder="Enter the Venue Country"></input>
         </div>
     </div>
+    <div class="control-group">
+        <label for="address.latitude" class="control-label">Latitude</label>
+        <div class="controls">
+            <input id="address.latitude" name="address.latitude" type="text" ng-model="search.address.latitude" placeholder="Enter the Venue Latitude"></input>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="address.longitude" class="control-label">Longitude</label>
+        <div class="controls">
+            <input id="address.longitude" name="address.longitude" type="text" ng-model="search.address.longitude" placeholder="Enter the Venue Longitude"></input>
+        </div>
+    </div>
         <div class="control-group">
             <div class="controls">
                 <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
@@ -72,6 +84,8 @@
                 <th>Street</th>
                 <th>City</th>
                 <th>Country</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
             </tr>
         </thead>
         <tbody id="search-results-body">
@@ -83,6 +97,8 @@
                 <td><a href="#/Venues/edit/{{result.id}}">{{result.address.street}}</a></td>
                 <td><a href="#/Venues/edit/{{result.id}}">{{result.address.city}}</a></td>
                 <td><a href="#/Venues/edit/{{result.id}}">{{result.address.country}}</a></td>
+                <td><a href="#/Venues/edit/{{result.id}}">{{result.address.latitude}}</a></td>
+                <td><a href="#/Venues/edit/{{result.id}}">{{result.address.longitude}}</a></td>
             </tr>
         </tbody>
     </table>
