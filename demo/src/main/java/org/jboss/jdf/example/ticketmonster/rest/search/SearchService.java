@@ -79,7 +79,7 @@ public class SearchService {
         }
         else {
             // Find the terms of searchString with terms in event.name (weight of 10),
-            // event.description (weight of 1) and venue.name (weight of 3)
+            // event.description (weight of 1) and venue.name (weight of 5)
              termsQuery = qb.keyword()
                 .onField("event.name").boostedTo(10f)
                 .andField("event.description")

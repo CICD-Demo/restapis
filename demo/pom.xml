@@ -36,6 +36,8 @@
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
         <!-- Version of Jackson, since we do not rely on the RESTEasy BOM from EAP (yet). -->
         <jackson.version>1.9.9</jackson.version>
+        <!-- Hibernate Search version -->
+        <hibernate.search.version>4.4.0.Final</hibernate.search.version>
     </properties>
 
     <dependencyManagement>
@@ -214,21 +216,21 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-orm</artifactId>
-            <version>4.3.0.Final</version>
+            <version>${hibernate.search.version}</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-engine</artifactId>
-            <version>4.3.0.Final</version>
+            <version>${hibernate.search.version}</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-analyzers</artifactId>
-            <version>4.3.0.Final</version>
+            <version>${hibernate.search.version}</version>
             <scope>provided</scope>
         </dependency>
 

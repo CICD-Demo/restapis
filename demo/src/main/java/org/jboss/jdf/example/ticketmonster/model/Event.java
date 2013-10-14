@@ -37,7 +37,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  */
 @SuppressWarnings("serial")
 @Entity
-
 public class Event implements Serializable {
 
     /* Declaration of fields */

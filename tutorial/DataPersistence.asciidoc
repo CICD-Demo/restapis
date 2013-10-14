@@ -332,7 +332,6 @@ Users must be able to book tickets for performances. A `Booking` is associated w
 
 Finally, both events and venues can have "media items", such as images or videos attached.
 
-[[database-design]]
 .Entity-Relationship Diagram
 image::gfx/database-design.png[scaledwidth="70%"]
 

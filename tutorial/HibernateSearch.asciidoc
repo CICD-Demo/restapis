@@ -28,7 +28,7 @@ Our first task is to add Hibernate Search as a dependency to our application. Th
 
 === Set up the dependencies
 
-Download the https://downloads.sourceforge.net/project/hibernate/hibernate-search/4.3.0.CR1/hibernate-search-modules-4.3.0.CR1-jbossas-72-dist.zip[Hibernate Search module] and copy its content into JBoss EAP or JBoss AS's `modules` directory.
+Download the link:http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip[Hibernate Search module] and copy its content into JBoss EAP or JBoss AS's `modules` directory.
 
 Next update `jboss-deployment-structure.xml` to include the ORM module of Hibernate Search. This module is necessary to import the Hibernate Search engine as well as the integration code with Hibernate ORM.
 
@@ -60,26 +60,33 @@ Finally, we need to add Hibernate Search as a `provided` dependency in our `pom.
 ----
 <project ...>
     ...
+    <properties>
+		...
+        <!-- Hibernate Search version -->
+        <hibernate.search.version>4.4.0.Final</hibernate.search.version>
+		...
+    </properties>
+    ...
     <dependencies>
         <!-- Add Hibernate Search as a dependency -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-orm</artifactId>
-            <version>4.3.0.Final</version>
+            <version>${hibernate.search.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-engine</artifactId>
-            <version>4.3.0.Final</version>
+            <version>${hibernate.search.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-analyzers</artifactId>
-            <version>4.3.0.Final</version>
+            <version>${hibernate.search.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -126,13 +133,10 @@ Marking entities and properties as indexed is as simple as adding annotations. B
 
 You cannot do joins in a full-text index. Instead, we cheat by denormalizing the information and indexing the associated objects we want to query by in the same entry. For that, we need to be able to navigate to all of the entities we are interested in.
 
-Let's look at our domain model.
+Let's look at our domain model once again.
 
-[[database-design]]
 .Entity-Relationship Diagram
 image::gfx/database-design.png[scaledwidth="70%"]
-
-CAUTION: TODO: fix diagram around TicketPriceCategory
 
 `Show` happens to be the central entity from which we can reach `Event`, `Venue` as well as price and date information for each `Performance`. That will be the entity we will start indexing from.
 
@@ -146,7 +150,6 @@ Let's make `Show` indexed by adding an `@Indexed` annotation. We also want to in
 @SuppressWarnings("serial")
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "event_id", "venue_id" }))
-@Portable
 @Indexed
 public class Show implements Serializable {
 
@@ -200,7 +203,6 @@ Next, we need to index the `Event` name and description. To make a property as i
 
 @SuppressWarnings("serial")
 @Entity
-@Portable
 public class Event implements Serializable {
 
     ...
@@ -260,7 +262,7 @@ public class Bootstrap {
 }
 ----
 
-The Hibernate Search APIs are accessible via `FullTextEntityManager`, a simpler wrapper around the `EntityManager` you are used to deal with. The `MassIndexer` API is a fluent API letting you refine what entities you want to reindex, with how many threads, synchronously or asynchronously etc. But the simple usage is good enough for most cases.
+The Hibernate Search APIs are accessible via `FullTextEntityManager`, a simpler wrapper around the `EntityManager` you use to manage the entities. The `MassIndexer` API is a fluent API letting you refine what entities you want to reindex, with how many threads, synchronously or asynchronously etc. But the simple usage is good enough for most cases.
 
 We now have indexed entities, it is time to write our query engine.
 
@@ -389,7 +391,7 @@ Here we will focus on keyword queries - queries looking for specific terms - on 
         }
         else {
             // Find the terms of searchString with terms in event.name (weight of 10),
-            // event.description (weight of 1) and venue.name (weight of 3)
+            // event.description (weight of 1) and venue.name (weight of 5)
             luceneQuery = qb
                 .keyword()
                 .onField("event.name").boostedTo(10f)
@@ -503,8 +505,8 @@ We have seen previously in this tutorial how to write the UI part of a backbone.
 
 Let's first define a model for the results we will receive from the search REST endpoint. This model will also be responsible for computing the application URL exposed for bookmarkability.
 
-[source,javascript]
 .src/main/webapp/resources/js/app/models/results.js
+[source,javascript]
 ----
 /**
  * Module for the query results model
@@ -545,8 +547,8 @@ define([
 
 Now that we have a model bound to our backend, we need a view to expose the results to the user.
 
-[source, javascript]
 .src/main/webapp/resources/js/app/views/results.js
+[source, javascript]
 ----
 define([
     'utilities',
@@ -581,8 +583,8 @@ define([
 });
 ----
 
-[source, html]
 .src/main/webapp/resources/templates/desktop/results.html
+[source, html]
 ----
 <h3 class="page-header light-font special-title">Results for <%=query%></h3>
 <div class="row-fluid">
@@ -609,8 +611,8 @@ define([
 
 Note that we do retrieve the actual query from the model (`query` parameter) and pass it to the template for display. We will need to fill `query` from the router. Speaking of the devil, let's add the necessary routes to trigger a query.
 
-[source, javascript]
 .src/main/webapp/resources/js/app/router/desktop/router.js
+[source, javascript]
 ----
 ...
 define("router", [
@@ -654,8 +656,8 @@ define("router", [
 
 We need to do one more thing. Somehow the query URL (e.g. `#search/anywhere/morrison`) needs to be called. Let's add a search box in the top menu and have it call that URL.
 
-[source, html]
 .src/main/webapp/resources/templates/desktop/main.html
+[source, html]
 ----
 ...
                     <ul class="nav">
@@ -663,7 +665,7 @@ We need to do one more thing. Somehow the query URL (e.g. `#search/anywhere/morr
                         <li><a href="#events">Events</a></li>
                         <li><a href="#venues">Venues</a></li>
                         <li><a href="#bookings">Bookings</a></li>
-                        <li><a href="booking-monitor.html">Monitor</a></li>
+                        <li><a href="#monitor">Monitor</a></li>
                         <li><a href="admin">Administration</a></li>
                     </ul>
                     <script type="text/javascript">
@@ -692,12 +694,11 @@ Let's face it, driving more than 50 kilometers - or 30 miles for our imperial fr
 
 Coordinates are provided as doubles representing the latitude and longitude hosted on the `Address` object associated with a venue. To make sure it is indexed, we need to add a spatial index field, link it to the coordinate properties and make sure `Address` is indexed when `Venue` is. `@Spatial` is the annotation describing a spatial field while `@Latitude` and `@Longitude` link properties to a spatial field.
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/Venue.java
+[source, java]
 ----
 @SuppressWarnings("serial")
 @Entity
-@Portable
 public class Venue implements Serializable {
     ...
 
@@ -711,12 +712,11 @@ public class Venue implements Serializable {
 }
 ----
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/Address.java
+[source, java]
 ----
 @SuppressWarnings("serial")
 @Embeddable
-@Portable
 @Spatial(name="coordinates", spatialMode=SpatialMode.GRID)
 public class Address implements Serializable {
 
@@ -749,8 +749,8 @@ The former is fine as long as you have less than 100k point of interests. The la
 
 Now that the location is indexed, let's receive the user location from the REST endpoint and adjust our Hibernate Search query to restrict results to a specific area. The Hibernate Search query DSL offers the tools to write the geolocalized - or spatial - queries as well as the ability to compose bits of queries together.
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/search/SearchService.java
+[source, java]
 ----
 @Stateless
 @Path("/search")
@@ -812,8 +812,8 @@ Only the lucene query has changed, the rest of the code remains as it is. If `la
 
 Let's retrieve the latitude and longitude from the user's browser and pass it along to our REST service.
 
-[source,javascript]
 .src/main/webapp/resources/js/app/models/results.js
+[source,javascript]
 ----
         ...
 
@@ -852,8 +852,8 @@ The `url` function is the URL that calls the REST endpoint while the `appUrl` fu
 
 Let's add the necessary route corresponding to the local search. The router also needs to set in the model the `lat` and `lng` attributes used by the URL builder methods above.
 
-[source, javascript]
 .src/main/webapp/resources/js/app/router/desktop/router.js
+[source, javascript]
 ----
     ...
 
@@ -889,8 +889,8 @@ Let's add the necessary route corresponding to the local search. The router also
 
 Finally let's retrieve the user coordinates from the user's browser and use it in our queries if the user ticks the _around me_ checkbox. This is fairly easy and standard to do in JavaScript. The example here is a bit verbose as we made sure to have proper fallback to a generic query if the browser does not give us the coordinates (inability to find them, user does not accept to be geolocalized, etc.).
 
-[source, html]
 .src/main/webapp/resources/templates/desktop/main.html
+[source, html]
 ----
 ...
                     <ul class="nav">
@@ -898,7 +898,7 @@ Finally let's retrieve the user coordinates from the user's browser and use it i
                         <li><a href="#events">Events</a></li>
                         <li><a href="#venues">Venues</a></li>
                         <li><a href="#bookings">Bookings</a></li>
-                        <li><a href="booking-monitor.html">Monitor</a></li>
+                        <li><a href="#monitor">Monitor</a></li>
                         <li><a href="admin">Administration</a></li>
                     </ul>
                     <script type="text/javascript">
@@ -978,13 +978,12 @@ Let's split our work in a few steps:
 
 A facet is aggregated by its exact value so no string tokenization should take place. By default, strings are _analyzed_ and split into tokens often corresponding to individual words. For a field used in faceting, we need to disable the analyzing phase. Let's do that for the category description.
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/EventCategory.java
+[source, java]
 ----
 ...
 @SuppressWarnings("serial")
 @Entity
-@Portable
 public class EventCategory implements Serializable {
 
     ...
@@ -1002,8 +1001,8 @@ Also add `@IndexedEmbedded` on `Event.category`.
 
 Next, we want to index the minimum price for a given `Show`. Since shows only contain a set of `TicketPrice`, we need to apply some transformation before indexing the information. Hibernate Search's field bridges are a way to massage your data before indexing. They take a property value and describe how the data is ultimately indexed. In our case, we will take the set of prices, find the minimum price and index it. A field bridge is declared with a `@FieldBridge` annotation. Since our field is not represented by the object model, we will give it an artificial name: `ticketPrices.min`. We will use this later in our query.
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/Show.java
+[source, java]
 ----
     ...
 
@@ -1015,8 +1014,8 @@ Next, we want to index the minimum price for a given `Show`. Since shows only co
     ...
 ----
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/model/search/PriceMinBridge.java
+[source, java]
 ----
 /**
  * Find the minimum price for a give show and index it.
@@ -1065,8 +1064,8 @@ You can refine facet groups a bit, for example:
 * should facets with zero results be returned
 * how facets should be ordered for a given facet group (by field value, by range definition etc)
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/search/SearchService.java
+[source, java]
 ----
     ...
 
@@ -1121,8 +1120,8 @@ Our next step is to expose the facets to the UI by adding `FacetGroupView` and `
 
 Our `FacetView` knows whether or not it has been selected. We do compute that state from the `FacetManager`.
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/search/FacetGroupView.java
+[source, java]
 ----
 /** 
  * Represent a facet group exposing its facial name, its identifier
@@ -1171,8 +1170,8 @@ public class FacetGroupView {
 }
 ----
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/search/FacetView.java
+[source, java]
 ----
 /**
  * Represent a facet with its value, the number of matching results and
@@ -1209,8 +1208,8 @@ public class FacetView {
 }
 ----
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/search/SearchService.java
+[source, java]
 ----
     ...
 
@@ -1240,8 +1239,8 @@ Since we want to control how price range is displayed in the UI, we have created
 To make faceting fully functional, the user needs to be able to select one or several facets. Let's add the ability do pass the selected facets to our REST endpoint and act upon it.
 
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/search/SearchService.java
+[source, java]
 ----
     ...
 
@@ -1286,8 +1285,8 @@ To make faceting fully functional, the user needs to be able to select one or se
 We are done on the backend side. Let's look at `SearchService` in its entirety as it is the core of our search engine.
 
 
-[source, java]
 .src/main/java/org/jboss/jdf/example/ticketmonster/rest/search/SearchService.java
+[source, java]
 ----
 /**
  * Service exposed as a REST endpoint and offering full-text search, geolocalized search
@@ -1431,8 +1430,8 @@ Integrating faceting and the UI is two-fold:
 
 The optionally selected `category` and `price` facet are stored in the model and influence both the REST endpoint URL and the bookmarkable application URL (e.g. `#search/anywhere/morisson/category/all/minprice/1`.
 
-[source,javascript]
 .src/main/webapp/resources/js/app/models/results.js
+[source,javascript]
 ----
         ...
 
@@ -1488,8 +1487,8 @@ The optionally selected `category` and `price` facet are stored in the model and
 
 The view needs to react to clicks on the faceting links and properly update the model before navigating to the appropriate URL
 
-[source, javascript]
 .src/main/webapp/resources/js/app/views/results.js
+[source, javascript]
 ----
     ...
 
@@ -1529,8 +1528,8 @@ The view needs to react to clicks on the faceting links and properly update the 
 
 Let's now display the faceting information as a left sidebar. For each facet group we expose the list of facets, their count and add a link triggering the result refresh when a facet is selected (or cleared).
 
-[source, html]
 .src/main/webapp/resources/templates/desktop/results.html
+[source, html]
 ----
 <h3 class="page-header light-font special-title">Results for <%=query%></h3>
 <div class="row-fluid">
@@ -1582,8 +1581,8 @@ Let's now display the faceting information as a left sidebar. For each facet gro
 
 Let's finally add the necessary routes corresponding to the facet filtering and update the action methods to update the model with the facets selected.
 
-[source, javascript]
 .src/main/webapp/resources/js/app/router/desktop/router.js
+[source, javascript]
 ----
     ...
 
