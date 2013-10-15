@@ -13,7 +13,7 @@ import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
  */
 public class TicketRequest {
 
-    private TicketPrice ticketPrice;
+    private long ticketPrice;
 
     private int quantity;
 
@@ -22,15 +22,15 @@ public class TicketRequest {
     }
 
     public TicketRequest(TicketPrice ticketPrice, int quantity) {
-        this.ticketPrice = ticketPrice;
+        this.ticketPrice = ticketPrice.getId();
         this.quantity = quantity;
     }
 
-    public TicketPrice getTicketPrice() {
+    public long getTicketPrice() {
         return ticketPrice;
     }
 
-    public void setTicketPrice(TicketPrice ticketPrice) {
+    public void setTicketPrice(long ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
 

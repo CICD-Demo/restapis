@@ -1,6 +1,5 @@
 package org.jboss.jdf.example.ticketmonster.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.jdf.example.ticketmonster.model.Seat;
@@ -15,9 +14,9 @@ public class AllocatedSeats {
 
     private final SectionAllocation sectionAllocation;
 
-    private final ArrayList<Seat> seats;
+    private final List<Seat> seats;
 
-    public AllocatedSeats(SectionAllocation sectionAllocation, ArrayList<Seat> seats) {
+    public AllocatedSeats(SectionAllocation sectionAllocation, List<Seat> seats) {
         this.sectionAllocation = sectionAllocation;
         this.seats = seats;
     }
@@ -26,7 +25,7 @@ public class AllocatedSeats {
         return sectionAllocation;
     }
 
-    public ArrayList<Seat> getSeats() {
+    public List<Seat> getSeats() {
         return seats;
     }
 

@@ -40,14 +40,4 @@ public class Resources {
       return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName());
    }
  
-   @Produces @DataDir
-   public String getDataDir() {
-       String openshiftDataDir = System.getenv("OPENSHIFT_DATA_DIR");
-       if (openshiftDataDir != null) {
-           return openshiftDataDir;
-       } else {
-           return ".";
-       }
-   }
-   
 }

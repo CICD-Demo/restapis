@@ -32,10 +32,13 @@
             line below to use version 1.0.4.Final-redhat-9 which is a release certified 
             to work with JBoss EAP 6.1.1. It requires you have access to the JBoss EAP 6.1.1 
             maven repository. -->
-        <jboss.bom.version>1.0.7.Final</jboss.bom.version>
+        <jboss.bom.version>1.0.4.Final-redhat-9</jboss.bom.version>
+        <jboss.wfk.bom.version>2.4.0-redhat-1</jboss.wfk.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
-        <!-- Version of Jackson, since we do not rely on the RESTEasy BOM from EAP (yet). -->
-        <jackson.version>1.9.9</jackson.version>
+		<!-- Version of Jackson, since we do not rely on the RESTEasy BOM from EAP (yet). -->
+        <jackson.version>1.9.9-redhat-2</jackson.version>
+        <!-- Version of staxmapper, locked on the EAP 6.1.1 provided version -->
+        <org.jboss.staxmapper.version>1.1.0.Final-redhat-2</org.jboss.staxmapper.version>
     </properties>
 
     <dependencyManagement>
@@ -47,12 +50,11 @@
                 (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras 
                 tools for your project, such as Arquillian for testing), the jboss-javaee-6.0-with-hibernate 
                 stack (you can read this as the JBoss stack of the Java EE 6 APIs, with extras 
-                from the Hibernate family of projects) and the jboss-javaee-6.0-with-infinispan
-                stack (you can read this as the JBoss stack of the Java EE 6 APIs, with support for Infinispan) -->
+                from the Hibernate family of projects). -->
             <dependency>
-                <groupId>org.jboss.bom</groupId>
+                <groupId>org.jboss.bom.wfk</groupId>
                 <artifactId>jboss-javaee-6.0-with-tools</artifactId>
-                <version>${jboss.bom.version}</version>
+                <version>${jboss.wfk.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -63,12 +65,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Lock org.jboss:staxmapper to the EAP version. -->
             <dependency>
-                <groupId>org.jboss.bom</groupId>
-                <artifactId>jboss-javaee-6.0-with-infinispan</artifactId>
-                <version>${jboss.bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+            	<groupId>org.jboss</groupId>
+            	<artifactId>staxmapper</artifactId>
+            	<version>${org.jboss.staxmapper.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -153,14 +154,6 @@
             </exclusions>
         </dependency>
 
-
-        <!-- This is the dependency for Infinispan, which we use for carts and
-             seat reservation
-        -->
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-core</artifactId>
-        </dependency>
 
         <!-- Now we declare any tools needed -->
 
