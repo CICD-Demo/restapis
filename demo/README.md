@@ -6,12 +6,12 @@ Here are a few instructions for building and running it. You can learn more abou
 
 ## Generating the administration site
 
-_NOTE: failure in following this step will cause the link to `http://localhost:8080/ticket-monster/admin` to fail - the administration site is simply not there! It has to be generated first._
+_NOTE: This step is optional. The administration site is already present in the source code. If you want to regenerate it from Forge, and apply the changes outlined in the tutorial, you may continue to follow the steps outlined here. Otherwise, you can skip this step and proceed to build TicketMonster._
 
 Before building and running TicketMonster, you must generate the administration site with Forge.
 
 1. Ensure that you have [JBoss Forge](http://jboss.org/forge) installed. The current version of
-   TicketMonster supports version 1.2.2.Final or 1.3.0.Final of JBoss Forge.
+   TicketMonster supports version 1.4.0.Final or higher of JBoss Forge.
 
 2. Start JBoss Forge
 
@@ -21,11 +21,11 @@ Before building and running TicketMonster, you must generate the administration 
 
             $ forge list-plugins
 
-   and verifying that `org.richfaces.forge.richfaces-forge-plugin` is in the returned list.
+   and verifying that `org.jboss.forge.angularjs-scaffoldx-plugin` is in the returned list.
 
-4.  If the outcome of the previous step was that the Richfaces plugin was not installed, do that now
+4.  If the outcome of the previous step was that the AngularJS plugin was not installed, do that now
 
-            $ forge install-plugin richfaces
+            $ forge install-plugin angularjs
 	
 5. From the JBoss Forge prompt, execute the script for generating the administration site
     
@@ -34,7 +34,7 @@ Before building and running TicketMonster, you must generate the administration 
 Steps 3 and 4 need to be performed only once - after the plugin has been installed, it will be
 available on any subsequent runs of Forge.
 
-On step 5, answer _yes_ to all the the questions concerning patches. Deployment to JBoss AS7 is optional.
+On step 5, answer _yes_ to all the the questions concerning patches. Deployment to JBoss EAP 6 or AS7 is optional.
 
 ## Building TicketMonster
 
