@@ -5,7 +5,7 @@
 
     <groupId>org.jboss.examples</groupId>
     <artifactId>ticket-monster</artifactId>
-    <version>2.1.6-SNAPSHOT</version>
+    <version>2.1.6.Final</version>
     <packaging>war</packaging>
 
     <name>ticket-monster</name>
