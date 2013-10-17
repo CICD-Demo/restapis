@@ -52,7 +52,7 @@ notify_email()
 release()
 {
    echo "Releasing TicketMonster version $RELEASEVERSION"
-   $DIR/release-utils.sh -u -o $SNAPSHOTVERSION -n $RELEASEVERSION
+   $DIR/release-utils.sh -t -u -o $SNAPSHOTVERSION -n $RELEASEVERSION
    git commit -a -m "Prepare for $RELEASEVERSION release"
    git tag -a $RELEASEVERSION -m "Tag $RELEASEVERSION"
    git branch $RELEASEVERSION tags/$RELEASEVERSION   

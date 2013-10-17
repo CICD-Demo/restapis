@@ -26,7 +26,8 @@ usage: $0 options
 This script aids in releasing TicketMonster 
 
 OPTIONS:
-   -u      Updates version numbers in all POMs, used with -o and -n . Also updates timestamps in the import.sql script.
+   -u      Updates version numbers in all POMs, used with -o and -n
+   -t      Updates timestamps in the import.sql script
    -o      Old version number to update from
    -n      New version number to update to
    -p      Publish docs for the given version
@@ -43,6 +44,11 @@ update()
    cd $DIR/../
    echo "Updating versions from $OLDVERSION TO $NEWVERSION for all Java and XML files under $PWD"
    perl -pi -e "s/${OLDVERSION}/${NEWVERSION}/g" `find . -name \*.xml -or -name \*.java`
+}
+
+update_timestamp()
+{
+   cd $DIR/../
    echo "Updating import.sql script with new dates"
    perl $DIR/../demo/update_import_sql.pl $DIR/../demo/src/main/resources/import.sql
 }
@@ -86,12 +92,15 @@ NEWVERSION="1.0.0-SNAPSHOT"
 VERSION="1.0.0-SNAPSHOT"
 CMD="usage"
 
-while getopts “muo:n:r:p:” OPTION
+while getopts “muo:n:r:p:t” OPTION
 
 do
      case $OPTION in
          u)
              CMD="update"
+             ;;
+         t)
+             CMD="update_timestamp"
              ;;
          h)
              usage
