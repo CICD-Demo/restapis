@@ -162,4 +162,9 @@ public class TicketPrice implements Serializable {
         result = 31 * result + (ticketCategory != null ? ticketCategory.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "$ " + price + " for " + ticketCategory + " in " + section; 
+    }
 }

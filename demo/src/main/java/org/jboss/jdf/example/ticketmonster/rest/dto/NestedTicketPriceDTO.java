@@ -10,6 +10,7 @@ public class NestedTicketPriceDTO implements Serializable
 
    private Long id;
    private float price;
+   private String displayTitle;
 
    public NestedTicketPriceDTO()
    {
@@ -21,6 +22,7 @@ public class NestedTicketPriceDTO implements Serializable
       {
          this.id = entity.getId();
          this.price = entity.getPrice();
+         this.displayTitle = entity.toString();
       }
    }
 
@@ -63,5 +65,10 @@ public class NestedTicketPriceDTO implements Serializable
    public void setPrice(final float price)
    {
       this.price = price;
+   }
+
+   public String getDisplayTitle()
+   {
+      return this.displayTitle;
    }
 }

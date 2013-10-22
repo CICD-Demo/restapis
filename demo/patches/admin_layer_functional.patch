@@ -146,6 +146,37 @@ index 9af4d19..3c52c52 100644
 +   }
  }
 \ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
+index 684452e..8890d9c 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
+@@ -10,6 +10,7 @@ public class NestedTicketPriceDTO implements Serializable
+ 
+    private Long id;
+    private float price;
++   private String displayTitle;
+ 
+    public NestedTicketPriceDTO()
+    {
+@@ -21,6 +22,7 @@ public class NestedTicketPriceDTO implements Serializable
+       {
+          this.id = entity.getId();
+          this.price = entity.getPrice();
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -64,4 +66,9 @@ public class NestedTicketPriceDTO implements Serializable
+    {
+       this.price = price;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
 diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
 index 259f9ca..37d54f0 100644
 --- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
@@ -288,6 +319,37 @@ index f786568..40ae71d 100644
 @@ -229,4 +269,9 @@ public class ShowDTO implements Serializable
     {
        this.venue = venue;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
+index be4c664..86a2d09 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
+@@ -17,6 +17,7 @@ public class TicketPriceDTO implements Serializable
+    private float price;
+    private NestedShowDTO show;
+    private NestedSectionDTO section;
++   private String displayTitle;
+ 
+    public TicketPriceDTO()
+    {
+@@ -32,6 +33,7 @@ public class TicketPriceDTO implements Serializable
+          this.price = entity.getPrice();
+          this.show = new NestedShowDTO(entity.getShow());
+          this.section = new NestedSectionDTO(entity.getSection());
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -108,4 +110,9 @@ public class TicketPriceDTO implements Serializable
+    {
+       this.section = section;
     }
 +
 +   public String getDisplayTitle()
@@ -450,7 +512,7 @@ index 763fa18..734baae 100644
                      if($scope.sectionAllocation.performance && item.id == $scope.sectionAllocation.performance.id) {
                          $scope.performanceSelection = labelObject;
 diff --git ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js
-index 04d537a..7e8ecde 100644
+index 04d537a..e863587 100644
 --- ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js
 +++ ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js
 @@ -33,7 +33,7 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
@@ -462,6 +524,15 @@ index 04d537a..7e8ecde 100644
                      };
                      if($scope.show.performances){
                          $.each($scope.show.performances, function(idx, element) {
+@@ -71,7 +71,7 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.price
++                        text : item.displayTitle
+                     };
+                     if($scope.show.ticketPrices){
+                         $.each($scope.show.ticketPrices, function(idx, element) {
 diff --git ../demo/src/main/webapp/admin/scripts/controllers/editTicketPriceController.js ../demo/src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
 index 532ab5e..0f5446d 100644
 --- ../demo/src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
@@ -569,7 +640,7 @@ index 4320cb5..52a8143 100644
          });
      });
 diff --git ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js
-index 01b4a50..4f48f43 100644
+index 01b4a50..087a23b 100644
 --- ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js
 +++ ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js
 @@ -23,7 +23,7 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
@@ -577,6 +648,15 @@ index 01b4a50..4f48f43 100644
              return ( {
                  value : item.id,
 -                text : item.date
++                text : item.displayTitle
+             });
+         });
+     });
+@@ -57,7 +57,7 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
+         $scope.ticketPricesSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.price
 +                text : item.displayTitle
              });
          });

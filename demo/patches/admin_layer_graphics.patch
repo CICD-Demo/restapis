@@ -1,11 +1,11 @@
 diff --git ../demo/src/main/webapp/admin/app.html ../demo/src/main/webapp/admin/app.html
-index 1814b12..5e2c0b6 100644
+index 1814b12..5e091b5 100644
 --- ../demo/src/main/webapp/admin/app.html
 +++ ../demo/src/main/webapp/admin/app.html
 @@ -4,17 +4,29 @@
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Ticket-monster</title>
+ 	<meta charset="UTF-8">
+ 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 	<title>Ticket-monster</title>
 +    <link href='http://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'/>
      <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
      <link href="styles/main.css" rel="stylesheet" media="screen">
@@ -14,13 +14,13 @@ index 1814b12..5e2c0b6 100644
  </head>
  <body>
      <div id="wrap">
-         
+     	
 -    	<div class="navbar navbar-inverse navbar-fixed-top">
 -    		<div class="navbar-inner">
 +        <div id="logo"><div class="wrap"><h1>Ticket Monster</h1></div></div>
 +        <div id="menu">
 +            <div class="navbar">
-                 <div class="container">
+     			<div class="container">
 -    				<a class="brand" href="#">Ticket-monster</a>
 +                    <div class="nav-collapse collapse">
 +                        <ul class="nav">
@@ -32,6 +32,6 @@ index 1814b12..5e2c0b6 100644
 +                            <li><a href="#">Administration</a></li>
 +                        </ul>
 +                    </div>
-                 </div>
-             </div>
-         </div>
+     			</div>
+     		</div>
+     	</div>
