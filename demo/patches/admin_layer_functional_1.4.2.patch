@@ -1,0 +1,1584 @@
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingEndpoint.java
+index 5db1547..fe44538 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class BookingEndpoint
+    {
+       TypedQuery<Booking> findByIdQuery = em.createQuery("SELECT DISTINCT b FROM Booking b LEFT JOIN FETCH b.tickets LEFT JOIN FETCH b.performance WHERE b.id = :entityId ORDER BY b.id", Booking.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Booking entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Booking entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class BookingEndpoint
+    {
+       TypedQuery<Booking> findByIdQuery = em.createQuery("SELECT DISTINCT b FROM Booking b LEFT JOIN FETCH b.tickets LEFT JOIN FETCH b.performance WHERE b.id = :entityId ORDER BY b.id", Booking.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Booking entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Booking entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventCategoryEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventCategoryEndpoint.java
+index 04355e4..f6b497d 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventCategoryEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventCategoryEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class EventCategoryEndpoint
+    {
+       TypedQuery<EventCategory> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM EventCategory e WHERE e.id = :entityId ORDER BY e.id", EventCategory.class);
+       findByIdQuery.setParameter("entityId", id);
+-      EventCategory entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      EventCategory entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class EventCategoryEndpoint
+    {
+       TypedQuery<EventCategory> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM EventCategory e WHERE e.id = :entityId ORDER BY e.id", EventCategory.class);
+       findByIdQuery.setParameter("entityId", id);
+-      EventCategory entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      EventCategory entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventEndpoint.java
+index 246dd54..dadafe7 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class EventEndpoint
+    {
+       TypedQuery<Event> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.mediaItem LEFT JOIN FETCH e.category WHERE e.id = :entityId ORDER BY e.id", Event.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Event entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Event entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class EventEndpoint
+    {
+       TypedQuery<Event> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.mediaItem LEFT JOIN FETCH e.category WHERE e.id = :entityId ORDER BY e.id", Event.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Event entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Event entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/MediaItemEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/MediaItemEndpoint.java
+index 9313a4e..1e561a0 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/MediaItemEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/MediaItemEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class MediaItemEndpoint
+    {
+       TypedQuery<MediaItem> findByIdQuery = em.createQuery("SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId ORDER BY m.id", MediaItem.class);
+       findByIdQuery.setParameter("entityId", id);
+-      MediaItem entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      MediaItem entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class MediaItemEndpoint
+    {
+       TypedQuery<MediaItem> findByIdQuery = em.createQuery("SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId ORDER BY m.id", MediaItem.class);
+       findByIdQuery.setParameter("entityId", id);
+-      MediaItem entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      MediaItem entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java
+index 2635de0..c13535d 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java
+@@ -5,14 +5,21 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
++import javax.persistence.criteria.CriteriaBuilder;
++import javax.persistence.criteria.CriteriaQuery;
++import javax.persistence.criteria.Predicate;
++import javax.persistence.criteria.Root;
+ import javax.ws.rs.*;
+ import javax.ws.rs.core.Response;
+ import javax.ws.rs.core.Response.Status;
+ import javax.ws.rs.core.UriBuilder;
++import org.jboss.jdf.example.ticketmonster.model.Booking;
+ import org.jboss.jdf.example.ticketmonster.model.Performance;
++import org.jboss.jdf.example.ticketmonster.model.Section;
++import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
++import org.jboss.jdf.example.ticketmonster.model.Show;
+ import org.jboss.jdf.example.ticketmonster.rest.dto.PerformanceDTO;
+ 
+ /**
+@@ -43,6 +50,20 @@ public class PerformanceEndpoint
+       {
+          return Response.status(Status.NOT_FOUND).build();
+       }
++      Show show = entity.getShow();
++      show.getPerformances().remove(entity);
++      entity.setShow(null);
++      this.em.merge(show);
++      List<SectionAllocation> sectionAllocations = findSectionAllocationsByPerformance(entity);
++      for(SectionAllocation sectionAllocation: sectionAllocations)
++      {
++         this.em.remove(sectionAllocation);
++      }
++      List<Booking> bookings = findBookingsByPerformance(entity);
++      for(Booking booking: bookings)
++      {
++         this.em.remove(booking);
++      }
+       em.remove(entity);
+       return Response.noContent().build();
+    }
+@@ -54,15 +75,7 @@ public class PerformanceEndpoint
+    {
+       TypedQuery<Performance> findByIdQuery = em.createQuery("SELECT DISTINCT p FROM Performance p LEFT JOIN FETCH p.show WHERE p.id = :entityId ORDER BY p.id", Performance.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Performance entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Performance entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,17 +105,32 @@ public class PerformanceEndpoint
+    {
+       TypedQuery<Performance> findByIdQuery = em.createQuery("SELECT DISTINCT p FROM Performance p LEFT JOIN FETCH p.show WHERE p.id = :entityId ORDER BY p.id", Performance.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Performance entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Performance entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+    }
++
++   public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance)
++   {
++      CriteriaQuery<SectionAllocation> criteria = this.em
++            .getCriteriaBuilder().createQuery(SectionAllocation.class);
++      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
++      CriteriaBuilder builder = this.em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return this.em.createQuery(
++            criteria.select(from).where(performanceIsSame)).getResultList();
++   }
++
++   public List<Booking> findBookingsByPerformance(Performance performance)
++   {
++      CriteriaQuery<Booking> criteria = this.em
++            .getCriteriaBuilder().createQuery(Booking.class);
++      Root<Booking> from = criteria.from(Booking.class);
++      CriteriaBuilder builder = this.em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return this.em.createQuery(
++            criteria.select(from).where(performanceIsSame)).getResultList();
++   }
++
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionAllocationEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionAllocationEndpoint.java
+index af12e64..ae137ef 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionAllocationEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionAllocationEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class SectionAllocationEndpoint
+    {
+       TypedQuery<SectionAllocation> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section WHERE s.id = :entityId ORDER BY s.id", SectionAllocation.class);
+       findByIdQuery.setParameter("entityId", id);
+-      SectionAllocation entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      SectionAllocation entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class SectionAllocationEndpoint
+    {
+       TypedQuery<SectionAllocation> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section WHERE s.id = :entityId ORDER BY s.id", SectionAllocation.class);
+       findByIdQuery.setParameter("entityId", id);
+-      SectionAllocation entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      SectionAllocation entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionEndpoint.java
+index 0964561..d410170 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/SectionEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class SectionEndpoint
+    {
+       TypedQuery<Section> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.venue WHERE s.id = :entityId ORDER BY s.id", Section.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Section entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Section entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class SectionEndpoint
+    {
+       TypedQuery<Section> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.venue WHERE s.id = :entityId ORDER BY s.id", Section.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Section entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Section entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/ShowEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/ShowEndpoint.java
+index 42df9dd..7a03a24 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/ShowEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/ShowEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class ShowEndpoint
+    {
+       TypedQuery<Show> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM Show s LEFT JOIN FETCH s.event LEFT JOIN FETCH s.venue LEFT JOIN FETCH s.performances LEFT JOIN FETCH s.ticketPrices WHERE s.id = :entityId ORDER BY s.id", Show.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Show entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Show entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class ShowEndpoint
+    {
+       TypedQuery<Show> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM Show s LEFT JOIN FETCH s.event LEFT JOIN FETCH s.venue LEFT JOIN FETCH s.performances LEFT JOIN FETCH s.ticketPrices WHERE s.id = :entityId ORDER BY s.id", Show.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Show entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Show entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketCategoryEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketCategoryEndpoint.java
+index d860ae0..67525fb 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketCategoryEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketCategoryEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class TicketCategoryEndpoint
+    {
+       TypedQuery<TicketCategory> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketCategory t WHERE t.id = :entityId ORDER BY t.id", TicketCategory.class);
+       findByIdQuery.setParameter("entityId", id);
+-      TicketCategory entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      TicketCategory entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class TicketCategoryEndpoint
+    {
+       TypedQuery<TicketCategory> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketCategory t WHERE t.id = :entityId ORDER BY t.id", TicketCategory.class);
+       findByIdQuery.setParameter("entityId", id);
+-      TicketCategory entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      TicketCategory entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketEndpoint.java
+index ec77705..26d0d0c 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class TicketEndpoint
+    {
+       TypedQuery<Ticket> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM Ticket t LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", Ticket.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Ticket entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Ticket entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class TicketEndpoint
+    {
+       TypedQuery<Ticket> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM Ticket t LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", Ticket.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Ticket entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Ticket entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketPriceEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketPriceEndpoint.java
+index 5514711..206dfc8 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketPriceEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/TicketPriceEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class TicketPriceEndpoint
+    {
+       TypedQuery<TicketPrice> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketPrice t LEFT JOIN FETCH t.show LEFT JOIN FETCH t.section LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", TicketPrice.class);
+       findByIdQuery.setParameter("entityId", id);
+-      TicketPrice entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      TicketPrice entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class TicketPriceEndpoint
+    {
+       TypedQuery<TicketPrice> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketPrice t LEFT JOIN FETCH t.show LEFT JOIN FETCH t.section LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", TicketPrice.class);
+       findByIdQuery.setParameter("entityId", id);
+-      TicketPrice entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      TicketPrice entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueEndpoint.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueEndpoint.java
+index ab217fe..488ac55 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueEndpoint.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueEndpoint.java
+@@ -5,7 +5,6 @@ import java.util.List;
+ 
+ import javax.ejb.Stateless;
+ import javax.persistence.EntityManager;
+-import javax.persistence.NoResultException;
+ import javax.persistence.PersistenceContext;
+ import javax.persistence.TypedQuery;
+ import javax.ws.rs.*;
+@@ -54,15 +53,7 @@ public class VenueEndpoint
+    {
+       TypedQuery<Venue> findByIdQuery = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem WHERE v.id = :entityId ORDER BY v.id", Venue.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Venue entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Venue entity = findByIdQuery.getSingleResult();
+       if (entity == null)
+       {
+          return Response.status(Status.NOT_FOUND).build();
+@@ -92,15 +83,7 @@ public class VenueEndpoint
+    {
+       TypedQuery<Venue> findByIdQuery = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem WHERE v.id = :entityId ORDER BY v.id", Venue.class);
+       findByIdQuery.setParameter("entityId", id);
+-      Venue entity;
+-      try
+-      {
+-         entity = findByIdQuery.getSingleResult();
+-      }
+-      catch (NoResultException nre)
+-      {
+-         entity = null;
+-      }
++      Venue entity = findByIdQuery.getSingleResult();
+       entity = dto.fromDTO(entity, em);
+       entity = em.merge(entity);
+       return Response.noContent().build();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java
+index cbbd4bb..e033a29 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/BookingDTO.java
+@@ -80,6 +80,7 @@ public class BookingDTO implements Serializable
+          if (found == false)
+          {
+              iterTickets.remove();
++             em.remove(ticket);
+          }
+       }
+       Iterator<NestedTicketDTO> iterDtoTickets = this.getTickets().iterator();
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventCategoryDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventCategoryDTO.java
+index 8decfd1..a99d2d9 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventCategoryDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventCategoryDTO.java
+@@ -37,14 +37,7 @@ public class NestedEventCategoryDTO implements Serializable
+                      "SELECT DISTINCT e FROM EventCategory e WHERE e.id = :entityId",
+                      EventCategory.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity.setDescription(this.description);
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventDTO.java
+index 61c8694..2979c17 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedEventDTO.java
+@@ -38,14 +38,7 @@ public class NestedEventDTO implements Serializable
+                "SELECT DISTINCT e FROM Event e WHERE e.id = :entityId",
+                Event.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity.setDescription(this.description);
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedMediaItemDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedMediaItemDTO.java
+index 56cd6f8..4f02413 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedMediaItemDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedMediaItemDTO.java
+@@ -40,14 +40,7 @@ public class NestedMediaItemDTO implements Serializable
+                      "SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId",
+                      MediaItem.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity.setUrl(this.url);
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
+index 36ec645..af8ab5b 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
+@@ -11,6 +11,7 @@ public class NestedPerformanceDTO implements Serializable
+ 
+    private Long id;
+    private Date date;
++   private String displayTitle;
+ 
+    public NestedPerformanceDTO()
+    {
+@@ -22,6 +23,7 @@ public class NestedPerformanceDTO implements Serializable
+       {
+          this.id = entity.getId();
+          this.date = entity.getDate();
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -38,14 +40,7 @@ public class NestedPerformanceDTO implements Serializable
+                      "SELECT DISTINCT p FROM Performance p WHERE p.id = :entityId",
+                      Performance.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity.setDate(this.date);
+@@ -72,4 +67,9 @@ public class NestedPerformanceDTO implements Serializable
+    {
+       this.date = date;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedSectionDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedSectionDTO.java
+index 5e8d9f5..008ece5 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedSectionDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedSectionDTO.java
+@@ -44,14 +44,7 @@ public class NestedSectionDTO implements Serializable
+                "SELECT DISTINCT s FROM Section s WHERE s.id = :entityId",
+                Section.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity.setDescription(this.description);
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java
+index 12d6c80..3c52c52 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java
+@@ -9,6 +9,7 @@ public class NestedShowDTO implements Serializable
+ {
+ 
+    private Long id;
++   private String displayTitle;
+ 
+    public NestedShowDTO()
+    {
+@@ -19,6 +20,7 @@ public class NestedShowDTO implements Serializable
+       if (entity != null)
+       {
+          this.id = entity.getId();
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -34,14 +36,7 @@ public class NestedShowDTO implements Serializable
+                "SELECT DISTINCT s FROM Show s WHERE s.id = :entityId",
+                Show.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity = em.merge(entity);
+@@ -57,4 +52,9 @@ public class NestedShowDTO implements Serializable
+    {
+       this.id = id;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketCategoryDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketCategoryDTO.java
+index 3dcde56..92535df 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketCategoryDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketCategoryDTO.java
+@@ -37,14 +37,7 @@ public class NestedTicketCategoryDTO implements Serializable
+                      "SELECT DISTINCT t FROM TicketCategory t WHERE t.id = :entityId",
+                      TicketCategory.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity.setDescription(this.description);
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketDTO.java
+index ff039e0..9fa66ea 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketDTO.java
+@@ -39,14 +39,7 @@ public class NestedTicketDTO implements Serializable
+                "SELECT DISTINCT t FROM Ticket t WHERE t.id = :entityId",
+                Ticket.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity = em.merge(entity);
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
+index 3e51575..8890d9c 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
+@@ -10,6 +10,7 @@ public class NestedTicketPriceDTO implements Serializable
+ 
+    private Long id;
+    private float price;
++   private String displayTitle;
+ 
+    public NestedTicketPriceDTO()
+    {
+@@ -21,6 +22,7 @@ public class NestedTicketPriceDTO implements Serializable
+       {
+          this.id = entity.getId();
+          this.price = entity.getPrice();
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -37,14 +39,7 @@ public class NestedTicketPriceDTO implements Serializable
+                      "SELECT DISTINCT t FROM TicketPrice t WHERE t.id = :entityId",
+                      TicketPrice.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       entity.setPrice(this.price);
+@@ -71,4 +66,9 @@ public class NestedTicketPriceDTO implements Serializable
+    {
+       this.price = price;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedVenueDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedVenueDTO.java
+index a2ab736..89937bd 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedVenueDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedVenueDTO.java
+@@ -43,14 +43,7 @@ public class NestedVenueDTO implements Serializable
+                "SELECT DISTINCT v FROM Venue v WHERE v.id = :entityId",
+                Venue.class);
+          findByIdQuery.setParameter("entityId", this.id);
+-         try
+-         {
+          entity = findByIdQuery.getSingleResult();
+-         }
+-         catch (javax.persistence.NoResultException nre)
+-         {
+-            entity = null;
+-         }
+          return entity;
+       }
+       if (this.address != null)
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
+index 259f9ca..37d54f0 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
+@@ -14,6 +14,7 @@ public class PerformanceDTO implements Serializable
+    private Long id;
+    private NestedShowDTO show;
+    private Date date;
++   private String displayTitle;
+ 
+    public PerformanceDTO()
+    {
+@@ -26,6 +27,7 @@ public class PerformanceDTO implements Serializable
+          this.id = entity.getId();
+          this.show = new NestedShowDTO(entity.getShow());
+          this.date = entity.getDate();
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -73,4 +75,9 @@ public class PerformanceDTO implements Serializable
+    {
+       this.date = date;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
+index f786568..40ae71d 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
+@@ -1,19 +1,24 @@
+ package org.jboss.jdf.example.ticketmonster.rest.dto;
+ 
+ import java.io.Serializable;
+-import org.jboss.jdf.example.ticketmonster.model.Show;
+-import javax.persistence.EntityManager;
+-import java.util.Set;
+ import java.util.HashSet;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedTicketPriceDTO;
+-import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
+ import java.util.Iterator;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedEventDTO;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedPerformanceDTO;
+-import org.jboss.jdf.example.ticketmonster.model.Performance;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedVenueDTO;
++import java.util.List;
++import java.util.Set;
++
++import javax.persistence.EntityManager;
++import javax.persistence.criteria.CriteriaBuilder;
++import javax.persistence.criteria.CriteriaQuery;
++import javax.persistence.criteria.Predicate;
++import javax.persistence.criteria.Root;
+ import javax.xml.bind.annotation.XmlRootElement;
+ 
++import org.jboss.jdf.example.ticketmonster.model.Booking;
++import org.jboss.jdf.example.ticketmonster.model.Performance;
++import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
++import org.jboss.jdf.example.ticketmonster.model.Show;
++import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
++
+ @XmlRootElement
+ public class ShowDTO implements Serializable
+ {
+@@ -23,6 +28,7 @@ public class ShowDTO implements Serializable
+    private NestedEventDTO event;
+    private Set<NestedPerformanceDTO> performances = new HashSet<NestedPerformanceDTO>();
+    private NestedVenueDTO venue;
++   private String displayTitle;
+ 
+    public ShowDTO()
+    {
+@@ -49,6 +55,7 @@ public class ShowDTO implements Serializable
+             this.performances.add(new NestedPerformanceDTO(element));
+          }
+          this.venue = new NestedVenueDTO(entity.getVenue());
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -79,6 +86,7 @@ public class ShowDTO implements Serializable
+          if (found == false)
+          {
+             iterTicketPrices.remove();
++            em.remove(ticketPrice);
+          }
+       }
+       Iterator<NestedTicketPriceDTO> iterDtoTicketPrices = this
+@@ -138,6 +146,17 @@ public class ShowDTO implements Serializable
+          if (found == false)
+          {
+             iterPerformances.remove();
++            List<SectionAllocation> sectionAllocations = findSectionAllocationsByPerformance(performance, em);
++            for(SectionAllocation sectionAllocation: sectionAllocations)
++            {
++                em.remove(sectionAllocation);
++            }
++            List<Booking> bookings = findBookingsByPerformance(performance, em);
++            for(Booking booking: bookings)
++            {
++                em.remove(booking);
++            }
++            em.remove(performance);
+          }
+       }
+       Iterator<NestedPerformanceDTO> iterDtoPerformances = this
+@@ -180,6 +199,27 @@ public class ShowDTO implements Serializable
+       return entity;
+    }
+    
++   public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance, EntityManager em)
++   {
++      CriteriaQuery<SectionAllocation> criteria = em
++            .getCriteriaBuilder().createQuery(SectionAllocation.class);
++      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return em.createQuery(
++            criteria.select(from).where(performanceIsSame)).getResultList();
++   }
++   
++   public List<Booking> findBookingsByPerformance(Performance performance, EntityManager em)
++   {
++      CriteriaQuery<Booking> criteria = em.getCriteriaBuilder().createQuery(Booking.class);
++      Root<Booking> from = criteria.from(Booking.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return em.createQuery(
++            criteria.select(from).where(performanceIsSame)).getResultList();
++   }
++
+    public Long getId()
+    {
+       return this.id;
+@@ -229,4 +269,9 @@ public class ShowDTO implements Serializable
+    {
+       this.venue = venue;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
+index be4c664..86a2d09 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
+@@ -17,6 +17,7 @@ public class TicketPriceDTO implements Serializable
+    private float price;
+    private NestedShowDTO show;
+    private NestedSectionDTO section;
++   private String displayTitle;
+ 
+    public TicketPriceDTO()
+    {
+@@ -32,6 +33,7 @@ public class TicketPriceDTO implements Serializable
+          this.price = entity.getPrice();
+          this.show = new NestedShowDTO(entity.getShow());
+          this.section = new NestedSectionDTO(entity.getSection());
++         this.displayTitle = entity.toString();
+       }
+    }
+ 
+@@ -108,4 +110,9 @@ public class TicketPriceDTO implements Serializable
+    {
+       this.section = section;
+    }
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
+ }
+\ No newline at end of file
+diff --git ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
+index d209fab..c60ac50 100644
+--- ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
++++ ../demo/src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
+@@ -1,17 +1,24 @@
+ package org.jboss.jdf.example.ticketmonster.rest.dto;
+ 
+ import java.io.Serializable;
+-import org.jboss.jdf.example.ticketmonster.model.Venue;
+-import javax.persistence.EntityManager;
+-import java.util.Set;
+ import java.util.HashSet;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedSectionDTO;
+-import org.jboss.jdf.example.ticketmonster.model.Section;
+ import java.util.Iterator;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.AddressDTO;
+-import org.jboss.jdf.example.ticketmonster.rest.dto.NestedMediaItemDTO;
++import java.util.List;
++import java.util.Set;
++
++import javax.persistence.EntityManager;
++import javax.persistence.criteria.CriteriaBuilder;
++import javax.persistence.criteria.CriteriaQuery;
++import javax.persistence.criteria.Predicate;
++import javax.persistence.criteria.Root;
+ import javax.xml.bind.annotation.XmlRootElement;
+ 
++import org.jboss.jdf.example.ticketmonster.model.Section;
++import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
++import org.jboss.jdf.example.ticketmonster.model.Show;
++import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
++import org.jboss.jdf.example.ticketmonster.model.Venue;
++
+ @XmlRootElement
+ public class VenueDTO implements Serializable
+ {
+@@ -72,6 +79,19 @@ public class VenueDTO implements Serializable
+          if (found == false)
+          {
+             iterSections.remove();
++            List<SectionAllocation> sectionAllocations = findSectionAllocationBySection(section, em);
++            for(SectionAllocation sectionAllocation: sectionAllocations)
++            {
++                em.remove(sectionAllocation);
++            }
++            List<TicketPrice> ticketPrices = findTicketPricesBySection(section, em);
++            for(TicketPrice ticketPrice: ticketPrices)
++            {
++                Show show = ticketPrice.getShow();
++                show.getTicketPrices().remove(ticketPrice);
++                em.remove(ticketPrice);
++            }
++            em.remove(section);
+          }
+       }
+       Iterator<NestedSectionDTO> iterDtoSections = this.getSections()
+@@ -122,6 +142,28 @@ public class VenueDTO implements Serializable
+       return entity;
+    }
+    
++   public List<SectionAllocation> findSectionAllocationBySection(Section section, EntityManager em)
++   {
++      CriteriaQuery<SectionAllocation> criteria = em
++            .getCriteriaBuilder().createQuery(SectionAllocation.class);
++      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate sectionIsSame = builder.equal(from.get("section"), section);
++      return em.createQuery(
++            criteria.select(from).where(sectionIsSame)).getResultList();
++   }
++   
++   public List<TicketPrice> findTicketPricesBySection(Section section, EntityManager em)
++   {
++      CriteriaQuery<TicketPrice> criteria = em
++            .getCriteriaBuilder().createQuery(TicketPrice.class);
++      Root<TicketPrice> from = criteria.from(TicketPrice.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate sectionIsSame = builder.equal(from.get("section"), section);
++      return em.createQuery(
++            criteria.select(from).where(sectionIsSame)).getResultList();
++   }
++
+    public Long getId()
+    {
+       return this.id;
+diff --git ../demo/src/main/webapp/WEB-INF/web.xml ../demo/src/main/webapp/WEB-INF/web.xml
+deleted file mode 100644
+index c55d67a..0000000
+--- ../demo/src/main/webapp/WEB-INF/web.xml
++++ /dev/null
+@@ -1,10 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+-  <display-name>ticket-monster</display-name>
+-  <session-config>
+-    <session-timeout>30</session-timeout>
+-  </session-config>
+-  <welcome-file-list>
+-    <welcome-file>/index.html</welcome-file>
+-  </welcome-file-list>
+-</web-app>
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js
+index 91ddde7..a310cf0 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editBookingController.js
+@@ -37,7 +37,7 @@ angular.module('ticketmonster').controller('EditBookingController', function($sc
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.date
++                        text : item.displayTitle
+                     };
+                     if($scope.booking.performance && item.id == $scope.booking.performance.id) {
+                         $scope.performanceSelection = labelObject;
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js
+index 8bb871b..8fecbce 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editEventController.js
+@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditEventController', function($scop
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.mediaType
++                        text : item.url
+                     };
+                     if($scope.event.mediaItem && item.id == $scope.event.mediaItem.id) {
+                         $scope.mediaItemSelection = labelObject;
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editPerformanceController.js ../demo/src/main/webapp/admin/scripts/controllers/editPerformanceController.js
+index fc93d6a..98e21fc 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editPerformanceController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editPerformanceController.js
+@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditPerformanceController', function
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.id
++                        text : item.displayTitle
+                     };
+                     if($scope.performance.show && item.id == $scope.performance.show.id) {
+                         $scope.showSelection = labelObject;
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js ../demo/src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js
+index 763fa18..734baae 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js
+@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditSectionAllocationController', fu
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.date
++                        text : item.displayTitle
+                     };
+                     if($scope.sectionAllocation.performance && item.id == $scope.sectionAllocation.performance.id) {
+                         $scope.performanceSelection = labelObject;
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js
+index 04d537a..e863587 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editShowController.js
+@@ -33,7 +33,7 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.date
++                        text : item.displayTitle
+                     };
+                     if($scope.show.performances){
+                         $.each($scope.show.performances, function(idx, element) {
+@@ -71,7 +71,7 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.price
++                        text : item.displayTitle
+                     };
+                     if($scope.show.ticketPrices){
+                         $.each($scope.show.ticketPrices, function(idx, element) {
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editTicketPriceController.js ../demo/src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
+index 532ab5e..0f5446d 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
+@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditTicketPriceController', function
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.id
++                        text : item.displayTitle
+                     };
+                     if($scope.ticketPrice.show && item.id == $scope.ticketPrice.show.id) {
+                         $scope.showSelection = labelObject;
+@@ -101,6 +101,27 @@ angular.module('ticketmonster').controller('EditTicketPriceController', function
+         if (typeof selection != 'undefined') {
+             $scope.ticketPrice.show = {};
+             $scope.ticketPrice.show.id = selection.value;
++            if($scope.showList) {
++                var selectedShow = $.map($scope.showList, function(show) {
++                    if(show.id === $scope.ticketPrice.show.id) {
++                        return show;
++                    }
++                });
++                if(selectedShow.length > 0) {
++                    selectedShow = selectedShow[0];
++                }
++            }
++            if($scope.sectionList && selectedShow) {
++                var venueSectionList = $.map($scope.sectionList, function(section) {
++                    if(selectedShow.venue.id === section.venue.id) {
++                        return ( {
++                            value : section.id,
++                            text : section.name
++                        });
++                    }
++                });
++                $scope.sectionSelectionList = venueSectionList;
++            }
+         }
+     });
+     $scope.$watch("sectionSelection", function(selection) {
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/editVenueController.js ../demo/src/main/webapp/admin/scripts/controllers/editVenueController.js
+index bc0cbeb..25d8d57 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/editVenueController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/editVenueController.js
+@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditVenueController', function($scop
+                     };
+                     var labelObject = {
+                         value : item.id,
+-                        text : item.mediaType
++                        text : item.url
+                     };
+                     if($scope.venue.mediaItem && item.id == $scope.venue.mediaItem.id) {
+                         $scope.mediaItemSelection = labelObject;
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js
+index d68a202..f0cedad 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newBookingController.js
+@@ -27,7 +27,7 @@ angular.module('ticketmonster').controller('NewBookingController', function ($sc
+         $scope.performanceSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.date
++                text : item.displayTitle
+             });
+         });
+     });
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newEventController.js ../demo/src/main/webapp/admin/scripts/controllers/newEventController.js
+index 069b0c3..6a9bc4f 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newEventController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newEventController.js
+@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewEventController', function ($scop
+         $scope.mediaItemSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.mediaType
++                text : item.url
+             });
+         });
+     });
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newPerformanceController.js ../demo/src/main/webapp/admin/scripts/controllers/newPerformanceController.js
+index 9899ee4..8ac2a3b 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newPerformanceController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newPerformanceController.js
+@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewPerformanceController', function
+         $scope.showSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.id
++                text : item.displayTitle
+             });
+         });
+     });
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js ../demo/src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js
+index 4320cb5..52a8143 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js
+@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewSectionAllocationController', fun
+         $scope.performanceSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.date
++                text : item.displayTitle
+             });
+         });
+     });
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js
+index 01b4a50..087a23b 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newShowController.js
+@@ -23,7 +23,7 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
+         $scope.performancesSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.date
++                text : item.displayTitle
+             });
+         });
+     });
+@@ -57,7 +57,7 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
+         $scope.ticketPricesSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.price
++                text : item.displayTitle
+             });
+         });
+     });
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newTicketPriceController.js ../demo/src/main/webapp/admin/scripts/controllers/newTicketPriceController.js
+index daf214f..557e372 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newTicketPriceController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newTicketPriceController.js
+@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewTicketPriceController', function
+         $scope.showSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.id
++                text : item.displayTitle
+             });
+         });
+     });
+@@ -16,6 +16,27 @@ angular.module('ticketmonster').controller('NewTicketPriceController', function
+         if ( typeof selection != 'undefined') {
+             $scope.ticketPrice.show = {};
+             $scope.ticketPrice.show.id = selection.value;
++            if($scope.showList) {
++                var selectedShow = $.map($scope.showList, function(show) {
++                    if(show.id === $scope.ticketPrice.show.id) {
++                        return show;
++                    }
++                });
++                if(selectedShow.length > 0) {
++                    selectedShow = selectedShow[0];
++                }
++            }
++            if($scope.sectionList && selectedShow) {
++                var venueSectionList = $.map($scope.sectionList, function(section) {
++                    if(selectedShow.venue.id === section.venue.id) {
++                        return ( {
++                            value : section.id,
++                            text : section.name
++                        });
++                    }
++                });
++                $scope.sectionSelectionList = venueSectionList;
++            }
+         }
+     });
+     
+diff --git ../demo/src/main/webapp/admin/scripts/controllers/newVenueController.js ../demo/src/main/webapp/admin/scripts/controllers/newVenueController.js
+index 1e61887..7cc3c12 100644
+--- ../demo/src/main/webapp/admin/scripts/controllers/newVenueController.js
++++ ../demo/src/main/webapp/admin/scripts/controllers/newVenueController.js
+@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewVenueController', function ($scop
+         $scope.mediaItemSelectionList = $.map(items, function(item) {
+             return ( {
+                 value : item.id,
+-                text : item.mediaType
++                text : item.url
+             });
+         });
+     });
+diff --git ../demo/src/main/webapp/admin/views/Booking/search.html ../demo/src/main/webapp/admin/views/Booking/search.html
+index 490fe51..a9cedc7 100644
+--- ../demo/src/main/webapp/admin/views/Booking/search.html
++++ ../demo/src/main/webapp/admin/views/Booking/search.html
+@@ -31,7 +31,7 @@
+     <div class="control-group">
+         <label for="performance" class="control-label">Performance</label>
+         <div class="controls">
+-            <select id="performance" name="performance" ng-model="search.performance" ng-options="p as p.date for p in performanceList">
++            <select id="performance" name="performance" ng-model="search.performance" ng-options="p as p.displayTitle for p in performanceList">
+                 <option value="">Choose a Performance</option>
+             </select>
+         </div>
+diff --git ../demo/src/main/webapp/admin/views/Event/detail.html ../demo/src/main/webapp/admin/views/Event/detail.html
+index 9f6de06..eacaa82 100644
+--- ../demo/src/main/webapp/admin/views/Event/detail.html
++++ ../demo/src/main/webapp/admin/views/Event/detail.html
+@@ -21,6 +21,8 @@
+         <select id="mediaItem" name="mediaItem" ng-model="mediaItemSelection" ng-options="m.text for m in mediaItemSelectionList"  >
+             <option value="">Choose a Media Item</option>
+         </select>
++        <br/>
++        <img class="img-polaroid span4" ng-hide="!mediaItemSelection.text" ng-src="{{mediaItemSelection.text}}" />
+         </div>
+     </div>
+     <div class="control-group" ng-class="{error: EventForm.category.$invalid}">
+diff --git ../demo/src/main/webapp/admin/views/Event/search.html ../demo/src/main/webapp/admin/views/Event/search.html
+index 815f0d5..04d5104 100644
+--- ../demo/src/main/webapp/admin/views/Event/search.html
++++ ../demo/src/main/webapp/admin/views/Event/search.html
+@@ -19,7 +19,7 @@
+     <div class="control-group">
+         <label for="mediaItem" class="control-label">Media Item</label>
+         <div class="controls">
+-            <select id="mediaItem" name="mediaItem" ng-model="search.mediaItem" ng-options="m as m.mediaType for m in mediaItemList">
++            <select id="mediaItem" name="mediaItem" ng-model="search.mediaItem" ng-options="m as m.url for m in mediaItemList">
+                 <option value="">Choose a Media Item</option>
+             </select>
+         </div>
+@@ -58,7 +58,7 @@
+         <tbody id="search-results-body">
+             <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                 <td><a href="#/Events/edit/{{result.id}}">{{result.name}}</a></td>
+-                    <td><a href="#/Events/edit/{{result.id}}">{{result.mediaItem.mediaType}}</a></td>
++                    <td><a href="#/Events/edit/{{result.id}}">{{result.mediaItem.url}}</a></td>
+                     <td><a href="#/Events/edit/{{result.id}}">{{result.category.description}}</a></td>
+                 <td><a href="#/Events/edit/{{result.id}}">{{result.description}}</a></td>
+             </tr>
+diff --git ../demo/src/main/webapp/admin/views/Performance/search.html ../demo/src/main/webapp/admin/views/Performance/search.html
+index 048be1f..b5c61f0 100644
+--- ../demo/src/main/webapp/admin/views/Performance/search.html
++++ ../demo/src/main/webapp/admin/views/Performance/search.html
+@@ -13,7 +13,7 @@
+     <div class="control-group">
+         <label for="show" class="control-label">Show</label>
+         <div class="controls">
+-            <select id="show" name="show" ng-model="search.show" ng-options="s as s.id for s in showList">
++            <select id="show" name="show" ng-model="search.show" ng-options="s as s.displayTitle for s in showList">
+                 <option value="">Choose a Show</option>
+             </select>
+         </div>
+@@ -35,7 +35,7 @@
+         </thead>
+         <tbody id="search-results-body">
+             <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+-                    <td><a href="#/Performances/edit/{{result.id}}">{{result.show.id}}</a></td>
++                    <td><a href="#/Performances/edit/{{result.id}}">{{result.show.displayTitle}}</a></td>
+                 <td><a href="#/Performances/edit/{{result.id}}">{{result.date| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
+             </tr>
+         </tbody>
+diff --git ../demo/src/main/webapp/admin/views/SectionAllocation/search.html ../demo/src/main/webapp/admin/views/SectionAllocation/search.html
+index fb25092..22ecb89 100644
+--- ../demo/src/main/webapp/admin/views/SectionAllocation/search.html
++++ ../demo/src/main/webapp/admin/views/SectionAllocation/search.html
+@@ -19,7 +19,7 @@
+     <div class="control-group">
+         <label for="performance" class="control-label">Performance</label>
+         <div class="controls">
+-            <select id="performance" name="performance" ng-model="search.performance" ng-options="p as p.date for p in performanceList">
++            <select id="performance" name="performance" ng-model="search.performance" ng-options="p as p.displayTitle for p in performanceList">
+                 <option value="">Choose a Performance</option>
+             </select>
+         </div>
+@@ -51,7 +51,7 @@
+         <tbody id="search-results-body">
+             <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                 <td><a href="#/SectionAllocations/edit/{{result.id}}">{{result.occupiedCount}}</a></td>
+-                    <td><a href="#/SectionAllocations/edit/{{result.id}}">{{result.performance.date| date:'medium'}}</a></td>
++                    <td><a href="#/SectionAllocations/edit/{{result.id}}">{{result.performance.displayTitle}}</a></td>
+                     <td><a href="#/SectionAllocations/edit/{{result.id}}">{{result.section.name}}</a></td>
+             </tr>
+         </tbody>
+diff --git ../demo/src/main/webapp/admin/views/TicketPrice/search.html ../demo/src/main/webapp/admin/views/TicketPrice/search.html
+index 9f5cd44..6f136e6 100644
+--- ../demo/src/main/webapp/admin/views/TicketPrice/search.html
++++ ../demo/src/main/webapp/admin/views/TicketPrice/search.html
+@@ -13,7 +13,7 @@
+     <div class="control-group">
+         <label for="show" class="control-label">Show</label>
+         <div class="controls">
+-            <select id="show" name="show" ng-model="search.show" ng-options="s as s.id for s in showList">
++            <select id="show" name="show" ng-model="search.show" ng-options="s as s.displayTitle for s in showList">
+                 <option value="">Choose a Show</option>
+             </select>
+         </div>
+@@ -59,7 +59,7 @@
+         </thead>
+         <tbody id="search-results-body">
+             <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+-                    <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.show.id}}</a></td>
++                    <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.show.displayTitle}}</a></td>
+                     <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.section.name}}</a></td>
+                     <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.ticketCategory.description}}</a></td>
+                 <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.price}}</a></td>
+diff --git ../demo/src/main/webapp/admin/views/Venue/detail.html ../demo/src/main/webapp/admin/views/Venue/detail.html
+index 9ba3a4b..f958a83 100644
+--- ../demo/src/main/webapp/admin/views/Venue/detail.html
++++ ../demo/src/main/webapp/admin/views/Venue/detail.html
+@@ -18,6 +18,8 @@
+         <select id="mediaItem" name="mediaItem" ng-model="mediaItemSelection" ng-options="m.text for m in mediaItemSelectionList"  >
+             <option value="">Choose a Media Item</option>
+         </select>
++        <br/>
++        <img class="img-polaroid span4" ng-hide="!mediaItemSelection.text" ng-src="{{mediaItemSelection.text}}" />
+         </div>
+     </div>
+     <div class="control-group" ng-class="{error: VenueForm.description.$invalid}">
+diff --git ../demo/src/main/webapp/admin/views/Venue/search.html ../demo/src/main/webapp/admin/views/Venue/search.html
+index c745675..9c42a19 100644
+--- ../demo/src/main/webapp/admin/views/Venue/search.html
++++ ../demo/src/main/webapp/admin/views/Venue/search.html
+@@ -19,7 +19,7 @@
+     <div class="control-group">
+         <label for="mediaItem" class="control-label">Media Item</label>
+         <div class="controls">
+-            <select id="mediaItem" name="mediaItem" ng-model="search.mediaItem" ng-options="m as m.mediaType for m in mediaItemList">
++            <select id="mediaItem" name="mediaItem" ng-model="search.mediaItem" ng-options="m as m.url for m in mediaItemList">
+                 <option value="">Choose a Media Item</option>
+             </select>
+         </div>
+@@ -91,7 +91,7 @@
+         <tbody id="search-results-body">
+             <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                 <td><a href="#/Venues/edit/{{result.id}}">{{result.name}}</a></td>
+-                    <td><a href="#/Venues/edit/{{result.id}}">{{result.mediaItem.mediaType}}</a></td>
++                    <td><a href="#/Venues/edit/{{result.id}}">{{result.mediaItem.url}}</a></td>
+                 <td><a href="#/Venues/edit/{{result.id}}">{{result.description}}</a></td>
+                 <td><a href="#/Venues/edit/{{result.id}}">{{result.capacity}}</a></td>
+                 <td><a href="#/Venues/edit/{{result.id}}">{{result.address.street}}</a></td>

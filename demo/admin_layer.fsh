@@ -32,9 +32,12 @@ if ( SHELL.promptBoolean("Apply manual functional changes described in tutorial?
     } else if (v.startsWith("1.4.1")) {
       echo Applying manual changes described in tutorial based on admin_layer_functional.patch;
       git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional.patch;
+    } else if (v.startsWith("1.4.2")) {
+      echo Applying manual changes described in tutorial based on admin_layer_functional_1.4.2.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.4.2.patch;
     } else {
       @SHELL.println("The version " + v + " is not supported yet, attempting to apply latest patch");
-      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.4.2.patch;
     } 
 }
 
