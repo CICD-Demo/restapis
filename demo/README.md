@@ -27,13 +27,15 @@ Before building and running TicketMonster, you must generate the administration 
 
 3. Verify that the Forge plugin is installed by running
 
-            $ forge list-plugins
+        $ forge list-plugins
 
    and verifying that `org.jboss.forge.angularjs-scaffoldx-plugin` is in the returned list.
 
+   The version of the installed plugin must be 1.0.3.Final or higher. The version is present in the output of this command and it appears like so: `org.jboss.forge.angularjs-scaffoldx-plugin:1.4.0.Final:1.0.3.Final-60c6c2c5-4888-4d6c-a0d9-4894622f94a3`. The plugin version is the second version string listed in the output; the first version string (`1.4.0.Final`) is the Forge API version used by the plugin.
+
 4.  If the outcome of the previous step was that the AngularJS plugin was not installed, do that now
 
-            $ forge install-plugin angularjs
+        $ forge install-plugin angularjs
 	
 5. From the JBoss Forge prompt, execute the script for generating the administration site
     
