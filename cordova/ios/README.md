@@ -18,7 +18,7 @@ Import the Ticket-monster Code
 
 First we need to import the existing iOS code to XCode.
 
-1. Open Finder and navigate to `$TICKET-MONSTER_HOME/kitchensink-cordova/ios/`
+1. Open Finder and navigate to `$TICKET-MONSTER_HOME/cordova/ios/`
 2. Right click on *TicketMonster.xcodeproj* and select *Open With XCode*
 3. Change the Target in the Scheme menu to TicketMonster and select a device
 4. Make sure that your `$TICKET-MONSTER_HOME/cordova/ios/www` is a symbolic link to `../../demo/src/main/webapp/`
