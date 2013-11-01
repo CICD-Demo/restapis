@@ -1,5 +1,5 @@
 = Adding a full-text search engine
-:Author: Emmanuel Bernard <emmanuel@hibernate.org>
+:Author: Emmanuel Bernard
 
 == What will you learn here?
 

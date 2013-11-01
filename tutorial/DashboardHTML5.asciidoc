@@ -1,5 +1,5 @@
 = Building The Statistics Dashboard Using HTML5 and JavaScript
-:Author: Marius Bogoevici, Christian Sadilek, Vineet Reynolds
+:Author: Vineet Reynolds
 
 == What Will You Learn Here?
 

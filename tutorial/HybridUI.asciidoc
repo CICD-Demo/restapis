@@ -1,5 +1,5 @@
 = Creating hybrid mobile versions of the application with Apache Cordova
-
+:Author: Marius Bogoevici
 
 == What will you learn here?
 
