@@ -92,7 +92,7 @@ NEWVERSION="1.0.0-SNAPSHOT"
 VERSION="1.0.0-SNAPSHOT"
 CMD="usage"
 
-while getopts “muo:n:r:p:t” OPTION
+while getopts "huo:n:p:t" OPTION
 
 do
      case $OPTION in
@@ -100,7 +100,7 @@ do
              CMD="update"
              ;;
          t)
-             CMD="update_timestamp"
+             update_timestamp
              ;;
          h)
              usage
@@ -124,4 +124,3 @@ do
 done
 
 $CMD
-

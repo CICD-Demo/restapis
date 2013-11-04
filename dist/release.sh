@@ -52,7 +52,19 @@ notify_email()
 release()
 {
    echo "Releasing TicketMonster version $RELEASEVERSION"
-   $DIR/release-utils.sh -t -u -o $SNAPSHOTVERSION -n $RELEASEVERSION
+   default="Y"
+   read -p "Do you want to update the Performance dates in import.sql [Y/n]? " yn
+   yn=${yn:-$default}
+   case $yn in
+       [Yy] ) 
+              $DIR/release-utils.sh -t -u -o $SNAPSHOTVERSION -n $RELEASEVERSION
+              ;;
+       [Nn] ) 
+              $DIR/release-utils.sh -u -o $SNAPSHOTVERSION -n $RELEASEVERSION
+              ;;
+       *) echo "Invalid input"
+              ;;
+   esac
    git commit -a -m "Prepare for $RELEASEVERSION release"
    git tag -a $RELEASEVERSION -m "Tag $RELEASEVERSION"
    git branch $RELEASEVERSION tags/$RELEASEVERSION   
