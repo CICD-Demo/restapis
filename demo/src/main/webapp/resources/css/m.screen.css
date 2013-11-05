@@ -117,3 +117,7 @@ tbody tr:nth-child(even) {
     background-image:         linear-gradient( #f9f9f9 /*{c-body-background-start}*/, #eee /*{c-body-background-end}*/);
     cursor: default !important;
 }
+
+.error {
+    color: #FF0000;
+}
