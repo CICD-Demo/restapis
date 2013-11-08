@@ -14,26 +14,13 @@ The tutorial will show you how to perform all these steps in JBoss Developer Stu
 == Setting up Forge
 
 
-=== JBoss Enterprise Application Platform 6
+=== JBoss Developer Studio 7
 
 
-If you are using JBoss Enterprise Application Platform 6, Forge is available in JBoss Developer Studio 7.
+Forge is available in JBoss Developer Studio 7. You would have already used Forge in the Introductory chapter.
 
 To show the Forge Console, navigate to _Window -> Show View -> Other_, locate _Forge Console_ and click _OK_. Then click the _Start_ button in top right corner of the view.
 
-
-=== JBoss AS 7
-
-
-If you are using JBoss AS 7, you should install JBoss Forge version 1.4.0.Final or higher. Follow the instructions at link:https://docs.jboss.org/author/display/FORGE/Installation[Installing Forge].
-
-Open a command line and navigate to the root directory of this quickstart. 
-
-Launch Forge by typing the following command:
-
-----
-forge
-----
 
 === Required Forge Plugins
 

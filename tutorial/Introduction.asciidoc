@@ -6,7 +6,7 @@
 The target audience for this tutorial are those individuals who do not yet have a great deal of experience with:
 
 * Eclipse + JBoss Tools (JBoss Developer Studio)
-* JBoss Enterprise Application 6 or JBoss AS 7
+* JBoss Enterprise Application 6.1
 * Java EE 6 features like JAX-RS 
 * HTML5 & jQuery for building an mobile web front-end.  
 
@@ -80,7 +80,7 @@ The rest of the steps are fairly self explanatory.  If you run into trouble, ple
 
 Please make sure to say *Yes* to the prompt that says "Will you allow JBoss Tools team to receive anonymous usage statistics for this Eclipse instance with JBoss Tools?".  This information is very helpful to us when it comes to prioritizing our QA efforts in terms of operating system platforms. More information concerning our usage tracking can be found at http://www.jboss.org/tools/usage
 
-You can skip the step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6 or JBoss AS 7 as we will do this in the next step.
+You can skip the step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6.1 as we will do this in the next step.
 
 == Creating a new Java EE 6 project with Maven
 
@@ -89,7 +89,7 @@ You can skip the step in the installation wizard that allows you to install JBos
 =================================================================
 For a deeper dive into the world of Maven and how it is used with
 JBoss Developer Studio and JBoss Enterprise Application 
-Platform 6 (or JBoss Tools and JBoss AS 7) review http://vimeo.com/39796236[this video].
+Platform 6 review http://vimeo.com/39796236[this video].
 =================================================================
 
 Now that everything is properly installed, configured, running and verified to work, let's build something "from scratch".
@@ -265,7 +265,7 @@ Under src you will find:
     `mvn test –Parq-jbossas-remote`
     +
     +
-    Note that you will need to start the JBoss Enterprise Application Platform 6 or JBoss AS 7 server before running the test.
+    Note that you will need to start the JBoss Enterprise Application Platform 6.1 server before running the test.
    
 `src/main/webapp`::
     contains `index.xhtml`, the JSF-based user interface for the sample application.  If you double-click on that file you will see Visual Page Editor allows you to visually navigate through the file and see the source simultaneously. Changes to the source are immediately reflected in the visual pane.

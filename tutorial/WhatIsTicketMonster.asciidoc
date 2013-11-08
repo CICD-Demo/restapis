@@ -98,13 +98,13 @@ mvn clean package -Ppostgresql-openshift
 === Running TicketMonster
 
 
-You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
+You can run TicketMonster into a local JBoss EAP 6.1 instance or on OpenShift.
 
 
 ==== Running TicketMonster locally
 
 
-First, _start JBoss Enterprise Application Platform 6 or JBoss AS 7 with the Web Profile_.
+First, _start JBoss Enterprise Application Platform 6.1_.
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
@@ -134,7 +134,7 @@ mvn clean package jboss-as:deploy
 
 First, _create an OpenShift project_.
 
-1. Make sure that you have an OpenShift domain and you have created an application using the `jbossas-7` cartridge (for more details, get started link:https://openshift.redhat.com/app/getting_started[here]). If you want to use PostgreSQL, add the `postgresql-8.4` cartridge too.
+1. Make sure that you have an OpenShift domain and you have created an application using the `jbosseap-6` cartridge (for more details, get started link:https://openshift.redhat.com/app/getting_started[here]). If you want to use PostgreSQL, add the `postgresql-8.4` cartridge too.
 2. Ensure that the Git repository of the project is checked out.
 
 Then, _build and deploy it_.
@@ -158,24 +158,32 @@ mvn clean package -Ppostgresql-openshift
 cp target/ticket-monster.war <root-of-openshift-application-git-repository>/deployments/ROOT.war
 ----
 
-3. Navigate to `<root-of-openshift-application-git-repository>` folder
+3. Download the Hibernate Search distribution that is available as a JBoss Module. Extract the Hibernate Search module to `<root-of-openshift-application-git-repository>/.openshift/config/modules` directory. This directory can contain JBoss Modules required by the application deployed on the EAP cartridge. For more details on how to add JBoss Modules to an OpenShift app deployed on the JBoss EAP cartridge, refer this link:https://www.openshift.com/kb/kb-e1018-how-can-i-add-jboss-modules-to-an-app[OpenShift knowledge base article].
++
+----
+wget http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip
+unzip hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip -d <root-of-openshift-application-git-repository>.openshift/config/modules/
+----
 
-4. Remove the existing `src` folder and `pom.xml` file. 
+4. Navigate to `<root-of-openshift-application-git-repository>` folder.
+
+5. Remove the existing `src` folder and `pom.xml` file. 
 +
 ----
 git rm -r src
 git rm pom.xml
 ----
 
-5.  Add the copied file to the repository, commit and push to Openshift
+6.  Add the copied file and the Hibernate Search module to the repository, commit and push to Openshift
 +
-----        
+----
+git add .openshift/
 git add deployments/ROOT.war
 git commit -m "Deploy TicketMonster"
 git push
 ----
 		
-6. Now you can see the application running at at `http://<app-name>-<domain-name>.rhcloud.com`
+7. Now you can see the application running at at `http://<app-name>-<domain-name>.rhcloud.com`
 
 
 == Learn more
