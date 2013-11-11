@@ -174,7 +174,7 @@ mvn clean package -Ppostgresql-openshift
 cp target/ticket-monster.war <root-of-openshift-application-git-repository>/deployments/ROOT.war
 ----
 
-3. Download the Hibernate Search distribution that is available as a JBoss Module. Extract the Hibernate Search module to `<root-of-openshift-application-git-repository>/.openshift/config/modules` directory. This directory can contain JBoss Modules required by the application deployed on the EAP cartridge. For more details on how to add JBoss Modules to an OpenShift app deployed on the JBoss EAP cartridge, refer this link:https://www.openshift.com/kb/kb-e1018-how-can-i-add-jboss-modules-to-an-app[OpenShift knowledge base article].
+3. Download link:http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip[the Hibernate Search distribution that is available as a JBoss Module]. Extract the Hibernate Search module to `<root-of-openshift-application-git-repository>/.openshift/config/modules` directory. This directory can contain JBoss Modules required by the application deployed on the EAP cartridge. For more details on how to add JBoss Modules to an OpenShift app deployed on the JBoss EAP cartridge, refer this link:https://www.openshift.com/kb/kb-e1018-how-can-i-add-jboss-modules-to-an-app[OpenShift knowledge base article].
 +
 ----
 wget http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip

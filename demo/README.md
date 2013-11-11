@@ -44,7 +44,7 @@ Before building and running TicketMonster, you must generate the administration 
 Steps 3 and 4 need to be performed only once - after the plugin has been installed, it will be
 available on any subsequent runs of Forge.
 
-On step 5, answer _yes_ to all the the questions concerning patches. Deployment to JBoss EAP 6 or AS7 is optional.
+On step 5, answer _yes_ to all the the questions concerning patches. Deployment to JBoss EAP 6.1 is optional.
 
 ## Building TicketMonster
 
@@ -72,11 +72,11 @@ If you intend to deploy into [OpenShift](http://openshift.com), you can use the 
 	
 ## Running TicketMonster
 
-You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
+You can run TicketMonster into a local JBoss EAP 6.1 instance or on OpenShift.
 
 ### Running TicketMonster locally
 
-#### Start JBoss Enterprise Application Platform 6 or JBoss AS 7 with the Web Profile
+#### Start JBoss Enterprise Application Platform 6.1
 
 
 1. Open a command line and navigate to the root of the JBoss server directory.
@@ -101,7 +101,7 @@ You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
 
 #### Create an OpenShift project
 
-1. Make sure that you have an OpenShift domain and you have created an application using the `jbossas-7` cartridge (for more details, get started [here](https://openshift.redhat.com/app/getting_started)). If you want to use PostgreSQL, add the `postgresql-8.4` cartridge too.
+1. Make sure that you have an OpenShift domain and you have created an application using the `jbosseap-6` cartridge (for more details, get started [here](https://openshift.redhat.com/app/getting_started)). If you want to use PostgreSQL, add the `postgresql-8.4` cartridge too.
 2. Ensure that the Git repository of the project is checked out.
 
 #### Building and deploying
@@ -118,19 +118,25 @@ You can run TicketMonster into a local JBoss AS7 instance or on OpenShift.
 
 	    cp target/ticket-monster.war <root-of-openshift-application-git-repository>/deployments/ROOT.war
 
-3. Navigate to `<root-of-openshift-application-git-repository>` folder
-4. Remove the existing `src` folder and `pom.xml` file. 
+3. Download the [Hibernate Search distribution that is available as a JBoss Module](http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip). Extract the Hibernate Search module to `<root-of-openshift-application-git-repository>/.openshift/config/modules` directory. This directory can contain JBoss Modules required by the application deployed on the EAP cartridge. For more details on how to add JBoss Modules to an OpenShift app deployed on the JBoss EAP cartridge, refer [this OpenShift knowledge base article](https://www.openshift.com/kb/kb-e1018-how-can-i-add-jboss-modules-to-an-app).
+
+        wget http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip
+        unzip hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip -d <root-of-openshift-application-git-repository>.openshift/config/modules/
+
+4. Navigate to `<root-of-openshift-application-git-repository>` folder
+5. Remove the existing `src` folder and `pom.xml` file. 
 
         git rm -r src
 		git rm pom.xml
 
-5. Add the copied file to the repository, commit and push to Openshift
+6. Add the copied file to the repository, commit and push to Openshift
         
+        git add .openshift/
 		git add deployments/ROOT.war
 		git commit -m "Deploy TicketMonster"
 		git push
 
-6. Now you can see the application running at `http://<app-name>-<domain-name>.rhcloud.com`
+7. Now you can see the application running at `http://<app-name>-<domain-name>.rhcloud.com`
 
 _NOTE: this version of TicketMonster uses the *binary* deployment style._ 
 

@@ -54,8 +54,8 @@ if ( SHELL.promptBoolean("Apply manual visual changes?") ) {
     }
 }
 
-if ( SHELL.promptBoolean("Deploy to JBoss AS 7?") ) {
-    @/* Deploy this to JBoss AS 7 to see the result */;
+if ( SHELL.promptBoolean("Deploy to JBoss EAP ?") ) {
+    @/* Deploy this to JBoss EAP to see the result */;
     build clean package jboss-as:deploy;
 
     echo Examine the app so far at http://localhost:8080/ticket-monster/admin/index.html;

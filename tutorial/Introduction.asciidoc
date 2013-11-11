@@ -119,13 +119,13 @@ image::gfx/introduction/new_project_wizard.png[]
 [NOTE]
 =================================================================
 There are several ways to add JBoss Enterprise Application 
-Platform 6 or JBoss AS 7 to JBoss Developer Studio. The 
+Platform 6 to JBoss Developer Studio. The 
 *Install...* button on the new project wizard is probably the
 easiest, but you can use any of the methods you are familiar 
 with!
 =================================================================
 
-To add JBoss Enterprise Application Platform or JBoss AS 7, click on the *Install...* button, or if you have not yet downloaded and unzipped the server, click on the *Download and Install...* button.  
+To add JBoss Enterprise Application Platform, click on the *Install...* button, or if you have not yet downloaded and unzipped the server, click on the *Download and Install...* button.  
 
 [CAUTION]
 =================================================================
@@ -220,7 +220,7 @@ If you are using JBoss Enterprise Application Platform 6 and you selected that a
 The specific version of the BOM (e.g. `1.0.4.Final`) is likely to change, so do not 
 be surprised if the version is slightly different.
 
-The recommended version of the BOM for a runtime (EAP 6 or AS 7) can be 
+The recommended version of the BOM for a runtime (EAP 6) can be 
 obtained by visiting link:http://www.jboss.org/jdf/stack/stacks/[the JBoss Stacks site].
 ========================================================================================
 
