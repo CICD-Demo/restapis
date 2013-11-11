@@ -103,8 +103,24 @@ You can run TicketMonster into a local JBoss EAP 6.1 instance or on OpenShift.
 
 ==== Running TicketMonster locally
 
+First, download the link:http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip[Hibernate Search module] and copy its content into the JBoss EAP's `modules` directory.
 
-First, _start JBoss Enterprise Application Platform 6.1_.
+----
+wget http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip
+unzip hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip -d $JBOSS_HOME/modules//system/layers/base
+----
+
+[WARNING]
+==============================================================================
+As of EAP 6.1, the Hibernate Search module must be extracted to 
+$JBOSS_HOME/modules/system/layers/base instead of the older $JBOSS_HOME/modules path.
+
+JBoss EAP 6.1 has a layered "distribution base", where the modules associated
+with the distribution base (JBoss EAP in this case) are located under 
+$JBOSS_HOME/modules//system/layers/base. For more information, see link:https://community.jboss.org/wiki/LayeredDistributionsAndModulePathOrganization[this discussion of the concepts involved].
+==============================================================================
+
+Next, _start JBoss Enterprise Application Platform 6.1_.
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
