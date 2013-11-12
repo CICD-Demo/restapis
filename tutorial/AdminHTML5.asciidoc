@@ -436,11 +436,37 @@ We shall now proceed to modify the AngularJS views to use the new properties in 
                     <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.ticketCategory.description}}</a></td>
 ------------------------------------------------------------------------------------------
 
-We can test these changes by running
+== Updating the ShrinkWrap deployment for the test suite
+
+We've added classes to the project that should be in the ShrinkWrap deployment used in the test suite. Let us update the ShrinkWrap deployment to reflect this.
+
+.src/test/java/org/jboss/jdf/ticketmonster/test/rest/RESTDeployment.java
+[source,java]
+------------------------------------------------------------------------------------------
+public class RESTDeployment {
+
+    public static WebArchive deployment() {
+        return TicketMonsterDeployment.deployment()
+                .addPackage(Booking.class.getPackage())
+                .addPackage(BaseEntityService.class.getPackage())
+                .addPackage(MultivaluedHashMap.class.getPackage())
+                .addPackage(SeatAllocationService.class.getPackage())
+                .addPackage(VenueDTO.class.getPackage());
+    }
+    
+}
+------------------------------------------------------------------------------------------
+
+We can test these changes by executing
 
 ----
-mvn clean package jboss-as:deploy
+mvn clean test -Parq-jbossas-managed
+----
+
+or (against an already running JBoss EAP 6.1 instance)
+
+----
+mvn clean test -Parq-jbossas-remote
 ----
 
 as usual.
-

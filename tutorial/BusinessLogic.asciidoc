@@ -1169,11 +1169,8 @@ public class RESTDeployment {
         return TicketMonsterDeployment.deployment()
                 .addPackage(Booking.class.getPackage())
                 .addPackage(BaseEntityService.class.getPackage())
-                .addPackage(MockMultivaluedMap.class.getPackage())
-                .addClass(SeatAllocationService.class)
-                .addClass(AllocatedSeats.class)
-                .addClass(MediaPath.class)
-                .addClass(MediaManager.class);
+                .addPackage(MultivaluedHashMap.class.getPackage())
+                .addPackage(SeatAllocationService.class.getPackage());
     }
     
 }

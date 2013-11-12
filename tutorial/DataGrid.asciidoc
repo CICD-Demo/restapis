@@ -1560,7 +1560,45 @@ Finally, we will need to update the booking confirmation page.
 
 This is it!
 
-== Conclusion
+== Updating the ShrinkWrap deployment for the test suite
 
+We've added JDG/Infinispan to the project that should be in the ShrinkWrap deployment used in the test suite. Let us update the ShrinkWrap deployment to reflect this.
+
+.src/test/java/org/jboss/jdf/ticketmonster/test/rest/RESTDeployment.java
+[source,java]
+------------------------------------------------------------------------------------------
+public class RESTDeployment {
+
+    public static WebArchive deployment() {
+        return TicketMonsterDeployment.deployment()
+                .addPackage(Booking.class.getPackage())
+                .addPackage(BaseEntityService.class.getPackage())
+                .addPackage(MultivaluedHashMap.class.getPackage())
+                .addPackage(SeatAllocationService.class.getPackage())
+                .addPackage(VenueDTO.class.getPackage())
+                .addAsLibraries(Maven.resolver()
+                        .loadPomFromFile("pom.xml")
+                        .resolve("org.infinispan:infinispan-core").withTransitivity().asFile());
+    }
+    
+}
+------------------------------------------------------------------------------------------
+
+We can test these changes by executing
+
+----
+mvn clean test -Parq-jbossas-managed
+----
+
+or (against an already running JBoss EAP 6.1 instance)
+
+----
+mvn clean test -Parq-jbossas-remote
+----
+
+as usual.
+
+
+== Conclusion
 
 You have successfully converted your application from one that relies exclusively on relational persistence to using a NoSQL (key-value) data store for a part of its data. You have identified the use cases where the switch is mostly likely to result in performance improvements, including the changes in application functionality that can benefit from this conversion. You have learned how to set up the infrastructure, distinguish between the different configuration options, and use the API.
