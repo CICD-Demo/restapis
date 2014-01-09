@@ -10,16 +10,13 @@ define(function () {
 
     var environment;
 
-    if (navigator.userAgent.indexOf("TicketMonster Cordova Webview iOS") > -1) {
-        environment = "hybrid-ios"
+    if (document.URL.indexOf("mobileapp.html") > -1) {
+        environment = "hybrid";
     }
-    else if (navigator.userAgent.indexOf("TicketMonster Cordova Webview Android") > -1) {
-        environment = "hybrid-android"
-    }
-    else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 480px)")) {
-        environment = "mobile"
+    else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 768px)")) {
+        environment = "mobile";
     } else {
-        environment = "desktop"
+        environment = "desktop";
     }
 
     require([environment]);
