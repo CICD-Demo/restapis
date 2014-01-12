@@ -39,7 +39,14 @@ public class NestedTicketDTO implements Serializable
                "SELECT DISTINCT t FROM Ticket t WHERE t.id = :entityId",
                Ticket.class);
          findByIdQuery.setParameter("entityId", this.id);
-         entity = findByIdQuery.getSingleResult();
+         try
+         {
+            entity = findByIdQuery.getSingleResult();
+         }
+         catch (javax.persistence.NoResultException nre)
+         {
+            entity = null;
+         }
          return entity;
       }
       entity = em.merge(entity);

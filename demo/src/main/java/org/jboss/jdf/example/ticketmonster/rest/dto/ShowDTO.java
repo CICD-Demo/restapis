@@ -1,23 +1,30 @@
 package org.jboss.jdf.example.ticketmonster.rest.dto;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
 import org.jboss.jdf.example.ticketmonster.model.Show;
 import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
+
+import org.jboss.jdf.example.ticketmonster.rest.dto.NestedTicketPriceDTO;
+import org.jboss.jdf.example.ticketmonster.rest.dto.NestedEventDTO;
+import org.jboss.jdf.example.ticketmonster.rest.dto.NestedPerformanceDTO;
+import org.jboss.jdf.example.ticketmonster.rest.dto.NestedVenueDTO;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ShowDTO implements Serializable

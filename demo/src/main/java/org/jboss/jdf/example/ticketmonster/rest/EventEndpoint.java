@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
@@ -53,7 +54,15 @@ public class EventEndpoint
    {
       TypedQuery<Event> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.mediaItem LEFT JOIN FETCH e.category WHERE e.id = :entityId ORDER BY e.id", Event.class);
       findByIdQuery.setParameter("entityId", id);
-      Event entity = findByIdQuery.getSingleResult();
+      Event entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       if (entity == null)
       {
          return Response.status(Status.NOT_FOUND).build();
@@ -83,7 +92,15 @@ public class EventEndpoint
    {
       TypedQuery<Event> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.mediaItem LEFT JOIN FETCH e.category WHERE e.id = :entityId ORDER BY e.id", Event.class);
       findByIdQuery.setParameter("entityId", id);
-      Event entity = findByIdQuery.getSingleResult();
+      Event entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       entity = dto.fromDTO(entity, em);
       entity = em.merge(entity);
       return Response.noContent().build();

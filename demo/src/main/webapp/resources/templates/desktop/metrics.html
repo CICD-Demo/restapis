@@ -1,4 +1,4 @@
-<div class="span7">
+<div class="col-md-12">
   <h3 class="page-header light-font special-title">Booking status</h3>
   <div id="status-content">
       <%
@@ -7,12 +7,14 @@
       <div class="show-status">
         <div class="show-status-header"><%=show.get('event')%> @ <%=show.get('venue')%></div>
         <%_.each(show.get('performances'), function (performance) {%>
-        <div class="performance-status">
-          <div class="pull-left"><%=new Date(performance.date).toLocaleString()%></div>
-          <div class="pull-left performance-status-progress progress progress-success">
-            <div style="width: <%=(performance.occupiedCount)/(show.get('capacity'))*100%>%;" class="bar"></div>
+        <div class="row">
+          <div class="col-md-4"><%=new Date(performance.date).toLocaleString()%></div>
+          <div class="col-md-4">
+            <div class="progress">
+              <div style="width: <%=(performance.occupiedCount)/(show.get('capacity'))*100%>%;" class="progress-bar progress-bar-success"></div>
+            </div>
           </div>
-          <div><%=performance.occupiedCount%> of <%=show.get('capacity')%> tickets booked</div>
+          <div class="col-md-4"><%=performance.occupiedCount%> of <%=show.get('capacity')%> tickets booked</div>
         </div>
         <% }); %>
       </div>

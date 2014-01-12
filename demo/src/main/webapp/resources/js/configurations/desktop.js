@@ -31,9 +31,9 @@ define("initializer", ["jquery"], function ($) {
     // Configure jQuery to append timestamps to requests, to bypass browser caches
     // Important for MSIE
 	$.ajaxSetup({cache:false});
-    $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
-    $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
+    $('head').append('<link rel="stylesheet" href="resources/css/bootstrap-theme.css" type="text/css" media="all"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/screen.css" type="text/css" media="all"/>');
     $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
 });
 

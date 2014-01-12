@@ -8,7 +8,7 @@ define([
 
     var BookingsView = Backbone.View.extend({
         events:{
-            "click i[data-tm-role='delete']":"deleteBooking",
+            "click span[data-tm-role='delete']":"deleteBooking",
             "click a[data-tm-role='page']":"refreshPage"
         },
         render:function () {

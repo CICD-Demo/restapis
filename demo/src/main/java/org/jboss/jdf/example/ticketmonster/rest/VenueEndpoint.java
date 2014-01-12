@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
@@ -53,7 +54,15 @@ public class VenueEndpoint
    {
       TypedQuery<Venue> findByIdQuery = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem WHERE v.id = :entityId ORDER BY v.id", Venue.class);
       findByIdQuery.setParameter("entityId", id);
-      Venue entity = findByIdQuery.getSingleResult();
+      Venue entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       if (entity == null)
       {
          return Response.status(Status.NOT_FOUND).build();
@@ -83,7 +92,15 @@ public class VenueEndpoint
    {
       TypedQuery<Venue> findByIdQuery = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem WHERE v.id = :entityId ORDER BY v.id", Venue.class);
       findByIdQuery.setParameter("entityId", id);
-      Venue entity = findByIdQuery.getSingleResult();
+      Venue entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       entity = dto.fromDTO(entity, em);
       entity = em.merge(entity);
       return Response.noContent().build();

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -75,7 +76,15 @@ public class PerformanceEndpoint
    {
       TypedQuery<Performance> findByIdQuery = em.createQuery("SELECT DISTINCT p FROM Performance p LEFT JOIN FETCH p.show WHERE p.id = :entityId ORDER BY p.id", Performance.class);
       findByIdQuery.setParameter("entityId", id);
-      Performance entity = findByIdQuery.getSingleResult();
+      Performance entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       if (entity == null)
       {
          return Response.status(Status.NOT_FOUND).build();
@@ -105,7 +114,15 @@ public class PerformanceEndpoint
    {
       TypedQuery<Performance> findByIdQuery = em.createQuery("SELECT DISTINCT p FROM Performance p LEFT JOIN FETCH p.show WHERE p.id = :entityId ORDER BY p.id", Performance.class);
       findByIdQuery.setParameter("entityId", id);
-      Performance entity = findByIdQuery.getSingleResult();
+      Performance entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       entity = dto.fromDTO(entity, em);
       entity = em.merge(entity);
       return Response.noContent().build();

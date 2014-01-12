@@ -14,7 +14,7 @@ angular.module('ticketmonster').directive('datetime', function($parse, dateFilte
             if(attrs.required) {
                 isRequired = "required";
             }
-            var html = "<input id='" + attrs.id + "' name='" + attrs.name + "' type='datetime-local' " + isRequired + " placeholder='"+attrs.placeholder+"'></input>";
+            var html = "<input id='" + attrs.id + "' name='" + attrs.name + "' type='datetime-local' " + isRequired + " class='form-control' placeholder='"+attrs.placeholder+"'></input>";
 
             var $newElem = $(html);
             element.replaceWith($newElem);
@@ -64,10 +64,10 @@ angular.module('ticketmonster').directive('datetime', function($parse, dateFilte
                             var formattedDate = d[1] + "-" + d[2] + "-" + d[3] + "T"
                                             + d[4] + ":" + d[5] + ":" + d[6];
                             var date = new Date(Date.parse(formattedDate));
-                            ngModelCtrl.$setValidity("dateFormat", true);
+                            ngModelCtrl.$setValidity("datetimeFormat", true);
                             return date;
                         } else {
-                            ngModelCtrl.$setValidity("dateFormat", false);
+                            ngModelCtrl.$setValidity("datetimeFormat", false);
                             return;
                         }
                     }

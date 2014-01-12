@@ -1,18 +1,18 @@
-<div class="row-fluid">
-    <div class="span3">
-        <div class="accordion" id="itemMenu">
+<div class="row">
+    <div class="col-md-3 col-md-offset-1">
+        <div class="panel" id="itemMenu">
 
             <%
             _.each(cities, function (city) {
             %>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle"
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-toggle"
                        data-target="#city-<%=city%>-collapsible" data-toggle="collapse"
                        data-parent="#itemMenu"><%= city %></a>
                 </div>
-                <div id="city-<%=city%>-collapsible" class="collapse accordion-body">
-                    <div id="city-<%=city%>" class="accordion-inner">
+                <div id="city-<%=city%>-collapsible" class="panel-collapse collapse">
+                    <div id="city-<%=city%>" class="panel-body">
 
                     <%
                     _.each(model.models, function (model) {
@@ -30,33 +30,39 @@
             <% }); %>
         </div>
     </div>
-    <div id='itemSummary' class="span9">
-        <div class="row-fluid">
-            <div class="span11">
-                <div id="venueCarousel" class="carousel">
-                    <!-- Carousel items -->
-                    <div class="carousel-inner">
-                        <%_.each(model.models, function(model) {
-                        	if(model.get('mediaItem')) { 
-                        %>
-                        <div class="item">
-                            <img src='rest/media/<%=model.attributes.mediaItem.id%>'/>
+    <div id='itemSummary' class="col-md-8 hidden-sm hidden-xs">
+        <div class="carousel-container">
+            <div id="venueCarousel" class="carousel">
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                    <%_.each(model.models, function(model) {
+                        if(model.get('mediaItem')) {
+                    %>
+                    <div class="item">
+                        <img src='rest/media/<%=model.attributes.mediaItem.id%>'/>
 
-                            <div class="carousel-caption">
-                                <h4><%=model.attributes.name%></h4>
-
-                                <p><%=model.attributes.description%></p><a class="btn btn-danger"
-                                                                           href="#venues/<%=model.attributes.id%>">Find
-                                shows</a>
+                        <div class="carousel-caption">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <h4><%=model.attributes.name%></h4>
+                                    <p><%=model.attributes.description%></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-danger action" href="#venues/<%=model.attributes.id%>">Find shows</a>
+                                </div>
                             </div>
                         </div>
-                        <%  }
-                         }); %>
                     </div>
-                    <!-- Carousel nav -->
-                    <a class="carousel-control left" href="#venueCarousel" data-slide="prev">&lsaquo;</a>
-                    <a class="carousel-control right" href="#venueCarousel" data-slide="next">&rsaquo;</a>
+                    <%  }
+                     }); %>
                 </div>
+                <!-- Carousel nav -->
+                <a class="carousel-control left" href="#venueCarousel" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="carousel-control right" href="#venueCarousel" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
             </div>
         </div>
     </div>

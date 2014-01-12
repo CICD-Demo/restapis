@@ -97,7 +97,7 @@ define([
     var TicketSummaryView = Backbone.View.extend({
         tagName:'tr',
         events:{
-            "click i":"removeEntry"
+            "click span":"removeEntry"
         },
         render:function () {
             var self = this;
@@ -259,7 +259,7 @@ define([
         	// jQuery 1.9 does not handle pseudo CSS selectors like :valid :invalid, anymore
         	var validElements;
         	try	{
-        		validElements = $(".form-search").get(0).querySelectorAll(":valid");
+        		validElements = $("#request-summary > .form-inline").get(0).querySelectorAll(":valid");
         		for (var ctr=0; ctr < validElements.length; ctr++) {
             		if (event.currentTarget === validElements[ctr]) {
                         this.model.bookingRequest.email = event.currentTarget.value;

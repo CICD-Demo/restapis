@@ -36,7 +36,14 @@ public class NestedShowDTO implements Serializable
                "SELECT DISTINCT s FROM Show s WHERE s.id = :entityId",
                Show.class);
          findByIdQuery.setParameter("entityId", this.id);
-         entity = findByIdQuery.getSingleResult();
+         try
+         {
+            entity = findByIdQuery.getSingleResult();
+         }
+         catch (javax.persistence.NoResultException nre)
+         {
+            entity = null;
+         }
          return entity;
       }
       entity = em.merge(entity);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
@@ -53,7 +54,15 @@ public class SectionAllocationEndpoint
    {
       TypedQuery<SectionAllocation> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section WHERE s.id = :entityId ORDER BY s.id", SectionAllocation.class);
       findByIdQuery.setParameter("entityId", id);
-      SectionAllocation entity = findByIdQuery.getSingleResult();
+      SectionAllocation entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       if (entity == null)
       {
          return Response.status(Status.NOT_FOUND).build();
@@ -83,7 +92,15 @@ public class SectionAllocationEndpoint
    {
       TypedQuery<SectionAllocation> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section WHERE s.id = :entityId ORDER BY s.id", SectionAllocation.class);
       findByIdQuery.setParameter("entityId", id);
-      SectionAllocation entity = findByIdQuery.getSingleResult();
+      SectionAllocation entity;
+      try
+      {
+         entity = findByIdQuery.getSingleResult();
+      }
+      catch (NoResultException nre)
+      {
+         entity = null;
+      }
       entity = dto.fromDTO(entity, em);
       entity = em.merge(entity);
       return Response.noContent().build();

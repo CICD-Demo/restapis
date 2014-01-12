@@ -1,16 +1,18 @@
 package org.jboss.jdf.example.ticketmonster.rest.dto;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.jdf.example.ticketmonster.model.Section;
@@ -18,6 +20,10 @@ import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
 import org.jboss.jdf.example.ticketmonster.model.Show;
 import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
 import org.jboss.jdf.example.ticketmonster.model.Venue;
+
+import org.jboss.jdf.example.ticketmonster.rest.dto.AddressDTO;
+import org.jboss.jdf.example.ticketmonster.rest.dto.NestedMediaItemDTO;
+import org.jboss.jdf.example.ticketmonster.rest.dto.NestedSectionDTO;
 
 @XmlRootElement
 public class VenueDTO implements Serializable

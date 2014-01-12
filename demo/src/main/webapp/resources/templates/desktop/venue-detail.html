@@ -1,34 +1,58 @@
-<div class="row-fluid">
+<div class="row">
     <h2 class="page-header special-title light-font"><%=name%></h2>
 </div>
-<div class="row-fluid">
-    <div class="span4 well">
-        <div class="row-fluid"><h3 class="page-header span6">Where?</h3>
-            <% if(mediaItem) { %><img width="100" src='rest/media/<%=mediaItem.id%>'/><% } %></div>
-        <div class="row-fluid">
-            <p>&nbsp;</p>
-
-            <div class="span12"><%= description %></div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="well">
+            <div class="row">
+                <h3 class="page-header col-md-6">Where?</h3>
+                <% if(mediaItem) { %><img width="100" src='rest/media/<%=mediaItem.id%>'/><% } %>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12"><%= description %></div>
+            </div>
         </div>
     </div>
-    <div class="span4 well">
-        <div class="row-fluid">
-            <h3 class="page-header span6">What?</h3>
-
-            <div class="span6" id='eventMedia'></div>
-        </div>
-        <div class='row-fluid'>
-            <select id='eventSelector'/>
-
-            <div id="venueEventDescription"></div>
+    <div class="col-md-4">
+        <div class="well">
+            <div class="row">
+                <h3 class="page-header col-md-6">What?</h3>
+                <div class="col-md-6" id='eventMedia'></div>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12">
+                    <select id="eventSelector" class="form-control"/>
+                </div>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12">
+                    <div id="venueEventDescription"></div>
+                </div>
+            </div>
         </div>
     </div>
-    <div id='bookingWhen' style="display: none;" class="span4 well">
-        <h3 class="page-header">When?</h3>
-        <select class="span6" id="dayPicker"/>
-        <select class="span6" id="performanceTimes"/>
+    <div id='bookingWhen' style="display: none;" class="col-md-4">
+        <div class="well">
+            <div class="row">
+                <h3 class="page-header col-md-6">When?</h3>
+            </div>
 
-        <div id='bookingOption'><input name="bookButton" class="btn btn-primary" type="button"
-                                       value="Order tickets"></div>
+            <div class="row top5">
+                <div class="col-md-12">
+                    <select class="form-control" id="dayPicker"/>
+                </div>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12">
+                    <select class="form-control" id="performanceTimes"/>
+                </div>
+            </div>
+
+            <div class="row top5">
+                <div class="col-md-6">
+                    <div id='bookingOption'><input name="bookButton" class="btn btn-primary" type="button" value="Order tickets"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

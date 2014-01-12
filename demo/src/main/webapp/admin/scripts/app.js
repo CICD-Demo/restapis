@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ticketmonster',['ngResource'])
+angular.module('ticketmonster',['ngRoute','ngResource'])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
       .when('/',{templateUrl:'views/landing.html',controller:'LandingPageController'})

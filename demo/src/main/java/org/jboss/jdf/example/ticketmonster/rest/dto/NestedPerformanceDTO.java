@@ -40,7 +40,14 @@ public class NestedPerformanceDTO implements Serializable
                      "SELECT DISTINCT p FROM Performance p WHERE p.id = :entityId",
                      Performance.class);
          findByIdQuery.setParameter("entityId", this.id);
-         entity = findByIdQuery.getSingleResult();
+         try
+         {
+            entity = findByIdQuery.getSingleResult();
+         }
+         catch (javax.persistence.NoResultException nre)
+         {
+            entity = null;
+         }
          return entity;
       }
       entity.setDate(this.date);

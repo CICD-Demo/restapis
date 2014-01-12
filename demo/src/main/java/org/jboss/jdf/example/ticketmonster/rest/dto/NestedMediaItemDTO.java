@@ -40,7 +40,14 @@ public class NestedMediaItemDTO implements Serializable
                      "SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId",
                      MediaItem.class);
          findByIdQuery.setParameter("entityId", this.id);
-         entity = findByIdQuery.getSingleResult();
+         try
+         {
+            entity = findByIdQuery.getSingleResult();
+         }
+         catch (javax.persistence.NoResultException nre)
+         {
+            entity = null;
+         }
          return entity;
       }
       entity.setUrl(this.url);

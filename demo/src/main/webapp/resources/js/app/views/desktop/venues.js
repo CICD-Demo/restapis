@@ -17,7 +17,7 @@ define([
             utilities.applyTemplate($(this.el), venuesTemplate, {cities: cities, model:this.model});
             $(this.el).find('.item:first').addClass('active');
             $(".carousel").carousel();
-            $("a[rel='popover']").popover({trigger:'hover',container:'body'});
+            $("a[rel='popover']").popover({trigger:'hover',container:'#content'});
             return this;
         },
         update:function () {
