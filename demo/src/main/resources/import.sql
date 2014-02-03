@@ -48,7 +48,7 @@ insert into MediaItem ( mediaType, url) values ( 'IMAGE', 'http://upload.wikimed
 insert into MediaItem ( mediaType, url) values ( 'IMAGE', 'http://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Boston_Symphony_Hall_from_the_south.jpg/800px-Boston_Symphony_Hall_from_the_south.jpg')
 
 -- Venue 1
-insert into Venue ( name, city, country, street, description, mediaitem_id, capacity, latitude, longitude) values ( 'Roy Thomson Hall', 'Toronto', 'Canada', '60 Simcoe Street','Roy Thomson Hall is the home of the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir.',4, 11000, 43.6466150, -79.3864430);
+insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'Roy Thomson Hall', 'Toronto', 'Canada', '60 Simcoe Street','Roy Thomson Hall is the home of the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir.',4, 11000);
 
 -- Section 1
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'A', 'Premier platinum reserve',20, 100, 1);
@@ -60,7 +60,7 @@ insert into Section ( name, description, numberofrows, rowcapacity, venue_id) va
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'D', 'General', 40, 100, 1);
 
 -- Venue 2
-insert into Venue ( name, city, country, street, description, mediaitem_id, capacity, latitude, longitude) values ( 'Sydney Opera House', 'Sydney', 'Australia', 'Bennelong point', 'The Sydney Opera House is a multi-venue performing arts centre in Sydney, New South Wales, Australia' ,3, 15030, -33.8592804, 151.2135224);
+insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'Sydney Opera House', 'Sydney', 'Australia', 'Bennelong point', 'The Sydney Opera House is a multi-venue performing arts centre in Sydney, New South Wales, Australia' ,3, 15030);
 
 -- Section 5
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S1', 'Front left', 50, 50, 2);
@@ -78,7 +78,7 @@ insert into Section ( name, description, numberofrows, rowcapacity, venue_id) va
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'S7', 'Balcony', 1, 30, 2);
 
 -- Venue 3
-insert into Venue ( name, city, country, street, description, mediaitem_id, capacity, latitude, longitude) values ( 'BMO Field', 'Toronto', 'Canada', '170 Princes Boulevard','BMO Field is a Canadian soccer stadium located in Exhibition Place in the city of Toronto.',5, 30000, 45.9425208, -66.6410445);
+insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'BMO Field', 'Toronto', 'Canada', '170 Princes Boulevard','BMO Field is a Canadian soccer stadium located in Exhibition Place in the city of Toronto.',5, 30000);
 
 -- Section 12
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'A', 'Premier platinum reserve',40, 100, 3);
@@ -91,7 +91,7 @@ insert into Section ( name, description, numberofrows, rowcapacity, venue_id) va
 
 -- Venue 4
 
-insert into Venue ( name, city, country, street, description, mediaitem_id, capacity, latitude, longitude) values ( 'Opera Garnier', 'Paris', 'France', '8 Rue Scribe','The Palais Garnier is a 1,979-seat opera house, which was built from 1861 to 1875 for the Paris Opera.', 23, 1972, 48.8719444, 2.3316667);
+insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'Opera Garnier', 'Paris', 'France', '8 Rue Scribe','The Palais Garnier is a 1,979-seat opera house, which was built from 1861 to 1875 for the Paris Opera.', 23, 1972);
 
 -- Section 16
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'A', 'Center',10, 60, 4);
@@ -104,7 +104,7 @@ insert into Section ( name, description, numberofrows, rowcapacity, venue_id) va
 
 -- Venue 5
 
-insert into Venue ( name, city, country, street, description, mediaitem_id, capacity, latitude, longitude) values ( 'Boston Symphony Hall', 'Boston', 'USA', '301 Massachusetts Avenue','Designed by McKim, Mead and White, it was built in 1900 for the Boston Symphony Orchestra, which continues to make the hall its home. The hall was designated a U.S. National Historic Landmark in 1999.', 24, 1972, 42.342594, -71.085806);
+insert into Venue ( name, city, country, street, description, mediaitem_id, capacity) values ( 'Boston Symphony Hall', 'Boston', 'USA', '301 Massachusetts Avenue','Designed by McKim, Mead and White, it was built in 1900 for the Boston Symphony Orchestra, which continues to make the hall its home. The hall was designated a U.S. National Historic Landmark in 1999.', 24, 1972);
 
 -- Section 20
 insert into Section ( name, description, numberofrows, rowcapacity, venue_id) values ( 'A', 'Center',10, 60, 5);

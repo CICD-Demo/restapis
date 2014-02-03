@@ -9,7 +9,6 @@ define("router", [
     'app/models/booking',
     'app/models/event',
     'app/models/venue',
-    'app/models/results',
     'app/collections/bookings',
     'app/collections/events',
     'app/collections/venues',
@@ -22,7 +21,6 @@ define("router", [
     'app/views/desktop/venue-detail',
     'app/views/desktop/booking-detail',
     'app/views/desktop/monitor',
-    'app/views/desktop/results',
     'text!../templates/desktop/main.html'
 ],function ($,
             _,
@@ -31,7 +29,6 @@ define("router", [
             Booking,
             Event,
             Venue,
-            Results,
             Bookings,
             Events,
             Venues,
@@ -44,7 +41,6 @@ define("router", [
             VenueDetailView,
             BookingDetailView,
             MonitorView,
-            ResultsView,
             MainTemplate) {
 
     $(document).ready(new function() {
@@ -74,10 +70,6 @@ define("router", [
             "bookings":"listBookings",
             "bookings/:id":"bookingDetail",
             "monitor":"displayMonitor",
-            "search/anywhere/:query":"results",
-            "search/anywhere/:query/category/:categoryId/minprice/:priceId":"results",
-            "search/around/:lat/:lng/:query":"localResults",
-            "search/around/:lat/:lng/:query/category/:categoryId/minprice/:priceId":"localResults",
             "ignore":"ignore",
             "*actions":"defaultHandler"
         },
@@ -163,30 +155,6 @@ define("router", [
                     utilities.viewManager.showView(bookingDetailView);
                 }).fetch();
 
-        },
-        results:function (query, categoryId, minPriceId) {
-            this.localResults(null, null, query, categoryId, minPriceId);
-        },
-        localResults:function (lat, lng, query, categoryId, minPriceId) {
-            var model = new Results();
-            model.set("query", decodeURIComponent(query));
-            if (lat != null) {
-                model.set("lat", lat);
-            }
-            if (lng != null) {
-                model.set("lng", lng);
-            }
-            if (typeof(categoryId) != 'undefined' && categoryId != 'all') {
-                model.set("category", categoryId);
-            }
-            if (typeof(minPriceId) != 'undefined' && minPriceId != 'all') {
-                model.set("price", minPriceId);
-            }
-            var resultsView = new ResultsView({model:model, el:$("#content"), router:this});
-            model.bind("change",
-                function () {
-                    utilities.viewManager.showView(resultsView);
-                }).fetch();
         }
     });
 

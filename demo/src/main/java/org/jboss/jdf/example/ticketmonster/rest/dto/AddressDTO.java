@@ -8,8 +8,6 @@ public class AddressDTO implements Serializable
 {
 
    private String street;
-   private double longitude;
-   private double latitude;
    private String country;
    private String city;
 
@@ -22,8 +20,6 @@ public class AddressDTO implements Serializable
       if (entity != null)
       {
          this.street = entity.getStreet();
-         this.longitude = entity.getLongitude();
-         this.latitude = entity.getLatitude();
          this.country = entity.getCountry();
          this.city = entity.getCity();
       }
@@ -36,8 +32,6 @@ public class AddressDTO implements Serializable
          entity = new Address();
       }
       entity.setStreet(this.street);
-      entity.setLongitude(this.longitude);
-      entity.setLatitude(this.latitude);
       entity.setCountry(this.country);
       entity.setCity(this.city);
       return entity;
@@ -51,26 +45,6 @@ public class AddressDTO implements Serializable
    public void setStreet(final String street)
    {
       this.street = street;
-   }
-
-   public double getLongitude()
-   {
-      return this.longitude;
-   }
-
-   public void setLongitude(final double longitude)
-   {
-      this.longitude = longitude;
-   }
-
-   public double getLatitude()
-   {
-      return this.latitude;
-   }
-
-   public void setLatitude(final double latitude)
-   {
-      this.latitude = latitude;
    }
 
    public String getCountry()

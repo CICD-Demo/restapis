@@ -12,10 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-
 /**
  * <p>
  * Represents an event, which may have multiple performances with different dates and venues.
@@ -70,7 +66,6 @@ public class Event implements Serializable {
     @Column(unique = true)
     @NotNull
     @Size(min = 5, max = 50, message = "An event's name must contain between 5 and 50 characters")
-    @Field
     private String name;
 
     /**
@@ -91,7 +86,6 @@ public class Event implements Serializable {
      */
     @NotNull
     @Size(min = 20, max = 1000, message = "An event's description must contain between 20 and 1000 characters")
-    @Field
     private String description;
 
     /**
@@ -125,7 +119,6 @@ public class Event implements Serializable {
      */
     @ManyToOne
     @NotNull
-    @IndexedEmbedded
     private EventCategory category;
 
     /* Boilerplate getters and setters */

@@ -23,4 +23,3 @@ include::HybridUI.asciidoc[]
 
 include::DataGrid.asciidoc[]
 
-include::HibernateSearch.asciidoc[]

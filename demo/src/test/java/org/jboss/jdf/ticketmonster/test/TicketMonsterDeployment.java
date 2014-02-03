@@ -15,7 +15,6 @@ public class TicketMonsterDeployment {
                 .addAsResource("import.sql")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 // Deploy our test datasource
-                .addAsWebInfResource("test-ds.xml")
-                .addAsWebInfResource("jboss-deployment-structure.xml");
+                .addAsWebInfResource("test-ds.xml");
     }
 }

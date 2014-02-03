@@ -26,55 +26,6 @@
                     <li><a href="#monitor">Monitor</a></li>
                     <li><a href="admin">Administration</a></li>
                 </ul>
-                <script type="text/javascript">
-                  //<![CDATA[
-                    function get_results(event)
-                    {
-                        event.preventDefault();
-                        if (document.searchbox.local.checked && navigator.geolocation)
-                        {
-                            options = {
-                                maximumAge: 6000000 // milliseconds (100 minutes)
-                            }
-                            navigator.geolocation.getCurrentPosition(handlePosition, handleError, options);
-                            return false;
-                        }
-                        else {
-                            return queryAnywhere();
-                        }
-                        function handlePosition(pos)
-                        {
-                            return queryLocal(pos.coords);
-                        }
-                        function handleError(error)
-                        {
-                            return queryAnywhere();
-                        }
-                    }
-                    function queryAnywhere()
-                    {
-                        location.href = "#search/anywhere/" + escape(document.searchbox.query.value);
-                        return false;
-                    }
-                    function queryLocal(coords)
-                    {
-                        location.href = "#search/around/" + coords.latitude + '/' + coords.longitude + '/' + escape(document.searchbox.query.value);
-                        return false;
-                    }
-                  //]]>
-                </script>
-                <form id="searchbox" name="searchbox" class="navbar-form" onsubmit="return get_results(event)">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <input id="query" name="query" class="form-control search-query" type="text" placeholder="Search"/>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input name="local" type="checkbox" /> around me
-                            </label>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
