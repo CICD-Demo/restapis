@@ -35,9 +35,15 @@ if ( SHELL.promptBoolean("Apply manual functional changes described in tutorial?
     } else if (v.startsWith("1.4.2")) {
       echo Applying manual changes described in tutorial based on admin_layer_functional_1.4.2.patch;
       git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.4.2.patch;
+    } else if (v.startsWith("1.4.3")) {
+      echo Applying manual changes described in tutorial based on admin_layer_functional_1.4.3.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.4.3.patch;
+    } else if (v.startsWith("1.4.4")) {
+      echo Applying manual changes described in tutorial based on admin_layer_functional_1.4.3.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.4.3.patch;
     } else {
       @SHELL.println("The version " + v + " is not supported yet, attempting to apply latest patch");
-      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.4.2.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_functional_1.4.3.patch;
     } 
 }
 
@@ -48,9 +54,18 @@ if ( SHELL.promptBoolean("Apply manual visual changes?") ) {
     } else if (v.startsWith("1.4.1")) {
       echo Applying manual visual changes based on admin_layer_graphics.patch;
       git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_graphics.patch;
+    } else if (v.startsWith("1.4.2")) {
+      echo Applying manual visual changes based on admin_layer_graphics.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_graphics.patch;
+    } else if (v.startsWith("1.4.3")) {
+      echo Applying manual visual changes based on admin_layer_graphics_1.4.3.patch.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_graphics_1.4.3.patch;
+    } else if (v.startsWith("1.4.4")) {
+      echo Applying manual visual changes based on admin_layer_graphics_1.4.3.patch.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_graphics_1.4.3.patch;
     } else {
       @SHELL.println("The version " + v + " is not supported yet, attempting to apply latest patch");
-      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_graphics.patch;
+      git apply -v --ignore-whitespace --ignore-space-change patches/admin_layer_graphics_1.4.3.patch;
     }
 }
 
