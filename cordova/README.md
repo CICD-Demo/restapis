@@ -32,7 +32,7 @@ First we need to import the existing Hybrid Mobile project code to JBDS.
 2. Select *Existing Projects into Workspace* and click *Next*.
 3. On Root Directory, click on *Browse...* button and navigate to the `$TICKET-MONSTER_HOME/cordova/` directory on your filesystem.
 4. After selecting the TicketMonster-Cordova project, you can click on *Finish* button to start the project import.
-5. Make sure that `$TICKET-MONSTER_HOME/cordova/www` is a symbolic link to `../../../demo/src/main/webapp`
+5. Make sure that `$TICKET-MONSTER_HOME/cordova/www` is a symbolic link to `../demo/src/main/webapp`
 
 #### Troubleshooting Windows Operating Systems
 
