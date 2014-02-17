@@ -7,23 +7,29 @@
 		The hybrid mobile app for TicketMonster.
 	</description>
 
-	<author href="http://www.jboss.org/jdf/examples/get-started/" email="jdf-users@lists.jboss.org">
+	<author href="http://www.jboss.org/jdf/examples/get-started/"
+		email="jdf-users@lists.jboss.org">
 		JBoss by Red Hat
 	</author>
 
 	<!-- The application start page -->
 	<content src="mobileapp.html" />
 
-	<!--
-	Add the TicketMonster cloud app to the domain whitelist.
-	Domains are assumed blocked unless set otherwise.
-	 -->
-	<access origin="http://ticketmonster-jdf.rhcloud.com"/>
+	<!-- Add the TicketMonster cloud app to the domain whitelist. Domains are 
+		assumed blocked unless set otherwise. -->
+	<access origin="http://ticketmonster-jdf.rhcloud.com" />
 	<preference name="fullscreen" value="true" />
 	<preference name="webviewbounce" value="true" />
 
 	<feature name="App">
 		<param name="android-package" value="org.apache.cordova.App" />
+	</feature>
+	<feature name="StatusBar">
+		<param name="ios-package" value="CDVStatusBar" />
+	</feature>
+	<feature name="Device">
+		<param name="android-package" value="org.apache.cordova.device.Device" />
+		<param name="ios-package" value="CDVDevice" />
 	</feature>
 
 </widget>
