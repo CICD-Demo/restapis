@@ -55,6 +55,10 @@ a:hover {
    padding-right: 5px;
 }
 
+.ui-header {
+   border-top: 1px solid #3C3C3C;
+}
+
 span.invalid {
    padding-left: 3px;
    color: red;
