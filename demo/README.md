@@ -19,7 +19,7 @@ _NOTE: This step is optional. The administration site is already present in the 
 Before building and running TicketMonster, you must generate the administration site with Forge.
 
 1. Ensure that you have [JBoss Forge](http://jboss.org/forge) installed. The current version of
-   TicketMonster supports version 1.4.0.Final or higher of JBoss Forge.
+   TicketMonster supports version 1.4.4.Final or higher of JBoss Forge.
 
 2. Start JBoss Forge
 
@@ -31,7 +31,7 @@ Before building and running TicketMonster, you must generate the administration 
 
    and verifying that `org.jboss.forge.angularjs-scaffoldx-plugin` is in the returned list.
 
-   The version of the installed plugin must be 1.0.3.Final or higher. The version is present in the output of this command and it appears like so: `org.jboss.forge.angularjs-scaffoldx-plugin:1.4.0.Final:1.0.3.Final-60c6c2c5-4888-4d6c-a0d9-4894622f94a3`. The plugin version is the second version string listed in the output; the first version string (`1.4.0.Final`) is the Forge API version used by the plugin.
+   The version of the installed plugin must be 1.0.4.Final or higher. The version is present in the output of this command and it appears like so: `org.jboss.forge.angularjs-scaffoldx-plugin:1.4.3.Final:1.0.4.Final-0b904c70-87c2-4ed9-9ec4-4868bfc02214`. The plugin version is the second version string (`1.0.4.Final`) listed in the output; the first version string (`1.4.3.Final`) is the Forge API version used by the plugin.
 
 4.  If the outcome of the previous step was that the AngularJS plugin was not installed, do that now
 
@@ -44,7 +44,7 @@ Before building and running TicketMonster, you must generate the administration 
 Steps 3 and 4 need to be performed only once - after the plugin has been installed, it will be
 available on any subsequent runs of Forge.
 
-On step 5, answer _yes_ to all the the questions concerning patches. Deployment to JBoss EAP 6.1 is optional.
+On step 5, answer _yes_ to all the the questions concerning patches. Deployment to JBoss EAP 6.2 is optional.
 
 ## Building TicketMonster
 
@@ -72,13 +72,11 @@ If you intend to deploy into [OpenShift](http://openshift.com), you can use the 
 	
 ## Running TicketMonster
 
-You can run TicketMonster into a local JBoss EAP 6.1 instance or on OpenShift.
+You can run TicketMonster into a local JBoss EAP 6.2 instance or on OpenShift.
 
 ### Running TicketMonster locally
 
-#### Start JBoss Enterprise Application Platform 6.1
-
-Download the [Hibernate Search distribution that is available as a JBoss Module](http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip). Extract the Hibernate Search module to the `modules` directory under `JBOSS_HOME`.
+#### Start JBoss Enterprise Application Platform 6.2
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
@@ -119,33 +117,19 @@ Download the [Hibernate Search distribution that is available as a JBoss Module]
 
 	    cp target/ticket-monster.war <root-of-openshift-application-git-repository>/deployments/ROOT.war
 
-3. Download the [Hibernate Search distribution that is available as a JBoss Module](http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip). Extract the Hibernate Search module to `<root-of-openshift-application-git-repository>/.openshift/config/modules` directory. This directory can contain JBoss Modules required by the application deployed on the EAP cartridge. For more details on how to add JBoss Modules to an OpenShift app deployed on the JBoss EAP cartridge, refer [this OpenShift knowledge base article](https://www.openshift.com/kb/kb-e1018-how-can-i-add-jboss-modules-to-an-app).
-
-        wget http://sourceforge.net/projects/hibernate/files/hibernate-search/4.4.0.Final/hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip
-        unzip hibernate-search-modules-4.4.0.Final-jbossas-72-dist.zip -d <root-of-openshift-application-git-repository>.openshift/config/modules/
-
-4. Navigate to `<root-of-openshift-application-git-repository>` folder
-5. Remove the existing `src` folder and `pom.xml` file. 
+3. Navigate to `<root-of-openshift-application-git-repository>` folder
+4. Remove the existing `src` folder and `pom.xml` file. 
 
         git rm -r src
 		git rm pom.xml
 
-6. Add the copied file to the repository, commit and push to Openshift
+5. Add the copied file to the repository, commit and push to Openshift
         
-        git add .openshift/
 		git add deployments/ROOT.war
 		git commit -m "Deploy TicketMonster"
 		git push
 
-7. Now you can see the application running at `http://<app-name>-<domain-name>.rhcloud.com`
+6. Now you can see the application running at `http://<app-name>-<domain-name>.rhcloud.com`
 
 _NOTE: this version of TicketMonster uses the *binary* deployment style._ 
-
-
-
-
-	
- 
-
-
 
