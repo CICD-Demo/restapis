@@ -103,8 +103,9 @@ define([
             var self = this;
             utilities.applyTemplate($(this.el), ticketSummaryViewTemplate, this.model.bookingRequest);
         },
-        removeEntry:function () {
-            this.model.bookingRequest.tickets.splice(this.model.index, 1);
+        removeEntry:function (event) {
+            this.model.bookingRequest.tickets.splice($(event.currentTarget).data("index"), 1);
+            this.render();
         }
     });
 
