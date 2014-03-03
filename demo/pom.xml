@@ -33,7 +33,7 @@
             to work with JBoss EAP 6.1.1. It requires you have access to the JBoss EAP 6.1.1 
             maven repository. -->
         <jboss.bom.version>6.2.0.GA</jboss.bom.version>
-        <jboss.wfk.bom.version>2.5.0-build-1</jboss.wfk.bom.version>
+        <jboss.wfk.bom.version>2.5.0-redhat-1</jboss.wfk.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
 		<!-- Version of Jackson, since we do not rely on the RESTEasy BOM from EAP (yet). -->
         <jackson.version>1.9.9-redhat-2</jackson.version>
