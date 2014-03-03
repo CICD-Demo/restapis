@@ -98,12 +98,12 @@ mvn clean package -Ppostgresql-openshift
 === Running TicketMonster
 
 
-You can run TicketMonster into a local JBoss EAP 6.1 instance or on OpenShift.
+You can run TicketMonster into a local JBoss EAP 6.2 instance or on OpenShift.
 
 
 ==== Running TicketMonster locally
 
-_start JBoss Enterprise Application Platform 6.1_.
+_start JBoss Enterprise Application Platform 6.2_.
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:

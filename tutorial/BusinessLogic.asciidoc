@@ -1468,13 +1468,13 @@ Once these profiles are defined, we can execute the tests in two ways:
 
 You can now execute the test suite from the command line by running the Maven build with the appropriate target and profile, as in one of the following examples.
 
-After ensuring that the `JBOSS_HOME` environment variable is set to a valid JBoss EAP 6.1 installation directory), you can run the following command:
+After ensuring that the `JBOSS_HOME` environment variable is set to a valid JBoss EAP 6.2 installation directory), you can run the following command:
 
 ----
 mvn clean test -Parq-jbossas-managed
 ----
 
-Or, after starting a JBoss EAP 6.1 instance, you can run the following command
+Or, after starting a JBoss EAP 6.2 instance, you can run the following command
 
 ----
 mvn clean test -Parq-jbossas-remote

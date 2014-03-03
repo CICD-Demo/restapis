@@ -463,7 +463,7 @@ We can test these changes by executing
 mvn clean test -Parq-jbossas-managed
 ----
 
-or (against an already running JBoss EAP 6.1 instance)
+or (against an already running JBoss EAP 6.2 instance)
 
 ----
 mvn clean test -Parq-jbossas-remote
