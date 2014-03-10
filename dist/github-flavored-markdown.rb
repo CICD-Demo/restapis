@@ -32,7 +32,7 @@ class HTMLWithPygmentsAndPants < Redcarpet::Render::HTML
   end
 
   #method copied from: https://gist.github.com/suan/5692767
-  def header(title, level)
+  def header(title, level, anchor)
     @headers ||= []
 
     title_elements = REXML::Document.new(title)
