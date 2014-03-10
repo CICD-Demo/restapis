@@ -87,12 +87,38 @@ publish_docs()
 
 }
 
+markdown_to_html()
+{
+   cd $DIR/../
+
+   # Loop through the directories and process them
+   subdirs=( cordova demo )
+   for subdir in ${subdirs[@]}
+   do
+      readmes=`find $subdir -maxdepth 1 -iname readme.md`
+      for readme in $readmes
+      do
+         echo "Processing $readme"
+         output_filename=${readme//.md/.html}
+         output_filename=${output_filename//.MD/.html}
+         $DIR/github-flavored-markdown.rb $readme > $output_filename
+      done
+   done
+   # Now process the root readme
+   cd $DIR/../
+   readme=README.md
+   echo "Processing $readme"
+   output_filename=${readme//.md/.html}
+   output_filename=${output_filename//.MD/.html}
+   $DIR/github-flavored-markdown.rb $readme > $output_filename
+}
+
 OLDVERSION="1.0.0-SNAPSHOT"
 NEWVERSION="1.0.0-SNAPSHOT"
 VERSION="1.0.0-SNAPSHOT"
 CMD="usage"
 
-while getopts "huo:n:p:t" OPTION
+while getopts "mhuo:n:p:t" OPTION
 
 do
      case $OPTION in
@@ -115,6 +141,9 @@ do
              ;;
          n)
              NEWVERSION=$OPTARG
+             ;;
+         m)
+             CMD="markdown_to_html"
              ;;
          [?])
              usage

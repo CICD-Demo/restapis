@@ -52,6 +52,7 @@ notify_email()
 release()
 {
    echo "Releasing TicketMonster version $RELEASEVERSION"
+   echo "Regenerating html from markdown"
    default="Y"
    read -p "Do you want to update the Performance dates in import.sql [Y/n]? " yn
    yn=${yn:-$default}
@@ -69,15 +70,19 @@ release()
    wfk=${wfk:-$default}
    if [[ $wfk = "Y" || $wfk = "y" ]] ; then
    echo "Omitting files unnecessary for WFK distribution"
+      mv $DIR/../README.md $DIR/../dist/README.orig.md
+      cp $DIR/../dist/README.dist.md $DIR/../README.md
+      $DIR/release-utils.sh -m
       git rm --cached -r $DIR/../dist/
       git rm --cached -r $DIR/../tutorial/
    fi
    git commit -a -m "Prepare for $RELEASEVERSION release"
    git tag -a $RELEASEVERSION -m "Tag $RELEASEVERSION"
-   git branch $RELEASEVERSION tags/$RELEASEVERSION   
+   git branch $RELEASEVERSION tags/$RELEASEVERSION
    $DIR/release-utils.sh -u -o $RELEASEVERSION -n $NEWSNAPSHOTVERSION
    if [[ $wfk = "Y" || $wfk = "y" ]] ; then
    echo "Adding files again..."
+      mv $DIR/../dist/README.orig.md $DIR/../README.md
       git add $DIR/../dist/
       git add $DIR/../tutorial/
    fi
