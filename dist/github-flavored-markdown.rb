@@ -140,7 +140,7 @@ def markdown(source_path)
   toc = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC).render(text)
   text.gsub!("\[TOC\]", toc)
   rendered = markdown.render(text)
-  metadata(source_path.path, rendered)
+  # metadata(source_path.path, rendered)
   rendered = rendered.gsub(/README.md/, "README.html").gsub(/CONTRIBUTING.md/, "CONTRIBUTING.html")
   '<!DOCTYPE html><html><head><title>README</title><link href="http://www.jboss.org/jdf/stylesheets/documentation.css" rel="stylesheet"></link><link href="http://www.jboss.org/jdf/stylesheets/pygments.css" rel="stylesheet"></link></head><body>' + rendered + '</body></html>'
   end
