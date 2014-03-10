@@ -65,16 +65,30 @@ release()
        *) echo "Invalid input"
               ;;
    esac
+   read -p "Do you want to create a WFK release [Y/n]? " wfk
+   wfk=${wfk:-$default}
+   if [[ $wfk = "Y" || $wfk = "y" ]] ; then
+   echo "Omitting files unnecessary for WFK distribution"
+      git rm --cached -r $DIR/../dist/
+      git rm --cached -r $DIR/../tutorial/
+   fi
    git commit -a -m "Prepare for $RELEASEVERSION release"
    git tag -a $RELEASEVERSION -m "Tag $RELEASEVERSION"
    git branch $RELEASEVERSION tags/$RELEASEVERSION   
    $DIR/release-utils.sh -u -o $RELEASEVERSION -n $NEWSNAPSHOTVERSION
+   if [[ $wfk = "Y" || $wfk = "y" ]] ; then
+   echo "Adding files again..."
+      git add $DIR/../dist/
+      git add $DIR/../tutorial/
+   fi
    git commit -a -m "Prepare for development of $NEWSNAPSHOTVERSION"
-   $DIR/release-utils.sh -p $RELEASEVERSION
+   if [[ $wfk = "N" || $wfk = "n" ]] ; then
+      $DIR/release-utils.sh -p $RELEASEVERSION
+   fi
    read -p "Do you want to send release notifcations to $EAP_EMAIL_TO[y/N]? " yn
    case $yn in
-       [Yy]* ) notify_email;;
-       * ) exit;
+       [Yy] ) notify_email;;
+       * ) ;;
    esac
    echo "Don't forget to push the tag and the branch"
    echo "   git push --tags upstream refs/heads/$RELEASEVERSION"
