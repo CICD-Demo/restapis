@@ -51,8 +51,8 @@ notify_email()
 
 release()
 {
+   git reset --hard  
    echo "Releasing TicketMonster version $RELEASEVERSION"
-   echo "Regenerating html from markdown"
    default="Y"
    read -p "Do you want to update the Performance dates in import.sql [Y/n]? " yn
    yn=${yn:-$default}
@@ -69,10 +69,13 @@ release()
    read -p "Do you want to create a WFK release [Y/n]? " wfk
    wfk=${wfk:-$default}
    if [[ $wfk = "Y" || $wfk = "y" ]] ; then
-   echo "Omitting files unnecessary for WFK distribution"
+      echo "Regenerating html from markdown"
       mv $DIR/../README.md $DIR/../dist/README.orig.md
       cp $DIR/../dist/README.dist.md $DIR/../README.md
       $DIR/release-utils.sh -m
+      git ls-files --others $DIR/.. | grep '\README.html$' | xargs git add
+      
+      echo "Omitting files unnecessary for WFK distribution"
       git rm --cached -r $DIR/../dist/
       git rm --cached -r $DIR/../tutorial/
    fi
@@ -81,10 +84,13 @@ release()
    git branch $RELEASEVERSION tags/$RELEASEVERSION
    $DIR/release-utils.sh -u -o $RELEASEVERSION -n $NEWSNAPSHOTVERSION
    if [[ $wfk = "Y" || $wfk = "y" ]] ; then
-   echo "Adding files again..."
+      echo "Adding files again..."
       mv $DIR/../dist/README.orig.md $DIR/../README.md
       git add $DIR/../dist/
       git add $DIR/../tutorial/
+
+      echo "Removing READMEs again..."
+      git ls-files $DIR/.. | grep '\README.html$' | xargs git rm
    fi
    git commit -a -m "Prepare for development of $NEWSNAPSHOTVERSION"
    if [[ $wfk = "N" || $wfk = "n" ]] ; then

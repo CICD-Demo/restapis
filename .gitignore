@@ -8,7 +8,6 @@ bin
 .openshift
 */.gitignore
 /helloworld-jsp
-README.html
 CONTRIBUTING.html
 .errai
 demo/src/main/gwt-unitCache
