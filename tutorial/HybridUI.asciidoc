@@ -115,7 +115,9 @@ image::gfx/hybrid-mobile-pane-preferences-window.png[]
 == Creating a Hybrid Mobile project
 
 1. To create a new Hybrid Mobile Project, click _File → New → Other_ and select "Hybrid Mobile (Cordova) Application Project".
-
++
+.Starting a new Hybrid Mobile Application project
+image::gfx/start-new-hybrid-mobile-application-project.png[]
 2. Enter the project information: application name, project name, package. 
 +
     Project Name::
@@ -125,7 +127,9 @@ image::gfx/hybrid-mobile-pane-preferences-window.png[]
     ID::
         org.jboss.examples.ticketmonster.cordova
 +
-
+.Creating a new Hybrid Mobile Application project
+image::gfx/create-new-hybrid-mobile-application-project.png[]
++
 Once you have finished creating the project, navigate to the `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply replace the `www` directory with a symbolic link to the `webapp` directory of TicketMonster; the `config.xml` file would need to be copied over to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application).
 
 ----
@@ -135,6 +139,9 @@ $ cd ..
 $ rm -rf www
 $ ln -s $TICKET_MONSTER_HOME/demo/src/main/webapp www
 ----
+
+.The result of linking www to the webapp directory
+image::gfx/link-www-directory-to-webapp.png[]
 
 The Hybrid Mobile tooling requires that the cordova.js file be loaded in the application's start page.
 Since we do not want to load this file in the existing `index.html` file, we shall create a new start page to be used only by the Cordova app.
@@ -238,11 +245,7 @@ You are now ready to run the application. The hybrid mobile application can be r
 
 === Run on an Android device or emulator
 
-To run the project on a device, in the *Project Explorer* view, right-click the project name and click *Run As* → *Run on Android Device*. This option calls the external Android SDK to package the workspace project and run it on an Android device if one is attached. Note that the Android SDK must be installed and the IDE correctly configured to use the Android SDK for this option to execute successfully.
-
-To run the project on an emulator, in the *Project Explorer* view, right-click the project name and click *Run As* → *Run on Android Emulator*. This requires that you create an Android AVD to run the application in a virtual device.
-
-[Important]
+[NOTE]
 .What do you need for Android?
 =====================================================================================
 For running on an Android device or emulator, you need to install the Android 
@@ -253,21 +256,50 @@ later, 64-bit distributions having installed the libraries for running 32-bit ap
 You must have Android API 17 or later installed on your system to use the *Run on Android Emulator* action.
 =====================================================================================
 
+To run the project on a device, in the *Project Explorer* view, right-click the project name and click *Run As* → *Run on Android Device*. This option calls the external Android SDK to package the workspace project and run it on an Android device if one is attached. Note that the Android SDK must be installed and the IDE correctly configured to use the Android SDK for this option to execute successfully.
+
+To run the project on an emulator, in the *Project Explorer* view, right-click the project name and click *Run As* → *Run on Android Emulator*.
+
+.Running the application on an Android emulator
+image::gfx/run-on-android-emulator.png[]
+
+This requires that you create an Android AVD to run the application in a virtual device.
+
+Once deployed, the application is now available for interaction in the emulator.
+
+.The app running on an Android AVD
+image::gfx/android-emulator.png[]
+
+
 === Run on an iOS Simulator
 
-In the Project Explorer view, right-click the project name and click *Run As* → *Run on iOS Emulator*. This option calls the external iOS SDK to package the workspace project into an XCode project and run it on the iOS Simulator.
-
-[Important]
+[NOTE]
 .What do you need for iOS?
 =====================================================================================
 This option is only displayed when using OS X operating systems, for which the iOS Simulator is available.
 You must install *Xcode 4.5+* which includes the *iOS 6 SDK*. You must also install a Simulator for iOS 5.x or higher, to run the project on a simulator.
+Depending on various Cordova plugins that you may use, you may need higher versions of simulators to run your applications.
 =====================================================================================
+
+In the Project Explorer view, right-click the project name and click *Run As* → *Run on iOS Emulator*. 
+
+.Running the application on an iOS simulator
+image::gfx/run-on-ios-simulator.png[]
+
+This option calls the external iOS SDK to package the workspace project into an XCode project and run it on the iOS Simulator.
+
+.The app running on an iOS Simulator
+image::gfx/ios-simulator.png[]
 
 === Run on CordovaSim 
 
+CordovaSim allows you to run your hybrid mobile applications in your local workspace. You can develop the application without requiring a deployment to a real device or even to emulators and simulators to realize your application's behavior.
+There are some limitations on what you can achieve with CordovaSim, for instance, some Cordova plugins may not work with CordovaSim. But for the most part, you get to experience a faster development cycle.
+
 In the Project Explorer view, right-click the project name and click *Run As* → *Run with CordovaSim*. This opens the application in CordovaSim, which is composed of a BrowserSim simulated device and a device input panel.
 
+.The app running on CordovaSim
+image::gfx/cordovasim.png[]
 
 == Conclusion
 
