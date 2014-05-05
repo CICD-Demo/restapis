@@ -6,7 +6,7 @@
 require.config({
     baseUrl:"resources/js",
     paths: {
-        jquery:'libs/jquery-1.9.1',
+        jquery:'libs/jquery-2.0.3',
         jquerymobile:'libs/jquery.mobile-1.4.2',
         text:'libs/text',
         underscore:'libs/underscore',

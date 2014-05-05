@@ -6,7 +6,7 @@
 requirejs.config({
     baseUrl: "resources/js",
     paths: {
-        jquery:'libs/jquery-1.9.1',
+        jquery:'libs/jquery-2.0.3',
         underscore:'libs/underscore',
         text:'libs/text',
         bootstrap: 'libs/bootstrap',
