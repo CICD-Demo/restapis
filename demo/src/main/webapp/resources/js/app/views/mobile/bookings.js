@@ -38,7 +38,7 @@ define([
                 $("#bookingDetails").append(bookingView.render().el);
             });
             $("#bookingDetails").listview();
-            $(this.el).trigger('pagecreate');
+            $(this.el).enhanceWithin();
         }
     });
 

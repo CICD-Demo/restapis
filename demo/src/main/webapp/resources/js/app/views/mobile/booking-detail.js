@@ -8,7 +8,7 @@ define([
     var BookingDetailView = Backbone.View.extend({
         render:function () {
             utilities.applyTemplate($(this.el), bookingDetailsTemplate, this.model.attributes);
-            $(this.el).trigger('pagecreate');
+            $(this.el).enhanceWithin();
             return this;
         }
     });

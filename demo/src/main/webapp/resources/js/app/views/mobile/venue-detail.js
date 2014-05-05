@@ -22,9 +22,9 @@ define([
         render:function () {
             $(this.el).empty()
             utilities.applyTemplate($(this.el), venueDetail, _.extend({}, this.model.attributes, config));
-            $(this.el).trigger('create')
-            $("#bookButton").addClass("ui-disabled")
-            var self = this
+            $(this.el).enhanceWithin();
+            $("#bookButton").addClass("ui-disabled");
+            var self = this;
             $.getJSON(config.baseUrl + "rest/shows?venue=" + this.model.get('id'), function (shows) {
                 self.shows = shows;
                 $("#showSelector").empty().append("<option data-placeholder='true'>Choose an event ...</option>");
@@ -42,7 +42,7 @@ define([
             $("#dayPicker").selectmenu('disable');
             $("#performanceTimes").empty();
             $("#performanceTimes").selectmenu('disable');
-            $(this.el).trigger('pagecreate');
+            $(this.el).enhanceWithin();
             $("#showSelector").selectmenu('refresh', true);
             $("#performanceTimes").selectmenu('refresh');
             return this;

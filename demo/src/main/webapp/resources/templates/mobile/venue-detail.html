@@ -1,12 +1,12 @@
-<div data-role="header">
-    <a data-role="button" data-icon="home" data-theme="a" href="#">Home</a>
+<div data-role="header" data-position="fixed">
+    <a href="#" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
     <h3>Book tickets</h3>
 </div>
-<div data-role="content">
+<div class="ui-content">
     <h3><%=name%></h3>
     <img width='100px' src='<%=baseUrl%>rest/media/<%=mediaItem.id%>'/>
     <p><%=description%></p>
-    <div data-role="fieldcontain">
+    <div class="ui-field-contain">
         <label for="showSelector"><strong>What</strong></label>
         <select id='showSelector' data-mini='true'/>
     </div>
@@ -32,10 +32,12 @@
     </div>
 
 </div>
-<div data-role="footer" class="ui-grid-b" data-position="fixed">
-    <div class="ui-block-a"></div>
-    <div class="ui-block-b"></div>
-    <div class="ui-block-c">
-    	<a id='bookButton' data-theme='b' data-role="button" data-icon="check">Book</a>
+<div data-role="footer" class="ui-bar" data-position="fixed">
+    <div class="ui-grid-b">
+        <div class="ui-block-a"></div>
+        <div class="ui-block-b"></div>
+        <div class="ui-block-c">
+            <a id='bookButton' class="ui-btn ui-btn-b ui-btn-right ui-icon-check ui-btn-icon-left">Book</a>
+        </div>
     </div>
 </div>

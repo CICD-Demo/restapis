@@ -21,8 +21,8 @@ define([
         render:function () {
             $(this.el).empty()
             utilities.applyTemplate($(this.el), eventDetail, _.extend({}, this.model.attributes, config));
-            $(this.el).trigger('create')
-            $("#bookButton").addClass("ui-disabled")
+            $(this.el).enhanceWithin();
+            $("#bookButton").addClass("ui-disabled");
             var self = this;
             $.getJSON(config.baseUrl + "rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows;
@@ -40,7 +40,7 @@ define([
             $("#dayPicker").selectmenu('disable');
             $("#performanceTimes").empty();
             $("#performanceTimes").selectmenu('disable');
-            $(this.el).trigger('pagecreate');
+            $(this.el).enhanceWithin();
             return this;
         },
         performanceSelected:function () {

@@ -93,7 +93,7 @@ define([
                     performance:self.model.performance,
                     sections:sections,
                     email:self.model.email});
-                $(self.el).trigger('pagecreate');
+                $(self.el).enhanceWithin();
                 self.ticketCategoriesView = new TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder") });
                 self.model.show = selectedShow;
                 self.ticketCategoriesView.render();
@@ -117,7 +117,7 @@ define([
                 $("#ticketCategoriesViewPlaceholder").show();
                 this.ticketCategoriesView.model = ticketPriceInputs;
                 this.ticketCategoriesView.render();
-                $(this.el).trigger('pagecreate');
+                $(this.el).enhanceWithin();
             } else {
                 $("#ticketCategoriesViewPlaceholder").hide();
                 this.ticketCategoriesView.model = new Array();
@@ -214,7 +214,7 @@ define([
             utilities.applyTemplate($(this.el), confirmBookingTemplate, this.model);
             this.ticketSummaryView = new TicketSummaryView({model:this.model, el:$("#ticketSummaryView")});
             this.ticketSummaryView.render();
-            $(this.el).trigger('pagecreate');
+            $(this.el).enhanceWithin();
             if (this.model.bookingRequest.totals.tickets > 0) {
                 $('a[id="saveBooking"]').removeClass('ui-disabled');
             } else {
@@ -244,7 +244,7 @@ define([
                 contentType:"application/json",
                 success:function (booking) {
                     utilities.applyTemplate($(self.el), bookingDetailsTemplate, booking);
-                    $(self.el).trigger('pagecreate');
+                    $(self.el).enhanceWithin();
                 }}).error(function (error) {
                     try {
                         var response = JSON.parse(error.responseText);

@@ -1,8 +1,8 @@
-<div data-role="header">
-    <a data-role="button" data-icon="home" href="#">Home</a>
+<div data-role="header" data-position="fixed">
+    <a href="#" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
     <h1>Book tickets</h1>
 </div>
-<div data-role="content">
+<div class="ui-content">
     <p>
        <h3><%=show.event.name%></h3>
     </p>
@@ -14,7 +14,7 @@
       <small><%=new Date(performance.date).toPrettyString()%></small>
     </p>
     <div id="sectionSelectorPlaceholder">
-        <div data-role="fieldcontain">
+        <div class="ui-field-contain">
             <label for="sectionSelect">Section</label>
             <select id="sectionSelect">
                 <option value="-1" selected>Choose a section</option>
@@ -35,6 +35,9 @@
 </div>
 
 <div data-role="footer" class="ui-bar" data-position="fixed">
-    <a href="#" data-role="button" data-icon="delete">Cancel</a>
-    <a id="confirmBooking" data-icon="check" data-role="button" disabled>Checkout</a>
+    <div class="ui-grid-b">
+        <div class="ui-block-a"><a href="#" class="ui-btn ui-icon-delete ui-btn-icon-left">Cancel</a></div>
+        <div class="ui-block-b"></div>
+        <div class="ui-block-c"><a id="confirmBooking" class="ui-btn ui-btn-b ui-icon-check ui-btn-icon-left" disabled>Checkout</a></div>
+    </div>
 </div>

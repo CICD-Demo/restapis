@@ -68,13 +68,13 @@ define("router",[
         },
         defaultHandler:function (actions) {
             if ("" != actions) {
-                $.mobile.changePage("#" + actions, {transition:'slide', changeHash:false, allowSamePageTransition:true});
+                $("body").pagecontainer( "change", "#" + actions, {transition:'slide', changeHash:false, allowSamePageTransition:true});
             }
         },
         home:function () {
             utilities.applyTemplate($("#container"), HomeViewTemplate);
             try {
-                $("#container").trigger('pagecreate');
+                $("#container").enhanceWithin();
             } catch (e) {
                 // workaround for a spurious error thrown when creating the page initially
             }
@@ -119,7 +119,7 @@ define("router",[
             model.on("change",
                 function () {
                     utilities.viewManager.showView(eventDetailView);
-                    $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
+                    $("body").pagecontainer("change", "#container", {transition:'slide', changeHash:false});
                 }).fetch();
         },
         venueDetail:function (id) {
@@ -128,7 +128,7 @@ define("router",[
             model.on("change",
                 function () {
                     utilities.viewManager.showView(venueDetailView);
-                    $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
+                    $("body").pagecontainer("change", "#container", {transition: 'slide', changeHash: false});
                 }).fetch();
         },
         bookingDetail:function (id) {
