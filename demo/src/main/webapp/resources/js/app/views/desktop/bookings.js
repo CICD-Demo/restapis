@@ -11,6 +11,10 @@ define([
             "click span[data-tm-role='delete']":"deleteBooking",
             "click a[data-tm-role='page']":"refreshPage"
         },
+        initialize: function (options) {
+            // Record the options provided to the Backbone View during initialization.
+            this.options = options || {};
+        },
         render:function () {
             var paginator = {};
             paginator.totalPageCount = Math.floor(this.options.count/this.options.pageSize)
