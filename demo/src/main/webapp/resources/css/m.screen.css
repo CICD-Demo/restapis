@@ -49,13 +49,19 @@ a:hover {
 /* Member registration styles */
 
 /* override default jquery mobile style */
-.ui-mobile fieldset{
+.ui-mobile fieldset {
    padding-left: 5px;
    padding-right: 5px;
 }
 
 .ui-header {
    border-top: 1px solid #3C3C3C;
+}
+
+/* Decrease margins applied on headers */
+.ui-header .ui-title {
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 span.invalid {
