@@ -183,10 +183,10 @@ define([
                     if (error.status == 400 || error.status == 409) {
                         var errors = $.parseJSON(error.responseText).errors;
                         _.each(errors, function (errorMessage) {
-                            $("#request-summary").append('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><strong>Error!</strong> ' + errorMessage + '</div>')
+                            $("#request-summary").append('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Error!</strong> ' + errorMessage + '</div>');
                         });
                     } else {
-                        $("#request-summary").append('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><strong>Error! </strong>An error has occured</div>')
+                        $("#request-summary").append('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Error! </strong>An error has occurred.</div>');
                     }
                     $("input[name='submit']").removeAttr("disabled");
                 })
