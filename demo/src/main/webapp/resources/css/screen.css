@@ -440,3 +440,9 @@ h4.page-header {
 span[data-tm-role="delete"] {
     cursor: pointer;
 }
+
+/* Highlight links - that stand out from the background */
+a.highlight-link {
+    color: #EDF4EA;
+}
+
