@@ -35,8 +35,6 @@
         <jboss.bom.version>6.2.2.GA</jboss.bom.version>
         <jboss.wfk.bom.version>2.6.0-redhat-1</jboss.wfk.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
-		<!-- Version of Jackson, since we do not rely on the RESTEasy BOM from EAP (yet). -->
-        <jackson.version>1.9.9-redhat-2</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -48,7 +46,9 @@
                 (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras 
                 tools for your project, such as Arquillian for testing), the jboss-javaee-6.0-with-hibernate 
                 stack (you can read this as the JBoss stack of the Java EE 6 APIs, with extras 
-                from the Hibernate family of projects). -->
+                from the Hibernate family of projects), and the jboss-javaee-6.0-with-resteasy
+                stack (you can read this as the JBoss stack of the Java EE 6 APIs, with extras
+                from the RESTEasy project). -->
             <dependency>
                 <groupId>org.jboss.bom.wfk</groupId>
                 <artifactId>jboss-javaee-6.0-with-tools</artifactId>
@@ -59,6 +59,13 @@
             <dependency>
                 <groupId>org.jboss.bom.eap</groupId>
                 <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom.eap</groupId>
+                <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
                 <version>${jboss.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -186,12 +193,16 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- This is the dependency for Jackson Core, which we use for 
+        <!-- RESTEasy dependencies that bring in Jackson Core and RESTEasy APIs+SPIs, which we use for
             fine tuning the content of the JSON responses -->
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
             <scope>provided</scope>
         </dependency>
 
