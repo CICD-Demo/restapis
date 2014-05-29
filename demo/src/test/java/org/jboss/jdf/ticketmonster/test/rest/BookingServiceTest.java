@@ -44,16 +44,16 @@ public class BookingServiceTest {
     @Test
     @InSequence(1)
     public void testCreateBookings() {
-        BookingRequest br = createBookingRequest(1l, 0, 0, 1, 3);
+        BookingRequest br = createBookingRequest(1l, 0, new int[]{4, 1}, new int[]{1,1}, new int[]{3,1});
         bookingService.createBooking(br);
 
-        BookingRequest br2 = createBookingRequest(2l, 1, 2, 4, 9);
+        BookingRequest br2 = createBookingRequest(2l, 1, new int[]{6,1}, new int[]{8,2}, new int[]{10,2});
         bookingService.createBooking(br2);
 
-        BookingRequest br3 = createBookingRequest(3l, 0, 0, 1);
+        BookingRequest br3 = createBookingRequest(3l, 0, new int[]{4,1}, new int[]{2,1});
         bookingService.createBooking(br3);
     }
-    
+
     @Test @Ignore
     @InSequence(10)
     public void testGetBookings() {
@@ -154,7 +154,7 @@ public class BookingServiceTest {
         fail("Expected NoResultException did not occur.");
     }
 
-    private BookingRequest createBookingRequest(Long showId, int performanceNo, int... ticketPriceNos) {
+    private BookingRequest createBookingRequest(Long showId, int performanceNo, int[]... sectionAndCategories) {
         Show show = showService.getSingleInstance(showId);
 
         Performance performance = new ArrayList<Performance>(show.getPerformances()).get(performanceNo);
@@ -163,9 +163,16 @@ public class BookingServiceTest {
 
         List<TicketPrice> possibleTicketPrices = new ArrayList<TicketPrice>(show.getTicketPrices());
         int i = 1;
-        for (int index : ticketPriceNos) {
-            bookingRequest.addTicketRequest(new TicketRequest(possibleTicketPrices.get(index), i));
-            i++;
+        for (int[] sectionAndCategory : sectionAndCategories) {
+            for (TicketPrice ticketPrice : possibleTicketPrices) {
+                int sectionId = sectionAndCategory[0];
+                int categoryId = sectionAndCategory[1];
+                if(ticketPrice.getSection().getId() == sectionId && ticketPrice.getTicketCategory().getId() == categoryId) {
+                    bookingRequest.addTicketRequest(new TicketRequest(ticketPrice, i));
+                    i++;
+                    break;
+                }
+            }
         }
 
         return bookingRequest;

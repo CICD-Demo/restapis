@@ -18,7 +18,7 @@ public class RESTDeployment {
                 .addPackage(BaseEntityService.class.getPackage())
                 .addPackage(VenueDTO.class.getPackage())
                 .addPackage(MultivaluedHashMap.class.getPackage())
-                .addClass(SeatAllocationService.class)
+                .addPackage(SeatAllocationService.class.getPackage())
                 .addClass(AllocatedSeats.class)
                 .addClass(MediaPath.class)
                 .addClass(MediaManager.class);
