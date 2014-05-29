@@ -105,7 +105,27 @@ define([
         },
         removeEntry:function (event) {
             this.model.bookingRequest.tickets.splice($(event.currentTarget).data("index"), 1);
+            this.updateQuantities();
             this.render();
+        },
+        updateQuantities: function() {
+            // make sure that tickets are sorted by section and ticket category
+            this.model.bookingRequest.tickets.sort(function (t1, t2) {
+                if (t1.ticketPrice.section.id != t2.ticketPrice.section.id) {
+                    return t1.ticketPrice.section.id - t2.ticketPrice.section.id;
+                }
+                else {
+                    return t1.ticketPrice.ticketCategory.id - t2.ticketPrice.ticketCategory.id;
+                }
+            });
+
+            // Update the totals
+            this.model.bookingRequest.totals = _.reduce(this.model.bookingRequest.tickets, function (totals, ticketRequest) {
+                return {
+                    tickets:totals.tickets + ticketRequest.quantity,
+                    price:totals.price + ticketRequest.quantity * ticketRequest.ticketPrice.price
+                };
+            }, {tickets:0, price:0.0});
         }
     });
 
@@ -214,23 +234,7 @@ define([
             this.updateQuantities();
         },
         updateQuantities:function () {
-            // make sure that tickets are sorted by section and ticket category
-            this.model.bookingRequest.tickets.sort(function (t1, t2) {
-                if (t1.ticketPrice.section.id != t2.ticketPrice.section.id) {
-                    return t1.ticketPrice.section.id - t2.ticketPrice.section.id;
-                }
-                else {
-                    return t1.ticketPrice.ticketCategory.id - t2.ticketPrice.ticketCategory.id;
-                }
-            });
-
-            this.model.bookingRequest.totals = _.reduce(this.model.bookingRequest.tickets, function (totals, ticketRequest) {
-                return {
-                    tickets:totals.tickets + ticketRequest.quantity,
-                    price:totals.price + ticketRequest.quantity * ticketRequest.ticketPrice.price
-                };
-            }, {tickets:0, price:0.0});
-
+            this.ticketSummaryView.updateQuantities();
             this.ticketSummaryView.render();
             this.setCheckoutStatus();
         },
