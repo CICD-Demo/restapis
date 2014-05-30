@@ -432,24 +432,6 @@
 		        </plugin>
 		      </plugins>
 		    </build>
-		    <repositories>
-		     <repository>
-		        <!-- 
-		             Add the JBoss Enterprise Maven Repository so that redhat-X artifacts 
-		             can be resolved by Maven during build.
-		             We add the general availability (GA) repository only, and not the early access repository.
-		             For more info: https://access.redhat.com/site/maven-repository
-		         -->
-		        <id>redhat-ga-repository</id>
-		        <url>https://maven.repository.redhat.com/techpreview/all/</url>
-		        <releases>
-		           <enabled>true</enabled>
-		        </releases>
-		        <snapshots>
-		          <enabled>false</enabled>
-		        </snapshots>        
-		     </repository>
-		    </repositories>
 		</profile>
 
     </profiles>
