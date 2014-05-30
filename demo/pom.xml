@@ -414,6 +414,43 @@
                 </plugins>
             </build>
         </profile>
+        
+        <profile>
+		  <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
+		  <!-- Use this profile for any OpenShift specific customization your app will need. -->
+		  <!-- By default that is to put the resulting archive into the 'deployments' folder. -->
+		  <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+		  <id>openshift</id>
+		    <build>
+		      <plugins>
+		        <plugin>
+		          <artifactId>maven-war-plugin</artifactId>
+		          <configuration>
+		            <outputDirectory>deployments</outputDirectory>
+		            <warName>ROOT</warName>
+		          </configuration>
+		        </plugin>
+		      </plugins>
+		    </build>
+		    <repositories>
+		     <repository>
+		        <!-- 
+		             Add the JBoss Enterprise Maven Repository so that redhat-X artifacts 
+		             can be resolved by Maven during build.
+		             We add the general availability (GA) repository only, and not the early access repository.
+		             For more info: https://access.redhat.com/site/maven-repository
+		         -->
+		        <id>redhat-ga-repository</id>
+		        <url>https://maven.repository.redhat.com/techpreview/all/</url>
+		        <releases>
+		           <enabled>true</enabled>
+		        </releases>
+		        <snapshots>
+		          <enabled>false</enabled>
+		        </snapshots>        
+		     </repository>
+		    </repositories>
+		</profile>
 
     </profiles>
 </project>
