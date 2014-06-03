@@ -12,7 +12,8 @@ var TicketMonster = {
         if(window.device.platform.toLowerCase() == "ios" &&
             parseFloat(window.device.version) >= 7.0) {
             StatusBar.overlaysWebView(false);
-            StatusBar.backgroundColorByHexString("#3C3C3C");
+            StatusBar.styleDefault();
+            StatusBar.backgroundColorByHexString("#e9e9e9");
         }
         // Load the mobile module
         require (["mobile"]);
