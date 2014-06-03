@@ -31,5 +31,9 @@
 		<param name="android-package" value="org.apache.cordova.device.Device" />
 		<param name="ios-package" value="CDVDevice" />
 	</feature>
+	<feature name="Notification">
+		<param name="android-package" value="org.apache.cordova.dialogs.Notification" />
+		<param name="ios-package" value="CDVNotification" />
+	</feature>
 
 </widget>

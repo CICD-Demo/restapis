@@ -79,7 +79,12 @@ define("router", [
             events.on("reset",
                 function () {
                     utilities.viewManager.showView(eventsView);
-                }).fetch({reset:true});
+                }).fetch({
+                    reset : true,
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve events from the TicketMonster server.");
+                    }
+                });
         },
         venues:function () {
             var venues = new Venues;
@@ -87,7 +92,12 @@ define("router", [
             venues.on("reset",
                 function () {
                     utilities.viewManager.showView(venuesView);
-                }).fetch({reset:true});
+                }).fetch({
+                    reset : true,
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve venues from the TicketMonster server.");
+                    }
+                });
         },
         home:function () {
             utilities.viewManager.showView(new HomeView({el:$("#content")}));
@@ -119,6 +129,9 @@ define("router", [
                             bookingsView.refreshPage();
                         });
                     bookings.fetch({reset:true,
+                        error : function() {
+                            utilities.displayAlert("Failed to retrieve bookings from the TicketMonster server.");
+                        },
                     	data:{first:1, maxResults:10},
                         processData:true, success:function () {
                             utilities.viewManager.showView(bookingsView);
@@ -137,7 +150,11 @@ define("router", [
             model.on("change",
                 function () {
                     utilities.viewManager.showView(eventDetailView);
-                }).fetch();
+                }).fetch({
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve the event from the TicketMonster server.");
+                    }
+                });
         },
         venueDetail:function (id) {
             var model = new Venue({id:id});
@@ -145,7 +162,11 @@ define("router", [
             model.on("change",
                 function () {
                     utilities.viewManager.showView(venueDetailView);
-                }).fetch();
+                }).fetch({
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve the venue from the TicketMonster server.");
+                    }
+                });
         },
         bookingDetail:function (id) {
             var bookingModel = new Booking({id:id});
@@ -153,7 +174,11 @@ define("router", [
             bookingModel.on("change",
                 function () {
                     utilities.viewManager.showView(bookingDetailView);
-                }).fetch();
+                }).fetch({
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve the booking from the TicketMonster server.");
+                    }
+                });
 
         }
     });

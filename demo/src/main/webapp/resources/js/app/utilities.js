@@ -79,6 +79,13 @@ define(['underscore', 'backbone'], function (_, Backbone) {
         },
         applyTemplate:function (target, template, data) {
             return target.empty().append(this.renderTemplate(template, data));
+        },
+        displayAlert: function(msg) {
+            if(navigator.notification) {
+                navigator.notification.alert(msg);
+            } else {
+                alert(msg);
+            }
         }
     };
 

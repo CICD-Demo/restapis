@@ -45,12 +45,17 @@ define([
                 function (data) {
                     self.options.count = data.count;
                     if (self.options.count > 0 ) {
-                    self.model.bookings.fetch({reset:true,
-                    	data:options,
-                        processData:true, success:function () {
-                            self.render();
-                            $("a[data-tm-page='"+self.options.page+"']").addClass("active")
-                        }});
+                        self.model.bookings.fetch({
+                            reset:true,
+                            error : function() {
+                                utilities.displayAlert("Failed to retrieve bookings from the TicketMonster server.");
+                            },
+                            data:options,
+                            processData:true, success:function () {
+                                self.render();
+                                $("a[data-tm-page='"+self.options.page+"']").addClass("active")
+                            }
+                        });
                     } else {
                         self.render();    
                     }
