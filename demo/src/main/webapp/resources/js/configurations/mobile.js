@@ -58,6 +58,16 @@ define("initializer", [
         $.mobile.hashListeningEnabled = false;
         $.mobile.linkBindingEnabled = false;
         $.mobile.pushStateEnabled = false;
+        
+        // Fix jQueryMobile header and footer positioning issues for iOS.
+        // See: https://github.com/jquery/jquery-mobile/issues/4113 and
+        // https://github.com/jquery/jquery-mobile/issues/5532
+        $(document).on('blur', 'input, textarea, select', function() {
+            setTimeout(function() {
+            window.scrollTo(document.body.scrollLeft, document.body.scrollTop);
+            }, 0);
+        });
+        
         utilities.applyTemplate($('body'), MainTemplate);
     });
     // Then (load jQueryMobile and) start the router to finally start the app
