@@ -12,8 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
 import org.jboss.jdf.example.ticketmonster.rest.dto.TicketPriceDTO;
+import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
 
 /**
  * 
@@ -22,7 +22,7 @@ import org.jboss.jdf.example.ticketmonster.rest.dto.TicketPriceDTO;
 @Path("/ticketprices")
 public class TicketPriceEndpoint
 {
-   @PersistenceContext(unitName = "primary")
+   @PersistenceContext(unitName="primary")
    private EntityManager em;
 
    @POST
@@ -39,9 +39,8 @@ public class TicketPriceEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       TicketPrice entity = em.find(TicketPrice.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,17 +54,13 @@ public class TicketPriceEndpoint
       TypedQuery<TicketPrice> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketPrice t LEFT JOIN FETCH t.show LEFT JOIN FETCH t.section LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", TicketPrice.class);
       findByIdQuery.setParameter("entityId", id);
       TicketPrice entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       TicketPriceDTO dto = new TicketPriceDTO(entity);
       return Response.ok(dto).build();
@@ -73,14 +68,22 @@ public class TicketPriceEndpoint
 
    @GET
    @Produces("application/json")
-   public List<TicketPriceDTO> listAll()
+   public List<TicketPriceDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
    {
-      final List<TicketPrice> searchResults = em.createQuery("SELECT DISTINCT t FROM TicketPrice t LEFT JOIN FETCH t.show LEFT JOIN FETCH t.section LEFT JOIN FETCH t.ticketCategory ORDER BY t.id", TicketPrice.class).getResultList();
-      final List<TicketPriceDTO> results = new ArrayList<TicketPriceDTO>();
-      for (TicketPrice searchResult : searchResults)
+      TypedQuery<TicketPrice> findAllQuery = em.createQuery("SELECT DISTINCT t FROM TicketPrice t LEFT JOIN FETCH t.show LEFT JOIN FETCH t.section LEFT JOIN FETCH t.ticketCategory ORDER BY t.id", TicketPrice.class);
+      if (startPosition != null)
       {
-         TicketPriceDTO dto = new TicketPriceDTO(searchResult);
-         results.add(dto);
+         findAllQuery.setFirstResult(startPosition);
+      }
+      if (maxResult != null)
+      {
+         findAllQuery.setMaxResults(maxResult);
+      }
+      final List<TicketPrice> searchResults = findAllQuery.getResultList();
+      final List<TicketPriceDTO> results = new ArrayList<TicketPriceDTO>();
+      for(TicketPrice searchResult: searchResults) {
+        TicketPriceDTO dto = new TicketPriceDTO(searchResult);
+        results.add(dto);
       }
       return results;
    }
@@ -93,12 +96,9 @@ public class TicketPriceEndpoint
       TypedQuery<TicketPrice> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketPrice t LEFT JOIN FETCH t.show LEFT JOIN FETCH t.section LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", TicketPrice.class);
       findByIdQuery.setParameter("entityId", id);
       TicketPrice entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);

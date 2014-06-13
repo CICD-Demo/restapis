@@ -6,6 +6,7 @@
     <div ng-show="displayError" class="alert alert-danger">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
     </div>
+    
     <div class="form-group" ng-class="{'has-error': EventForm.name.$invalid}">
         <label for="name" class="col-sm-2 control-label">Name</label>
         <div id="nameControls" class="col-sm-10">
@@ -15,6 +16,7 @@
             <span class="help-block error" ng-show="EventForm.name.$error.maxlength">maximum length is 50</span>
         </div>
     </div>
+
     <div class="form-group" ng-class="{'has-error': EventForm.mediaItem.$invalid}">
         <label for="mediaItem" class="col-sm-2 control-label">Media Item</label>
         <div id="mediaItemControls" class="col-sm-10">
@@ -25,6 +27,7 @@
         <img class="img-thumbnail col-md4" ng-hide="!mediaItemSelection.text" ng-src="{{mediaItemSelection.text}}" />
         </div>
     </div>
+
     <div class="form-group" ng-class="{'has-error': EventForm.category.$invalid}">
         <label for="category" class="col-sm-2 control-label">Category</label>
         <div id="categoryControls" class="col-sm-10">
@@ -34,6 +37,7 @@
         <span class="help-block error" ng-show="EventForm.category.$error.required">required</span> 
         </div>
     </div>
+
     <div class="form-group" ng-class="{'has-error': EventForm.description.$invalid}">
         <label for="description" class="col-sm-2 control-label">Description</label>
         <div id="descriptionControls" class="col-sm-10">
@@ -43,11 +47,13 @@
             <span class="help-block error" ng-show="EventForm.description.$error.maxlength">maximum length is 1000</span>
         </div>
     </div>
+
+
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button id="saveEvent" name="saveEvent" class="btn btn-primary" ng-disabled="isClean() || EventForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
             <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
             <button id="deleteEvent" name="deleteEvent" class="btn btn-danger" ng-show="event.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
-    <div>
+    </div>
 </form>

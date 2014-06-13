@@ -12,8 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.jboss.jdf.example.ticketmonster.model.Venue;
 import org.jboss.jdf.example.ticketmonster.rest.dto.VenueDTO;
+import org.jboss.jdf.example.ticketmonster.model.Venue;
 
 /**
  * 
@@ -22,7 +22,7 @@ import org.jboss.jdf.example.ticketmonster.rest.dto.VenueDTO;
 @Path("forge/venues")
 public class VenueEndpoint
 {
-   @PersistenceContext(unitName = "primary")
+   @PersistenceContext(unitName="primary")
    private EntityManager em;
 
    @POST
@@ -39,9 +39,8 @@ public class VenueEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       Venue entity = em.find(Venue.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,17 +54,13 @@ public class VenueEndpoint
       TypedQuery<Venue> findByIdQuery = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem WHERE v.id = :entityId ORDER BY v.id", Venue.class);
       findByIdQuery.setParameter("entityId", id);
       Venue entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       VenueDTO dto = new VenueDTO(entity);
       return Response.ok(dto).build();
@@ -73,14 +68,22 @@ public class VenueEndpoint
 
    @GET
    @Produces("application/json")
-   public List<VenueDTO> listAll()
+   public List<VenueDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
    {
-      final List<Venue> searchResults = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem ORDER BY v.id", Venue.class).getResultList();
-      final List<VenueDTO> results = new ArrayList<VenueDTO>();
-      for (Venue searchResult : searchResults)
+      TypedQuery<Venue> findAllQuery = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem ORDER BY v.id", Venue.class);
+      if (startPosition != null)
       {
-         VenueDTO dto = new VenueDTO(searchResult);
-         results.add(dto);
+         findAllQuery.setFirstResult(startPosition);
+      }
+      if (maxResult != null)
+      {
+         findAllQuery.setMaxResults(maxResult);
+      }
+      final List<Venue> searchResults = findAllQuery.getResultList();
+      final List<VenueDTO> results = new ArrayList<VenueDTO>();
+      for(Venue searchResult: searchResults) {
+        VenueDTO dto = new VenueDTO(searchResult);
+        results.add(dto);
       }
       return results;
    }
@@ -93,12 +96,9 @@ public class VenueEndpoint
       TypedQuery<Venue> findByIdQuery = em.createQuery("SELECT DISTINCT v FROM Venue v LEFT JOIN FETCH v.sections LEFT JOIN FETCH v.mediaItem WHERE v.id = :entityId ORDER BY v.id", Venue.class);
       findByIdQuery.setParameter("entityId", id);
       Venue entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);

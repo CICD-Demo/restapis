@@ -5,112 +5,89 @@ import org.jboss.jdf.example.ticketmonster.model.Venue;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import org.jboss.jdf.example.ticketmonster.rest.dto.AddressDTO;
+public class NestedVenueDTO implements Serializable {
 
-public class NestedVenueDTO implements Serializable
-{
+	private Long id;
+	private String name;
+	private AddressDTO address;
+	private String description;
+	private int capacity;
 
-   private Long id;
-   private AddressDTO address;
-   private String description;
-   private String name;
-   private int capacity;
+	public NestedVenueDTO() {
+	}
 
-   public NestedVenueDTO()
-   {
-   }
+	public NestedVenueDTO(final Venue entity) {
+		if (entity != null) {
+			this.id = entity.getId();
+			this.name = entity.getName();
+			this.address = new AddressDTO(entity.getAddress());
+			this.description = entity.getDescription();
+			this.capacity = entity.getCapacity();
+		}
+	}
 
-   public NestedVenueDTO(final Venue entity)
-   {
-      if (entity != null)
-      {
-         this.id = entity.getId();
-         this.address = new AddressDTO(entity.getAddress());
-         this.description = entity.getDescription();
-         this.name = entity.getName();
-         this.capacity = entity.getCapacity();
-      }
-   }
+	public Venue fromDTO(Venue entity, EntityManager em) {
+		if (entity == null) {
+			entity = new Venue();
+		}
+		if (this.id != null) {
+			TypedQuery<Venue> findByIdQuery = em.createQuery(
+					"SELECT DISTINCT v FROM Venue v WHERE v.id = :entityId",
+					Venue.class);
+			findByIdQuery.setParameter("entityId", this.id);
+			try {
+				entity = findByIdQuery.getSingleResult();
+			} catch (javax.persistence.NoResultException nre) {
+				entity = null;
+			}
+			return entity;
+		}
+		entity.setName(this.name);
+		if (this.address != null) {
+			entity.setAddress(this.address.fromDTO(entity.getAddress(), em));
+		}
+		entity.setDescription(this.description);
+		entity.setCapacity(this.capacity);
+		entity = em.merge(entity);
+		return entity;
+	}
+	public Long getId() {
+		return this.id;
+	}
 
-   public Venue fromDTO(Venue entity, EntityManager em)
-   {
-      if (entity == null)
-      {
-         entity = new Venue();
-      }
-      if (this.id != null)
-      {
-         TypedQuery<Venue> findByIdQuery = em.createQuery(
-               "SELECT DISTINCT v FROM Venue v WHERE v.id = :entityId",
-               Venue.class);
-         findByIdQuery.setParameter("entityId", this.id);
-         try
-         {
-            entity = findByIdQuery.getSingleResult();
-         }
-         catch (javax.persistence.NoResultException nre)
-         {
-            entity = null;
-         }
-         return entity;
-      }
-      if (this.address != null)
-      {
-         entity.setAddress(this.address.fromDTO(entity.getAddress(), em));
-      }
-      entity.setDescription(this.description);
-      entity.setName(this.name);
-      entity.setCapacity(this.capacity);
-      entity = em.merge(entity);
-      return entity;
-   }
+	public void setId(final Long id) {
+		this.id = id;
+	}
 
-   public Long getId()
-   {
-      return this.id;
-   }
+	public String getName() {
+		return this.name;
+	}
 
-   public void setId(final Long id)
-   {
-      this.id = id;
-   }
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-   public AddressDTO getAddress()
-   {
-      return this.address;
-   }
+	public AddressDTO getAddress() {
+		return this.address;
+	}
 
-   public void setAddress(final AddressDTO address)
-   {
-      this.address = address;
-   }
+	public void setAddress(final AddressDTO address) {
+		this.address = address;
+	}
 
-   public String getDescription()
-   {
-      return this.description;
-   }
+	public String getDescription() {
+		return this.description;
+	}
 
-   public void setDescription(final String description)
-   {
-      this.description = description;
-   }
+	public void setDescription(final String description) {
+		this.description = description;
+	}
 
-   public String getName()
-   {
-      return this.name;
-   }
+	public int getCapacity() {
+		return this.capacity;
+	}
 
-   public void setName(final String name)
-   {
-      this.name = name;
-   }
-
-   public int getCapacity()
-   {
-      return this.capacity;
-   }
-
-   public void setCapacity(final int capacity)
-   {
-      this.capacity = capacity;
-   }
+	public void setCapacity(final int capacity) {
+		this.capacity = capacity;
+	}
 }

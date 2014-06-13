@@ -12,8 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 import org.jboss.jdf.example.ticketmonster.rest.dto.MediaItemDTO;
+import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 
 /**
  * 
@@ -22,7 +22,7 @@ import org.jboss.jdf.example.ticketmonster.rest.dto.MediaItemDTO;
 @Path("/mediaitems")
 public class MediaItemEndpoint
 {
-   @PersistenceContext(unitName = "primary")
+   @PersistenceContext(unitName="primary")
    private EntityManager em;
 
    @POST
@@ -39,9 +39,8 @@ public class MediaItemEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       MediaItem entity = em.find(MediaItem.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,17 +54,13 @@ public class MediaItemEndpoint
       TypedQuery<MediaItem> findByIdQuery = em.createQuery("SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId ORDER BY m.id", MediaItem.class);
       findByIdQuery.setParameter("entityId", id);
       MediaItem entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       MediaItemDTO dto = new MediaItemDTO(entity);
       return Response.ok(dto).build();
@@ -73,14 +68,22 @@ public class MediaItemEndpoint
 
    @GET
    @Produces("application/json")
-   public List<MediaItemDTO> listAll()
+   public List<MediaItemDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
    {
-      final List<MediaItem> searchResults = em.createQuery("SELECT DISTINCT m FROM MediaItem m ORDER BY m.id", MediaItem.class).getResultList();
-      final List<MediaItemDTO> results = new ArrayList<MediaItemDTO>();
-      for (MediaItem searchResult : searchResults)
+      TypedQuery<MediaItem> findAllQuery = em.createQuery("SELECT DISTINCT m FROM MediaItem m ORDER BY m.id", MediaItem.class);
+      if (startPosition != null)
       {
-         MediaItemDTO dto = new MediaItemDTO(searchResult);
-         results.add(dto);
+         findAllQuery.setFirstResult(startPosition);
+      }
+      if (maxResult != null)
+      {
+         findAllQuery.setMaxResults(maxResult);
+      }
+      final List<MediaItem> searchResults = findAllQuery.getResultList();
+      final List<MediaItemDTO> results = new ArrayList<MediaItemDTO>();
+      for(MediaItem searchResult: searchResults) {
+        MediaItemDTO dto = new MediaItemDTO(searchResult);
+        results.add(dto);
       }
       return results;
    }
@@ -93,12 +96,9 @@ public class MediaItemEndpoint
       TypedQuery<MediaItem> findByIdQuery = em.createQuery("SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId ORDER BY m.id", MediaItem.class);
       findByIdQuery.setParameter("entityId", id);
       MediaItem entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);

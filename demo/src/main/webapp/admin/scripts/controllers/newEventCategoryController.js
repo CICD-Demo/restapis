@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewEventCategoryController', functio
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){
             var id = locationParser(responseHeaders);
-            $location.path('/EventCategorys/edit/' + id);
+            $location.path('/EventCategories/edit/' + id);
             $scope.displayError = false;
         };
         var errorCallback = function() {
@@ -18,6 +18,6 @@ angular.module('ticketmonster').controller('NewEventCategoryController', functio
     };
     
     $scope.cancel = function() {
-        $location.path("/EventCategorys");
+        $location.path("/EventCategories");
     };
 });

@@ -11,7 +11,7 @@ angular.module('ticketmonster').controller('EditEventCategoryController', functi
             $scope.eventCategory = new EventCategoryResource(self.original);
         };
         var errorCallback = function() {
-            $location.path("/EventCategorys");
+            $location.path("/EventCategories");
         };
         EventCategoryResource.get({EventCategoryId:$routeParams.EventCategoryId}, successCallback, errorCallback);
     };
@@ -32,12 +32,12 @@ angular.module('ticketmonster').controller('EditEventCategoryController', functi
     };
 
     $scope.cancel = function() {
-        $location.path("/EventCategorys");
+        $location.path("/EventCategories");
     };
 
     $scope.remove = function() {
         var successCallback = function() {
-            $location.path("/EventCategorys");
+            $location.path("/EventCategories");
             $scope.displayError = false;
         };
         var errorCallback = function() {

@@ -12,8 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
 import org.jboss.jdf.example.ticketmonster.rest.dto.SectionAllocationDTO;
+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
 
 /**
  * 
@@ -22,7 +22,7 @@ import org.jboss.jdf.example.ticketmonster.rest.dto.SectionAllocationDTO;
 @Path("/sectionallocations")
 public class SectionAllocationEndpoint
 {
-   @PersistenceContext(unitName = "primary")
+   @PersistenceContext(unitName="primary")
    private EntityManager em;
 
    @POST
@@ -39,9 +39,8 @@ public class SectionAllocationEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       SectionAllocation entity = em.find(SectionAllocation.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,17 +54,13 @@ public class SectionAllocationEndpoint
       TypedQuery<SectionAllocation> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section WHERE s.id = :entityId ORDER BY s.id", SectionAllocation.class);
       findByIdQuery.setParameter("entityId", id);
       SectionAllocation entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       SectionAllocationDTO dto = new SectionAllocationDTO(entity);
       return Response.ok(dto).build();
@@ -73,14 +68,22 @@ public class SectionAllocationEndpoint
 
    @GET
    @Produces("application/json")
-   public List<SectionAllocationDTO> listAll()
+   public List<SectionAllocationDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
    {
-      final List<SectionAllocation> searchResults = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section ORDER BY s.id", SectionAllocation.class).getResultList();
-      final List<SectionAllocationDTO> results = new ArrayList<SectionAllocationDTO>();
-      for (SectionAllocation searchResult : searchResults)
+      TypedQuery<SectionAllocation> findAllQuery = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section ORDER BY s.id", SectionAllocation.class);
+      if (startPosition != null)
       {
-         SectionAllocationDTO dto = new SectionAllocationDTO(searchResult);
-         results.add(dto);
+         findAllQuery.setFirstResult(startPosition);
+      }
+      if (maxResult != null)
+      {
+         findAllQuery.setMaxResults(maxResult);
+      }
+      final List<SectionAllocation> searchResults = findAllQuery.getResultList();
+      final List<SectionAllocationDTO> results = new ArrayList<SectionAllocationDTO>();
+      for(SectionAllocation searchResult: searchResults) {
+        SectionAllocationDTO dto = new SectionAllocationDTO(searchResult);
+        results.add(dto);
       }
       return results;
    }
@@ -93,12 +96,9 @@ public class SectionAllocationEndpoint
       TypedQuery<SectionAllocation> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM SectionAllocation s LEFT JOIN FETCH s.performance LEFT JOIN FETCH s.section WHERE s.id = :entityId ORDER BY s.id", SectionAllocation.class);
       findByIdQuery.setParameter("entityId", id);
       SectionAllocation entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);

@@ -12,8 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.rest.dto.SectionDTO;
+import org.jboss.jdf.example.ticketmonster.model.Section;
 
 /**
  * 
@@ -22,7 +22,7 @@ import org.jboss.jdf.example.ticketmonster.rest.dto.SectionDTO;
 @Path("/sections")
 public class SectionEndpoint
 {
-   @PersistenceContext(unitName = "primary")
+   @PersistenceContext(unitName="primary")
    private EntityManager em;
 
    @POST
@@ -39,9 +39,8 @@ public class SectionEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       Section entity = em.find(Section.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,17 +54,13 @@ public class SectionEndpoint
       TypedQuery<Section> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.venue WHERE s.id = :entityId ORDER BY s.id", Section.class);
       findByIdQuery.setParameter("entityId", id);
       Section entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       SectionDTO dto = new SectionDTO(entity);
       return Response.ok(dto).build();
@@ -73,14 +68,22 @@ public class SectionEndpoint
 
    @GET
    @Produces("application/json")
-   public List<SectionDTO> listAll()
+   public List<SectionDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
    {
-      final List<Section> searchResults = em.createQuery("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.venue ORDER BY s.id", Section.class).getResultList();
-      final List<SectionDTO> results = new ArrayList<SectionDTO>();
-      for (Section searchResult : searchResults)
+      TypedQuery<Section> findAllQuery = em.createQuery("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.venue ORDER BY s.id", Section.class);
+      if (startPosition != null)
       {
-         SectionDTO dto = new SectionDTO(searchResult);
-         results.add(dto);
+         findAllQuery.setFirstResult(startPosition);
+      }
+      if (maxResult != null)
+      {
+         findAllQuery.setMaxResults(maxResult);
+      }
+      final List<Section> searchResults = findAllQuery.getResultList();
+      final List<SectionDTO> results = new ArrayList<SectionDTO>();
+      for(Section searchResult: searchResults) {
+        SectionDTO dto = new SectionDTO(searchResult);
+        results.add(dto);
       }
       return results;
    }
@@ -93,12 +96,9 @@ public class SectionEndpoint
       TypedQuery<Section> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.venue WHERE s.id = :entityId ORDER BY s.id", Section.class);
       findByIdQuery.setParameter("entityId", id);
       Section entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);

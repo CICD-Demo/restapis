@@ -12,17 +12,17 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.jboss.jdf.example.ticketmonster.model.TicketCategory;
 import org.jboss.jdf.example.ticketmonster.rest.dto.TicketCategoryDTO;
+import org.jboss.jdf.example.ticketmonster.model.TicketCategory;
 
 /**
  * 
  */
 @Stateless
-@Path("/ticketcategorys")
+@Path("/ticketcategories")
 public class TicketCategoryEndpoint
 {
-   @PersistenceContext(unitName = "primary")
+   @PersistenceContext(unitName="primary")
    private EntityManager em;
 
    @POST
@@ -39,9 +39,8 @@ public class TicketCategoryEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       TicketCategory entity = em.find(TicketCategory.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,17 +54,13 @@ public class TicketCategoryEndpoint
       TypedQuery<TicketCategory> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketCategory t WHERE t.id = :entityId ORDER BY t.id", TicketCategory.class);
       findByIdQuery.setParameter("entityId", id);
       TicketCategory entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
+      if (entity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       TicketCategoryDTO dto = new TicketCategoryDTO(entity);
       return Response.ok(dto).build();
@@ -73,14 +68,22 @@ public class TicketCategoryEndpoint
 
    @GET
    @Produces("application/json")
-   public List<TicketCategoryDTO> listAll()
+   public List<TicketCategoryDTO> listAll(@QueryParam("start") Integer startPosition, @QueryParam("max") Integer maxResult)
    {
-      final List<TicketCategory> searchResults = em.createQuery("SELECT DISTINCT t FROM TicketCategory t ORDER BY t.id", TicketCategory.class).getResultList();
-      final List<TicketCategoryDTO> results = new ArrayList<TicketCategoryDTO>();
-      for (TicketCategory searchResult : searchResults)
+      TypedQuery<TicketCategory> findAllQuery = em.createQuery("SELECT DISTINCT t FROM TicketCategory t ORDER BY t.id", TicketCategory.class);
+      if (startPosition != null)
       {
-         TicketCategoryDTO dto = new TicketCategoryDTO(searchResult);
-         results.add(dto);
+         findAllQuery.setFirstResult(startPosition);
+      }
+      if (maxResult != null)
+      {
+         findAllQuery.setMaxResults(maxResult);
+      }
+      final List<TicketCategory> searchResults = findAllQuery.getResultList();
+      final List<TicketCategoryDTO> results = new ArrayList<TicketCategoryDTO>();
+      for(TicketCategory searchResult: searchResults) {
+        TicketCategoryDTO dto = new TicketCategoryDTO(searchResult);
+        results.add(dto);
       }
       return results;
    }
@@ -93,12 +96,9 @@ public class TicketCategoryEndpoint
       TypedQuery<TicketCategory> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketCategory t WHERE t.id = :entityId ORDER BY t.id", TicketCategory.class);
       findByIdQuery.setParameter("entityId", id);
       TicketCategory entity;
-      try
-      {
+      try {
          entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
+      } catch (NoResultException nre) {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);
