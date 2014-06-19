@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditPerformanceController', function
                     };
                     var labelObject = {
                         value : item.id,
-                        text : item.displayTitle
+                        text : item.id
                     };
                     if($scope.performance.show && item.id == $scope.performance.show.id) {
                         $scope.showSelection = labelObject;

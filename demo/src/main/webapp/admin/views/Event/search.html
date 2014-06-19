@@ -21,7 +21,7 @@
     <div class="form-group">
         <label for="mediaItem" class="col-sm-2 control-label">Media Item</label>
         <div class="col-sm-10">
-            <select id="mediaItem" name="mediaItem" class="form-control" ng-model="search.mediaItem" ng-options="m as m.url for m in mediaItemList">
+            <select id="mediaItem" name="mediaItem" class="form-control" ng-model="search.mediaItem" ng-options="m as m.mediaType for m in mediaItemList">
                 <option value="">Choose a Media Item</option>
             </select>
         </div>
@@ -65,7 +65,7 @@
             <tbody id="search-results-body">
                 <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
                     <td><a href="#/Events/edit/{{result.id}}">{{result.name}}</a></td>
-                        <td><a href="#/Events/edit/{{result.id}}">{{result.mediaItem.url}}</a></td>
+                        <td><a href="#/Events/edit/{{result.id}}">{{result.mediaItem.mediaType}}</a></td>
                         <td><a href="#/Events/edit/{{result.id}}">{{result.category.description}}</a></td>
                     <td><a href="#/Events/edit/{{result.id}}">{{result.description}}</a></td>
                 </tr>

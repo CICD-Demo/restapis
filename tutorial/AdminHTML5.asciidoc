@@ -15,56 +15,22 @@ The tutorial will show you how to perform all these steps in JBoss Developer Stu
 == Setting up Forge
 
 
-=== JBoss Developer Studio 7
+=== JBoss Developer Studio
 
 
-Forge is available in JBoss Developer Studio 7. You would have already used Forge in the Introductory chapter.
+Forge is available in JBoss Developer Studio 8. You would have already used Forge in the Introductory chapter.
 
-To show the Forge Console, navigate to _Window -> Show View -> Other_, locate _Forge Console_ and click _OK_. Then click the _Start_ button in top right corner of the view.
+You can start Forge in JBoss Developer Studio, using the *Ctrl + 4* (Windows/Linux) or *Cmd + 4* (Mac OS X) key stroke combination. This would launch the Forge action menu from where you can choose the desired commands to run in a particular context.
 
-
-=== Required Forge Plugins
-
-
-Forge comes with a number of built in plugins, including the "scaffold-x" plugin, which is able to generate a full CRUD UI from JPA entities. The generated UI uses AngularJS as the view layer, with JAX-RS resources providing the backend services. Internally, Forge uses http://metawidget.org/[Metawidget] to create the CRUD screens.
-
-Forge also includes a powerful plugin management system. The AngularJS scaffolding plugin isn't bundled with Forge, but it's easy to install. First use the `forge find-plugin` command to locate it
-
-[source,fsh]
-----
-forge find-plugin angularjs
-----
-
-In this case, the plugin is just called `angularjs` - easy! We can install it using the `forge install-plugin` command:
-
-[source,fsh]
-----
-forge install-plugin angularjs
-----
-
-This will download, compile and install the RichFaces plugin.
+Or alternatively, to use the Forge Console, navigate to _Window -> Show View -> Other_, locate _Forge Console_ and click _OK_. Then click the _Start_ button in top right corner of the view.
 
 
 == Getting started with Forge
 
 
-Forge is a powerful rapid application development (aimed at Java EE 6) and project comprehension tool. It can operate both on projects it creates, and on existing projects, such as TicketMonster. If you want to learn more about Forge ...
+Forge is a powerful rapid application development (aimed at Java EE 6) and project comprehension tool. It can operate both on projects it creates, and on existing projects, such as TicketMonster. If you want to learn more about Forge, head over to the link:http://forge.jboss.org[JBoss Forge site].
 
-When you `cd` into a project with Forge, it inspects the project, and detects what technologies you are using in the project. Let's see this in action:
-
-[source,fsh]
-----
-project list-facets
-----
-
-Those facets detected are colored green.
-
-[[project-list-faces_image]]
-.Output of `project list-facets`
-image::gfx/forge-project-list-facets.png[]
-
-As you can see, Forge has detected all the technologies we are using, such as JPA, JAX-RS, CDI and Bean Validation.
-
+Forge can scaffold an entire app for you from a set of existing resources. For instance, it can generate a HTML5 scaffold with RESTful services, based on existing JPA entities. We shall see how to use this feature to generate the administration section of the TicketMonster application.
 
 == Generating the CRUD UI
 
@@ -83,59 +49,53 @@ To run the script:
 *************************************************************************************
 
 
-=== Generate the REST resources from the JPA entities
-
-First, we need to generate REST resources for the entities. Run:
-
-[source,fsh]
-----
-rest endpoint-from-entity --contentType application/json org.jboss.jdf.example.ticketmonster.model.* --strategy ROOT_AND_NESTED_DTO
-----
-
-to instruct Forge to generate JAX-RS resources for all the JPA entities in the project. The resources would be represented in JSON to enable the AngularJS-based front-end to communicate with the backend services. Each resource representation is structured to contain the representation of the corresponding JPA entity (the root) and any associated entities (that are represneted as nested objects).
-
-[NOTE]
-==============================================================
-The `ROOT_AND_NESTED_DTO` resource representation enables Forge to create REST resources for complex object graphs without adding Jackson annotations to avoid cycles in the graph. Without this constrained representation, one would have to add annotations like `@JsonIgnore` (to ignore certain undesirable object properties), or `@JsonIdentity` (to represent cycles in JSON without succumbing to StackOverflowErrors or similar such errors/exceptions).
-==============================================================
-
-=== Update the project
-
-Next, we need to setup the AngularJS Scaffold in the project. Run:
-
-[source,fsh]
-----
-scaffold-x setup --scaffoldType angularjs --targetDir admin
-----
-
-to instruct Forge to generate the css, images and JavaScript libraries used by the scaffold.
-
-[[project-scaffold-setup]]
-.Output of `scaffold setup`
-image::gfx/forge-scaffold-setup.png[]
-
-
 === Scaffold the AngularJS UI from the JPA entities
 
-You can either scaffold the entities one-by-one, which allows you to control which UIs are generated, or you can generate a CRUD UI for all the entities. We'll do the latter:
+Scaffolding capabilities are available through the "Scaffold: Setup" and "Scaffold: Generate" commands in the Forge action menu. The first command is used to set up the pre-requisites for a scaffold in a project - usually static files and libraries that can be installed separately and are not modified by subsequent scaffolding operations. The second command is used to generate various source files in a project, based on some input files (in this case JPA entities).
 
-[source,fsh]
-----
-scaffold-x from src/main/java/org/jboss/jdf/example/ticketmonster/model/* --targetDir admin --overwrite
-----
+In the case of the AngularJS scaffold, an entire CRUD app (a HTML5 UI with a RESTful backend using a database) can be generated from JPA entities.
 
-**************************************************************************************
-Forge asks us whether we want to overwrite every file - which gets a bit tedious! 
-Specifying `--overwrite` allows Forge to overwrite files without prompt - much better!
-**************************************************************************************
+Forge can detect whether the scaffold was initially setup during scaffold generation and adjust for missing capabilities in the project. Let's therefore go ahead and launch the "Scaffold: Generate" command from the Forge action menu:
+
+
+[[project_scaffold_generate_in_menu]]
+.Filter the `Scaffold: Generate` command in the menu
+image::gfx/forge_scaffold_generate_action_menu.png[]
+
+We're now prompted to select which scaffold to generate. Forge supports AngularJS and JSF out of the box. Choose `AngularJS`. The generated scaffold can be placed in any directory under the web root path (which corresponds to the `src/main/webapp` directory of the project). We'll choose to generate the scaffold in the `admin` directory.
+
+[[project_scaffold_generate]]
+.Launch the `Scaffold: Generate` command
+image::gfx/forge_scaffold_generate.png[]
+
+[[project_scaffold_generate_input_webroot]]
+.Select the scaffold to generate and the web root path
+image::gfx/forge_scaffold_generate_input_webroot.png[]
+
+Click the `Next` button, and proceed to choose the JPA entities that we would use as the basis for the scaffold. You can either scaffold the entities one-by-one, which allows you to control which UIs are generated, or you can generate a CRUD UI for all the entities. We'll do the latter:
+
+[[project_scaffold_generate_select_entities]]
+.Select the JPA entities to use for generation
+image::gfx/forge_scaffold_generate_select_entities.png[]
+
+Click the `Next` button, to configure the nature of the REST resources generated by the scaffold. Multiple strategies exist in Forge for generating REST resources from JPA entities. We'll choose the option to generate and expose DTOs for the JPA entities, since it is more suitable for the TicketMonster object model. Provide a value of `org.jboss.jdf.example.ticketmonster.rest` as the target package for the generated REST resources, if not already specified. Click `Finish` to generate the scaffold. 
+
+[[project_scaffold_generate_rest_resources]]
+.Choose the REST resource generation strategy
+image::gfx/forge_scaffold_generate_choose_rest_strategy.png[]
 
 [NOTE]
 ==============================================================
-Forge will prompt you for additional information when creating the scaffold. For example, you may be prompted to provide information about how different objects should be displayed in the UI. You may also be prompted to specify a different URL for the REST resources used by the AngularJS-based UI.
-The defaults are sufficient since this is a convenience offered by Forge to provide a different value. Forge inspects the project for existing REST resources conforming to a convention and uses it as the default. Likewise, Forge inspects JPA entities and chooses the first displayable value as the default.
+The `Root and Nested DTO` resource representation enables Forge to create REST resources for complex object graphs without adding Jackson annotations to avoid cycles in the graph. Without this constrained representation, one would have to add annotations like `@JsonIgnore` (to ignore certain undesirable object properties), or `@JsonIdentity` (to represent cycles in JSON without succumbing to StackOverflowErrors or similar such errors/exceptions).
 ==============================================================
 
-We now have a CRUD UI for all the entities used in TicketMonster!
+The scaffold generation command performs a multitude of activities, depending on the previous state of the project:
+
+* It copies the css, images and JavaScript libraries used by the scaffold, to the project. It does this if you did not setup the scaffold in a separate step (this is optional; the generate command will do this for you).
+* It generates JAX-RS resources for all the JPA entities in the project. The resources would be represented in JSON to enable the AngularJS-based front-end to communicate with the backend services. Each resource representation is structured to contain the representation of the corresponding JPA entity (the root) and any associated entities (that are represneted as nested objects).
+* It generates the AngularJS-based front-end that contains HTML based Angular templates along with AngularJS factories, services and controllers.
+
+We now have a database-driven CRUD UI for all the entities used in TicketMonster!
 
 
 == Test the CRUD UI

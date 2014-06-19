@@ -131,6 +131,26 @@ image::gfx/start-new-hybrid-mobile-application-project.png[]
 .Creating a new Hybrid Mobile Application project
 image::gfx/create-new-hybrid-mobile-application-project.png[]
 +
+Click `Next` to choose the Hybrid Mobile engine for the project. If you have never setup a Hybrid Mobile engine in JBoss Developer Studio before, you will be prompted to download or search for engines to use. We'll click on the `Download` button to perform the former.
++
+.Setting up a Hybrid Mobile engine for the first time
+image::gfx/setup_hybrid_mobile_engine_from_scratch.png[]
++
+You'll be prompted with a dialog where you can download all available hybrid mobile engines.
++
+.Choose the Hybrid Mobile engine to download
+image::gfx/setup_hybrid_mobile_engine_version.png[]
++
+We'll choose Android and iOS variants of version 3.4.0.
++
+.Select Android and iOS for 3.4.0
+image::gfx/setup_hybrid_mobile_engine_340.png[]
++
+Now that we have downloaded and setup a hybrid mobile engine, let's use it in our project. Select the newly configured engine and click `Finish`.
++
+.Creating a new Hybrid Mobile Application project
+image::gfx/select_hybrid_mobile_engine_for_project.png[]
++
 Once you have finished creating the project, navigate to the `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply replace the `www` directory with a symbolic link to the `webapp` directory of TicketMonster; the `config.xml` file would need to be copied over to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application).
 
 ----
@@ -204,12 +224,56 @@ var TicketMonster = {
     }
 }
 
-require (["mobile"], function() {
-
+require(['../../../cordova'], function() {
+    
+    var bootstrap = {
+        initialize: function() {
+            document.addEventListener('deviceready', this.onDeviceReady, false);
+        },
+        onDeviceReady: function() {
+            // Detect if iOS 7 or higher and disable overlaying the status bar
+            if(window.device.platform.toLowerCase() == "ios" &&
+                parseFloat(window.device.version) >= 7.0) {
+                StatusBar.overlaysWebView(false);
+                StatusBar.styleDefault();
+                StatusBar.backgroundColorByHexString("#e9e9e9");
+            }
+            // Load the mobile module
+            require (["mobile"]);
+        }
+    };
+    
+    bootstrap.initialize();
 });
 -------------------------------------------------------------------------------------------------------
 
-The final step will involve adjusting `src/main/webapp/resources/js/configurations/loader.js` to load this module when running on Android, using the query string we have already configured in the project.
+The above snippet of code contains a device-specific check for iOS 7. We will be using the Cordova status bar plugin, to ensure that the status bar on iOS 7 does not overlap the UI. The Cordova device plugin will be used to obtain device information for use in device detection. We'll also use the Cordova Notification plugin to display alerts and notifications to the end-user using the native mobile UI.
+
+We'll proceed to add the required Cordova plugins to the project.
+
+Select the `plugins` directory of the Hybrid Mobile project, and open the context-menu through a right-click. Select the *Install Cordova Plug-in* option in the menu.
+This opens a dialog where you can search for Cordova plugins in various locations, including the Cordova registry, a git repository or a directory in your file system.
+
+.Launch Cordova plugin discovery wizard
+image::gfx/cordova_choose_to_add_plugins.png[]
+
+We'll now search and the desired plugins:
+
+.Add Cordova Device plugin
+image::gfx/cordova_add_device_plugin.png[]
+
+.Add Cordova Notification plugin
+image::gfx/cordova_add_notifications_plugin.png[]
+
+.Add Cordova StatusBar plugin
+image::gfx/cordova_add_statusbar_plugin.png[]
+
+Click the `Next` button to confirm the plugin versions to install. Click the `Finish` button to download and install the plugins to the project.
+
+.Confirm plugins to add
+image::gfx/cordova_confirm_plugin_versions.png[]
+
+The final step will involve adjusting `src/main/webapp/resources/js/configurations/loader.js` to load this module when running on Android, using the query string we have already configured in the project. We'll also tweak `src/main/webapp/resources/js/app/utilities.js` to use the Notification plugin to display alerts in the context of a Hybrid Mobile app.
 
 .src/main/webapp/resources/js/configurations/loader.js
 [source,javascript]
@@ -237,6 +301,29 @@ define(function () {
 
     require([environment]);
 });
+-------------------------------------------------------------------------------------------------------
+
+We'll modify the `displayAlert` function in the utilities object to use the Notification plugin when available:
+
+.src/main/webapp/resources/js/configurations/loader.js
+[source,javascript]
+-------------------------------------------------------------------------------------------------------
+...
+    // utility functions for rendering templates
+    var utilities = {
+        ...
+        applyTemplate:function (target, template, data) {
+            return target.empty().append(this.renderTemplate(template, data));
+        },
+        displayAlert: function(msg) {
+            if(navigator.notification) {
+                navigator.notification.alert(msg);
+            } else {
+                alert(msg);
+            }
+        }
+    };
+...
 -------------------------------------------------------------------------------------------------------
 
 

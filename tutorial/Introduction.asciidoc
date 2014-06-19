@@ -7,7 +7,7 @@
 The target audience for this tutorial are those individuals who do not yet have a great deal of experience with:
 
 * Eclipse + JBoss Tools (JBoss Developer Studio)
-* JBoss Enterprise Application 6.2
+* JBoss Enterprise Application Platform 6.2
 * Java EE 6 features like JAX-RS 
 * HTML5 & jQuery for building an mobile web front-end.  
 
@@ -31,15 +31,15 @@ In this tutorial, we will cover the following topics:
 - Using the Mobile BrowserSim
 
 [[jbds5_mobile_browsersim_image]]
-.JBoss Developer Studio 7 with Mobile BrowserSim
-image::gfx/introduction/jbds7_mobile_browsersim.png[]
+.JBoss Developer Studio 8 with Mobile BrowserSim
+image::gfx/introduction/jbds8_mobile_browsersim.png[]
 
 == Installation
 
 
-The first order of business is to get your development environment setup and JBoss Developer Studio v7 installed. JBoss Developer Studio is Eclipse Kepler (e4.3) for Java EE Developers plus select JBoss Tools and is available for free. Visit https://devstudio.jboss.com/download/7.x.html to download it.  You may also choose to install JBoss Tools 4.1 into your existing Eclipse for Java EE Developers installation. This document uses screenshots depicting JBoss Developer Studio.
+The first order of business is to get your development environment setup and JBoss Developer Studio v8 installed. JBoss Developer Studio is Eclipse Luna (e4.4) for Java EE Developers plus select JBoss Tools and is available for free. Visit http://www.jboss.org/products/devstudio/download/ to download it.  You may also choose to install JBoss Tools 4.2 into your existing Eclipse for Java EE Developers installation. This document uses screenshots depicting JBoss Developer Studio.
 
-You must have a Java Development Kit (JDK) installed, either v6 or v7 will work - whilst a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK. System requirements for JBoss Developer Studio are listed in the System Requirements chapter of the link:https://access.redhat.com/site/documentation/en-US/Red_Hat_JBoss_Developer_Studio/7.0/html/Installation_Guide/chap-System_Requirements.html[JBoss Developer Studio 7.0 Installation Guide] online documentation.
+You must have a Java Development Kit (JDK) installed. Java 7 JDK is recommended - whilst a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK.
 
 [TIP]
 ==============================================================
@@ -50,10 +50,10 @@ To see JBoss Tools being installed into Eclipse, see
 link:http://vimeo.com/39743315[this video].
 ==============================================================
 
-The JBoss Developer Studio installer has a (very long!) name such as `jbdevstudio-product-universal-7.0.0.GA-v20130720-0044-B364.jar`
+The JBoss Developer Studio installer has a (very long!) name such as `jbdevstudio-product-universal-8.0.0.Beta2-v20140617-0558-B161.jar`
 where the latter portion of the file name relates to build date and version information and the text near the front related to the target operating system. The "universal" installer is for any operating system.  To launch the installer you may simply be able to double-click on the .jar file name or you may need to issue the following from the operating system command line:
 
-    java -jar jbdevstudio-product-universal-7.0.0.GA-v20130720-0044-B364.jar
+    java -jar jbdevstudio-product-universal-8.0.0.Beta2-v20140617-0558-B161.jar
 
 We recommend using the "universal" installer as it handles Windows, Mac OS X and Linux - 32-bit and 64-bit versions.
 
@@ -70,7 +70,7 @@ version. You may still run your application server in 64-bit
 JVMs if needed to insure compatibility with the production
 environment whilst keeping your IDE in 32-bit mode.
 Visual Page Editor has experimental support for 64-bit JVMs in JBoss 
-Developer Studio 7. Please refer https://community.jboss.org/wiki/JBosstoolsVisualEditorFAQ[the JBoss Tools Visual Editor FAQ] for details.
+Developer Studio 8. Please refer https://community.jboss.org/wiki/JBosstoolsVisualEditorFAQ[the JBoss Tools Visual Editor FAQ] for details.
 ===============================================================
 
 [[installer-wizard_image]]
@@ -79,9 +79,9 @@ image::gfx/introduction/installer_wizard_page1.png[]
 
 The rest of the steps are fairly self explanatory.  If you run into trouble, please consult the videos above as they explore a few troubleshooting tips related to JRE/JDK setup.
 
-Please make sure to say *Yes* to the prompt that says "Will you allow JBoss Tools team to receive anonymous usage statistics for this Eclipse instance with JBoss Tools?".  This information is very helpful to us when it comes to prioritizing our QA efforts in terms of operating system platforms. More information concerning our usage tracking can be found at http://www.jboss.org/tools/usage
-
 You can skip the step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6.2 as we will do this in the next step.
+
+Once installed, launch JBoss Developer Studio. Please make sure to say *Yes* to the prompt that says "Will you allow JBoss Tools team to receive anonymous usage statistics for this Eclipse instance with JBoss Tools?".  This information is very helpful to us when it comes to prioritizing our QA efforts in terms of operating system platforms. More information concerning our usage tracking can be found at http://www.jboss.org/tools/usage
 
 == Creating a new Java EE 6 project with Maven
 
@@ -212,13 +212,13 @@ image::gfx/introduction/pom_xml_tabs.png[]
 
 For this tutorial, we do not need to edit the `pom.xml` as it already provides the Java EE 6 APIs that we will need (e.g. JPA, JAX-RS, CDI). You should spend some time exploring the *Dependencies* and the *pom.xml* (source view) tabs.   
 
-One key element to make note of is `<version.jboss.bom>1.0.4.Final</version.jboss.bom>` which establishes if this project uses JBoss Enterprise Application Platform or JBoss AS dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
+One key element to make note of is `<version.jboss.bom>1.0.7.Final</version.jboss.bom>` which establishes if this project uses JBoss Enterprise Application Platform or JBoss AS dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
 
-If you are using JBoss Enterprise Application Platform 6 and you selected that as your Target Runtime, you will find a `-redhat-1` suffix on the version string. You may need to setup the JBoss Enterprise Maven repository to use the certified dependencies in your project, details of which are available link:https://community.jboss.org/wiki/SettingUpTheJBossEnterpriseRepositories[here].
+If you are using JBoss Enterprise Application Platform 6 and you selected that as your Target Runtime, you will find a `-redhat-4` suffix on the version string. You may need to setup the JBoss Enterprise Maven repository to use the certified dependencies in your project, details of which are available link:https://community.jboss.org/wiki/SettingUpTheJBossEnterpriseRepositories[here].
 
 [CAUTION]
 ========================================================================================
-The specific version of the BOM (e.g. `1.0.4.Final`) is likely to change, so do not 
+The specific version of the BOM (e.g. `1.0.7.Final`) is likely to change, so do not 
 be surprised if the version is slightly different.
 
 The recommended version of the BOM for a runtime (EAP 6) can be 
@@ -301,32 +301,40 @@ Reverse Engineering with Forge::
 
 For the purposes of this tutorial, we will take advantage of Forge to add a new JPA entity. This requires the least keystrokes, and we do not yet have a RDBMS schema to reverse engineer.  There is also an optional section for adding an entity using *New -> Class*.
 
-Right-click on the `.model` package in the *Project Explorer* and select *Show In -> Forge Console*.
+Select the project in the *Project Navigator* view of JBoss Developer Studio and enter the *Ctrl + 4* (in Windows/Linux) or *Cmd + 4* (Mac) key combination.
+This will launch Forge if it is not started already.
 
-[[show_in_forge_console_image]]
-.Show In Forge Console 
-image::gfx/introduction/show_in_forge_console.png[]
+[[starting_forge_for_first_time_image]]
+.Starting Forge for the first time
+image::gfx/introduction/forge_is_starting.png[]
 
-[TIP]
-==============================================================================
-Alternative methods to activate Forge include:
+The list of commands that you can execute in Forge will be visible in the Forge quick action menu.
 
-* *Window -> Show View -> Forge Console*
-* *Ctrl 4* (Windows) or *Cmd 4* (Mac).
-
-Note: the Show In method will issue a "pick-up" command to switch you to the 
-right location within your project.
-==============================================================================
-
-The first time you start Forge, you will be prompted with a *Forge Not Running* dialog, select *Yes*.
-
-[[forge_is_not_running_image]]
-.Show Forge Not Running
-image::gfx/introduction/forge_is_not_running.png[]
+[[forge_action_menu_image]]
+.Forge action menu 
+image::gfx/introduction/forge_action_menu.png[]
 
 [TIP]
 ==============================================================================
-If you are not prompted you can always start Forge using the green arrow (or 
+An alternative method to activate Forge is:
+
+* *Window -> Show View -> Forge Console*. Click the *Start* button in the view.
+
+[[show_view_image]]
+.Launch the *Show View* dialog
+image::gfx/introduction/show_forge_view.png[]
+
+[[select_forge_view_image]]
+.Select the Forge Console view
+image::gfx/introduction/select_forge_view.png[]
+
+Note: Activating Forge this way displays the Forge console that allows you to 
+execute the same commands via a shell interface.
+==============================================================================
+
+[TIP]
+==============================================================================
+You can always start Forge using the green arrow (or 
 stop via the red square) in the Forge Console tab.
 
 [[forge_start_stop_image]]
@@ -334,85 +342,149 @@ stop via the red square) in the Forge Console tab.
 image::gfx/introduction/forge_console_tab.png[]
 ==============================================================================
 
-[[forge_console_image]]
-.Show Forge Console
-image::gfx/introduction/forge_console.png[]
+Forge is a multi-faceted rapid application development tool that allows you to enter commands that generate classes and code. You could use either a GUI within your IDE that offers a familar wizard and dialog based UI, or a shell-like interface to perform operations. It will automatically update the IDE for you. A key feature is "contentual command activation", launched by running the Forge shortcut (*Ctrl + 4* or *Cmd + 4*). For instance, launching Forge on a selected project activates different commands, than launching it in isolation, or for that matter launching Forge with a selected Java source file.
 
-Forge is a command-oriented rapid application development tool that allows you to enter commands that generate classes and code. It will automatically update the IDE for you.  A key feature is "content assist" or "tab completion", activated by pressing *tab*.
+We'll generate an entity using the Forge GUI. Let's work through this, step by step.
 
-To generate an entity, use these commands:
+We start by selecting the TicketMonster project. Launch Forge through the shortcut (*Ctrl + 4* or *Cmd + 4*).
+Type `jpa` in the command filter textbox located in the menu. The menu will filter out irrelevant entries, leaving you with JPA-specific commands.
 
-[source,fsh]
-----------------------------------------------------------------------------
-entity --named Event --package org.jboss.jdf.example.ticketmonster.model
-field string --named name
-validation setup --provider JAVA_EE
-constraint NotNull --onProperty name
-constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
-field string --named description
-constraint Size --onProperty description --min 20 --max 1000 --message "Must be > 20 and < 1000"
-field boolean --named major
-field string --named picture
-----------------------------------------------------------------------------
+[[filter_commands_in_forge_menu_image]]
+.Filter commands in the Forge menu
+image::gfx/introduction/forge_quick_action_menu_filter_jpa.png[]
 
-Let's work through this, step by step.
+Select the "JPA: New Entity" entry in the menu. Click it or hit the `Enter` key to execute the command. You will be presented with a dialog where you can provide certain inputs that control how the new entity would be generated, like the package where the entity would be created, the name of the JPA entity/class, the primary-key strategy used for the entity etc.
 
-At the `[ticket-monster] model $` prompt, type `en` and hit the tab key on your keyboard.  `entity` will fill in.   Hit tab again and `entity --named` will appear.  Type in `Event` and add a space -- Forge can not anticipate the name of your new entity!
+[[jpa_new_entity_forge_command_image]]
+.The new JPA entity command in Forge
+image::gfx/introduction/forge_jpa_new_entity.png[]
 
-Hit tab again and select `--package`.  Now, hit tab repeatedly to fill in `org.jboss.jdf.example.ticketmonster`. Since there are multiple entries underneath examples, Forge will display those options.  Type in `m` and hit tab to select `model`.
+Specify the value of the entity as `Event` and click `Finish`. The defaults for other values are sufficient - note how Forge intelligently constructs the value for the package field from the Maven group Id and artifact Id values of the project.
 
-Now hit the Enter/Return key to watch the command execute.  The Event entity will be generated into the "model" package and open up inside of Eclipse.
+[[create_event_entity_image]]
+.Create the Event entity in Forge
+image::gfx/introduction/forge_jpa_new_entity_event.png[]
 
-[[forge_event_entity_image]]
-.Forge new entity
-image::gfx/introduction/forge_event_entity.png[]
+You should see a notification bubble in Eclipse when Forge completes the action.
 
-[[forge_event_entity_created_image]]
-.Event Entity
-image::gfx/introduction/forge_event_entity_created.png[]
+[[create_event_entity_image_bubble]]
+.The Forge notification bubble in Eclipse
+image::gfx/introduction/forge_jpa_new_entity_created.png[]
+
+Forge would have created a JPA entity as instructed, and it would also open the Java source file in Eclipse. Note that it would have created not only a new class with the `@Entity` annotation, but also created a primary-key field named `id`, a `version` field, along with getters and setters for both, in addition to `equals`, `hashCode` and `toString` methods.
+
+[[event_entity_image]]
+.The newly created Event entity
+image::gfx/introduction/forge_event_entity_source.png[]
 
 [NOTE]
 ==============================================================================
-`@Entity public class` is placed on the same line as `
+`@Entity` is placed on the same line as `
 import java.lang.Override` by Forge. Using the formatter your IDE provides on
 the entity will make this look more like you would expect!
 ==============================================================================
 
-Forge has automatically changed the context of the CLI to `Event.java`, and typing `ls` will provide a listing of the fields and methods.  
-[[forge_ls_results_image]]
-.Forge `ls`
-image::gfx/introduction/forge_ls.png[]
+Let's add a new field to this entity. Select the `Event` class in the project navigator and launch the Forge menu once again. Filter on `jpa` as usual, and launch the "JPA: New Field" command.
+Specify the field name as `name`, to store the name of the event. The defaults are sufficient for other input fields. Click `Finish` or hit the `Enter` button as usual.
 
-Now that the base `Event` entity has been created, let's add the fields and their JSR 303 Bean Validation constraints.  
+[[jpa_new_field_wizard_image]]
+.The JPA field wizard in Forge
+image::gfx/introduction/forge_jpa_new_field_name.png[]
 
-This next step involves adding a `name` property for the Event entity so that an event could hold data like "Rock Concert". 
+You will now notice that the `Event` class is enhanced with a `name` field of type `String`, as well as a getter and setter, along with modifications to the `toString` method.
 
-Type `fie` and hit tab to fill in `field`, if you hit *tab* again, Forge will list out the possible field types.   Type in `s` and hit *tab*, Forge will respond with `string`.  Hit *tab* again to get `--named` and type in `name`.   
-You should end up with the command `field string --named name`, to execute it, press enter.  This will add a `private String name;` field, and the appropriate accessor and mutator (getter and setter) methods.  You should also notice that the toString method is tweaked to include `name` as well.
-
-[[forge_added_name_image]]
-.@Column name
+[[jpa_newly_created_field_image]]
+.The newly created field in the Event class
 image::gfx/introduction/forge_added_name.png[]
 
-From this point forward, we will assume you have the basics of using Forge's interactive command line. The remaining commands to run are:
+Let's now add Bean Validation (JSR-303) capabilities to the project. Launch the Forge menu, and filter for the "Constraint: Setup" command. Execute the command.
 
-[source,fsh]
-----------------------------------------------------------------------------
-validation setup --provider JAVA_EE
-constraint NotNull --onProperty name
-constraint Size --onProperty name --min 5 --max 50 --message "Must be > 5 and < 50"
-field string --named description
-constraint Size --onProperty description --min 20 --max 1000 --message "Must be > 20 and < 1000"
-field boolean --named major
-field string --named picture
-----------------------------------------------------------------------------
+[[filter_constraint_commands_in_forge_menu_image]]
+.Filter for constraint commands in the Forge menu
+image::gfx/introduction/forge_quick_action_menu_filter_constraint.png[]
 
+You'll be presented with a choice on what Bean Validation providers you'd like to setup in the project. The defaults are sufficient - we'll use the Bean Validation provider supplied by the Java EE application. Click `Finish` or hit `Enter` to setup Bean valdiation.
+
+[[setup_bean_validation_image]]
+.Setup Bean Validation
+image::gfx/introduction/forge_setup_constraint_wizard.png[]
+
+We'll now add a constraint on the newly added `name` field in the `Event` class. Select the `Event` class in the project navigator and proceed to launch the "Constraint: Add" command from the Forge menu. Note that selecting the `Event` class allows Forge to provide commands relevant to this class in the action menu, as well as populating this class in input fields where it is fit to populate them.
+
+[[launch_add_constraint_wizard_image]]
+.Select the Event class and launch the "Constraint: Add" wizard
+image::gfx/introduction/forge_add_constraint_on_event.png[]
+
+This launches a wizard where one can add Bean Validation constraints. The class to operate on will default to the currently selected class, i.e. `Event`. If you want to switch to a different class, you can do so in the wizard. There is no need to re-launch the wizard.
+
+[[default_value_for_constraint_add_command_image]]
+.The constraint is added to the selected class
+image::gfx/introduction/forge_select_event_entity_for_constraint.png[]
+
+Proceed to select the `name` field, on which we add a `NotNull` constraint. Click `Finish` or hit `Enter`.
+
+[[add_notnull_constraint_event_name_image]]
+.Add a NotNull constraint on Event name
+image::gfx/introduction/forge_constraint_add_notnull_on_name.png[]
+
+Similarly, add a `Size` constraint with `min` and `max` values of 5 and 50 respectively on the `name` field.
+
+[[add_size_constraint_event_name_image]]
+.Add a Size constraint on Event name
+image::gfx/introduction/forge_constraint_add_size_on_name.png[]
+
+[[attribute_values_size_constraint_on_name_image]]
+.Specify attribute values for the Size constraint
+image::gfx/introduction/forge_constraint_add_set_size_attributes_on_name.png[]
+
+From this point forward, we will assume you have the basics of using Forge's menu and the commands executed thus far. Add a new field `description` to the Event class.
+
+[[add_description_field_to_event_image]]
+.Add the description field to Event
+image::gfx/introduction/forge_jpa_new_field_description.png[]
+
+Add a `Size` constraint on the description field to the event class, with `min` and `max` values of 20 and 1000 respectively.
+
+[[add_size_constraint_event_description_image]]
+.Add a Size constraint on Event name
+image::gfx/introduction/forge_constraint_add_size_on_description.png[]
+
+[[attribute_values_size_constraint_on_description_image]]
+.Specify attribute values for the Size constraint
+image::gfx/introduction/forge_constraint_add_set_size_attributes_on_description.png[]
+
+Add a new `boolean` field `major`. Note - you will need to change the type to `boolean` from the default value of `String`.
+
+[[add_major_field_to_event_image]]
+.Add the major field to Event
+image::gfx/introduction/forge_jpa_new_field_major.png[]
+
+Add another field `picture` to the Event class.
+
+[[add_picture_field_to_event_image]]
+.Add the picture field to Event
+image::gfx/introduction/forge_jpa_new_field_picture.png[]
 
 The easiest way to see the results of Forge operating on the `Event.java` JPA Entity is to use the *Outline View* of JBoss Developer Studio. It is normally on the right-side of the IDE when using the JBoss Perspective.
 
 [[outline_of_event_image]]
 .Outline View
 image::gfx/introduction/outline_of_event.png[]
+
+Alternatively, you could perform the same sequence of operations in the Forge Console, using these commands:
+
+[source,fsh]
+----------------------------------------------------------------------------
+jpa-new-entity --named Event --targetPackage org.jboss.jdf.example.ticketmonster.model
+jpa-new-field --named name
+constraint-setup
+constraint-add --onProperty name --constraint NotNull
+constraint-add --onProperty name --constraint Size --min 5 --max 50 --message "Must be > 5 and < 50"
+jpa-new-field --named description
+constraint-add --onProperty description --constraint Size --min 20 --max 1000 --message "Must be > 20 and < 1000"
+jpa-new-field --named major --type boolean
+jpa-new-field --named picture
+----------------------------------------------------------------------------
 
 
 == Reviewing persistence.xml & updating import.sql
@@ -512,7 +584,17 @@ such as Tomcat, shut it down now to avoid any port conflicts.
 .Run As -> Run on Server
 image::gfx/introduction/run_as_run_on_server.png[]
 
-Now, deploy the h2console webapp. You can read how to do this in the link:http://www.jboss.org/jdf/quickstarts/jboss-as-quickstart/h2-console/[h2console quickstart].
+Now, deploy the h2console webapp. It can be found in the JBoss EAP quickstarts. You can read more on how to do this in the link:http://www.jboss.org/quickstarts/eap/h2-console/[h2console quickstart].
+
+[[h2_console_app_image]]
+.Obtain the H2 console app for deployment
+image::gfx/introduction/quickstarts_directory_layout.png[]
+
+You need to deploy the `h2console.war` application, located in the quickstarts, to the JBoss Application Server. You can deploy this application by copying the WAR file to the `$JBOSS_HOME/standalone/deployments` directory.
+
+[[deploy_h2_console_app_image]]
+.Deploy the H2 console app
+image::gfx/introduction/h2console_deployments.png[]
 
 The *Run As -> Run on Server* option will also launch the internal Eclipse browser with the appropriate URL so that you can immediately begin interacting with the application.
 
@@ -693,7 +775,7 @@ In certain versions of JBoss Developer Studio, the New HTML File Wizard may star
 off with your target location being `m2e-wtp/web-resources`, this is an 
 incorrect location and it is a bug, link:https://issues.jboss.org/browse/JBIDE-11472[JBIDE-11472].
 
-It has been corrected in JBoss Developer Studio 6.
+This issue has been corrected in JBoss Developer Studio 6.
 =================================================================================
 
 Change directory to `ticket-monster/src/main/webapp` and enter name the file `mobile.html`.
@@ -748,6 +830,10 @@ We shall now add the jQuery and jQuery Mobile JavaScript and CSS files to the HT
 .Click the JS/CSS widget
 image::gfx/introduction/js_css_widget.png[]
 
+[[js_css_versions]]
+.Select the versions of libraries to add
+image::gfx/introduction/js_css_widget_library_versions.png[]
+
 This results in the following document with the jQuery JavaScript file and the jQuery Mobile JavaScript and CSS files being added to the _head_ element.  
 
 [source,html]
@@ -756,9 +842,9 @@ This results in the following document with the jQuery JavaScript file and the j
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js" />
+    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js" />
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
     <meta charset="UTF-8">
     <title>TicketMonster</title>
 </head>
@@ -797,9 +883,9 @@ Set the page title as "TicketMonster", footer as blank, and the ID as "page1". C
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js" />
+    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js" />
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
     <meta charset="UTF-8">
     <title>TicketMonster</title>
 </head>
@@ -831,7 +917,7 @@ This opens a new dialog to configure the jQuery Mobile listview widget.
 .Add a jQuery Mobile Listview widget
 image::gfx/introduction/jquery_mobile_listview.png[]
 
-Select the inset checkbox to display the list as an inset list. Inset lists do not span the entire widget of the display. Set the ID as "listOfItems". Retain the number of items in the list as three, and also their labels, but modify the URL values to '#'. Retain the default values for the other fields, and click *Finish*. This will create a listview widget with 3 item entries in the list. The jQuery Mobile page is now structurally complete.
+Select the inset checkbox to display the list as an inset list. Inset lists do not span the entire widget of the display. Set the ID as "listOfItems". Retain the number of items in the list as three, modify the label values to `One`, `Two` and `Three` respectively, and finally, set the URL values to '#'. Retain the default values for the other fields, and click *Finish*. This will create a listview widget with 3 item entries in the list. The jQuery Mobile page is now structurally complete.
 
 [source,html]
 ----------------------------------------------------------------------------------------------------
@@ -839,11 +925,11 @@ Select the inset checkbox to display the list as an inset list. Inset lists do n
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
-	<meta charset="UTF-8">
-	<title>TicketMonster</title>
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js" />
+    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js" />
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+    <meta charset="UTF-8">
+    <title>TicketMonster</title>
 </head>
 <body>
 	<div data-role="page" id="page1">
@@ -852,9 +938,9 @@ Select the inset checkbox to display the list as an inset list. Inset lists do n
 		</div>
 		<div data-role="content">
 			<ul data-role="listview" id="listOfItems" data-inset="true">
-				<li><a href="#">Item 1</a></li>
-				<li><a href="#">Item 2</a></li>
-				<li><a href="#">Item 3</a></li>
+				<li><a href="#">One</a></li>
+				<li><a href="#">Two</a></li>
+				<li><a href="#">Three</a></li>
 			</ul>
 		</div>
 		<div data-role="footer">

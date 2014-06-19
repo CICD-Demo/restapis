@@ -23,7 +23,7 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
         $scope.performancesSelectionList = $.map(items, function(item) {
             return ( {
                 value : item.id,
-                text : item.displayTitle
+                text : item.date
             });
         });
     });
@@ -57,7 +57,7 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
         $scope.ticketPricesSelectionList = $.map(items, function(item) {
             return ( {
                 value : item.id,
-                text : item.displayTitle
+                text : item.price
             });
         });
     });

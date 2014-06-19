@@ -9,7 +9,6 @@ public class NestedPerformanceDTO implements Serializable {
 
 	private Long id;
 	private Date date;
-	private String displayTitle;
 
 	public NestedPerformanceDTO() {
 	}
@@ -18,7 +17,6 @@ public class NestedPerformanceDTO implements Serializable {
 		if (entity != null) {
 			this.id = entity.getId();
 			this.date = entity.getDate();
-			this.displayTitle = entity.toString();
 		}
 	}
 
@@ -58,8 +56,4 @@ public class NestedPerformanceDTO implements Serializable {
 	public void setDate(final Date date) {
 		this.date = date;
 	}
-	
-    public String getDisplayTitle() {
-       return this.displayTitle;
-    }
 }

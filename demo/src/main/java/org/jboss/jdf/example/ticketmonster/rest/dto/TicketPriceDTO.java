@@ -15,7 +15,6 @@ public class TicketPriceDTO implements Serializable {
 	private NestedSectionDTO section;
 	private NestedTicketCategoryDTO ticketCategory;
 	private float price;
-	private String displayTitle;
 
 	public TicketPriceDTO() {
 	}
@@ -28,7 +27,6 @@ public class TicketPriceDTO implements Serializable {
 			this.ticketCategory = new NestedTicketCategoryDTO(
 					entity.getTicketCategory());
 			this.price = entity.getPrice();
-			this.displayTitle = entity.toString();
 		}
 	}
 
@@ -89,9 +87,4 @@ public class TicketPriceDTO implements Serializable {
 
 	public void setPrice(final float price) {
 		this.price = price;
-	}
-
-    public String getDisplayTitle() {
-       return this.displayTitle;
-    }
-}
+	} }
