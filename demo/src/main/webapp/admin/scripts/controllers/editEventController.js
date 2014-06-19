@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditEventController', function($scop
                     };
                     var labelObject = {
                         value : item.id,
-                        text : item.mediaType
+                        text : item.url
                     };
                     if($scope.event.mediaItem && item.id == $scope.event.mediaItem.id) {
                         $scope.mediaItemSelection = labelObject;

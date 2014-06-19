@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewVenueController', function ($scop
         $scope.mediaItemSelectionList = $.map(items, function(item) {
             return ( {
                 value : item.id,
-                text : item.mediaType
+                text : item.url
             });
         });
     });

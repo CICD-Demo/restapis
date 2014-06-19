@@ -12,6 +12,7 @@ public class PerformanceDTO implements Serializable {
 	private Long id;
 	private NestedShowDTO show;
 	private Date date;
+	private String displayTitle;
 
 	public PerformanceDTO() {
 	}
@@ -21,6 +22,7 @@ public class PerformanceDTO implements Serializable {
 			this.id = entity.getId();
 			this.show = new NestedShowDTO(entity.getShow());
 			this.date = entity.getDate();
+			this.displayTitle = entity.toString();
 		}
 	}
 
@@ -58,4 +60,9 @@ public class PerformanceDTO implements Serializable {
 
 	public void setDate(final Date date) {
 		this.date = date;
-	} }
+	}
+
+    public String getDisplayTitle() {
+       return this.displayTitle;
+    }
+}

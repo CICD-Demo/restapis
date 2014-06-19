@@ -20,6 +20,8 @@
         <select id="mediaItem" name="mediaItem" class="form-control" ng-model="mediaItemSelection" ng-options="m.text for m in mediaItemSelectionList"  >
             <option value="">Choose a Media Item</option>
         </select>
+        <br/>
+        <img class="img-thumbnail col-md4" ng-hide="!mediaItemSelection.text" ng-src="{{mediaItemSelection.text}}" />
         </div>
     </div>
 

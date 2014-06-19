@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditTicketPriceController', function
                     };
                     var labelObject = {
                         value : item.id,
-                        text : item.id
+                        text : item.displayTitle
                     };
                     if($scope.ticketPrice.show && item.id == $scope.ticketPrice.show.id) {
                         $scope.showSelection = labelObject;
@@ -101,6 +101,27 @@ angular.module('ticketmonster').controller('EditTicketPriceController', function
         if (typeof selection != 'undefined') {
             $scope.ticketPrice.show = {};
             $scope.ticketPrice.show.id = selection.value;
+            if($scope.showList) {
+                var selectedShow = $.map($scope.showList, function(show) {
+                    if(show.id === $scope.ticketPrice.show.id) {
+                        return show;
+                    }
+                });
+                if(selectedShow.length > 0) {
+                    selectedShow = selectedShow[0];
+                }
+            }
+            if($scope.sectionList && selectedShow) {
+                var venueSectionList = $.map($scope.sectionList, function(section) {
+                    if(selectedShow.venue.id === section.venue.id) {
+                        return ( {
+                            value : section.id,
+                            text : section.name
+                        });
+                    }
+                });
+                $scope.sectionSelectionList = venueSectionList;
+            }
         }
     });
     $scope.$watch("sectionSelection", function(selection) {

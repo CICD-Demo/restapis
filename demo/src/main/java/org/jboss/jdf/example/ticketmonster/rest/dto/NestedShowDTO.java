@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 public class NestedShowDTO implements Serializable {
 
 	private Long id;
+	private String displayTitle;
 
 	public NestedShowDTO() {
 	}
@@ -14,6 +15,7 @@ public class NestedShowDTO implements Serializable {
 	public NestedShowDTO(final Show entity) {
 		if (entity != null) {
 			this.id = entity.getId();
+			this.displayTitle = entity.toString();
 		}
 	}
 
@@ -43,4 +45,8 @@ public class NestedShowDTO implements Serializable {
 	public void setId(final Long id) {
 		this.id = id;
 	}
+	
+    public String getDisplayTitle() {
+       return this.displayTitle;
+    }
 }

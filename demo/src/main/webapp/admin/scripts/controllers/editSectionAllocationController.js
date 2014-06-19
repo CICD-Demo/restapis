@@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditSectionAllocationController', fu
                     };
                     var labelObject = {
                         value : item.id,
-                        text : item.date
+                        text : item.displayTitle
                     };
                     if($scope.sectionAllocation.performance && item.id == $scope.sectionAllocation.performance.id) {
                         $scope.performanceSelection = labelObject;

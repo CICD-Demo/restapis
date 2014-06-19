@@ -37,7 +37,7 @@ angular.module('ticketmonster').controller('EditBookingController', function($sc
                     };
                     var labelObject = {
                         value : item.id,
-                        text : item.date
+                        text : item.displayTitle
                     };
                     if($scope.booking.performance && item.id == $scope.booking.performance.id) {
                         $scope.performanceSelection = labelObject;

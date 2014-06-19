@@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewSectionAllocationController', fun
         $scope.performanceSelectionList = $.map(items, function(item) {
             return ( {
                 value : item.id,
-                text : item.date
+                text : item.displayTitle
             });
         });
     });

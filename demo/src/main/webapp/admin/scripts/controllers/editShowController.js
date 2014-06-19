@@ -33,7 +33,7 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
                     };
                     var labelObject = {
                         value : item.id,
-                        text : item.date
+                        text : item.displayTitle
                     };
                     if($scope.show.performances){
                         $.each($scope.show.performances, function(idx, element) {
@@ -71,7 +71,7 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
                     };
                     var labelObject = {
                         value : item.id,
-                        text : item.price
+                        text : item.displayTitle
                     };
                     if($scope.show.ticketPrices){
                         $.each($scope.show.ticketPrices, function(idx, element) {
