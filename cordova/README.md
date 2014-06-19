@@ -7,7 +7,7 @@ This is the Hybrid Mobile project for TicketMonster.
 Prerequisites
 -------------
 
-* JBoss Developer Studio (JBDS) 7.1
+* JBoss Developer Studio (JBDS) 7.1 and JBDS 8.0.0 Beta 2
 * The JBoss Hybrid Mobile Tools + CordovaSim feature is installed in JBDS.
 
 For running on an Android emulator:
@@ -21,7 +21,7 @@ For running on an iOS simulator:
 * XCode 4.5 or higher, with iOS 6 SDK or higher.
 * An iOS 5.x or higher simulator for the iPhone or iPad.
 
-If you need more detailed instruction to setup a iOS Development Environment with Apache Cordova, you can take a look at [Setting up your development enivronment to use Apache Cordova](http://aerogear.org/docs/guides/CordovaSetup/)
+If you need more detailed instruction to setup a iOS Development Environment with Apache Cordova, you can take a look at [Setting up your development environment to use Apache Cordova](http://aerogear.org/docs/guides/CordovaSetup/)
 
 Import the ticket-monster Code
 ------------------------------

@@ -1,8 +1,8 @@
 # TicketMonster - a JBoss example
 
-TicketMonster is an online ticketing demo application that gets you started with JBoss technologies, in particular the [JBoss Developer Framework](http://jboss.org/jdf), and helps you learn and evaluate them.
+TicketMonster is an online ticketing demo application that gets you started with JBoss technologies, and helps you learn and evaluate them.
 
-Here are a few instructions for building and running it. You can learn more about the example from the [tutorial](http://www.jboss.org/jdf/examples/get-started).
+Here are a few instructions for building and running it. You can learn more about the example from the [tutorial](http://www.jboss.org/ticket-monster).
 
 ## Updating the Performance dates
 
@@ -18,33 +18,20 @@ _NOTE: This step is optional. The administration site is already present in the 
 
 Before building and running TicketMonster, you must generate the administration site with Forge.
 
-1. Ensure that you have [JBoss Forge](http://jboss.org/forge) installed. The current version of
-   TicketMonster supports version 1.4.4.Final or higher of JBoss Forge.
+1. Ensure that you have [JBoss Forge](http://jboss.org/forge) installed. The current version of TicketMonster supports version 2.6.0.Final or higher of JBoss Forge. JBoss Developer Studio 8 is recommended, since it features JBoss Forge with all the necessary plugins for the TicketMonster app.
 
-2. Start JBoss Forge
+2. Start the JBoss Forge console in JBoss Developer Studio. This can be done from the Forge Console view. If the view is not already visible, it can be opened through the 'Window' menu: _Window_ -> _Show View_ -> _Other..._. Select the 'Forge Console' item in the dialog to open the Forge Console. Click the _Start_ button in the Forge Console tab, to start Forge. 
 
-        $ forge
-
-3. Verify that the Forge plugin is installed by running
-
-        $ forge list-plugins
-
-   and verifying that `org.jboss.forge.angularjs-scaffoldx-plugin` is in the returned list.
-
-   The version of the installed plugin must be 1.0.4.Final or higher. The version is present in the output of this command and it appears like so: `org.jboss.forge.angularjs-scaffoldx-plugin:1.4.3.Final:1.0.4.Final-0b904c70-87c2-4ed9-9ec4-4868bfc02214`. The plugin version is the second version string (`1.0.4.Final`) listed in the output; the first version string (`1.4.3.Final`) is the Forge API version used by the plugin.
-
-4.  If the outcome of the previous step was that the AngularJS plugin was not installed, do that now
-
-        $ forge install-plugin angularjs
-	
-5. From the JBoss Forge prompt, execute the script for generating the administration site
+3. From the JBoss Forge prompt, browse to the 'demo' directory of the TicketMonster sources and execute the script for generating the administration site
     
+	    $ cd ticket-monster/demo
 	    $ run admin_layer.fsh
++
+    The git patches need to be applied manually. You can do so in JBoss Developer Studio, by opening the context-menu on the project (Right-click on the project) and then apply a git patch via _Team_ -> _Apply Patch..._. To apply the manual changes, apply the patch located in file _admin_layer_functional.patch_. Repeat the same for the file _admin_layer_graphics.patch_ if you want to apply the style changes for the generated administration site.
 
-Steps 3 and 4 need to be performed only once - after the plugin has been installed, it will be
-available on any subsequent runs of Forge.
+4. Deployment to JBoss EAP 6.2 is optional. The project can be built and deployed to a running instance of JBoss EAP through the following command in JBoss Forge:
 
-On step 5, answer _yes_ to all the the questions concerning patches. Deployment to JBoss EAP 6.2 is optional.
+	    $ build clean package jboss-as:deploy
 
 ## Building TicketMonster
 
