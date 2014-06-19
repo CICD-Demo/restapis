@@ -33,7 +33,7 @@
             to work with JBoss EAP 6.2. It requires you have access to the JBoss EAP 6.2
             maven repository. -->
         <jboss.bom.version>6.2.3.GA</jboss.bom.version>
-        <jboss.wfk.bom.version>2.6.0-build-1</jboss.wfk.bom.version>
+        <jboss.wfk.bom.version>2.6.0-redhat-1</jboss.wfk.bom.version>
         <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
     </properties>
 
