@@ -503,11 +503,19 @@ public class BotService {
     public void deleteAll() {
         synchronized (bot) {
             stop();
-            for (Booking booking : bookingService.getAll(MultivaluedHashMap
-                .<String, String> empty())) {
-                bookingService.deleteBooking(booking.getId());
-                event.fire("Deleted booking " + booking.getId() + " for "
-                    + booking.getContactEmail() + "\n");
+            // Delete 10 bookings at a time
+            while(true) {
+                MultivaluedHashMap<String,String> params = new MultivaluedHashMap<String, String>();
+                params.add("maxResults", Integer.toString(10));
+                List<Booking> bookings = bookingService.getAll(params);
+                for (Booking booking : bookings) {
+                    bookingService.deleteBooking(booking.getId());
+                    event.fire("Deleted booking " + booking.getId() + " for "
+                            + booking.getContactEmail() + "\n");
+                }
+                if(bookings.size() < 1) {
+                    break;
+                }
             }
         }
     }
@@ -527,7 +535,7 @@ public class BotService {
 }
 ---------------------------------------------------------------------------------------------------------
 
-The `start` and `stop` methods of this facade wrap calls to the `start` and `stop` methods of the Bot. These methods are synchronous by nature. The `deleteAll` method is an asynchronous business method in this EJB. It first stops the Bot, and then proceeds to delete all Bookings. Bookings can take quite a while to be deleted depending on the number of existing ones, and hence declaring this method as `@Asynchronous` would be appropriate in this situation.
+The `start` and `stop` methods of this facade wrap calls to the `start` and `stop` methods of the Bot. These methods are synchronous by nature. The `deleteAll` method is an asynchronous business method in this EJB. It first stops the Bot, and then proceeds to delete all Bookings. Bookings can take quite a while to be deleted depending on the number of existing ones, and hence declaring this method as `@Asynchronous` would be appropriate in this situation. Moreover, retrieving all Bookings in one execution run for deletion can lead to Out-of-Memory errors with a constrained heap space. The `deleteAll` method works around this by chunking the bookings to be deleted to a batch size of 10. You shall see how Java Batch (JSR-352) will aid you here, in a future version of TicketMonster that runs on a Java EE 7 compliant app server. For now, we will manage the batching manually.
 
 This facade also exposes the log messages produced by the Bot via the `fetchLog()` method. The contents of the log are backed by a `CircularBuffer`. The facade observes all `@BotMessage` events and adds the contents of each event to the buffer.
 

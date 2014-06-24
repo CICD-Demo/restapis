@@ -73,11 +73,19 @@ public class BotService {
     public void deleteAll() {
         synchronized (bot) {
             stop();
-            for (Booking booking : bookingService.getAll(MultivaluedHashMap
-                .<String, String> empty())) {
-                bookingService.deleteBooking(booking.getId());
-                event.fire("Deleted booking " + booking.getId() + " for "
-                    + booking.getContactEmail() + "\n");
+            // Delete 10 bookings at a time
+            while(true) {
+                MultivaluedHashMap<String,String> params = new MultivaluedHashMap<String, String>();
+                params.add("maxResults", Integer.toString(10));
+                List<Booking> bookings = bookingService.getAll(params);
+                for (Booking booking : bookings) {
+                    bookingService.deleteBooking(booking.getId());
+                    event.fire("Deleted booking " + booking.getId() + " for "
+                            + booking.getContactEmail() + "\n");
+                }
+                if(bookings.size() < 1) {
+                    break;
+                }
             }
         }
     }
