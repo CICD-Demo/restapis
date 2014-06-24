@@ -175,7 +175,7 @@ Since we do not want to load this file in the existing `index.html` file, we sha
 <head>
     <title>Ticket Monster</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="resources/js/libs/modernizr-2.6.2.min.js"></script>
@@ -194,7 +194,8 @@ Additionally, we will add our REST service URL to the domain whitelist in the co
 [source,xml]
 -------------------------------------------------------------------------------------------------------
 <?xml version="1.0" encoding="utf-8"?>
-<cordova>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0"
+    id="org.jboss.examples.ticketmonster.cordova" version="2.0.0">
     
     ...
 
@@ -209,7 +210,7 @@ Additionally, we will add our REST service URL to the domain whitelist in the co
     
     ... 
 
-</cordova>
+</widget>
 -------------------------------------------------------------------------------------------------------
 
 Next, we need to load the library in the application. We will create a separate module, that will load the rest of the mobile application, as well as the Apache Cordova JavaScript library for Android. We also need to configure a base URL for the application. For this example, we will use the URL of the cloud deployment of TicketMonster.
