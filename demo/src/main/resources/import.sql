@@ -171,7 +171,7 @@ insert into Event ( name, description, mediaitem_id, category_id) values ( 'Gian
 insert into Event ( name, description, mediaitem_id, category_id) values ( 'Punch and Judy (with a Twist)', 'You may not be at a British seaside but you heard right! Bring your family to witness a new twist on this traditional classic dating back to the 1600s ... only this time, Mr. Punch (and his stick) have met "The 1%." Cheer (or jeer) from the crowd when you think Punch should use his stick on Mr. 1%. Fans agree, "It''s the best way to release your outrage at the wealthiest 1% without  being arrested!".', 22, 2);
 
 -- Show 1
-insert into Show ( event_id, venue_id) values ( 1, 1);
+insert into Appearance ( event_id, venue_id) values ( 1, 1);
 
 -- Performance 1
 insert into Performance ( show_id, date) values ( 1, '2014-09-26 19:00:00');
@@ -190,7 +190,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (2, 4, null, 0, 1);
 
 -- Show 2
-insert into Show ( event_id, venue_id) values ( 1, 2);
+insert into Appearance ( event_id, venue_id) values ( 1, 2);
 
 -- Performance 3
 insert into Performance ( show_id, date) values ( 2, '2014-09-28 19:30:00');
@@ -213,7 +213,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (4, 11, null, 0, 1);
 
 -- Show 3
-insert into Show ( event_id, venue_id) values ( 2, 1);
+insert into Appearance ( event_id, venue_id) values ( 2, 1);
 
 -- Performance 5
 insert into Performance ( show_id, date) values ( 3, '2014-09-30 17:00:00');
@@ -230,7 +230,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (6, 4, null, 0, 1);
 
 -- Show 4
-insert into Show ( event_id, venue_id) values ( 2, 2);
+insert into Appearance ( event_id, venue_id) values ( 2, 2);
 
 -- Performance 7
 insert into Performance ( show_id, date) values ( 4, '2014-10-02 17:00:00');
@@ -253,7 +253,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (8, 11, null, 0, 1);
 
 --show 5
-insert into Show ( event_id, venue_id) values ( 3, 3);
+insert into Appearance ( event_id, venue_id) values ( 3, 3);
 
 -- Performance 9
 insert into Performance ( show_id, date) values ( 5, '2014-11-06 21:00:00');
@@ -263,7 +263,7 @@ insert into SectionAllocation(performance_id, section_id, allocated, occupiedcou
 insert into SectionAllocation(performance_id, section_id, allocated, occupiedcount, version) values (9, 15, null, 0, 1);
 
 -- Show 6
-insert into Show ( event_id, venue_id) values ( 1, 5);
+insert into Appearance ( event_id, venue_id) values ( 1, 5);
 
 -- Performance 10
 insert into Performance ( show_id, date) values ( 6, '2014-09-26 19:00:00');
