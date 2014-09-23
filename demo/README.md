@@ -56,6 +56,12 @@ If you want the test runner to _start_ an application server instance, use the `
 If you intend to deploy into [OpenShift](http://openshift.com), you can use the `postgresql-openshift` profile
 
     mvn clean package -Ppostgresql-openshift
+
+### Building TicketMonster with MySQL (for OpenShift)
+
+If you intend to deploy into [OpenShift](http://openshift.com), you can use the `mysql-openshift` profile
+
+    mvn clean package -Pmysql-openshift
 	
 ## Running TicketMonster
 
@@ -87,7 +93,7 @@ You can run TicketMonster into a local JBoss EAP 6.2 instance or on OpenShift.
 
 #### Create an OpenShift project
 
-1. Make sure that you have an OpenShift domain and you have created an application using the `jbosseap-6` cartridge (for more details, get started [here](https://openshift.redhat.com/app/getting_started)). If you want to use PostgreSQL, add the `postgresql-8.4` cartridge too.
+1. Make sure that you have an OpenShift domain and you have created an application using the `jbosseap-6` cartridge (for more details, get started [here](https://openshift.redhat.com/app/getting_started)). If you want to use PostgreSQL, add the `postgresql-9.2` cartridge too. Or, if you want to use MySQL, add the `mysql-5.5` cartridge.
 2. Ensure that the Git repository of the project is checked out.
 
 #### Building and deploying
@@ -99,6 +105,9 @@ You can run TicketMonster into a local JBoss EAP 6.2 instance or on OpenShift.
     * the `postgresql-openshift` profile (with PostgreSQL support) if the PostgreSQL cartrdige is enabled in OpenShift.
             
             mvn clean package -Ppostgresql-openshift
+    * the `mysql-openshift` profile (with MySQL support) if the MySQL cartrdige is enabled in OpenShift.
+            
+            mvn clean package -Pmysql-openshift
 			
 2. Copy the `target/ticket-monster.war`file in the OpenShift Git repository(located at `<root-of-openshift-application-git-repository>`).
 

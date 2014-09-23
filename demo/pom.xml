@@ -305,12 +305,44 @@
         </profile>
 
         <profile>
-            <!-- An optional profile that -->
+            <!-- An optional profile that produces a WAR to be used 
+                with a PostgreSQL cartridge on OpenShift -->
             <id>postgresql-openshift</id>
             <build>
                 <resources>
                     <resource>
                         <directory>src/main/resources-postgresql-openshift</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                        <excludes>
+                            <exclude>META-INF/*</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.4.3</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- An optional profile that produces a WAR to be used 
+                with a MySQL cartridge on OpenShift -->
+            <id>mysql-openshift</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources-mysql-openshift</directory>
                     </resource>
                     <resource>
                         <directory>src/main/resources</directory>
@@ -341,6 +373,36 @@
                 <resources>
                     <resource>
                         <directory>src/main/resources-postgresql</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                        <excludes>
+                            <exclude>META-INF/*</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.4.3</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- An optional profile that enables a server managed mysql data source-->
+            <id>mysql</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources-mysql</directory>
                     </resource>
                     <resource>
                         <directory>src/main/resources</directory>

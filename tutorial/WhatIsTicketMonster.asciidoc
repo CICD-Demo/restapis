@@ -81,6 +81,8 @@ TicketMonster can be built from Maven, by runnning the following Maven command:
 ----
 mvn clean package
 ----
+
+This prepares a WAR file that you can deploy right away in a JBoss Enterprise Application Platform instance. It would use the in-built H2 database.
 		
 If you want to run the Arquillian tests as part of the build, you can enable one of the two available Arquillian profiles.
 
@@ -96,12 +98,17 @@ If you want the test runner to _start_ an application server instance, use the `
 mvn clean package -Parq-jbossas-managed
 ----
 
-If you intend to deploy into link:http://openshift.com[OpenShift], you can use the `postgresql-openshift` profile:
+If you intend to deploy into link:http://openshift.com[OpenShift] with the PostgreSQL cartridge, you can use the `postgresql-openshift` profile:
 
 ----
 mvn clean package -Ppostgresql-openshift
 ----
 
+If you intend to deploy into link:http://openshift.com[OpenShift] with the MySQL cartridge, you can use the `mysql-openshift` profile:
+
+----
+mvn clean package -Pmysql-openshift
+----
 	
 === Running TicketMonster
 
@@ -158,6 +165,12 @@ mvn clean package
 ----            
 mvn clean package -Ppostgresql-openshift
 ----
+    
+	* the `mysql-openshift` profile (with MySQL support) if the MySQL cartrdige is enabled in OpenShift.
++
+----            
+mvn clean package -Pmysql-openshift
+----
 			
 2. Copy the `target/ticket-monster.war` file in the OpenShift Git repository (located at `<root-of-openshift-application-git-repository>`).
 +
@@ -174,7 +187,7 @@ git rm -r src
 git rm pom.xml
 ----
 
-5.  Add the copied file to the repository, commit and push to Openshift
+5. Add the copied file to the repository, commit and push to Openshift
 +
 ----
 git add deployments/ROOT.war
