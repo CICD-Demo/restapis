@@ -12,7 +12,7 @@ image::gfx/octocat_social.png[]
 
 link:http://github.com/jboss-jdf/ticket-monster[Fork us on GitHub!]
 
-The accompanying tutorials  walk you through the various tools & technologies needed to build TicketMonster on your own. Alternatively you can download TicketMonster as a completed application and import it into your favorite IDE.
+The accompanying tutorials walk you through the various tools & technologies needed to build TicketMonster on your own. Alternatively you can download TicketMonster as a completed application and import it into your favorite IDE.
 
 Before we dive into the code, let's discuss the requirements for the application.
 

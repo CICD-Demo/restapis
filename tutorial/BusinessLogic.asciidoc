@@ -51,7 +51,7 @@ discover how CDI, EJB and JAX-RS make it easy to define and wire together our se
 === Adding Jackson Core
 
 
-The first step for setting up our service architecture is to add Jackson Core as a dependency in the project. Adding Jackson Core as a provided dependency will enable you to use the Jackson annotations in the project. This is necessary to obtain a certain degree of control over the content of the JSON responses.
+The first step for setting up our service architecture is to add Jackson Core as a dependency in the project. Adding Jackson Core as a provided dependency will enable you to use the Jackson annotations in the project. This is necessary to obtain a certain degree of control over the content of the JSON responses. We can bring in the same version of Jackson Core as the one used in RESTEasy, by adding `org.jboss.resteasy:resteasy-jackson-provider` and `org.jboss.resteasy:resteasy-jaxrs` as provided-scope dependencies. The versions of these dependencies would depend on the version of the JBoss BOMs we use in our project. Using the same version of the JBoss BOM as the one we will deploy to production, will ensure that we use the right dependencies during compilation and build.
 
 .pom.xml
 [source,xml]
@@ -59,12 +59,19 @@ The first step for setting up our service architecture is to add Jackson Core as
 <project ...>  
     ...  
     <dependencies>
-        <!-- This is the dependency for Jackson Core, which we use for 
+
+        ...
+
+        <!-- RESTEasy dependencies that bring in Jackson Core and RESTEasy APIs+SPIs, which we use for
             fine tuning the content of the JSON responses -->
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>1.8.1</version>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -91,7 +98,7 @@ and deserialization of one of the fields involved in the cycle.
 
 The next step is to verify if we're using the right version of the JBoss BOMs in the project.
 Using the right versions of the BOMs ensures that you work against a known set of tested dependencies.
-Verify that the property `jboss.bom.version` contains the value `1.0.7.CR8` or higher:
+Verify that the property `jboss.bom.version` contains the value `1.0.4.Final-redhat-4` or higher:
 
 .pom.xml
 [source,xml]
@@ -100,7 +107,7 @@ Verify that the property `jboss.bom.version` contains the value `1.0.7.CR8` or h
     ...  
     <properties>
         ...
-        <jboss.bom.version>1.0.7.CR8</jboss.bom.version>
+        <jboss.bom.version>1.0.4.Final-redhat-4</jboss.bom.version>
         ...
     </properties>
     ...
@@ -144,7 +151,7 @@ and their lifecycle and wiring becomes the responsibility of the Java EE server.
 
 In this way, we can reduce coupling between components, which is a requirement o a 
 well-designed architecture. Now, we can focus on implementing the responsibilities of
-the components and  describing their dependencies in a declarative fashion. The 
+the components and describing their dependencies in a declarative fashion. The 
 runtime will do the rest for you: instantiating and wiring them together, as well as
 disposing of them as needed.
 =====================================================================================
@@ -838,7 +845,7 @@ public class EventService extends BaseEntityService<Event> {
 }
 ------------------------------------------------------------------------------------------
 
-The `ShowService` and `BookingService` follow the same pattern and we leave the implementation as an exercise to the reader (knowing that its contents can always be copied over to the appropriate folder).
+The `ShowService` follows the same pattern and we leave the implementation as an exercise to the reader (knowing that its contents can always be copied over to the appropriate folder).
 
 Of course, we also want to change data with our services - we want to create and delete bookings as well!
 
@@ -1019,6 +1026,8 @@ public class BookingService extends BaseEntityService<Booking> {
 }
 ------------------------------------------------------------------------------------------
 
+You should also copy over the `BookingRequest`, `TicketRequest` and `SectionComparator` classes referenced in these methods, from the project sources.
+
 We won't get into the details of the inner workings of the method - it implements a fairly complex algorithm - but we'd like to draw attention to a few particular items.
 
 We use the `@POST` annotation to indicate that this method is executed on inbound HTTP POST requests. When implementing a set of RESTful services, it is important that the semantic of HTTP methods are observed in the mappings. Creating new resources (e.g. bookings) is typically associated with HTTP POST invocations. The `@Consumes` annotation indicates that the type of the request content is JSON and identifies the correct unmarshalling strategy, as well as content negotiation.
@@ -1109,12 +1118,9 @@ The other services, including the `MediaService` that handles media items follow
 
 We've now finished implementing the services and there is a significant amount of functionality in the application. Before taking any step forward, you need to make sure the services work correctly: we need to test them.
 
-Testing enterprise services be a complex task as the implementation is based on services provided by a container: dependency injection, access to infrastructure services such as persistence, transactions etc.. Unit testing frameworks, whilst offering a valuable infrastructure for running tests, do not provide these capabilities.
+Testing enterprise services be a complex task as the implementation is based on services provided by a container: dependency injection, access to infrastructure services such as persistence, transactions etc. Unit testing frameworks, whilst offering a valuable infrastructure for running tests, do not provide these capabilities.
 
 One of the traditional approaches has been the use of mocking frameworks to simulate 'what will happen' in the runtime environment. While certainly providing a solution mocking brings its own set of problems (e.g.  the additional effort required to provide a proper simulation or the risk of introducing errors in the test suite by incorrectly implemented mocks.
-
-Fortunately, Arquillian provides the means to testing your application code within the container, with access to all the services and container features. In this section we will show you how to create a few Arquillian tests for your business services.
-
 
 [TIP]
 .What to test?
@@ -1126,6 +1132,16 @@ functionality (setters/getters/toString methods) is a big concern compared to  t
 actual business code, so you probably want to focus your efforts on the business 
 code. Testing should include individual parts (unit testing), as well as 
 aggregates (integration testing).
+=====================================================================================
+
+Fortunately, Arquillian provides the means to testing your application code within the container, with access to all the services and container features. In this section we will show you how to create a few Arquillian tests for your business services.
+
+[TIP]
+.New to Arquillian?
+=====================================================================================
+The Arquillian project site contains several tutorials to help you get started.
+If you're new to Arquillian and Shrinkwrap, we recommend going through the 
+http://arquillian.org/guides/[beginner-level Arquillian guides], at the very least.
 =====================================================================================
 
 
@@ -1154,7 +1170,17 @@ public class TicketMonsterDeployment {
 }
 ------------------------------------------------------------------------------------------
 
-Arquillian uses Shrinkwrap to define the contents of the deployment.
+Remember to copy over the `test-persistence.xml` file into the `src/test/resources` directory of your project.
+
+Arquillian uses Shrinkwrap to define the contents of the deployment. At runtime, when the test executes, Arquillian employs Shrinkwrap to create a WAR file that will be deployed to a running instance of JBoss Enterprise Application Platform. The WAR file would be composed of:
+
+* all classes from the `org.jboss.jdf.example.ticketmonster.util` package,
+* the test `persistence.xml` file that defines a JPA persistence unit against a test datasource,
+* the `import.sql` file,
+* an empty `beans.xml` file to activate CDI
+* and, a test data source definition.
+
+We use a separate data source for our integration tests, and we recommend the same for real applications. This would allow you to run your tests against a pristine test environment, without having to clean your development, or worse, your production environment!
 
 === Writing RESTful service tests
 
@@ -1261,13 +1287,13 @@ public class BookingServiceTest {
     @Test
     @InSequence(1)
     public void testCreateBookings() {
-        BookingRequest br = createBookingRequest(1l, 0, 0, 1, 3);
+        BookingRequest br = createBookingRequest(1l, 0, new int[]{4, 1}, new int[]{1,1}, new int[]{3,1});
         bookingService.createBooking(br);
 
-        BookingRequest br2 = createBookingRequest(2l, 1, 2, 4, 9);
+        BookingRequest br2 = createBookingRequest(2l, 1, new int[]{6,1}, new int[]{8,2}, new int[]{10,2});
         bookingService.createBooking(br2);
 
-        BookingRequest br3 = createBookingRequest(3l, 0, 0, 1);
+        BookingRequest br3 = createBookingRequest(3l, 0, new int[]{4,1}, new int[]{2,1});
         bookingService.createBooking(br3);
     }
     
@@ -1371,7 +1397,7 @@ public class BookingServiceTest {
         fail("Expected NoResultException did not occur.");
     }
 
-    private BookingRequest createBookingRequest(Long showId, int performanceNo, int... ticketPriceNos) {
+    private BookingRequest createBookingRequest(Long showId, int performanceNo, int[]... sectionAndCategories) {
         Show show = showService.getSingleInstance(showId);
 
         Performance performance = new ArrayList<Performance>(show.getPerformances()).get(performanceNo);
@@ -1380,9 +1406,16 @@ public class BookingServiceTest {
 
         List<TicketPrice> possibleTicketPrices = new ArrayList<TicketPrice>(show.getTicketPrices());
         int i = 1;
-        for (int index : ticketPriceNos) {
-            bookingRequest.addTicketRequest(new TicketRequest(possibleTicketPrices.get(index), i));
-            i++;
+        for (int[] sectionAndCategory : sectionAndCategories) {
+            for (TicketPrice ticketPrice : possibleTicketPrices) {
+                int sectionId = sectionAndCategory[0];
+                int categoryId = sectionAndCategory[1];
+                if(ticketPrice.getSection().getId() == sectionId && ticketPrice.getTicketCategory().getId() == categoryId) {
+                    bookingRequest.addTicketRequest(new TicketRequest(ticketPrice, i));
+                    i++;
+                    break;
+                }
+            }
         }
 
         return bookingRequest;
