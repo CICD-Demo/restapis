@@ -73,7 +73,7 @@ publish_docs()
    ./generate-guides.sh
    cd $DIR
    git checkout $BRANCH
-   RPATH="jdf/$MAJOR_VERSION.$MINOR_VERSION"
+   RPATH="jbossdeveloper/$MAJOR_VERSION.$MINOR_VERSION"
    RFILE="ticket-monster-$VERSION"
    SPATH="$DIR/../tutorial/target/guides"
    LPATH="$DIR/target/upload"
