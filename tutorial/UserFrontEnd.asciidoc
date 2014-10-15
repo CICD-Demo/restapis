@@ -98,7 +98,7 @@ Now, we create the main page of the application (which is the URL loaded by the 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
 
-    <script type="text/javascript" src="resources/js/libs/modernizr-2.0.6.js"></script>
+    <script type="text/javascript" src="resources/js/libs/modernizr-2.6.2.min.js"></script>
     <script type="text/javascript" src="resources/js/libs/require.js"
             data-main="resources/js/configurations/loader"></script>
 </head>
@@ -149,7 +149,7 @@ This script detects the current client (mobile or desktop) based on its capabili
 requirejs.config({
     baseUrl: "resources/js",
     paths: {
-        jquery:'libs/jquery-1.9.1',
+        jquery:'libs/jquery-2.0.3',
         underscore:'libs/underscore',
         text:'libs/text',
         bootstrap: 'libs/bootstrap',
@@ -175,9 +175,9 @@ define("initializer", ["jquery"],
     // Configure jQuery to append timestamps to requests, to bypass browser caches
     // Important for MSIE
     $.ajaxSetup({cache:false});
-    $('head').append('<link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/bootstrap.css" type="text/css" media="all"/>');
-    $('head').append('<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="all">');
+    $('head').append('<link rel="stylesheet" href="resources/css/bootstrap-theme.css" type="text/css" media="all"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/screen.css" type="text/css" media="all"/>');
     $('head').append('<link href="http://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet" type="text/css">');
 });
 
@@ -214,6 +214,7 @@ define("router", [
     'underscore',
     'configuration',
     'utilities',
+    'app/views/desktop/home',
     'text!../templates/desktop/main.html'
 ],function ($,
             _,
@@ -249,46 +250,6 @@ define("router", [
 -------------------------------------------------------------------------------------------------------
 
 Remember, this is a single page application. You can either navigate using urls such as `http://localhost:8080/ticket-monster/index.html#events` or using relative urls (from within the application, this being exactly what the main menu does). The fragment after the hash sign represents the url within the single page, on which the router will act, according to the mappings set up in the `routes` property.
-
-The main module needs to load it. Because the router depends on all the other components (models, collections and views) of the application, directly or indirectly, it is the only component that is explicitly loaded in the `desktop` definition, which we change as follows:
-
-.src/main/webapp/resources/js/configurations/desktop.js
-[source,javascript]
--------------------------------------------------------------------------------------------------------
-requirejs.config({
-    baseUrl: "resources/js",
-    paths: {
-        jquery:'libs/jquery-1.9.1',
-        underscore:'libs/underscore',
-        text:'libs/text',
-        order:'libs/order',
-        bootstrap: 'libs/bootstrap',
-        backbone: 'libs/backbone',
-        utilities: 'app/utilities',
-        router:'app/router/desktop/router'
-    },
-    // We shim Backbone.js and Underscore.js since they don't declare AMD modules
-    shim: {
-        'backbone': {
-            deps: ['jquery', 'underscore'],
-            exports: 'Backbone'
-        },
-        
-        'underscore': {
-            exports: '_'
-        }
-    }
-});
-  ...
-
-require([
-    'order!initializer',
-    'order!underscore',
-    'order!backbone',
-    'order!router'
-], function(){
-});
--------------------------------------------------------------------------------------------------------
 
 During the router set up, we load the page template for the entire application. TicketMonster uses a templating library in order to separate application logic from it's actual graphical content. The actual HTML is described in template files, which are applied by the application, when necessary, on a DOM element - effectively populating it's content. So the general content of the page, as described in the `body` element is described in a template file too. Let us define it.
 
@@ -358,7 +319,15 @@ Functionally, this is a very basic component - it only renders the splash page o
 introduce a new concept that will be heavily used throughout the application views. One main role of a view is to 
 describe the logic for manipulating the page content. It will do so by defining a function named `render` which
 will be invoked by the application. In this very simple case, all that the view does is to create the content of the splash page. You can proceed by copying the content of `src/main/webapp/resources/templates/desktop/home.html` to your
-project.
+project. You can also copy the files referenced in `home.html`, from the project sources:
+
+* `src/main/webapp/resources/img/glyphicons_163_iphone.png`
+* `src/main/webapp/resources/img/glyphicons_232_cloud.png`
+* `src/main/webapp/resources/img/glyphicons_351_book_open.png`
+* `src/main/webapp/resources/img/jdf_mark_50px.png`
+* `src/main/webapp/resources/img/GitHub_Logo.png`
+* `src/main/webapp/resources/img/splash-ticketmonster.png`
+* `src/main/webapp/resources/img/glyphicons_019_cogwheel.png`
 
 [TIP]
 
@@ -372,11 +341,28 @@ an element into a list), translating them into logical actions inside the
 application.
 ========================================================================
 
-Once we defined a view, we must tell the router to navigate to it whenever requested. We will add the following mapping to the router:
+Once we defined a view, we must tell the router to navigate to it whenever requested. We will add the following dependency and mapping to the router:
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
 [source, javascript]
 -------------------------------------------------------------------------------------------------------
+/**
+ * A module for the router of the desktop application
+ */
+define("router", [
+    'jquery',
+    'underscore',
+    'configuration',
+    'utilities',
+    'app/views/desktop/home',
+    'text!../templates/desktop/main.html'
+],function ($,
+            _,
+            config,
+            utilities,
+            HomeView,
+            MainTemplate) {
+
     ...
     var Router = Backbone.Router.extend({
         ...
@@ -413,7 +399,8 @@ We define a Backbone model for holding event data. Nearly all domain entities (b
  * Module for the Event model
  */
 define([ 
-    'configuration'
+    'configuration',
+    'backbone'
 ], function (config) {
     /**
      * The Event model class definition
@@ -489,9 +476,11 @@ Now that we have implemented the data components of the example, we need to crea
 -------------------------------------------------------------------------------------------------------
 define([
     'utilities',
+    'bootstrap',
     'text!../../../../templates/desktop/events.html'
 ], function (
     utilities,
+    bootstrap,
     eventsTemplate) {
 
     var EventsView = Backbone.View.extend({
@@ -521,7 +510,7 @@ define([
 });
 -------------------------------------------------------------------------------------------------------
 
-As we explained, earlier, the view is attached to a DOM element (the `el` property). When the `render` method is invoked, it manipulates the DOM and renders the view. We could have achieved this by writing these instructions directly in the method, but that would make it hard to change the page design later on. Instead, we create a template and apply it, thus separating the HTML view code from the view implementation. 
+As we explained, earlier, the view is attached to a DOM element (the `el` property). When the `render` method is invoked, it manipulates the DOM and renders the view. We could have achieved this by writing these instructions directly in the method, but that would make it hard to change the page design later on. Instead, we create a template and apply it, thus separating the HTML view code from the view implementation. Note the dependency on the Bootstrap module - we initialize the Bootstrap carousel and popover components when this view is rendered.
 
 .src/main/webapp/resources/templates/desktop/events.html
 [source,html]
@@ -598,6 +587,26 @@ Now that the views are in place, we need to add another routing rule to the appl
 .src/main/webapp/resources/js/app/router/desktop/router.js
 [source, javascript]
 -------------------------------------------------------------------------------------------------------
+/**
+ * A module for the router of the desktop application
+ */
+define("router", [
+    ...
+    'utilities',
+    'app/collections/events',
+    'app/views/desktop/home',
+    'app/views/desktop/events',
+    ...
+    'text!../templates/desktop/main.html'
+],function ($,
+            ...
+            utilities,
+            Events,
+            HomeView,
+            EventsView,
+            ...
+            MainTemplate) {
+
     var Router = Backbone.Router.extend({
         ...
         routes : { 
@@ -608,10 +617,15 @@ Now that the views are in place, we need to add another routing rule to the appl
         events:function () {
             var events = new Events();
             var eventsView = new EventsView({model:events, el:$("#content")});
-            events.bind("reset",
+            events.on("reset",
                 function () {
                     utilities.viewManager.showView(eventsView);
-                }).fetch();
+                }).fetch({
+                    reset : true,
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve events from the TicketMonster server.");
+                    }
+                });
         }
     });
 -------------------------------------------------------------------------------------------------------
@@ -799,6 +813,13 @@ The corresponding templates for the three fragments rendered above are:
 </address>
 -------------------------------------------------------------------------------------------------------
 
+.src/main/webapp/resources/templates/desktop/media.html
+[source,html]
+-------------------------------------------------------------------------------------------------------
+<%if (mediaItem) { %><img width="100" src='rest/media/<%=mediaItem.id%>'/><% } %>
+-------------------------------------------------------------------------------------------------------
+
+
 Now that the view exists, we add it to the router:
 
 .src/main/webapp/resources/js/app/router/desktop/router.js
@@ -830,10 +851,14 @@ define("router", [
         eventDetail:function (id) {
             var model = new Event({id:id});
             var eventDetailView = new EventDetailView({model:model, el:$("#content")});
-            model.bind("change",
+            model.on("change",
                 function () {
                     utilities.viewManager.showView(eventDetailView);
-                }).fetch();
+                }).fetch({
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve the event from the TicketMonster server.");
+                    }
+                });
         }
     }
     ...
@@ -1325,7 +1350,7 @@ define("router", [
 	...
 ],function (
 			...
-            CreateBooking
+            CreateBookingView
             ...
             ) {
 
@@ -1353,8 +1378,29 @@ define("router", [
 
 This concludes the implementation of the booking use case. We started by listing the available events, continued by selecting a venue and performance time, and ended by choosing tickets and completing the order.
 
-The other use cases: a booking starting from venues and view existing bookings are conceptually similar, so you can just copy the remaining files in the `src/main/webapp/resources/js/app/models`, `src/main/webapp/resources/js/app/collections`, 
-`src/main/webapp/resources/js/app/views/desktop` and the remainder of `src/main/webapp/resources/js/app/routers/desktop/router.js`.
+The other use cases: a booking starting from venues and view existing bookings are conceptually similar, so you can just copy the logic for the following routes from `src/main/webapp/resources/js/app/routers/desktop/router.js`:
+
+* `venues`
+* `venues/:id`
+* `bookings`
+* `bookings/:id`
+
+Finally, copy the following files in the `src/main/webapp/resources/js/app/models`, `src/main/webapp/resources/js/app/collections`, 
+`src/main/webapp/resources/js/app/views/desktop` and `src/main/webapp/resources/templates`:
+
+* `src/main/webapp/resources/js/app/models/booking.js`
+* `src/main/webapp/resources/js/app/models/venue.js`
+* `src/main/webapp/resources/js/app/collections/bookings.js`
+* `src/main/webapp/resources/js/app/collections/venues.js`
+* `src/main/webapp/resources/js/app/views/desktop/bookings.js`
+* `src/main/webapp/resources/js/app/views/desktop/booking-detail.js`
+* `src/main/webapp/resources/js/app/views/desktop/venues.js`
+* `src/main/webapp/resources/js/app/views/desktop/venue-detail.js`
+* `src/main/webapp/resources/templates/desktop/booking-details.html`
+* `src/main/webapp/resources/templates/desktop/booking-table.html`
+* `src/main/webapp/resources/templates/desktop/venues.html`
+* `src/main/webapp/resources/templates/desktop/venue-detail.html`
+* `src/main/webapp/resources/templates/desktop/venue-event-description.html`
 
 
 == Mobile view
@@ -1394,12 +1440,11 @@ For mobile clients, the main page will display the mobile version of the applica
 require.config({
     baseUrl:"resources/js",
     paths: {
-        jquery:'libs/jquery-1.9.1',
-        jquerymobile:'libs/jquery.mobile-1.3.2',
+        jquery:'libs/jquery-2.0.3',
+        jquerymobile:'libs/jquery.mobile-1.4.2',
         text:'libs/text',
         underscore:'libs/underscore',
         backbone: 'libs/backbone',
-        order: 'libs/order',
         utilities: 'app/utilities',
         router:'app/router/mobile/router'
     },
@@ -1438,7 +1483,7 @@ define("initializer", [
     // Configure jQuery to append timestamps to requests, to bypass browser caches
     // Important for MSIE
     $.ajaxSetup({cache:false});
-    $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.3.2.css"/>');
+    $('head').append('<link rel="stylesheet" href="resources/css/jquery.mobile-1.4.2.css"/>');
     $('head').append('<link rel="stylesheet" href="resources/css/m.screen.css"/>');
     // Bind to mobileinit before loading jQueryMobile
     $(document).bind("mobileinit", function () {
@@ -1446,6 +1491,16 @@ define("initializer", [
         $.mobile.hashListeningEnabled = false;
         $.mobile.linkBindingEnabled = false;
         $.mobile.pushStateEnabled = false;
+
+        // Fix jQueryMobile header and footer positioning issues for iOS.
+        // See: https://github.com/jquery/jquery-mobile/issues/4113 and
+        // https://github.com/jquery/jquery-mobile/issues/5532
+        $(document).on('blur', 'input, textarea, select', function() {
+            setTimeout(function() {
+            window.scrollTo(document.body.scrollLeft, document.body.scrollTop);
+            }, 0);
+        });
+
         utilities.applyTemplate($('body'), MainTemplate);
     });
     // Then (load jQueryMobile and) start the router to finally start the app
@@ -1486,13 +1541,11 @@ define("router",[
     'jquery',
     'jquerymobile',
     'underscore',
-    'utilities',
-    'text!../templates/mobile/home-view.html'
+    'utilities'
 ],function ($,
             jqm,
             _,
-            utilities,
-            HomeViewTemplate) {
+            utilities) {
 
     /**
      * The Router class contains all the routes within the application - i.e. URLs and the actions
@@ -1533,9 +1586,9 @@ The first page in our application is the landing page. First, we add the templat
 <div data-role="header">
     <h3>Ticket Monster</h3>
 </div>
-<div data-role="content" align="center">
-    <img src="resources/img/dualbrand_as7eap.png" width="300px"/>
-    <h4 align="left">Find events</h4>
+<div class="ui-content">
+    <img src="resources/img/rhjb_eap_logo.png" />
+    <h4>Find events</h4>
     <ul data-role="listview">
         <li>
             <a href="#events">By Category</a>
@@ -1573,7 +1626,7 @@ define("router",[
         home:function () {
             utilities.applyTemplate($("#container"), HomeViewTemplate);
             try {
-                $("#container").trigger('pagecreate');
+                $("#container").enhanceWithin();
             } catch (e) {
                 // workaround for a spurious error thrown when creating the page initially
             }
@@ -1604,12 +1657,12 @@ define([
         render:function () {
             var categories = _.uniq(
                 _.map(this.model.models, function(model){
-                    return model.get('category')
+                    return model.get('category');
                 }), false, function(item){
-                    return item.id
+                    return item.id;
                 });
-            utilities.applyTemplate($(this.el), eventsView,  {categories:categories, model:this.model})
-            $(this.el).trigger('pagecreate');
+            utilities.applyTemplate($(this.el), eventsView,  {categories:categories, model:this.model});
+            $(this.el).enhanceWithin();
             return this;
         }
     });
@@ -1626,29 +1679,29 @@ Next, we add the template for rendering the view:
 [source,html]
 -------------------------------------------------------------------------------------------------------
 <div data-role="header">
-    <a data-role="button" data-icon="home" href="#">Home</a>
+    <a href="#" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
     <h3>Categories</h3>
 </div>
-<div data-role="content" id='itemMenu'>
-    <div id='categoryMenu' data-role='listview' data-filter='true' data-filter-placeholder='Event category name ...'>
+<div class="ui-content">
+    <div id="itemMenu" data-role="collapsible-set" data-inset="false">
         <%
         _.each(categories, function (category) {
         %>
-        <li>
-            <a href="#"><%= category.description %></a>
-            <ul id="category-<%=category.id%>">
-                <%
-                _.each(model.models, function (model) {
+        <div data-role="collapsible">
+            <h2><%= category.description %></h2>
+            <ul id="categoryMenu" data-role="listview" data-inset="true">
+            <%
+            _.each(model.models, function (model) {
                 if (model.get('category').id == category.id) {
                 %>
                 <li>
                     <a href="#events/<%=model.attributes.id%>"><%=model.attributes.name%></a>
                 </li>
                 <% }
-                });
-                %>
+            });
+            %>
             </ul>
-        </li>
+        </div>
         <% }); %>
     </div>
 </div>
@@ -1688,10 +1741,14 @@ define("router",[
         events:function () {
             var events = new Events;
             var eventsView = new EventsView({model:events, el:$("#container")});
-            events.bind("reset",
-                function () {
-                    utilities.viewManager.showView(eventsView);
-                }).fetch();
+            events.on("reset", function() {
+                utilities.viewManager.showView(eventsView);
+            }).fetch({
+                reset : true,
+                error : function() {
+                    utilities.displayAlert("Failed to retrieve events from the TicketMonster server.");
+                }
+            });
         }
         ...
     });
@@ -1699,7 +1756,7 @@ define("router",[
 });
 -------------------------------------------------------------------------------------------------------
 
-Just as in the case of the desktop application, the list of events will be accessible at `#events` (i.e. `http://localhost:8080/ticket-monster/mobile-index.html#events`).
+Just as in the case of the desktop application, the list of events will be accessible at `#events` (i.e. `http://localhost:8080/ticket-monster/#events`).
 
 === Displaying an individual event
 
@@ -1731,9 +1788,9 @@ define([
         },
         render:function () {
             $(this.el).empty()
-            utilities.applyTemplate($(this.el), eventDetail, this.model.attributes)
-            $(this.el).trigger('create')
-            $("#bookButton").addClass("ui-disabled")
+            utilities.applyTemplate($(this.el), eventDetail, _.extend({}, this.model.attributes, config));
+            $(this.el).enhanceWithin();
+            $("#bookButton").addClass("ui-disabled");
             var self = this;
             $.getJSON(config.baseUrl + "rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows;
@@ -1751,7 +1808,7 @@ define([
             $("#dayPicker").selectmenu('disable');
             $("#performanceTimes").empty();
             $("#performanceTimes").selectmenu('disable');
-            $(this.el).trigger('pagecreate');
+            $(this.el).enhanceWithin();
             return this;
         },
         performanceSelected:function () {
@@ -1778,7 +1835,7 @@ define([
                 }), function (item) {
                     return item
                 }));
-                utilities.applyTemplate($("#eventVenueDescription"), eventVenueDescription, {venue:selectedShow.venue});
+                utilities.applyTemplate($("#eventVenueDescription"), eventVenueDescription, _.extend({},{venue:selectedShow.venue},config));
                 $("#detailsCollapsible").show()
                 $("#dayPicker").removeAttr('disabled')
                 $("#performanceTimes").removeAttr('disabled')
@@ -1828,14 +1885,15 @@ Once again, this is very similar to the desktop version. Now we add the page tem
 .src/main/webapp/resources/templates/mobile/event-detail.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div data-role="header">
+<div data-role="header" data-position="fixed">
+    <a href="#" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
     <h3>Book tickets</h3>
 </div>
-<div data-role="content">
+<div class="ui-content">
     <h3><%=name%></h3>
-    <img width='100px' src='rest/media/<%=mediaItem.id%>'/>
+    <img width='100px' src='<%=baseUrl%>rest/media/<%=mediaItem.id%>'/>
     <p><%=description%></p>
-    <div data-role="fieldcontain">
+    <div class="ui-field-contain">
         <label for="showSelector"><strong>Where</strong></label>
         <select id='showSelector' data-mini='true'/>
     </div>
@@ -1861,18 +1919,21 @@ Once again, this is very similar to the desktop version. Now we add the page tem
     </div>
 
 </div>
-<div data-role="footer" class="ui-bar ui-grid-c">
-    <div class="ui-block-a"></div>
-    <div class="ui-block-b"></div>
-    <div class="ui-block-c"></div>
-    <a id='bookButton' class="ui-block-e" data-theme='b' data-role="button" data-icon="check">Book</a>
+<div data-role="footer" data-position="fixed">
+    <div class="ui-grid-b">
+        <div class="ui-block-a"></div>
+        <div class="ui-block-b"></div>
+        <div class="ui-block-c">
+            <a id='bookButton' class="ui-btn ui-btn-b ui-icon-check ui-btn-icon-left block-btn">Book</a>
+        </div>
+    </div>
 </div>
 -------------------------------------------------------------------------------------------------------
 
 .src/main/webapp/resources/templates/mobile/event-venue-description.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<img width="100" src="rest/media/<%=venue.mediaItem.id%>"/></p>
+<img width="100" src="<%=baseUrl%>rest/media/<%=venue.mediaItem.id%>"/></p>
 <%= venue.description %>
 <address>
     <p><strong>Address:</strong></p>
@@ -1892,7 +1953,7 @@ Finally, we add this to the router, explicitly indicating to jQuery Mobile that 
  */
 define("router",[
     ...
-	'app/model/event',
+	'app/models/event',
 	...
 	'app/views/mobile/event-detail'
 	...
@@ -1915,11 +1976,15 @@ define("router",[
         eventDetail:function (id) {
             var model = new Event({id:id});
             var eventDetailView = new EventDetailView({model:model, el:$("#container")});
-            model.bind("change",
+            model.on("change",
                 function () {
                     utilities.viewManager.showView(eventDetailView);
-                    $.mobile.changePage($("#container"), {transition:'slide', changeHash:false});
-                }).fetch();
+                    $("body").pagecontainer("change", "#container", {transition:'slide', changeHash:false});
+                }).fetch({
+                    error : function() {
+                        utilities.displayAlert("Failed to retrieve the event from the TicketMonster server.");
+                    }
+                });
         }
         ...
     });
@@ -1974,7 +2039,6 @@ define([
             } else {
                 $(this.el).empty();
             }
-            $(this.el).trigger('pagecreate');
             return this;
         },
         onChange:function (event) {
@@ -1996,58 +2060,29 @@ define([
         }
     });
 
-    var ConfirmBookingView = Backbone.View.extend({
-        events:{
-            "click a[id='saveBooking']":"save",
-            "click a[id='goBack']":"back"
-        },
-        render:function () {
-            utilities.applyTemplate($(this.el), confirmBookingTemplate, this.model)
-            this.ticketSummaryView = new TicketSummaryView({model:this.model, el:$("#ticketSummaryView")});
-            this.ticketSummaryView.render();
-            $(this.el).trigger('pagecreate')
-        },
-        back:function () {
-            require("router").navigate('book/' + this.model.bookingRequest.show.id + '/' + this.model.bookingRequest.performance.id, true)
-
-        }, save:function (event) {
-            var bookingRequest = {ticketRequests:[]};
-            var self = this;
-            _.each(this.model.bookingRequest.tickets, function (collection) {
-                _.each(collection, function (model) {
-                    if (model.quantity != undefined) {
-                        bookingRequest.ticketRequests.push({ticketPrice:model.ticketPrice.id, quantity:model.quantity})
-                    };
-                })
-            });
-
-            bookingRequest.email = this.model.email;
-            bookingRequest.performance = this.model.performanceId;
-            $.ajax({url:(config.baseUrl + "rest/bookings"),
-                data:JSON.stringify(bookingRequest),
-                type:"POST",
-                dataType:"json",
-                contentType:"application/json",
-                success:function (booking) {
-                    utilities.applyTemplate($(self.el), bookingDetailsTemplate, booking)
-                    $(self.el).trigger('pagecreate');
-                }}).error(function (error) {
-                    alert(error);
-                });
-            this.model = {};
-        }
-    });
-
-
     var CreateBookingView = Backbone.View.extend({
 
+        currentView: "CreateBooking",
+        intervalDuration : 100,
+        formValues : [],
         events:{
             "click a[id='confirmBooking']":"checkout",
             "change select":"refreshPrices",
-            "blur input[type='number']":"updateForm",
-            "blur input[name='email']":"updateForm"
+            "change input[type='number']":"updateForm",
+            "change input[name='email']":"updateForm",
+            "click a[id='saveBooking']":"saveBooking",
+            "click a[id='goBack']":"back",
+            "click a[data-action='delete']":"deleteBooking"
         },
-        render:function () {
+        render: function() {
+            if (this.currentView === "CreateBooking") {
+                this.renderCreateBooking();
+            } else if(this.currentView === "ConfirmBooking") {
+                this.renderConfirmBooking();
+            }
+            return this;
+        },
+        renderCreateBooking:function () {
 
             var self = this;
 
@@ -2055,19 +2090,22 @@ define([
                 self.model.performance = _.find(selectedShow.performances, function (item) {
                     return item.id == self.model.performanceId;
                 });
+                self.model.email = self.model.email || ""; 
                 var id = function (item) {return item.id;};
                 // prepare a list of sections to populate the dropdown
                 var sections = _.uniq(_.sortBy(_.pluck(selectedShow.ticketPrices, 'section'), id), true, id);
 
                 utilities.applyTemplate($(self.el), createBookingTemplate, { show:selectedShow,
                     performance:self.model.performance,
-                    sections:sections});
-                $(self.el).trigger('pagecreate');
+                    sections:sections,
+                    email:self.model.email});
+                $(self.el).enhanceWithin();
                 self.ticketCategoriesView = new TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder") });
                 self.model.show = selectedShow;
                 self.ticketCategoriesView.render();
                 $('a[id="confirmBooking"]').addClass('ui-disabled');
                 $("#sectionSelector").change();
+                self.watchForm();
             });
 
         },
@@ -2085,7 +2123,7 @@ define([
                 $("#ticketCategoriesViewPlaceholder").show();
                 this.ticketCategoriesView.model = ticketPriceInputs;
                 this.ticketCategoriesView.render();
-                $(this.el).trigger('pagecreate');
+                $(this.el).enhanceWithin();
             } else {
                 $("#ticketCategoriesViewPlaceholder").hide();
                 this.ticketCategoriesView.model = new Array();
@@ -2093,25 +2131,173 @@ define([
             }
         },
         checkout:function () {
-            this.model.bookingRequest.tickets.push(this.ticketCategoriesView.model);
-            this.model.performance = new ConfirmBookingView({model:this.model, el:$("#container")}).render();
-            $("#container").trigger('pagecreate');
+            var savedTicketRequests = this.model.bookingRequest.tickets = this.model.bookingRequest.tickets || [];
+            _.each(this.ticketCategoriesView.model, function(newTicketRequest){
+                var matchingRequest = _.find(savedTicketRequests, function(ticketRequest) {
+                    return ticketRequest.ticketPrice.id == newTicketRequest.ticketPrice.id;
+                });
+                if(newTicketRequest.quantity) {
+                    if(matchingRequest) {
+                        matchingRequest.quantity += newTicketRequest.quantity;
+                    } else {
+                        savedTicketRequests.push(newTicketRequest);
+                    }
+                }
+            });
+            this.model.bookingRequest.totals = this.computeTotals(this.model.bookingRequest.tickets);
+            this.currentView = "ConfirmBooking";
+            this.render();
         },
         updateForm:function () {
-
-            var totals = _.reduce(this.ticketCategoriesView.model, function (partial, model) {
+            var valid = true;
+            this.model.email = $("input[type='email']").val();
+            $("input[type='number']").each(function(idx,element) {
+                var quantity = $(this).val();
+                if(!$.isNumeric(quantity)  // is a non-number, other than empty string
+                        || quantity <= 0 // is negative
+                        || parseFloat(quantity) != parseInt(quantity)) {
+                    $("#error-" + element.id).empty().append("Should be a positive number.");
+                    $('a[id="confirmBooking"]').removeClass('ui-disabled');
+                    valid = false;
+                } else {
+                    $("#error-" + element.id).empty();
+                    $('a[id="confirmBooking"]').addClass('ui-disabled');
+                }
+            });
+            try {
+                var validElements = document.querySelectorAll(":valid");
+                var $email = $("#email");
+                var emailElem = $email.get(0);
+                var validEmail = false;
+                for (var ctr=0; ctr < validElements.length; ctr++) {
+                    if (emailElem === validElements[ctr]) {
+                        validEmail = true;
+                    }
+                }
+                if(validEmail) {
+                    this.model.email = $email.val();
+                    $("#error-email").empty();
+                } else {
+                    $("#error-email").empty().append("Please enter a valid e-mail address");
+                    delete this.model.email;
+                    valid = false;
+                }
+            }
+            catch(e) {
+                // For browsers like IE9 that do fail on querySelectorAll for CSS pseudo selectors,
+                // we use the regex defined in the HTML5 spec.
+                var emailRegex = new RegExp("[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*");
+                var emailValue = $("#email").val();
+                if(emailRegex.test(emailValue)) {
+                    this.model.email = emailValue;
+                    $("#error-email").empty();
+                } else {
+                    $("#error-email").empty().append("Please enter a valid e-mail address");
+                    delete this.model.email;
+                    valid = false;
+                }
+            }
+            var totals = this.computeTotals(this.ticketCategoriesView.model);
+            if (totals.tickets > 0 && valid) {
+                $('a[id="confirmBooking"]').removeClass('ui-disabled');
+            } else {
+                $('a[id="confirmBooking"]').addClass('ui-disabled');
+            }
+        },
+        computeTotals: function(ticketRequestCollection) {
+            var totals = _.reduce(ticketRequestCollection, function (partial, model) {
                 if (model.quantity != undefined) {
                     partial.tickets += model.quantity;
                     partial.price += model.quantity * model.ticketPrice.price;
                     return partial;
+                } else {
+                    return partial;
                 }
             }, {tickets:0, price:0.0});
-            this.model.email = $("input[type='email']").val();
-            this.model.bookingRequest.totals = totals;
-            if (totals.tickets > 0 && $("input[type='email']").val()) {
-                $('a[id="confirmBooking"]').removeClass('ui-disabled');
+            return totals;
+        },
+        renderConfirmBooking:function () {
+            utilities.applyTemplate($(this.el), confirmBookingTemplate, this.model);
+            this.ticketSummaryView = new TicketSummaryView({model:this.model, el:$("#ticketSummaryView")});
+            this.ticketSummaryView.render();
+            $(this.el).enhanceWithin();
+            if (this.model.bookingRequest.totals.tickets > 0) {
+                $('a[id="saveBooking"]').removeClass('ui-disabled');
             } else {
-                $('a[id="confirmBooking"]').addClass('ui-disabled');
+                $('a[id="saveBooking"]').addClass('ui-disabled');
+            }
+            return this;
+        },
+        back:function () {
+            this.currentView = "CreateBooking";
+            this.render();
+        },
+        saveBooking:function (event) {
+            var bookingRequest = {ticketRequests:[]};
+            var self = this;
+            _.each(this.model.bookingRequest.tickets, function (model) {
+                if (model.quantity != undefined) {
+                    bookingRequest.ticketRequests.push({ticketPrice:model.ticketPrice.id, quantity:model.quantity})
+                }
+            });
+
+            bookingRequest.email = this.model.email;
+            bookingRequest.performance = this.model.performanceId;
+            $.ajax({url:(config.baseUrl + "rest/bookings"),
+                data:JSON.stringify(bookingRequest),
+                type:"POST",
+                dataType:"json",
+                contentType:"application/json",
+                success:function (booking) {
+                    utilities.applyTemplate($(self.el), bookingDetailsTemplate, booking);
+                    $(self.el).enhanceWithin();
+                }}).error(function (error) {
+                    try {
+                        var response = JSON.parse(error.responseText);
+                        var displayMessage = "";
+                        if(response && response.errors) {
+                            var errors = response.errors;
+                            for(var idx = 0; idx < errors.length; idx++) {
+                                displayMessage += errors[idx] + "\n";
+                            }
+                            alert(displayMessage);
+                        } else {
+                            alert("Failed to perform the bookng.");
+                        }
+                    } catch (e) {
+                        alert("Failed to perform the bookng.");
+                    }
+                });
+        },
+        deleteBooking: function(event) {
+            var deletedIdx = $(event.currentTarget).data("ticketpriceid");
+            this.model.bookingRequest.tickets = _.reject(this.model.bookingRequest.tickets, function(ticketRequest) {
+                return ticketRequest.ticketPrice.id == deletedIdx; 
+            });
+            this.model.bookingRequest.totals = this.computeTotals(this.model.bookingRequest.tickets);
+            this.renderConfirmBooking();
+            return false;
+        },
+        watchForm: function() {
+            if($("#sectionSelect").length) {
+                var self = this;
+                $("input").each( function(index,element) {
+                    if(element.value !== self.formValues[element.id]) {
+                        self.formValues[element.id] = element.value;
+                        $("input[id='"+element.id+"']").change();
+                    }
+                });
+                this.timerObject = setTimeout(function() {
+                    self.watchForm();
+                }, this.intervalDuration);
+            } else {
+                this.onClose();
+            }
+        },
+        onClose: function() {
+            if(this.timerObject) {
+                clearTimeout(this.timerObject);
+                delete this.timerObject;
             }
         }
     });
@@ -2127,10 +2313,11 @@ Next, we create the page fragment templates. First, the actual page:
 .src/main/webapp/resources/templates/mobile/create-booking.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div data-role="header">
+<div data-role="header" data-position="fixed">
+    <a href="#" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
     <h1>Book tickets</h1>
 </div>
-<div data-role="content">
+<div class="ui-content">
     <p>
        <h3><%=show.event.name%></h3>
     </p>
@@ -2142,10 +2329,10 @@ Next, we create the page fragment templates. First, the actual page:
       <small><%=new Date(performance.date).toPrettyString()%></small>
     </p>
     <div id="sectionSelectorPlaceholder">
-        <div data-role="fieldcontain">
+        <div class="ui-field-contain">
             <label for="sectionSelect">Section</label>
             <select id="sectionSelect">
-                <option value="-1" selected="true">Choose a section</option>
+                <option value="-1" selected>Choose a section</option>
                 <% _.each(sections, function(section) { %>
                 <option value="<%=section.id%>"><%=section.name%> - <%=section.description%></option>
                 <% }) %>
@@ -2153,17 +2340,20 @@ Next, we create the page fragment templates. First, the actual page:
         </div>
 
     </div>
-    <div id="ticketCategoriesViewPlaceholder" style="display:none;"/>
+    <div id="ticketCategoriesViewPlaceholder" style="display:none;"></div>
 
     <div class="fieldcontain">
         <label>Contact email</label>
-        <input type='email' name='email' placeholder="Email"/>
+        <input type='email' id='email' name='email' required placeholder="Email" value="<%=email%>" />
+        <span id="error-email" class="error" />
     </div>
 </div>
 
-<div data-role="footer" class="ui-bar">
-    <a href="#" data-role="button" data-icon="delete">Cancel</a>
-    <a id="confirmBooking" data-icon="check" data-role="button" disabled>Checkout</a>
+<div data-role="footer" data-position="fixed">
+    <div class="ui-grid-a">
+        <div class="ui-block-a"><a href="#" class="ui-btn ui-icon-delete ui-btn-icon-left block-btn">Cancel</a></div>
+        <div class="ui-block-b"><a id="confirmBooking" class="ui-btn ui-btn-b ui-icon-check ui-btn-icon-left block-btn" disabled>Checkout</a></div>
+    </div>
 </div>
 -------------------------------------------------------------------------------------------------------
  
@@ -2173,15 +2363,16 @@ Next, the fragment that contains the input form for tickets, which is re-rendere
 [source,html]
 -------------------------------------------------------------------------------------------------------
 <% if (ticketPrices.length > 0) { %>
-    <form name="ticketCategories">
+    <form name="ticketCategories" id="ticketCategories">
     <h4>Select tickets by category</h4>
     <% _.each(ticketPrices, function(ticketPrice) { %>
       <div id="ticket-category-input-<%=ticketPrice.id%>"/>
 
-      <fieldset data-role="fieldcontain">
+      <fieldset class="ui-field-contain">
          <label for="ticket-<%=ticketPrice.id%>"><%=ticketPrice.ticketCategory.description%>($<%=ticketPrice.price%>)</label>
-        <input id="ticket-<%=ticketPrice.id%>" data-tm-id="<%=ticketPrice.id%>" type="number" placeholder="Enter value"
+         <input id="ticket-<%=ticketPrice.id%>" data-tm-id="<%=ticketPrice.id%>" type="number" min="0" placeholder="Enter value"
                name="tickets"/>
+         <span id="error-ticket-<%=ticketPrice.id%>" class="error" />
       </fieldset>
    <% }) %>
    </form>
@@ -2193,10 +2384,11 @@ Before submitting the request to the server, the order is confirmed:
 .src/main/webapp/resources/templates/mobile/confirm-booking.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div data-role="header">
+<div data-role="header" data-position="fixed">
+    <a href="#" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
     <h1>Confirm order</h1>
 </div>
-<div data-role="content">
+<div class="ui-content">
     <h3><%=show.event.name%></h3>
     <p><%=show.venue.name%></p>
     <p><small><%=new Date(performance.date).toPrettyString()%></small></p>
@@ -2205,11 +2397,11 @@ Before submitting the request to the server, the order is confirmed:
 
 </div>
 
-<div data-role="footer" class="ui-bar">
+<div data-role="footer" data-position="fixed">
     <div class="ui-grid-b">
-        <div class="ui-block-a"><a id="cancel" href="#" data-role="button" data-icon="delete">Cancel</a></div>
-        <div class="ui-block-b"><a id="goBack" data-role="button" data-icon="back">Back</a></div>
-        <div class="ui-block-c"><a id="saveBooking" data-icon="check" data-role="button">Buy!</a></div>
+        <div class="ui-block-a"><a id="cancel" href="#" class="ui-btn ui-icon-delete ui-btn-icon-left block-btn">Cancel</a></div>
+        <div class="ui-block-b"><a id="goBack" class="ui-btn ui-icon-back ui-btn-icon-left block-btn">Back</a></div>
+        <div class="ui-block-c"><a id="saveBooking" class="ui-btn ui-btn-b ui-icon-check ui-btn-icon-left block-btn">Buy!</a></div>
     </div>
 </div>
 -------------------------------------------------------------------------------------------------------
@@ -2219,34 +2411,23 @@ The confirmation page contains a summary subview:
 .src/main/webapp/resources/templates/mobile/ticket-summary-view.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<table>
-    <thead>
-    <tr>
-        <th>Section</th>
-        <th>Category</th>
-        <th>Price</th>
-        <th>Quantity</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% _.each(tickets, function(ticketRequest) { %>
-    <% _.each(ticketRequest, function(model) { %>
-    <% if (model.quantity != undefined) { %>
-    <tr>
-        <td><%= model.ticketPrice.section.name %></td>
-        <td><%= model.ticketPrice.ticketCategory.description %></td>
-        <td>$<%= model.ticketPrice.price %></td>
-        <td><%= model.quantity %></td>
-    </tr>
-    <% } %>
-    <% }) %>
-    <% }) %>
-    </tbody>
-</table>
-<div data-theme="c">
+<ul data-role="listview" data-split-icon="delete" data-split-theme="c" data-inset="true">
+    <% _.each(tickets, function(model) { %>
+    <li>
+        <a class="readonly-listview">
+            <p><strong>Section</strong> <%= model.ticketPrice.section.name %></p>
+            <p><strong>Category</strong> <%= model.ticketPrice.ticketCategory.description %></p>
+            <p><strong>Price</strong> <%= model.ticketPrice.price %></p>
+            <p><strong>Quantity</strong> <%= model.quantity %></p>
+        </a>
+        <a href="#" data-action="delete" data-ticketpriceid="<%= model.ticketPrice.id %>"></a>
+    </li>
+    <% }); %>
+</ul>
+<div>
     <h4>Totals</h4>
     <p><strong>Total tickets: </strong><%= totals.tickets %></p>
-    <p> <strong>Total price: $</strong><%= totals.price %></p>
+    <p><strong>Total price: $ </strong><%= totals.price %></p>
 </div>
 -------------------------------------------------------------------------------------------------------
 
@@ -2255,10 +2436,11 @@ Finally, we create the page that displays the booking confirmation:
 .src/main/webapp/resources/templates/mobile/booking-details.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div data-role="header">
+<div data-role="header" data-position="fixed">
+    <a href="#" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
     <h1>Booking complete</h1>
 </div>
-<div data-role="content">
+<div class="ui-content">
     <table id="confirm_tbl">
         <thead>
         <tr>
@@ -2284,16 +2466,18 @@ Finally, we create the page that displays the booking confirmation:
         <% }) %>
         </tbody>
     </table></div>
-<div data-role="footer" class="ui-bar">
+<div data-role="footer" data-position="fixed">
 
-    <div class="ui-block-b"><a id="back" href="#" data-role="button" data-icon="back">Back</a></div>
+    <div class="ui-block-b">
+        <a id="back" href="#" class="ui-btn ui-icon-back ui-btn-icon-left block-btn">Back</a>
+    </div>
 
 </div>
 -------------------------------------------------------------------------------------------------------
 
 The last step is registering the view with the router:
 
-.src/main/webapp/resources/js/app/router/desktop/router.js
+.src/main/webapp/resources/js/app/router/mobile/router.js
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
@@ -2317,14 +2501,7 @@ define("router", [
         },
         ...
         bookTickets:function (showId, performanceId) {
-            var createBookingView = 
-                 new CreateBookingView(
-                      { model: { 
-                            showId:showId, 
-                            performanceId:performanceId, 
-                            bookingRequest:{tickets:[]}}, 
-                            el:$("#container")
-                      });
+            var createBookingView = new CreateBookingView({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#container")});
             utilities.viewManager.showView(createBookingView);
         },
         ...
@@ -2333,7 +2510,4 @@ define("router", [
 });
 -------------------------------------------------------------------------------------------------------
 
-== More Resources
-
-
-To learn more about writing HTML5 + REST applications with JBoss, take a look at the link:http://www.jboss.org/aerogear[Aerogear] project.
+The other use case: a booking starting from venues is conceptually similar, so you can just copy the rest of the logic from `src/main/webapp/resources/js/app/routers/mobile/router.js`, and the rest of the files files in the `src/main/webapp/resources/js/app/views/mobile` and `src/main/webapp/resources/templates/mobile` directories.

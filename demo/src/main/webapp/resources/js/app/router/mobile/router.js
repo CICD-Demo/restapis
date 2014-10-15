@@ -7,39 +7,29 @@ define("router",[
     'jquerymobile',
     'underscore',
     'utilities',
-    'app/models/booking',
     'app/models/event',
     'app/models/venue',
-    'app/collections/bookings',
     'app/collections/events',
     'app/collections/venues',
-    'app/views/mobile/about',
     'app/views/mobile/events',
     'app/views/mobile/venues',
     'app/views/mobile/create-booking',
-    'app/views/mobile/bookings',
     'app/views/mobile/event-detail',
     'app/views/mobile/venue-detail',
-    'app/views/mobile/booking-detail',
     'text!../templates/mobile/home-view.html'
 ],function ($,
             jqm,
             _,
             utilities,
-            Booking,
             Event,
             Venue,
-            Bookings,
             Events,
             Venues,
-            AboutView,
             EventsView,
             VenuesView,
             CreateBookingView,
-            BookingsView,
             EventDetailView,
             VenueDetailView,
-            BookingDetailView,
             HomeViewTemplate) {
 
     /**
@@ -59,10 +49,7 @@ define("router",[
             "events/:id":"eventDetail",
             "venues":"venues",
             "venues/:id":"venueDetail",
-            "about":"about",
             "book/:showId/:performanceId":"bookTickets",
-            "bookings":"listBookings",
-            "bookings/:id":"bookingDetail",
             "ignore":"ignore",
             "*actions":"defaultHandler"
         },
@@ -104,33 +91,9 @@ define("router",[
                     }
                 });
         },
-        about:function () {
-            new AboutView({el:$("#container")}).render();
-        },
         bookTickets:function (showId, performanceId) {
             var createBookingView = new CreateBookingView({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#container")});
             utilities.viewManager.showView(createBookingView);
-        },
-        listBookings:function () {
-            var bookings = new Bookings();
-            var bookingsView = new BookingsView({model:bookings, el:$("#container")});
-            bookings.on("reset",
-                function () {
-                    utilities.viewManager.showView(bookingsView);
-                }).on("destroy",
-                function () {
-                    this.fetch({
-                        reset : true,
-                        error : function() {
-                            utilities.displayAlert("Failed to retrieve bookings from the TicketMonster server.");
-                        }
-                    });
-                }).fetch({
-                    reset : true,
-                    error : function() {
-                        utilities.displayAlert("Failed to retrieve bookings from the TicketMonster server.");
-                    }
-                });
         },
         eventDetail:function (id) {
             var model = new Event({id:id});
@@ -155,18 +118,6 @@ define("router",[
                 }).fetch({
                     error : function() {
                         utilities.displayAlert("Failed to retrieve the venue from the TicketMonster server.");
-                    }
-                });
-        },
-        bookingDetail:function (id) {
-            var bookingModel = new Booking({id:id});
-            var bookingDetailView = new BookingDetailView({model:bookingModel, el:$("#content")});
-            bookingModel.on("change",
-                function () {
-                    utilities.viewManager.showView(bookingDetailView);
-                }).fetch({
-                    error : function() {
-                        utilities.displayAlert("Failed to retrieve the booking from the TicketMonster server.");
                     }
                 });
         }

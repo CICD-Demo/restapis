@@ -9,11 +9,11 @@ define([
         render:function () {
             var categories = _.uniq(
                 _.map(this.model.models, function(model){
-                    return model.get('category')
+                    return model.get('category');
                 }), false, function(item){
-                    return item.id
+                    return item.id;
                 });
-            utilities.applyTemplate($(this.el), eventsView,  {categories:categories, model:this.model})
+            utilities.applyTemplate($(this.el), eventsView,  {categories:categories, model:this.model});
             $(this.el).enhanceWithin();
             return this;
         }

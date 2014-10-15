@@ -178,7 +178,7 @@ Since we do not want to load this file in the existing `index.html` file, we sha
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
     <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="resources/js/libs/modernizr-2.6.2.min.js"></script>
+    <script type="text/javascript" src="resources/js/libs/modernizr-2.8.3.min.js"></script>
     <script type="text/javascript" src="resources/js/libs/require.js"
             data-main="resources/js/configurations/loader"></script>
 </head>
@@ -306,7 +306,7 @@ define(function () {
 
 We'll modify the `displayAlert` function in the utilities object to use the Notification plugin when available:
 
-.src/main/webapp/resources/js/configurations/loader.js
+.src/main/webapp/resources/js/app/utilities.js
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 ...

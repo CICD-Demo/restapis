@@ -38,7 +38,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 /*
  * We indicate that some properties of the class shouldn't be marshalled in JSON format
  */
-@JsonIgnoreProperties({ "venue", "sectionRows" })
+@JsonIgnoreProperties("venue")
 public class Section implements Serializable {
 
     /* Declaration of fields */

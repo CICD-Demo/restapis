@@ -1,5 +1,6 @@
 define([
     'utilities',
+    'bootstrap',
     'text!../../../../templates/desktop/events.html'
 ], function (
     utilities,

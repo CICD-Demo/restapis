@@ -51,13 +51,26 @@ discover how CDI, EJB and JAX-RS make it easy to define and wire together our se
 === Adding Jackson Core
 
 
-The first step for setting up our service architecture is to add Jackson Core as a dependency in the project. Adding Jackson Core as a provided dependency will enable you to use the Jackson annotations in the project. This is necessary to obtain a certain degree of control over the content of the JSON responses. We can bring in the same version of Jackson Core as the one used in RESTEasy, by adding `org.jboss.resteasy:resteasy-jackson-provider` and `org.jboss.resteasy:resteasy-jaxrs` as provided-scope dependencies. The versions of these dependencies would depend on the version of the JBoss BOMs we use in our project. Using the same version of the JBoss BOM as the one we will deploy to production, will ensure that we use the right dependencies during compilation and build.
+The first step for setting up our service architecture is to add Jackson Core as a dependency in the project. Adding Jackson Core as a provided dependency will enable you to use the Jackson annotations in the project. This is necessary to obtain a certain degree of control over the content of the JSON responses. We can bring in the same version of Jackson Core as the one used in RESTEasy, by adding `org.jboss.resteasy:resteasy-jackson-provider` and `org.jboss.resteasy:resteasy-jaxrs` as provided-scope dependencies, through the `org.jboss.bom.eap:jboss-javaee-6.0-with-resteasy` BOM. The versions of these dependencies would depend on the version of the JBoss BOMs we use in our project. Using the same version of the JBoss BOM as the one we will deploy to production, will ensure that we use the right dependencies during compilation and build.
 
 .pom.xml
 [source,xml]
 ---------------------------------------------------------------------------------
 <project ...>  
-    ...  
+    ...
+
+    <dependencyManagement>
+        ...
+
+        <dependency>
+            <groupId>org.jboss.bom.eap</groupId>
+            <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
+            <version>${jboss.bom.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencyManagement>
+
     <dependencies>
 
         ...
@@ -98,7 +111,7 @@ and deserialization of one of the fields involved in the cycle.
 
 The next step is to verify if we're using the right version of the JBoss BOMs in the project.
 Using the right versions of the BOMs ensures that you work against a known set of tested dependencies.
-Verify that the property `jboss.bom.version` contains the value `1.0.4.Final-redhat-4` or higher:
+Verify that the property `jboss.bom.version` contains the value `6.2.3.GA` or higher:
 
 .pom.xml
 [source,xml]
@@ -107,7 +120,7 @@ Verify that the property `jboss.bom.version` contains the value `1.0.4.Final-red
     ...  
     <properties>
         ...
-        <jboss.bom.version>1.0.4.Final-redhat-4</jboss.bom.version>
+        <jboss.bom.version>6.2.3.GA</jboss.bom.version>
         ...
     </properties>
     ...
@@ -786,6 +799,21 @@ We add the `@Path` annotation to the class, to indicate that this is a JAX-RS re
 
 We define this service (along with all the other JAX-RS services) as an EJB (see how simple is that in Java EE 6!) to benefit from automatic transaction enrollment. Since the service is fundamentally stateless, we take advantage of the new EJB 3.1 singleton feature.
 
+Before we proceed, . Retrieving shows from URLs like `/rest/venues` or `/rest/venues/1` almost always results in invalid JSON responses.
+The root cause is the presence of a bi-directional relationship in the `Venue` entity. A `Venue` contains a 1:M relationship with `Section`s that also links back to a `Venue`. JSON serialiers like Jackson (the one used in JBoss Enterprise Application Platform) need to be instructed on how to handle such cycles in object graphs, failing which the serializer will traverse between the entities in the cycle, resulting in an infinite loop (and often an `OutOfMemoryError` or a `StackOverflowError`). We'll address this, by instructing Jackson to not serialize the `venue` field in a `Section`, through the `@JsonIgnoreProperties` annotation on the `Section` entity:
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/model/Section.java
+[source,java]
+------------------------------------------------------------------------------------------
+...
+@JsonIgnoreProperties("venue")
+public class Section implements Serializable {
+
+...
+
+}
+------------------------------------------------------------------------------------------
+
 Now, we can retrieve venues from URLs like `/rest/venues` or `rest/venues/1`.
 
 === Retrieving Events
@@ -845,12 +873,43 @@ public class EventService extends BaseEntityService<Event> {
 }
 ------------------------------------------------------------------------------------------
 
+=== Retrieving Shows
+
+
 The `ShowService` follows the same pattern and we leave the implementation as an exercise to the reader (knowing that its contents can always be copied over to the appropriate folder).
 
-Of course, we also want to change data with our services - we want to create and delete bookings as well!
+Just like the `Venue` entity, a `Show` also contains bi-directional relationships that need to be handled as a special case for the JSON serializer. A `Show` contains a 1:M relationship with `Performance`s that also links back to a `Show`; a `Show` also contains a 1:M relationship with `TicketPrice`s that also links back to a `Show`. We'll address this, by instructing Jackson to not serialize the `show` field in a `Performance`, through the `@JsonIgnoreProperties` annotation on the `Performance` entity:
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/model/Performance.java
+[source,java]
+------------------------------------------------------------------------------------------
+...
+@JsonIgnoreProperties("show")
+public class Performance implements Serializable {
+
+...
+
+}
+------------------------------------------------------------------------------------------
+
+Likewise, we'll also instruct Jackson to not serialize the `Show` in a `TicketPrice`:
+
+.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketPrice.java
+[source,java]
+------------------------------------------------------------------------------------------
+...
+@JsonIgnoreProperties("show")
+public class TicketPrice implements Serializable {
+
+...
+
+}
+------------------------------------------------------------------------------------------
+
 
 === Creating and deleting bookings
 
+Of course, we also want to change data with our services - we want to create and delete bookings as well!
 
 To create a booking, we add a new method, which handles `POST` requests to `/rest/bookings`. This is not a simple CRUD method, as the client does not send a booking, but a booking request. It is the responsibility of the service to process the request, reserve the seats and return the full booking details to the invoker.
 

@@ -1011,7 +1011,7 @@ Now that we have the constituent views for the dashboard, let's wire it up into 
 
 Let's create a composite Backbone view to hold the MetricsView and BotView as it's constituent sub-views.
 
-.src/main/webapp/resources/js/app/router/desktop/router.js
+.src/main/webapp/resources/js/app/views/desktop/monitor.js
 [source, javascript]
 -------------------------------------------------------------------------------------------------------
 define([

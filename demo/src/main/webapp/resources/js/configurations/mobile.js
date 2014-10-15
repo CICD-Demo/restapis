@@ -11,7 +11,6 @@ require.config({
         text:'libs/text',
         underscore:'libs/underscore',
         backbone: 'libs/backbone',
-        order: 'libs/order',
         utilities: 'app/utilities',
         router:'app/router/mobile/router'
     },
