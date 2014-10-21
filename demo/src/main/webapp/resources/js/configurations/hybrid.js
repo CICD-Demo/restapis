@@ -13,7 +13,7 @@ require(['../../../cordova'], function() {
         },
         onDeviceReady: function() {
             // Detect if iOS 7 or higher and disable overlaying the status bar
-            if(window.device.platform.toLowerCase() == "ios" &&
+            if(window.device && window.device.platform.toLowerCase() == "ios" &&
                 parseFloat(window.device.version) >= 7.0) {
                 StatusBar.overlaysWebView(false);
                 StatusBar.styleDefault();

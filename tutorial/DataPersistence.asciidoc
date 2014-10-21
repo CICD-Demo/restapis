@@ -42,7 +42,7 @@ us to easily spot them.
 
 Let's start by creating a JavaBean to represent the ticket category:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketCategory.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketCategory.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 public class TicketCategory {
@@ -101,7 +101,7 @@ image::gfx/eclipse-generate-hashcode-equals-2.png[scaledwidth="50%"]
 
 Now that we have a JavaBean, let's proceed to make it an entity. First, add the `@Entity` annotation to the class:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketCategory.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketCategory.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 @Entity
@@ -114,7 +114,7 @@ public class TicketCategory {
 
 And, add the synthetic id:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketCategory.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketCategory.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 @Entity
@@ -148,7 +148,7 @@ public class TicketCategory {
 
 As we decided that our natural identifier was the description, we should introduce a unique constraint on the property:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketCategory.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketCategory.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 @Entity
@@ -204,7 +204,7 @@ The _description_ of the ticket category should not be empty for two reasons. Fi
 
 Let's add the Bean Validation constraint `@NotEmpty`:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketCategory.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketCategory.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 @Entity
@@ -239,7 +239,7 @@ public class TicketCategory {
 
 And that is our first entity! Here is the complete entity:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketCategory.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketCategory.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 /**
@@ -299,28 +299,34 @@ public class TicketCategory {
     /* toString(), equals() and hashCode() for TicketCategory, using the natural identity of the object */
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        TicketCategory that = (TicketCategory) o;
-
-        if (description != null ? !description.equals(that.description) : that.description != null)
-            return false;
-
-        return true;
+    public String toString() {
+        return description;
     }
 
     @Override
     public int hashCode() {
-        return description != null ? description.hashCode() : 0;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((description == null) ? 0 : description.hashCode());
+        return result;
     }
 
     @Override
-    public String toString() {
-        return description;
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof TicketCategory))
+            return false;
+        TicketCategory other = (TicketCategory) obj;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        return true;
     }
 }
 -------------------------------------------------------------------------------------------------------
@@ -356,7 +362,7 @@ In order for a view layer to correctly render the media item (e.g. display an im
 
 Luckily, JPA has native support for enums, all we need to do is add the `@Enumerated` annotation:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/MediaItem.java
+.src/main/java/org/jboss/examples/ticketmonster/model/MediaItem.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -399,7 +405,7 @@ In the section <<YourFirstEntity>>, we saw how to build simple entities with pro
 
 So, here we modify the Event class (from where we left at the end of the introduction). The below listing also includes some comments reflecting the explanations above. We will remove a few fields - `version`, `major` and `picture`, update the annotations on the `id` field, and update the `toString`, `equals` and `hashCode` methods to use the natural key of the object):
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Event.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Event.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -532,7 +538,7 @@ allow building parent-child models.
 
 Creating a many-to-one relationship is very easy in JPA. Just add the `@ManyToOne` annotation to the field. JPA will take care of the rest. Here's the property for `Event`:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Event.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Event.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -570,11 +576,46 @@ Creating a many-to-one relationship is very easy in JPA. Just add the `@ManyToOn
 
 There is no need for a media item to know who references it (in fact, this would be a poor design, as it would reduce the reusability of `MediaItem`), so we can leave this as a uni-directional relationship.
 
-An event will also have a category. Once again, many events can belong to the same event category, and there is no need for an event category to know what events are in it. To add this relationship, we add the `eventCategory` property, and annotate it with `@ManyToOne`, just as we did for `MediaItem`.
+An event will also have a category. Once again, many events can belong to the same event category, and there is no need for an event category to know what events are in it. To add this relationship, we add the `eventCategory` property, and annotate it with `@ManyToOne`, just as we did for `MediaItem`:
+
+.src/main/java/org/jboss/examples/ticketmonster/model/Event.java
+[source,java]
+-------------------------------------------------------------------------------------------------------
+
+    ...
+
+    /**
+     * <p>
+     * The category of the event
+     * </p>
+     *
+     * <p>
+     * Event categories are used to ease searching of available of events, and hence this is modeled as a relationship
+     * </p>
+     *
+     * <p>
+     * The Bean Validation constraint <code>@NotNull</code> indicates that the event category must be specified.
+     */
+    @ManyToOne
+    @NotNull
+    private EventCategory category;
+
+    ...
+
+    public EventCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(EventCategory category) {
+        this.category = category;
+    }
+    
+    ...
+-------------------------------------------------------------------------------------------------------
 
 And that's Event created. Here is the full source:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Event.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Event.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 /**
@@ -583,7 +624,7 @@ And that's Event created. Here is the full source:
  * </p>
  * 
  * <p>
- * Event's principle members are it's relationship to {@link EventCategory} - specifying the type of event it is - and
+ * Event's principal members are it's relationship to {@link EventCategory} - specifying the type of event it is - and
  * {@link MediaItem} - providing the ability to add media (such as a picture) to the event for display. It also contains
  * meta-data about the event, such as it's name and a description.
  * </p>
@@ -600,10 +641,6 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Version
-    @Column(name = "version")
-    private int version;
 
     /**
      * <p>
@@ -692,14 +729,6 @@ public class Event {
         this.id = id;
     }
 
-    public int getVersion() {
-        return this.version;
-    }
-
-    public void setVersion(final int version) {
-        this.version = version;
-    }
-
     public String getName() {
         return name;
     }
@@ -771,7 +800,7 @@ a capacity, an address, an associated media item and a set of sections in which 
 you completed the introduction chapter, you should already have some of these properties set, so
 we will update the `Venue` class to look like in the definition below.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Venue.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Venue.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -947,7 +976,7 @@ A RDBMS doesn't have a similar concept to composition, so we need to choose whet
 
 To _embed_ the `Address` into `Venue` we add the `@Embeddable` annotation to the `Address` class. However, unlike a full entity, there is no need to add an identifier. Here's the source for `Address`:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Address.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Address.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -1036,7 +1065,7 @@ public class Address {
 
 A venue consists of a number of seating sections. Each seating section has a name, a description, the number of rows in the section, and the number of seats in a row. It's natural identifier is the name of section combined with the venue (a venue can't have two sections with the same name). `Section` doesn't introduce any new concepts, so go ahead and copy the source from the below listing:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Section.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Section.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 @SuppressWarnings("serial")
@@ -1198,7 +1227,7 @@ A show is an event at a venue. It consists of a set of performances of the show.
 
 Let's start building Show. Here's is our starting point:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Show.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Show.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 /**
@@ -1304,7 +1333,7 @@ public class Show {
 
 If you've been paying attention, you'll notice that there is a problem here. We've identified that the natural identity of this entity is formed of two properties - the _event_ and the _venue_, and we've correctly coded the `equals()` and `hashCode()` methods (or had them generated for us!). However, we haven't told JPA that these two properties, in combination, must be unique. As there are two properties involved, we can no longer use the `@Column` annotation (which operates on a single property/table column), but now must use the class level `@Table` annotation (which operates on the whole entity/table). Change the class definition to read:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Show.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Show.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -1322,7 +1351,7 @@ You'll notice that JPA requires us to use the column names, rather than property
 
 Additionally, `Show` is a reserved word in certain databases, most notable MySQL. We'll specify a different table name as a result, so that Hibernate will generate correct DDL statements:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Show.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Show.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -1338,7 +1367,7 @@ public class Show {
 
 Now, let's add the set of performances to the event. Unlike previous relationships we've seen, the relationship between a show and it's performances is bi-directional. We chose to model this as a bi-directional relationship in order to improve the generated database schema (otherwise you end with complicated mapping tables which makes updates to collections hard). Let's add the set of performances:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Show.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Show.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -1381,11 +1410,46 @@ As `Show` is the owner of `Performance` (and without a show, a performance canno
 
 When retrieving a show, we will also retrieve its associated performances by adding the `fetch = EAGER` attribute to the `@OneToMany` annotation. This is a design decision which required careful consideration. In general, you should favour the default lazy initialization of collections: their content should be accessible on demand. However, in this case we intend to marshal the contents of the collection and pass it across the wire in the JAX-RS layer, after the entity has become detached, and cannot initialize its members on demand.
 
-We'll also need to add the set of ticket prices available for this show. Once more, this is a bi-directional relationship, owned by the show. It looks just like the set of performances.
+We'll also need to add the set of ticket prices available for this show. Once more, this is a bi-directional relationship, owned by the show. It looks just like the set of performances:
+
+.src/main/java/org/jboss/examples/ticketmonster/model/Show.java
+[source,java]
+-------------------------------------------------------------------------------------------------------
+
+    ...
+
+    /**
+     * <p>
+     * The set of ticket prices available for this show.
+     * </p>
+     *
+     * <p>
+     * The <code>@OneToMany<code> JPA mapping establishes this relationship.
+     * This relationship is bi-directional (a ticket price category knows which show it is part of), and the <code>mappedBy</code>
+     * attribute establishes this. We cascade all persistence operations to the set of performances, so, for example if a show
+     * is removed, then all of it's ticket price categories are also removed.
+     * </p>
+     */
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<TicketPrice> ticketPrices = new HashSet<TicketPrice>();
+
+    ...
+
+    public Set<TicketPrice> getTicketPrices() {
+        return ticketPrices;
+    }
+
+    public void setTicketPrices(Set<TicketPrice> ticketPrices) {
+        this.ticketPrices = ticketPrices;
+    }
+
+    ...
+
+-------------------------------------------------------------------------------------------------------
 
 Here's the full source for `Show`:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Show.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Show.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -1567,7 +1631,7 @@ public class Show implements Serializable {
 The `Show` entity references two classes - `TicketPrice` and `Performance`, that are not yet created. Let's first create the `TicketPrice` class which represents the price for a ticket in a particular `Section` at a `Show` for a specific `TicketCategory`. It does not introduce any new concepts, so go ahead and copy the source from the below listing:
 
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketPrice.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketPrice.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 /**
@@ -1728,7 +1792,7 @@ public class TicketPrice implements Serializable {
 
 Finally, let's create the `Performance` class, which represents an instance of a `Show`. Performance is pretty straightforward. It contains the date and time of the performance, and the show of which it is a performance. Together, the show, and the date and time, make up the natural identity of the performance. Here's the source for `Performance`:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Performance.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Performance.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -1743,9 +1807,10 @@ Finally, let's create the `Performance` class, which represents an instance of a
  * </p>
  * 
  */
+@SuppressWarnings("serial")
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "date", "show_id" }))
-public class Performance {
+public class Performance implements Serializable {
 
     /* Declaration of fields */
 
@@ -1858,7 +1923,7 @@ Once the user has selected an event, identified the venue, and selected a perfor
 
 A booking consists of the date the booking was created, an email address (as TicketMonster doesn't yet have fully fledged user management), a set of tickets and the associated performance. The set of tickets shows us how to create a uni-directional one-to-many relationship:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Booking.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Booking.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
 
@@ -1881,7 +1946,8 @@ A booking consists of the date the booking was created, an email address (as Tic
      * 
      */
     @OneToMany(fetch = EAGER, cascade = ALL)
-    @JoinColumn    @NotEmpty
+    @JoinColumn
+    @NotEmpty
     @Valid
     private Set<Ticket> tickets = new HashSet<Ticket>();
 
@@ -1901,7 +1967,7 @@ Finally, we'd like to track the seats to be allocated from a section during the 
 The notable member in this class is the two-dimensional array, named `allocated`. It tracks the state of the section - the first dimension represents the rows in the section, and the second represents the state of every seat in the row. A typical RDBMS would have to store such a structure as a LOB (Large Object) or a BLOB (Binary Large Object), since a n-dimensional array does not map easily to a native data type supported by the database. Thus, we denote the field as a `@Lob` using the JPA annotation:
 
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/SectionAllocation.java
+.src/main/java/org/jboss/examples/ticketmonster/model/SectionAllocation.java
 [source,java]
 -------------------------------------------------------------------------------------------------------
     ...

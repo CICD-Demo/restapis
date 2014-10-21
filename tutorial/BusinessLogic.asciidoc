@@ -127,8 +127,6 @@ Verify that the property `jboss.bom.version` contains the value `6.2.3.GA` or hi
 </project>
 ---------------------------------------------------------------------------------
 
-Doing so will ensure that ShrinkWrap Resolvers 2.0.0.Final is present in the test classpath.
-This would be used in the Arquillian tests for the application.
 
 === Enabling CDI
 
@@ -174,9 +172,10 @@ disposing of them as needed.
 
 Next, we add some helper classes providing low-level utilities for the application. We won't get in their implementation details here, but you can study their source code for details.
 
-Copy the following classes from the original example to `src/main/java/org/jboss/jdf/example/ticketmonster/util`:
+Copy the following classes from the original example to `src/main/java/org/jboss/examples/ticketmonster/util`:
 
 * `Base64`
+* `CircularBuffer`
 * `ForwardingMap`
 * `MultivaluedHashMap`
 * `Reflections`
@@ -197,7 +196,7 @@ successfully even if the provider is down. The `MediaManager` is a good illustra
 
 We begin by creating `MediaManager`:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaManager.java
+.src/main/java/org/jboss/examples/ticketmonster/service/MediaManager.java
 [source,java]
 ------------------------------------------------------------------------------------------
 /**
@@ -227,7 +226,7 @@ public class MediaManager {
     static {
         String dataDir = System.getenv("OPENSHIFT_DATA_DIR");
         String parentDir = dataDir != null ? dataDir : System.getProperty("java.io.tmpdir");
-        tmpDir = new File(parentDir, "org.jboss.jdf.examples.ticket-monster");
+        tmpDir = new File(parentDir, "org.jboss.examples.ticket-monster");
         if (tmpDir.exists()) {
             if (tmpDir.isFile())
                 throw new IllegalStateException(tmpDir.getAbsolutePath() + " already exists, and is a file. Remove it.");
@@ -393,7 +392,7 @@ public class MediaManager {
 
 The service delegates to a number of internal methods that do the heavy lifting, but exposes a simple API, to the external observer it simply converts the `MediaItem` entities into `MediaPath` data structures, that can be used by the application to load the binary data of the media item. The service will retrieve and cache the data locally in the filesystem, if possible (e.g. streamed videos aren't cacheable!).
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaPath.java
+.src/main/java/org/jboss/examples/ticketmonster/service/MediaPath.java
 [source,java]
 ------------------------------------------------------------------------------------------
 public class MediaPath {
@@ -427,7 +426,7 @@ The service can be injected by type into the components that depend on it.
 
 We should also control the lifecycle of this service. The `MediaManager` stores request-specific state, so should be scoped to the web request, the CDI `@RequestScoped` is perfect.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/MediaManager.java
+.src/main/java/org/jboss/examples/ticketmonster/service/MediaManager.java
 [source,java]
 ------------------------------------------------------------------------------------------
    ...
@@ -440,11 +439,11 @@ public class MediaManager {
 === The Seat Allocation Service
 
 
-The seat allocation service finds free seats at booking time, in a given section of the venue. It is a good example of how a service can coordinate infrastructure services (using the injected persistence unit to get access to the `ServiceAllocation` instance) and domain objects (by invoking the `allocateSeats` method on a concrete allocation instance).
+The seat allocation service finds free seats at booking time, in a given section of the venue. It is a good example of how a service can coordinate infrastructure services (using the injected persistence unit to get access to the `SeatAllocation` instance) and domain objects (by invoking the `allocateSeats` method on a concrete allocation instance).
 
 Isolating this functionality in a service class makes it possible to write simpler, self-explanatory code in the layers above and opens the possibility of replacing this code at a later date with a more advanced implementation (for example one using an in-memory cache).
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/SeatAllocationService.java
+.src/main/java/org/jboss/examples/ticketmonster/service/SeatAllocationService.java
 [source,java]
 ------------------------------------------------------------------------------------------
 @SuppressWarnings("serial")
@@ -485,7 +484,7 @@ public class SeatAllocationService implements Serializable {
 
 Next, we define the `AllocatedSeats` class that we use for storing seat reservations for a booking, before they are made persistent.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/AllocatedSeats.java
+.src/main/java/org/jboss/examples/ticketmonster/service/AllocatedSeats.java
 [source,java]
 ------------------------------------------------------------------------------------------
 public class AllocatedSeats {
@@ -523,13 +522,40 @@ To pass data across the wire we use JSON as the data marshalling format, as it i
 
 === Initializing JAX-RS
 
+We shall ensure that the required dependencies are present in the project POM, to setup JAX-RS in the project:
+
+.pom.xml
+[source,xml]
+------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    ...
+    <dependencies>
+        ...
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+------------------------------------------------------------------------------------------
+
+Some of these may already be present in the project POM, and should not be added again.
 
 To activate JAX-RS we add the class below, which instructs the container to look for JAX-RS
 annotated classes and install them as endpoints. This class should exist already in your
 project, as it is generated by the archetype, so make sure that it is there and it contains the
 code below:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/JaxRsActivator.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/JaxRsActivator.java
 [source,java]
 ------------------------------------------------------------------------------------------
 @ApplicationPath("/rest")
@@ -545,7 +571,7 @@ All the JAX-RS services are mapped relative to the `/rest` path, as defined by t
 
 Most JAX-RS services must provide both a (filtered) list of entities or individual entity (e.g. events, venues and bookings). Instead of duplicating the implementation into each individual service we create a base service class and wire the helper objects in.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BaseEntityService.java
 [source,java]
 -----------------------------------------------------------------------------------------
 /**
@@ -614,7 +640,7 @@ public abstract class BaseEntityService<T> {
 
 Now we add a method to retrieve all entities of a given type:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BaseEntityService.java
 [source,java]
 -----------------------------------------------------------------------------------------
 public abstract class BaseEntityService<T> {
@@ -692,7 +718,7 @@ Subclasses can also override the `extractPredicates` method and add own support 
 
 The `getAll` method supports retrieving a range of entities, which is especially useful when we need to handle very large sets of data, and use pagination. In those cases, we need to support counting entities as well, so we add a method that retrieves the entity count:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BaseEntityService.java
 [source,java]
 -----------------------------------------------------------------------------------------
 public abstract class BaseEntityService<T> {
@@ -729,7 +755,7 @@ We use the `@Path` annotation to map the new method to a sub-path of '/rest/<ent
 
 Next, we add a method for retrieving individual entities.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BaseEntityService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BaseEntityService.java
 [source,java]
 -----------------------------------------------------------------------------------------
    ...
@@ -770,7 +796,7 @@ Now, all the JAX-RS endpoints that subclass `BaseEntityService` will get two ope
 
 Adding support for retrieving venues is now extremely simple. We refactor the class we created during the introduction, and make it extend `BaseEntityService`, passing the entity type to the superclass constructor. We remove the old retrieval code, which is not needed anymore.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/VenueService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/VenueService.java
 [source,java]
 ------------------------------------------------------------------------------------------
 /**
@@ -800,9 +826,9 @@ We add the `@Path` annotation to the class, to indicate that this is a JAX-RS re
 We define this service (along with all the other JAX-RS services) as an EJB (see how simple is that in Java EE 6!) to benefit from automatic transaction enrollment. Since the service is fundamentally stateless, we take advantage of the new EJB 3.1 singleton feature.
 
 Before we proceed, . Retrieving shows from URLs like `/rest/venues` or `/rest/venues/1` almost always results in invalid JSON responses.
-The root cause is the presence of a bi-directional relationship in the `Venue` entity. A `Venue` contains a 1:M relationship with `Section`s that also links back to a `Venue`. JSON serialiers like Jackson (the one used in JBoss Enterprise Application Platform) need to be instructed on how to handle such cycles in object graphs, failing which the serializer will traverse between the entities in the cycle, resulting in an infinite loop (and often an `OutOfMemoryError` or a `StackOverflowError`). We'll address this, by instructing Jackson to not serialize the `venue` field in a `Section`, through the `@JsonIgnoreProperties` annotation on the `Section` entity:
+The root cause is the presence of a bi-directional relationship in the `Venue` entity. A `Venue` contains a 1:M relationship with `Section` s that also links back to a `Venue`. JSON serialiers like Jackson (the one used in JBoss Enterprise Application Platform) need to be instructed on how to handle such cycles in object graphs, failing which the serializer will traverse between the entities in the cycle, resulting in an infinite loop (and often an `OutOfMemoryError` or a `StackOverflowError`). We'll address this, by instructing Jackson to not serialize the `venue` field in a `Section`, through the `@JsonIgnoreProperties` annotation on the `Section` entity:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Section.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Section.java
 [source,java]
 ------------------------------------------------------------------------------------------
 ...
@@ -823,7 +849,7 @@ Just like `VenueService`, the `EventService` implementation we use for TicketMon
 
 One additional functionality we will implement is querying events by category. We can use URLs like `/rest/events?category=1` to retrieve all concerts, for example (`1` is the category id of concerts). This is done by overriding the `extractPredicates` method to handle any query parameters (in this case, the `category` parameter).
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/EventService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/EventService.java
 [source,java]
 ------------------------------------------------------------------------------------------
 /**
@@ -878,9 +904,9 @@ public class EventService extends BaseEntityService<Event> {
 
 The `ShowService` follows the same pattern and we leave the implementation as an exercise to the reader (knowing that its contents can always be copied over to the appropriate folder).
 
-Just like the `Venue` entity, a `Show` also contains bi-directional relationships that need to be handled as a special case for the JSON serializer. A `Show` contains a 1:M relationship with `Performance`s that also links back to a `Show`; a `Show` also contains a 1:M relationship with `TicketPrice`s that also links back to a `Show`. We'll address this, by instructing Jackson to not serialize the `show` field in a `Performance`, through the `@JsonIgnoreProperties` annotation on the `Performance` entity:
+Just like the `Venue` entity, a `Show` also contains bi-directional relationships that need to be handled as a special case for the JSON serializer. A `Show` contains a 1:M relationship with `Performance` s that also links back to a `Show`; a `Show` also contains a 1:M relationship with `TicketPrice` s that also links back to a `Show`. We'll address this, by instructing Jackson to not serialize the `show` field in a `Performance`, through the `@JsonIgnoreProperties` annotation on the `Performance` entity:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/Performance.java
+.src/main/java/org/jboss/examples/ticketmonster/model/Performance.java
 [source,java]
 ------------------------------------------------------------------------------------------
 ...
@@ -894,7 +920,7 @@ public class Performance implements Serializable {
 
 Likewise, we'll also instruct Jackson to not serialize the `Show` in a `TicketPrice`:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/model/TicketPrice.java
+.src/main/java/org/jboss/examples/ticketmonster/model/TicketPrice.java
 [source,java]
 ------------------------------------------------------------------------------------------
 ...
@@ -913,7 +939,7 @@ Of course, we also want to change data with our services - we want to create and
 
 To create a booking, we add a new method, which handles `POST` requests to `/rest/bookings`. This is not a simple CRUD method, as the client does not send a booking, but a booking request. It is the responsibility of the service to process the request, reserve the seats and return the full booking details to the invoker.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BookingService.java
 [source,java]
 ------------------------------------------------------------------------------------------
 /**
@@ -993,7 +1019,7 @@ public class BookingService extends BaseEntityService<Booking> {
             // The process will acquire a write lock for a given section and performance
             // Use deterministic ordering of sections to prevent deadlocks
             Map<Section, AllocatedSeats> seatsPerSection = 
-			       new TreeMap<Section, org.jboss.jdf.example.ticketmonster.service.AllocatedSeats>(SectionComparator.instance());
+			       new TreeMap<Section, org.jboss.examples.ticketmonster.service.AllocatedSeats>(SectionComparator.instance());
             List<Section> failedSections = new ArrayList<Section>();
             for (Section section : ticketRequestsPerSection.keySet()) {
                 int totalTicketsRequestedPerSection = 0;
@@ -1096,7 +1122,7 @@ of an injection point - the field annotated with `@Inject`.
 
 We would like other parts of the application to be aware of the fact that a new booking has been created, therefore we use the CDI to fire an event. We do so by injecting an `Event<Booking>` instance into the service (indicating that its payload will be a booking). In order to individually identify this event as referring to event creation, we use a CDI qualifier, which we need to add:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/util/qualifier/Created.java
+.src/main/java/org/jboss/examples/ticketmonster/util/qualifier/Created.java
 [source, java]
 ------------------------------------------------------------------------------------------
 /**
@@ -1121,7 +1147,7 @@ qualifiers to narrow down the set of candidates
 
 We also need allow the removal of bookings, so we add a method:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BookingService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BookingService.java
 [source,java]
 ------------------------------------------------------------------------------------------
 @Singleton
@@ -1147,7 +1173,7 @@ public class BookingService extends BaseEntityService<Booking> {
         }
         getEntityManager().remove(booking);
         cancelledBookingEvent.fire(booking);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 }
 ------------------------------------------------------------------------------------------
@@ -1156,7 +1182,7 @@ We use the `@DELETE` annotation to indicate that it will be executed as the resu
 
 We need to notify the other components of the cancellation of the booking, so we fire an event, with a different qualifier.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/util/qualifier/Cancelled.java
+.src/main/java/org/jboss/examples/ticketmonster/util/qualifier/Cancelled.java
 [source, java]
 ------------------------------------------------------------------------------------------
 /**
@@ -1211,7 +1237,7 @@ In order to create Arquillian tests, we need to define the deployment. The code 
 
 Much of the deployment contents is common for all tests, so we create a helper class with a method that creates the base deployment with all the general content.
 
-.src/test/java/org/jboss/jdf/ticketmonster/test/TicketMonsterDeployment.java
+.src/test/java/org/jboss/examples/ticketmonster/test/TicketMonsterDeployment.java
 [source,java]
 ------------------------------------------------------------------------------------------
 public class TicketMonsterDeployment {
@@ -1233,7 +1259,7 @@ Remember to copy over the `test-persistence.xml` file into the `src/test/resourc
 
 Arquillian uses Shrinkwrap to define the contents of the deployment. At runtime, when the test executes, Arquillian employs Shrinkwrap to create a WAR file that will be deployed to a running instance of JBoss Enterprise Application Platform. The WAR file would be composed of:
 
-* all classes from the `org.jboss.jdf.example.ticketmonster.util` package,
+* all classes from the `org.jboss.examples.ticketmonster.util` package,
 * the test `persistence.xml` file that defines a JPA persistence unit against a test datasource,
 * the `import.sql` file,
 * an empty `beans.xml` file to activate CDI
@@ -1246,7 +1272,7 @@ We use a separate data source for our integration tests, and we recommend the sa
 
 For testing our JAX-RS RESTful services, we need to add the corresponding application classes to the deployment. Since we need to do that for each test we create, we abide by the DRY principles and create a utility class.
 
-.src/test/java/org/jboss/jdf/ticketmonster/test/rest/RESTDeployment.java
+.src/test/java/org/jboss/examples/ticketmonster/test/rest/RESTDeployment.java
 [source,java]
 ------------------------------------------------------------------------------------------
 public class RESTDeployment {
@@ -1264,7 +1290,7 @@ public class RESTDeployment {
 
 Now, we create the first test to validate the proper retrieval of individual events.
 
-.src/test/java/org/jboss/jdf/ticketmonster/test/rest/VenueServiceTest.java
+.src/test/java/org/jboss/examples/ticketmonster/test/rest/VenueServiceTest.java
 [source,java]
 ------------------------------------------------------------------------------------------
 @RunWith(Arquillian.class)
@@ -1294,7 +1320,7 @@ In the class above we specify the deployment, and we define the test method. The
 
 Now, we test a more complicated use cases, query parameters for pagination.
 
-.src/test/java/org/jboss/jdf/ticketmonster/test/rest/VenueServiceTest.java
+.src/test/java/org/jboss/examples/ticketmonster/test/rest/VenueServiceTest.java
 [source,java]
 ------------------------------------------------------------------------------------------
 ...
@@ -1326,7 +1352,7 @@ search criteria as parameters. We use a Map to simulate the passing of query par
 
 Now, we test more advanced use cases such as the creation of a new booking. We do so by adding a new test for bookings
 
-.src/test/java/org/jboss/jdf/ticketmonster/test/rest/BookingServiceTest.java
+.src/test/java/org/jboss/examples/ticketmonster/test/rest/BookingServiceTest.java
 [source,java]
 ------------------------------------------------------------------------------------------
 @RunWith(Arquillian.class)
@@ -1497,7 +1523,7 @@ public class BookingServiceTest {
 First we test booking creation in a test method of its own (`testCreateBookings`). Then, we test that the previously created bookings
 are retrieved correctly (`testGetBookings` and `testPagination`). Finally, we test that deletion takes place correctly (`testDelete`).
 
-The other tests in the application follow roughly the same pattern and are left as an exercise to the reader.
+The other tests in the application follow roughly the same pattern and are left as an exercise to the reader. You could in fact copy over the `EventServiceTest` and `ShowServiceTest` classes from the project sources.
 
 === Running the tests
 

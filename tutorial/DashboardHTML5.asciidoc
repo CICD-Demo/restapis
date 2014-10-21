@@ -17,18 +17,18 @@ In this tutorial, we will create a booking monitor using Backbone.js, and add it
 
 The Metrics service publishes metrics for every show. These metrics include the capacity of the venue for the show, as well as the occupied count. Since these metrics are computed from persisted data, we'll not create any classes to represent them in the data model. We shall however create new classes to serve as their representations for the REST APIs:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/ShowMetric.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/ShowMetric.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
+package org.jboss.examples.ticketmonster.rest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.model.Show;
+import org.jboss.examples.ticketmonster.model.Performance;
+import org.jboss.examples.ticketmonster.model.Show;
 
 /**
  * Metric data for a Show. Contains the identifier for the Show to identify it,
@@ -88,18 +88,18 @@ class ShowMetric {
 }
 ---------------------------------------------------------------------------------------------------------
 
-The `ShowMetric` class is used to represent the structure of a `Show` in the metrics API. It contains the show identifier, the `Event` name for the `Show`, the `Venue` name for the `Show`, the capacity of the `Venue` and a collection of `PerformanceMetric` instances to represent metrics for individual `Performance`s for the `Show`.
+The `ShowMetric` class is used to represent the structure of a `Show` in the metrics API. It contains the show identifier, the `Event` name for the `Show`, the `Venue` name for the `Show`, the capacity of the `Venue` and a collection of `PerformanceMetric` instances to represent metrics for individual `Performance` s for the `Show`.
 
 The `PerformanceMetric` is represented as:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceMetric.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceMetric.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
+package org.jboss.examples.ticketmonster.rest;
 
 import java.util.Date;
 
-import org.jboss.jdf.example.ticketmonster.model.Performance;
+import org.jboss.examples.ticketmonster.model.Performance;
 
 /**
  * Metric data for a Performance. Contains the datetime for the performance to
@@ -135,10 +135,10 @@ This class represents the date-time instance of `Performance` in addition to the
 
 The next class we need is the `MetricsService` class that responds with representations of `ShowMetric` instances in response to HTTP GET requests:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/MetricsService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/MetricsService.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
+package org.jboss.examples.ticketmonster.rest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,7 +155,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.jboss.jdf.example.ticketmonster.model.Show;
+import org.jboss.examples.ticketmonster.model.Show;
 
 /**
  * A read-only REST resource that provides a collection of metrics for shows occuring in the future. Updates to metrics via
@@ -235,10 +235,10 @@ We'd also like to implement a `Bot` service that would mimic a set of real users
 
 We will implement the `Bot` as an EJB that will utlize the container-provided `TimerService` to periodically perform bookings of a random number of tickets on randomly selected performances:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/Bot.java
+.src/main/java/org/jboss/examples/ticketmonster/service/Bot.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.service;
+package org.jboss.examples.ticketmonster.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -258,12 +258,12 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.model.Show;
-import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
-import org.jboss.jdf.example.ticketmonster.rest.*;
-import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
-import org.jboss.jdf.example.ticketmonster.util.qualifier.BotMessage;
+import org.jboss.examples.ticketmonster.model.Performance;
+import org.jboss.examples.ticketmonster.model.Show;
+import org.jboss.examples.ticketmonster.model.TicketPrice;
+import org.jboss.examples.ticketmonster.rest.*;
+import org.jboss.examples.ticketmonster.util.MultivaluedHashMap;
+import org.jboss.examples.ticketmonster.util.qualifier.BotMessage;
 
 @Stateless
 public class Bot {
@@ -338,7 +338,7 @@ public class Bot {
         for (int index : indicies) {
             int no = random.nextInt(MAX_TICKETS_PER_REQUEST);
             TicketPrice price = possibleTicketPrices.get(index);  
-            bookingRequest.addTicketRequest(new TicketReservationRequest(price.getId(), no));
+            bookingRequest.addTicketRequest(new TicketRequest(price, no));
             message
                 .append(no)
                 .append(" of ")
@@ -401,10 +401,10 @@ The `start()` and `stop(Timer timer)` methods are used to control the lifecycle 
 
 The Bot also fires CDI events containing log messages. To qualify the `String` messages produced by the Bot, we'll use the `BotMesssage` qualifier:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/util/qualifier/BotMessage.java
+.src/main/java/org/jboss/examples/ticketmonster/util/qualifier/BotMessage.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.util.qualifier;
+package org.jboss.examples.ticketmonster.util.qualifier;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -429,10 +429,10 @@ public @interface BotMessage {
 
 The next step is to create a facade for the Bot that invokes the Bot's `start` and `stop` methods:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/service/BotService.java
+.src/main/java/org/jboss/examples/ticketmonster/service/BotService.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.service;
+package org.jboss.examples.ticketmonster.service;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -444,11 +444,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.jdf.example.ticketmonster.model.Booking;
-import org.jboss.jdf.example.ticketmonster.rest.BookingService;
-import org.jboss.jdf.example.ticketmonster.util.CircularBuffer;
-import org.jboss.jdf.example.ticketmonster.util.MultivaluedHashMap;
-import org.jboss.jdf.example.ticketmonster.util.qualifier.BotMessage;
+import org.jboss.examples.ticketmonster.model.Booking;
+import org.jboss.examples.ticketmonster.rest.BookingService;
+import org.jboss.examples.ticketmonster.util.CircularBuffer;
+import org.jboss.examples.ticketmonster.util.MultivaluedHashMap;
+import org.jboss.examples.ticketmonster.util.qualifier.BotMessage;
 
 /**
  * A Bot service that acts as a Facade for the Bot, providing methods to control the Bot state as well as to obtain the current
@@ -545,10 +545,10 @@ We shall now proceed to create a `BotStatusService` class that exposes the opera
 
 The BotState is just an enumeration:
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BotState.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BotState.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
+package org.jboss.examples.ticketmonster.rest;
 
 /**
  * An enumeration that represents the possible states for the Bot.
@@ -562,10 +562,10 @@ The `RUNNING` and `NOT_RUNNING` values are obvious. The `RESET` value is used to
 
 The `BotStatusService` will be located at the `/bot` path. It would respond to GET requests at the `/messages` sub-path with the contents of the Bot's log. It will respond to GET requests at the `/status` sub-path with the JSON representation of the current BotState. And finally, it will respond to PUT requests containing the JSON representation of the BotState, provided tothe `/status` sub-path, by triggering a state change; a HTTP 204 response is returned in this case.
 
-.src/main/java/org/jboss/jdf/example/ticketmonster/rest/BotStatusService.java
+.src/main/java/org/jboss/examples/ticketmonster/rest/BotStatusService.java
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
+package org.jboss.examples.ticketmonster.rest;
 
 import java.util.List;
 
@@ -577,7 +577,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.jdf.example.ticketmonster.service.BotService;
+import org.jboss.examples.ticketmonster.service.BotService;
 
 /**
  * A non-RESTful service for providing the current state of the Bot. This service also allows the bot to be started, stopped or
@@ -747,13 +747,20 @@ define([
             _.bind(this.liveUpdate, this);
             this.collection.on("add remove change", this.render, this);
             var self = this;
-            $.when(this.collection.fetch())
-                .done(function(){
-                    self.liveUpdate();
-                });
+            $.when(this.collection.fetch({
+                error : function() {
+                    utilities.displayAlert("Failed to retrieve metrics from the TicketMonster server.");
+                }
+            })).done(function(){
+                self.liveUpdate();
+            });
         },
         liveUpdate : function() {
-            this.collection.fetch();
+            this.collection.fetch({
+                error : function() {
+                    utilities.displayAlert("Failed to retrieve metrics from the TicketMonster server.");
+                }
+            });
             var self = this;
             this.timerObject = setTimeout(function(){
                 self.liveUpdate();
@@ -784,7 +791,7 @@ When the view is closed/destroyed, the associated timer if present is cleared.
 .src/main/webapp/resources/templates/desktop/metrics.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="span7">
+<div class="col-md-12">
   <h3 class="page-header light-font special-title">Booking status</h3>
   <div id="status-content">
       <%
@@ -793,12 +800,14 @@ When the view is closed/destroyed, the associated timer if present is cleared.
       <div class="show-status">
         <div class="show-status-header"><%=show.get('event')%> @ <%=show.get('venue')%></div>
         <%_.each(show.get('performances'), function (performance) {%>
-        <div class="performance-status">
-          <div class="pull-left"><%=new Date(performance.date).toLocaleString()%></div>
-          <div class="pull-left performance-status-progress progress progress-success">
-            <div style="width: <%=(performance.occupiedCount)/(show.get('capacity'))*100%>%;" class="bar"></div>
+        <div class="row">
+          <div class="col-md-4"><%=new Date(performance.date).toLocaleString()%></div>
+          <div class="col-md-4">
+            <div class="progress">
+              <div style="width: <%=(performance.occupiedCount)/(show.get('capacity'))*100%>%;" class="progress-bar progress-bar-success"></div>
+            </div>
           </div>
-          <div><%=performance.occupiedCount%> of <%=show.get('capacity')%> tickets booked</div>
+          <div class="col-md-4"><%=performance.occupiedCount%> of <%=show.get('capacity')%> tickets booked</div>
         </div>
         <% }); %>
       </div>
@@ -985,7 +994,7 @@ The startBot, stopBot and resetBot event handlers are setup to handle click even
 .src/main/webapp/resources/templates/desktop/bot.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="span5">
+<div class="col-md-12">
   <h3 class="page-header light-font special-title">Bot</h3>
   <div id="bot-content">
     <div class="btn-group">
@@ -1063,10 +1072,10 @@ The HTML template used by the composite just lays out a structure for the sub-vi
 .src/main/webapp/resources/templates/desktop/monitor.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="container-fluid">
+<div class="container">
   <div class="row">
-    <div id="metrics-view" class="span7"></div>
-    <div id="bot-view" class="span5"></div>
+    <div id="metrics-view" class="col-md-7"></div>
+    <div id="bot-view" class="col-md-5"></div>
   </div>
 </div>
 -------------------------------------------------------------------------------------------------------

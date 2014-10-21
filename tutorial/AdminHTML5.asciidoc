@@ -139,6 +139,42 @@ Let’s add support for images to the Admin UI. `Events` and `Venues` have `Medi
         ...
 ------------------------------------------------------------------------------------------
 
+Now that the bindings are set, we'll modify the underlying controllers to provide the URL of the MediaItem when the `{{mediaItemSelection.text}}` expression is evaluated:
+
+.src/main/webapp/admin/scripts/scripts/controllers/editEventController.js
+[source,html]
+------------------------------------------------------------------------------------------
+...
+            MediaItemResource.queryAll(function(items) {
+                $scope.mediaItemSelectionList = $.map(items, function(item) {
+                    ...
+                    var labelObject = {
+                        value : item.id,
+                        text : item.url
+                    };
+                    ...
+                });
+            });
+...
+------------------------------------------------------------------------------------------
+
+.src/main/webapp/admin/scripts/scripts/controllers/editVenueController.js
+[source,html]
+------------------------------------------------------------------------------------------
+...
+            MediaItemResource.queryAll(function(items) {
+                $scope.mediaItemSelectionList = $.map(items, function(item) {
+                    ...
+                    var labelObject = {
+                        value : item.id,
+                        text : item.url
+                    };
+                    ...
+                });
+            });
+...
+------------------------------------------------------------------------------------------
+
 The admin site will now display the corresponding image if a media item is associated with the venue or event.
 
 [TIP]
@@ -396,6 +432,71 @@ We shall now proceed to modify the AngularJS views to use the new properties in 
                     <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.section.name}}</a></td>
                     <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.ticketCategory.description}}</a></td>
 ------------------------------------------------------------------------------------------
+
+
+=== Fixing the landing page of the Administration site
+
+The generated administration site contains a landing page - `app.html` that works well as a standalone site.
+However, we need to fix this page to make it work with the rest of the site.
+
+For brevity, the significant sections of the corrected page are listed below:
+
+.src/main/webapp/admin/app.html
+[source,html]
+------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en" ng-app="ticketmonster">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket-monster</title>
+    <link href='http://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'/>
+    <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="styles/bootstrap-theme.css" rel="stylesheet" media="screen">
+    <link href="styles/main.css" rel="stylesheet" media="screen">
+    <link href="styles/custom-forge.css" rel="stylesheet" media="screen">
+</head>
+<body>
+    <div id="wrap">
+      
+      <div id="logo" class="hidden-xs"><div class="wrap"><h1>Ticket Monster</h1></div></div>
+      <div class="navbar">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle pull-left" data-toggle="collapse" data-target="#navbar-items">
+                    <span class="glyphicon glyphicon-list"> Links</span>
+                </button>
+                <button type="button" class="navbar-toggle" data-toggle="offcanvas">
+                    TicketMonster Entities <span class="glyphicon glyphicon-th text-right"></span>
+                </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div id="navbar-items" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#events">Events</a></li>
+                    <li><a href="../index.html#venues">Venues</a></li>
+                    <li><a href="../index.html#bookings">Bookings</a></li>
+                    <li><a href="../index.html#monitor">Monitor</a></li>
+                    <li><a href="#">Administration</a></li>
+                </ul>
+            </div>
+      </div>
+        
+      <div class="container">
+      
+          ...
+      
+      </div>
+
+      ...    
+
+</body>
+</html>
+------------------------------------------------------------------------------------------
+
+It is sufficient to copy the corrected page from the project sources. Additionally, do not forget to copy the `src/main/webapp/admin/styles/custom-forge.css` file, that we now reference in the corrected page.
+
 
 == Updating the ShrinkWrap deployment for the test suite
 

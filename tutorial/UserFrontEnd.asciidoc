@@ -85,6 +85,11 @@ Backbone::
     Client-side MVC framework
 Bootstrap::
     UI components and stylesheets for page structuring
+Modernizr::
+    JavaScript library for HTML5 and CSS3 feature detection
+    
+
+You can copy these libraries (with associated stylesheets) from the project sources. You can also copy the CSS stylesheet in `screen.css`, since we'll include this stylesheet in the HTML. Addtionally, copy the images from the `src/main/webapp/resources/img` directory in the project sources to the equivalent one in your workspace.
 
 Now, we create the main page of the application (which is the URL loaded by the browser):
 
@@ -196,6 +201,8 @@ define("configuration", {
 
 The module loads all the utility libraries, converting them to AMD modules where necessary (like it is the case for Backbone). It also defines two modules of its own - an initializer that loads the application stylesheets for the page, and the `configuration` module that allows customizing the REST service URLs (this will become in handy in a further tutorial).
 
+We also define some utility JavaScript functions that are used in the rest of the front-end in a `utilities` module (also referenced in the `desktop` module above). For convenience, copy the `utilities.js` file from the `src/main/webapp/resources/js/app/` directory in the project sources.
+
 Before we add any functionality, let us create a first landing page. We will begin by setting up a critical piece of the application, the router.
 
 === Routing
@@ -214,7 +221,6 @@ define("router", [
     'underscore',
     'configuration',
     'utilities',
-    'app/views/desktop/home',
     'text!../templates/desktop/main.html'
 ],function ($,
             _,
@@ -253,7 +259,7 @@ Remember, this is a single page application. You can either navigate using urls 
 
 During the router set up, we load the page template for the entire application. TicketMonster uses a templating library in order to separate application logic from it's actual graphical content. The actual HTML is described in template files, which are applied by the application, when necessary, on a DOM element - effectively populating it's content. So the general content of the page, as described in the `body` element is described in a template file too. Let us define it.
 
-./src/main/webapp/resources/templates/desktop/main.html
+.src/main/webapp/resources/templates/desktop/main.html
 -------------------------------------------------------------------------------------------------------
 <!--
     The main layout of the page - contains the menu and the 'content' &lt;div/&gt; in which all the
@@ -263,27 +269,37 @@ During the router set up, we load the page template for the entire application. 
 <div id="container">
     <div id="menu">
         <div class="navbar">
-            <div class="navbar-inner">
-                <div class="container">
-                    <ul class="nav">
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#events">Events</a></li>
-                        <li><a href="#venues">Venues</a></li>
-                        <li><a href="#bookings">Bookings</a></li>
-                        <li><a href="booking-monitor.html">Monitor</a></li>
-                        <li><a href="admin">Administration</a></li>
-                    </ul>
-                </div>
+            <!-- Toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-items">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div id="navbar-items" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#venues">Venues</a></li>
+                    <li><a href="#bookings">Bookings</a></li>
+                    <li><a href="#monitor">Monitor</a></li>
+                    <li><a href="admin">Administration</a></li>
+                </ul>
             </div>
         </div>
     </div>
-    <div id="content" class="container-fluid">
+    <div id="content" class="container">
     </div>
 </div>
 
 <footer style="">
-    <div style="text-align: center;"><img src="resources/img/dualbrand_as7eap.png" alt="HTML5"/></div>
+    <div style="text-align: center;"><img src="resources/img/rhjb_eap_logo.png" alt="HTML5"/></div>
 </footer>
+
 -------------------------------------------------------------------------------------------------------
 
 The actual HTML code of the template contains a menu definition which will be present on all the pages, as well as an empty element named `content`, which is the placeholder for the application views. When a view is displayed, it will apply a template and populate the `content` element.
@@ -318,16 +334,9 @@ define([
 Functionally, this is a very basic component - it only renders the splash page of the application, but it helps us
 introduce a new concept that will be heavily used throughout the application views. One main role of a view is to 
 describe the logic for manipulating the page content. It will do so by defining a function named `render` which
-will be invoked by the application. In this very simple case, all that the view does is to create the content of the splash page. You can proceed by copying the content of `src/main/webapp/resources/templates/desktop/home.html` to your
-project. You can also copy the files referenced in `home.html`, from the project sources:
+will be invoked by the application. In this very simple case, all that the view does is to create the content of the splash page.
+You can proceed by copying the content of `src/main/webapp/resources/templates/desktop/home.html` to your project.
 
-* `src/main/webapp/resources/img/glyphicons_163_iphone.png`
-* `src/main/webapp/resources/img/glyphicons_232_cloud.png`
-* `src/main/webapp/resources/img/glyphicons_351_book_open.png`
-* `src/main/webapp/resources/img/jdf_mark_50px.png`
-* `src/main/webapp/resources/img/GitHub_Logo.png`
-* `src/main/webapp/resources/img/splash-ticketmonster.png`
-* `src/main/webapp/resources/img/glyphicons_019_cogwheel.png`
 
 [TIP]
 
@@ -497,7 +506,6 @@ define([
             utilities.applyTemplate($(this.el), eventsTemplate, {categories:categories, model:this.model})
             $(this.el).find('.item:first').addClass('active');
             $(".carousel").carousel();
-            $(".collapse").collapse();
             $("a[rel='popover']").popover({trigger:'hover',container:'body'});
             return this;
         },
@@ -515,21 +523,21 @@ As we explained, earlier, the view is attached to a DOM element (the `el` proper
 .src/main/webapp/resources/templates/desktop/events.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="row-fluid">
-    <div class="span3">
-        <div id="itemMenu">
+<div class="row">
+    <div class="col-md-3 col-md-offset-1">
+        <div class="panel" id="itemMenu">
 
             <%
             _.each(categories, function (category) {
             %>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle"
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-toggle"
                        data-target="#category-<%=category.id%>-collapsible" data-toggle="collapse"
                        data-parent="#itemMenu"><%= category.description %></a>
                 </div>
-                <div id="category-<%=category.id%>-collapsible" class="collapse in accordion-body">
-                    <div id="category-<%- category.id%>" class="accordion-inner">
+                <div id="category-<%=category.id%>-collapsible" class="panel-collapse collapse">
+                    <div id="category-<%- category.id%>" class="panel-body">
 
                         <%
                         _.each(model.models, function (model) {
@@ -548,29 +556,41 @@ As we explained, earlier, the view is attached to a DOM element (the `el` proper
         </div>
     </div>
 
-    <div id='itemSummary' class="span9">
-        <div class="row-fluid">
-            <div class="span11">
-                <div id="eventCarousel" class="carousel">
-                    <!-- Carousel items -->
-                    <div class="carousel-inner">
-                        <%_.each(model.models, function(model) { %>
-                        <div class="item">
-                            <img src='rest/media/<%=model.attributes.mediaItem.id%>'/>
+    <div id='itemSummary' class="col-md-8 hidden-sm hidden-xs">
+        <div class="carousel-container">
+            <div id="eventCarousel" class="carousel slide">
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                    <%_.each(model.models, function(model) {
+                        if( model.get('mediaItem')) {
+                    %>
+                    <div class="item">
+                        <img src='rest/media/<%=model.attributes.mediaItem.id%>'/>
 
-                            <div class="carousel-caption">
-                                <h4><%=model.attributes.name%></h4>
-
-                                <p><%=model.attributes.description%></p>
-                                <a class="btn btn-danger" href="#events/<%=model.id%>">Book tickets</a>
+                        <div class="carousel-caption">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <h4><%=model.attributes.name%></h4>
+                                    <p><%=model.attributes.description%></p>
+                                </div>
+                                <div class="col-md-2">
+                                    <a class="btn btn-danger action" href="#events/<%=model.id%>">Book tickets</a>
+                                </div>
                             </div>
                         </div>
-                        <% }) %>
                     </div>
-                    <!-- Carousel nav -->
-                    <a class="carousel-control left" href="#eventCarousel" data-slide="prev">&lsaquo;</a>
-                    <a class="carousel-control right" href="#eventCarousel" data-slide="next">&rsaquo;</a>
+                    <%
+                        }
+                     });
+                    %>
                 </div>
+                <!-- Carousel nav -->
+                <a class="carousel-control left" href="#eventCarousel" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="carousel-control right" href="#eventCarousel" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
             </div>
         </div>
     </div>
@@ -769,35 +789,62 @@ The corresponding templates for the three fragments rendered above are:
 .src/main/webapp/resources/templates/desktop/event-detail.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="row-fluid" xmlns="http://www.w3.org/1999/html">
+<div class="row">
     <h2 class="page-header special-title light-font"><%=name%></h2>
 </div>
-<div class="row-fluid">
-    <div class="span4 well">
-        <div class="row-fluid"><h3 class="page-header span6">What?</h3>
-            <img width="100" src='rest/media/<%=mediaItem.id%>'/></div>
-        <div class="row-fluid">
-            <p>&nbsp;</p>
-
-            <div class="span12"><%= description %></div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="well">
+            <div class="row">
+                <h3 class="page-header col-md-6">What?</h3>
+                <% if(mediaItem) { %><img width="100" src='rest/media/<%=mediaItem.id%>'/><% } %>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12"><%= description %></div>
+            </div>
         </div>
     </div>
-    <div class="span4 well">
-        <div class="row-fluid"><h3 class="page-header span6">Where?</h3>
-            <div class="span6" id='venueMedia'/>
-        </div>
-        <div class='row-fluid'><select id='venueSelector'/>
-            <div id="eventVenueDescription"/>
+    <div class="col-md-4">
+        <div class="well">
+            <div class="row">
+                <h3 class="page-header col-md-6">Where?</h3>
+                <div class="col-md-6" id='venueMedia'/>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12">
+                    <select id="venueSelector" class="form-control"/>
+                </div>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12">
+                    <div id="eventVenueDescription"/>
+                </div>
+            </div>
         </div>
     </div>
-    <div id='bookingWhen' style="display: none;" class="span4 well">
-        <h3 class="page-header">When?</h3>
-        <select class="span6" id="dayPicker"/>
-        <select class="span6" id="performanceTimes"/>
+    <div id='bookingWhen' style="display: none;" class="col-md-4">
+        <div class="well">
+            <div class="row">
+                <h3 class="page-header col-md-6">When?</h3>
+            </div>
 
+            <div class="row top5">
+                <div class="col-md-12">
+                    <select class="form-control" id="dayPicker"/>
+                </div>
+            </div>
+            <div class="row top5">
+                <div class="col-md-12">
+                    <select class="form-control" id="performanceTimes"/>
+                </div>
+            </div>
 
-        <div id='bookingOption'><input name="bookButton" class="btn btn-primary" type="button"
-                                       value="Order tickets"></div>
+            <div id="bookingOption" class="row top5">
+                <div class="col-md-6">
+                    <input name="bookButton" class="btn btn-primary" type="button" value="Order tickets">
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 -------------------------------------------------------------------------------------------------------
@@ -1170,90 +1217,104 @@ The corresponding templates for the views above are shown below:
 .src/main/webapp/resources/templates/desktop/booking-confirmation.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="row-fluid">
+<div class="row">
     <h2 class="special-title light-font">Booking #<%=booking.id%> confirmed!</h2>
 </div>
-<div class="row-fluid">
-    <div class="span5 well">
-        <h4 class="page-header">Checkout information</h4>
-        <p><strong>Email: </strong><%= booking.contactEmail %></p>
-        <p><strong>Event: </strong> <%= performance.event.name %></p>
-        <p><strong>Venue: </strong><%= performance.venue.name %></p>
-        <p><strong>Date: </strong><%= new Date(booking.performance.date).toPrettyString() %></p>
-        <p><strong>Created on: </strong><%= new Date(booking.createdOn).toPrettyString() %></p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="well">
+            <h4 class="page-header">Checkout information</h4>
+            <p><strong>Email: </strong><%= booking.contactEmail %></p>
+            <p><strong>Event: </strong> <%= performance.event.name %></p>
+            <p><strong>Venue: </strong><%= performance.venue.name %></p>
+            <p><strong>Date: </strong><%= new Date(booking.performance.date).toPrettyString() %></p>
+            <p><strong>Created on: </strong><%= new Date(booking.createdOn).toPrettyString() %></p>
+        </div>
     </div>
-    <div class="span5 well">
-        <h4 class="page-header">Ticket allocations</h4>
-        <table class="table table-striped table-bordered" style="background-color: #fffffa;">
-            <thead>
-            <tr>
-                <th>Ticket #</th>
-                <th>Category</th>
-                <th>Section</th>
-                <th>Row</th>
-                <th>Seat</th>
-            </tr>
-            </thead>
-            <tbody>
+    <div class="col-md-6">
+        <div class="well">
+            <h4 class="page-header">Ticket allocations</h4>
+            <table class="table table-striped table-bordered" style="background-color: #fffffa;">
+                <thead>
+                <tr>
+                    <th>Ticket #</th>
+                    <th>Category</th>
+                    <th>Section</th>
+                    <th>Row</th>
+                    <th>Seat</th>
+                </tr>
+                </thead>
+                <tbody>
             <% $.each(_.sortBy(booking.tickets, function(ticket) {return ticket.id}), function (i, ticket) { %>
-            <tr>
-                <td><%= ticket.id %></td>
-                <td><%=ticket.ticketCategory.description%></td>
-                <td><%=ticket.seat.section.name%></td>
-                <td><%=ticket.seat.rowNumber%></td>
-                <td><%=ticket.seat.number%></td>
-            </tr>
-            <% }) %>
-            </tbody>
-        </table>
+                <tr>
+                    <td><%= ticket.id %></td>
+                    <td><%=ticket.ticketCategory.description%></td>
+                    <td><%=ticket.seat.section.name%></td>
+                    <td><%=ticket.seat.rowNumber%></td>
+                    <td><%=ticket.seat.number%></td>
+                </tr>
+                <% }) %>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-<div class="row-fluid" style="padding-bottom:30px;">
-    <div class="span2"><a href="#">Home</a></div>
+<div class="row" style="padding-bottom:30px;">
+    <div class="col-md-2"><a href="#" class="highlight-link">Home</a></div>
 </div>
 -------------------------------------------------------------------------------------------------------
 
 .src/main/webapp/resources/templates/desktop/create-booking.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-md-12">
         <h2 class="special-title light-font"><%=show.event.name%>
             <small><%=show.venue.name%>, <%=new Date(performance.date).toPrettyString()%></p></small>
         </h2>
     </div>
 </div>
-<div class="row-fluid">
-    <div class="span6 well">
-       <h3 class="page-header">Select tickets</h3>
-        <form class="form-horizontal">
-        <div id="sectionSelectorPlaceholder">
-            <div class="control-group">
-                <label class="control-label" for="sectionSelect"><strong>Section</strong></label>
-                <div class="controls">
-                    <select id="sectionSelect">
-                        <option value="-1" selected="true">Choose a section</option>
-                        <% _.each(sections, function(section) { %>
-                        <option value="<%=section.id%>"><%=section.name%> - <%=section.description%></option>
-                        <% }) %>
-                    </select>
+<div class="row">
+    <div class="col-md-4">
+        <div class="well">
+            <h3 class="page-header">Select tickets</h3>
+            <form class="form-horizontal">
+                <div id="sectionSelectorPlaceholder">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="sectionSelect"><strong>Section</strong></label>
+                        <div class="col-md-9">
+                            <select id="sectionSelect" class="form-control">
+                                <option value="-1" selected="true">Choose a section</option>
+                                <% _.each(sections, function(section) { %>
+                                <option value="<%=section.id%>"><%=section.name%> - <%=section.description%></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div id="ticketCategoriesViewPlaceholder"></div>
+        </div>
+    </div>
+    <div id="request-summary" class="col-md-5 col-md-offset-1">
+        <div class="well">
+            <h3 class="page-header">Order summary</h3>
+            <div id="ticketSummaryView" class="row"/>
+            <h3 class="page-header">Checkout</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <form>
+                        <div class="form-group">
+                            <input type='email' id="email" class="form-control" placeholder="Email" required/>
+                            <p class="help-block error-notification"  id="error-email"></p>
+                        </div>
+                        <div class="form-group">
+                            <input type='button' class="btn btn-primary" name="submit" value="Checkout"
+                                   disabled="true"/>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-        </form>
-        <div id="ticketCategoriesViewPlaceholder"></div>
-    </div>
-    <div id="request-summary" class="span5 offset1 well">
-        <h3 class="page-header">Order summary</h3>
-        <div id="ticketSummaryView" class="row-fluid"/>
-        <h3 class="page-header">Checkout</h3>
-        <div class="row-fluid">
-            <form class="form-search">
-            <input type='email' id="email" placeholder="Email" required/>
-            <input type='button' class="btn btn-primary" name="submit" value="Checkout"
-                   disabled="true"/>
-            <p class="help-block error-notification"  id="error-email"></p>
-            </form>
         </div>
     </div>
 </div>
@@ -1265,16 +1326,16 @@ The corresponding templates for the views above are shown below:
 <% if (ticketPrices.length > 0) { %>
 <form class="form-horizontal">
     <% _.each(ticketPrices, function(ticketPrice) { %>
-    <div class="control-group" id="ticket-category-fieldset-<%=ticketPrice.id%>">
-        <label class="control-label"><strong><%=ticketPrice.ticketCategory.description%></strong></label>
+    <div class="form-group" id="ticket-category-fieldset-<%=ticketPrice.id%>">
+        <label class="col-md-3 control-label"><strong><%=ticketPrice.ticketCategory.description%></strong></label>
 
-        <div class="controls">
-            <div class="input-append">
-                <input class="span6" rel="tooltip" title="Enter value"
+        <div class="col-md-9">
+            <div class="input-group">
+                <input class="form-control col-md-6" rel="tooltip" title="Enter value"
                        data-tm-id="<%=ticketPrice.id%>"
                        placeholder="Number of tickets"
                        name="tickets-<%=ticketPrice.ticketCategory.id%>"/>
-                <span class="add-on">@ $<%=ticketPrice.price%></span>
+                <span class="input-group-addon">@ $<%=ticketPrice.price%></span>
 
                 <p class="help-block" id="error-input-<%=ticketPrice.id%>"></p>
             </div>
@@ -1284,10 +1345,8 @@ The corresponding templates for the views above are shown below:
 
 <p>&nbsp;</p>
 
-<div class="control-group">
-    <label class="control-label"/>
-
-    <div class="controls">
+<div class="form-group">
+    <div class="col-md-offset-2">
         <input type="button" class="btn btn-primary" disabled="true" name="add" value="Add tickets"/>
     </div>
 </div>
@@ -1299,12 +1358,12 @@ The corresponding templates for the views above are shown below:
 .src/main/webapp/resources/templates/desktop/ticket-summary-view.html
 [source,html]
 -------------------------------------------------------------------------------------------------------
-<div class="span12">
+<div class="col-md-12">
     <% if (tickets.length>0) { %>
-    <table class="table table-bordered table-condensed row-fluid" style="background-color: #fffffa;">
+    <table class="table table-bordered table-condensed" style="background-color: #fffffa;">
         <thead>
         <tr>
-            <th colspan="5"><strong>Requested tickets</strong></th>
+            <th colspan="7"><strong>Requested tickets</strong></th>
         </tr>
         <tr>
             <th>Section</th>
@@ -1321,15 +1380,16 @@ The corresponding templates for the views above are shown below:
             <td><%= ticketRequest.ticketPrice.ticketCategory.description %></td>
             <td><%= ticketRequest.quantity %></td>
             <td>$<%=ticketRequest.ticketPrice.price%></td>
-            <td><i class="icon-trash"/></td>
+            <td><span class="glyphicon glyphicon-trash" data-index='<%= index %>'/></td>
         </tr>
         <% }); %>
         </tbody>
     </table>
     <p/>
-    <div class="row-fluid">
-        <div class="span5"><strong>Total ticket count:</strong> <%= totals.tickets %></div>
-        <div class="span5"><strong>Total price:</strong> $<%=totals.price%></div></div>
+    <div class="row">
+        <div class="col-md-5"><strong>Total ticket count:</strong> <%= totals.tickets %></div>
+        <div class="col-md-5"><strong>Total price:</strong> $<%=totals.price%></div>
+    </div>
     <% } else { %>
     No tickets requested.
     <% } %>
@@ -1350,7 +1410,7 @@ define("router", [
 	...
 ],function (
 			...
-            CreateBookingView
+            CreateBookingView,
             ...
             ) {
 
@@ -1429,7 +1489,7 @@ jQuery Mobile::
 
 For mobile clients, the main page will display the mobile version of the application, by loading the mobile AMD module of the application. Let us create it.
 
-./src/main/webapp/resources/js/configurations/mobile.js
+.src/main/webapp/resources/js/configurations/mobile.js
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 /**
@@ -1527,6 +1587,8 @@ We also define a special initializer module (`initializer`) that, when loaded, a
 -->
 <div id="container" data-role="page" data-ajax="false"></div>
 -------------------------------------------------------------------------------------------------------
+
+Copy over the `m.screen.css` file referenced in the `initializer` module, from the project sources, to the appropriate location in the workspace.
 
 Next, we create the application router.
 
@@ -1636,7 +1698,7 @@ define("router",[
 });
 -------------------------------------------------------------------------------------------------------
 
-Because jQuery Mobile navigation is disabled, we must tell jQuery Mobile explicitly to enhance the page content in order to create the mobile view. Here, we trigger the jQuery Mobile `pagecreate` event explicitly to ensure that the page gets the appropriate look and feel.
+Because jQuery Mobile navigation is disabled, we must tell jQuery Mobile explicitly to enhance the page content in order to create the mobile view. Here, we enhance the page using the `enhanceWithin` method, to ensure that the page gets the appropriate look and feel.
 
 === The events view
 

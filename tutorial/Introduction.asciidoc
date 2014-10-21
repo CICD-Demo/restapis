@@ -180,7 +180,7 @@ Select *Next*.
 .New Project Wizard Step 2
 image::gfx/introduction/new_project_example_step_2.png[]
 
-The default *Project name* is `jboss-javaee6-webapp`. If this field appears blank, it is because your workspace already contains a "jboss-javaee6-webapp" in which case just provide another name for your project. Change the project name to `ticket-monster`, and the package name to `org.jboss.jdf.example.ticketmonster`.
+The default *Project name* is `jboss-javaee6-webapp`. If this field appears blank, it is because your workspace already contains a "jboss-javaee6-webapp" in which case just provide another name for your project. Change the project name to `ticket-monster`, and the package name to `org.jboss.examples.ticketmonster`.
 
 Select *Finish*.
 
@@ -375,13 +375,6 @@ Forge would have created a JPA entity as instructed, and it would also open the 
 .The newly created Event entity
 image::gfx/introduction/forge_event_entity_source.png[]
 
-[NOTE]
-==============================================================================
-`@Entity` is placed on the same line as `
-import java.lang.Override` by Forge. Using the formatter your IDE provides on
-the entity will make this look more like you would expect!
-==============================================================================
-
 Let's add a new field to this entity. Select the `Event` class in the project navigator and launch the Forge menu once again. Filter on `jpa` as usual, and launch the "JPA: New Field" command.
 Specify the field name as `name`, to store the name of the event. The defaults are sufficient for other input fields. Click `Finish` or hit the `Enter` button as usual.
 
@@ -473,7 +466,7 @@ Alternatively, you could perform the same sequence of operations in the Forge Co
 
 [source,fsh]
 ----------------------------------------------------------------------------
-jpa-new-entity --named Event --targetPackage org.jboss.jdf.example.ticketmonster.model ;
+jpa-new-entity --named Event --targetPackage org.jboss.examples.ticketmonster.model ;
 jpa-new-field --named name ;
 constraint-setup ;
 constraint-add --onProperty name --constraint NotNull ;
@@ -513,7 +506,7 @@ First, add some private fields representing the entities properties, which trans
 
 [source,java]
 ----------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.model;
+package org.jboss.examples.ticketmonster.model;
 
 public class Venue {
 	private Long id;
@@ -636,7 +629,7 @@ Replace the contents of the class with this sample code:
 
 [source,java]
 ---------------------------------------------------------------------------------------------------------
-package org.jboss.jdf.example.ticketmonster.rest;
+package org.jboss.examples.ticketmonster.rest;
 
 @Path("/events")
 @RequestScoped
@@ -670,7 +663,7 @@ image::gfx/introduction/source_organize_imports.png[]
 Some of the class names are not unique. Eclipse will prompt you with any decisions around what class is intended. Select the following:
 
 * `javax.ws.rs.core.MediaType`
-* `org.jboss.jdf.example.ticketmonster.model.Event`
+* `org.jboss.examples.ticketmonster.model.Event`
 * `javax.ws.rs.Produces`
 * `java.util.List`
 * `java.inject.Inject`
@@ -683,7 +676,7 @@ The following screenshots illustrate how you handle these decisions. The Figure 
 image::gfx/introduction/organize_imports_1.png[]
 
 [[organize_imports_2_image]]
-.org.jboss.jdf.example.ticketmonster.model.Event
+.org.jboss.examples.ticketmonster.model.Event
 image::gfx/introduction/organize_imports_2.png[]
 
 [[organize_imports_3_image]]
@@ -716,7 +709,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.jboss.jdf.example.ticketmonster.model.Event;
+import org.jboss.examples.ticketmonster.model.Event;
 ---------------------------------------------------------------------------------------------------------
 
 Once these import statements are in place you should have no more compilation errors. When you save `EventService.java`, you will see it listed in JAX-RS REST Web Services in the Project Explorer.
@@ -1069,18 +1062,18 @@ Before we proceed with the tutorial and implement TicketMonster, we need to clea
 
 * All the Member-related persistence and business code:
 
-** `src/main/java/org/jboss/jdf/example/ticketmonster/controller`
-** `src/main/java/org/jboss/jdf/example/ticketmonster/data`
-** `src/main/java/org/jboss/jdf/example/ticketmonster/model/Member.java`
-** `src/main/java/org/jboss/jdf/example/ticketmonster/rest/MemberResourceRESTService.java`
-** `src/main/java/org/jboss/jdf/example/ticketmonster/service/MemberRegistration.java`
-** `src/test/java/org/jboss/jdf/example/ticketmonster/rest/MemberRegistrationTest.java`
+** `src/main/java/org/jboss/examples/ticketmonster/controller/`
+** `src/main/java/org/jboss/examples/ticketmonster/data/`
+** `src/main/java/org/jboss/examples/ticketmonster/model/Member.java`
+** `src/main/java/org/jboss/examples/ticketmonster/rest/MemberResourceRESTService.java`
+** `src/main/java/org/jboss/examples/ticketmonster/service/MemberRegistration.java`
+** `src/test/java/org/jboss/examples/ticketmonster/rest/MemberRegistrationTest.java`
 
 * Generated web content
 
 ** `src/main/webapp/index.html`
 ** `src/main/webapp/index.xhtml`
-** `src/main/webapp/WEB-INF/templates/default.xhtml`
+** `src/main/webapp/WEB-INF/templates/`
 
 * JSF configuration
 

@@ -48,9 +48,9 @@ define("configuration", function() {
     } else {
         return {
             baseUrl: ""
-        }
+        };
     }
-})
+});
 ...
 ------------------------------------------------------------------------------------------------------
 
@@ -151,15 +151,25 @@ Now that we have downloaded and setup a hybrid mobile engine, let's use it in ou
 .Creating a new Hybrid Mobile Application project
 image::gfx/select_hybrid_mobile_engine_for_project.png[]
 +
-Once you have finished creating the project, navigate to the `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply replace the `www` directory with a symbolic link to the `webapp` directory of TicketMonster; the `config.xml` file would need to be copied over to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application).
+Once you have finished creating the project, navigate to the `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply replace the `www` directory with a symbolic link to the `webapp` directory of TicketMonster; the `config.xml` file and `res` directory would need to be copied over to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application in both places).
 
 ----
 $ cp config.xml $TICKET_MONSTER_HOME/demo/src/main/webapp
 $ cp res $TICKET_MONSTER_HOME/demo/src/main/webapp
 $ cd ..
 $ rm -rf www
-$ ln -s $TICKET_MONSTER_HOME/demo/src/main/webapp www
 ----
+
+Once the necessary files have been copied and the original `www` folder deleted, you can re-create the `www` directory as an Eclipse linked folder in the Hybrid Mobile project.
+
+First select the project, right-click on it, and select the `New` -> `Folder` option in the context menu. Specify the name of the folder as `www`, but do not click `Finish` yet. In the same dialog box, click the `Advanced` button, to create a new `Linked Folder` (Link to alternate location). Enter the following value: `PROJECT_LOC/../ticket-monster/src/main/webapp/` in the textbox. This will link the folder to the TicketMonster project, assuming the Hybrid Mobile Project and the Java EE project reside in the same directory. Replace `ticket-monster` with the name of the Java EE project, if you specified a different name when you originally created the Java EE project. If the TicketMonster project sources are in a different location, you should correct the link, and specify the correct location instead.
+
+[NOTE]
+==================================================
+We use Linked Folders instead of file-system dependent symbolic links, as the latter are not portable across operating systems.
+
+The `PROJECT_LOC` variable that we use in the link, represents the location of the current project. `PROJECT_LOC/../ticket-monster/` represents the `ticket-monster` (aka the Java EE project we originally created in the Introductory chapter) in the parent directory of the Hybrid Mobile project (i.e. as a sibling project, and if you've used the default locations, both of these projects would be in the same top-level workspace directory). The rest of the link's value translates to the `webapp` directory under the Java EE project.
+==================================================
 
 .The result of linking www to the webapp directory
 image::gfx/link-www-directory-to-webapp.png[]
@@ -177,8 +187,7 @@ Since we do not want to load this file in the existing `index.html` file, we sha
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="resources/js/libs/modernizr-2.8.3.min.js"></script>
+    <script type="text/javascript" src="resources/js/libs/modernizr-2.6.2.min.js"></script>
     <script type="text/javascript" src="resources/js/libs/require.js"
             data-main="resources/js/configurations/loader"></script>
 </head>
@@ -215,7 +224,7 @@ Additionally, we will add our REST service URL to the domain whitelist in the co
 
 Next, we need to load the library in the application. We will create a separate module, that will load the rest of the mobile application, as well as the Apache Cordova JavaScript library for Android. We also need to configure a base URL for the application. For this example, we will use the URL of the cloud deployment of TicketMonster.
 
-.src/main/webapp/resources/js/libs/hybrid.js
+.src/main/webapp/resources/js/configurations/hybrid.js
 [source,javascript]
 -------------------------------------------------------------------------------------------------------
 // override configuration for RESTful services
@@ -223,7 +232,7 @@ var TicketMonster = {
     config:{
         baseRESTUrl:"http://ticketmonster-jdf.rhcloud.com/"
     }
-}
+};
 
 require(['../../../cordova'], function() {
     
@@ -233,7 +242,7 @@ require(['../../../cordova'], function() {
         },
         onDeviceReady: function() {
             // Detect if iOS 7 or higher and disable overlaying the status bar
-            if(window.device.platform.toLowerCase() == "ios" &&
+            if(window.device && window.device.platform.toLowerCase() == "ios" &&
                 parseFloat(window.device.version) >= 7.0) {
                 StatusBar.overlaysWebView(false);
                 StatusBar.styleDefault();
@@ -247,6 +256,12 @@ require(['../../../cordova'], function() {
     bootstrap.initialize();
 });
 -------------------------------------------------------------------------------------------------------
+
+[NOTE]
+==============================================================
+We'll use the OpenShift hosted version of the TicketMonster application because it is easier to access in all environments - the smartphone simulators and emulators can also access it with relatively little or no configuration. On the other hand, accessing the locally running JBoss EAP instance may require some complicated network configuration, especially if the instance needs to be opened up to the internet for access from smartphones.
+==============================================================
+
 
 The above snippet of code contains a device-specific check for iOS 7. We will be using the Cordova status bar plugin, to ensure that the status bar on iOS 7 does not overlap the UI. The Cordova device plugin will be used to obtain device information for use in device detection. We'll also use the Cordova Notification plugin to display alerts and notifications to the end-user using the native mobile UI.
 
@@ -304,7 +319,7 @@ define(function () {
 });
 -------------------------------------------------------------------------------------------------------
 
-We'll modify the `displayAlert` function in the utilities object to use the Notification plugin when available:
+We'll now examine the `displayAlert` function in the utilities object. It is set to use the Notification plugin when available:
 
 .src/main/webapp/resources/js/app/utilities.js
 [source,javascript]
@@ -327,6 +342,7 @@ We'll modify the `displayAlert` function in the utilities object to use the Noti
 ...
 -------------------------------------------------------------------------------------------------------
 
+The function automatically works in non-mobile environments due to the absence of the `navigator.notification` object in such environments.
 
 == Run the hybrid mobile application
 

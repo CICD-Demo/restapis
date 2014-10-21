@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
  * </p>
  * 
  * <p>
- * Event's principle members are it's relationship to {@link EventCategory} - specifying the type of event it is - and
+ * Event's principal members are it's relationship to {@link EventCategory} - specifying the type of event it is - and
  * {@link MediaItem} - providing the ability to add media (such as a picture) to the event for display. It also contains
  * meta-data about the event, such as it's name and a description.
  * </p>
