@@ -4,6 +4,7 @@ define([
     'text!../../../../templates/desktop/events.html'
 ], function (
     utilities,
+    bootstrap,
     eventsTemplate) {
 
     var EventsView = Backbone.View.extend({

@@ -1,8 +1,10 @@
 define([
     'utilities',
+    'bootstrap',
     'text!../../../../templates/desktop/venues.html'
 ], function (
     utilities,
+    bootstrap,
     venuesTemplate) {
 
     var EventsView = Backbone.View.extend({
