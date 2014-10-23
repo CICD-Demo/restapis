@@ -50,21 +50,10 @@ define("router",[
             "venues":"venues",
             "venues/:id":"venueDetail",
             "book/:showId/:performanceId":"bookTickets",
-            "ignore":"ignore",
-            "*actions":"defaultHandler"
-        },
-        defaultHandler:function (actions) {
-            if ("" != actions) {
-                $("body").pagecontainer( "change", "#" + actions, {transition:'slide', changeHash:false, allowSamePageTransition:true});
-            }
         },
         home:function () {
             utilities.applyTemplate($("#container"), HomeViewTemplate);
-            try {
-                $("#container").enhanceWithin();
-            } catch (e) {
-                // workaround for a spurious error thrown when creating the page initially
-            }
+            $("#container").enhanceWithin();
         },
         events:function () {
             var events = new Events;
@@ -120,6 +109,15 @@ define("router",[
                         utilities.displayAlert("Failed to retrieve the venue from the TicketMonster server.");
                     }
                 });
+        },
+        execute : function(callback, args) {
+            $.mobile.loading("show");
+            window.setTimeout(function() {
+                if (callback) {
+                    callback.apply(this, args);
+                }
+                $.mobile.loading("hide");
+            }, 300);
         }
     });
     
