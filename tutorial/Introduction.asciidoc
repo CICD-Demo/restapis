@@ -7,7 +7,7 @@
 The target audience for this tutorial are those individuals who do not yet have a great deal of experience with:
 
 * Eclipse + JBoss Tools (JBoss Developer Studio)
-* JBoss Enterprise Application Platform 6.2
+* JBoss Enterprise Application Platform 6.3
 * Java EE 6 features like JAX-RS 
 * HTML5 & jQuery for building an mobile web front-end.  
 
@@ -37,7 +37,7 @@ image::gfx/introduction/jbds8_mobile_browsersim.png[]
 == Installation
 
 
-The first order of business is to get your development environment setup and JBoss Developer Studio v8 installed. JBoss Developer Studio is Eclipse Luna (e4.4) for Java EE Developers plus select JBoss Tools and is available for free. Visit http://www.jboss.org/products/devstudio/download/ to download it.  You may also choose to install JBoss Tools 4.2 into your existing Eclipse for Java EE Developers installation. This document uses screenshots depicting JBoss Developer Studio.
+The first order of business is to get your development environment setup and JBoss Developer Studio v8 installed. JBoss Developer Studio is Eclipse Luna (e4.4) for Java EE Developers plus select JBoss Tools and is available for free. Visit http://www.jboss.org/products/devstudio/download to download it.  You may also choose to install JBoss Tools 4.2 into your existing Eclipse for Java EE Developers installation. This document uses screenshots depicting JBoss Developer Studio.
 
 You must have a Java Development Kit (JDK) installed. Java 7 JDK is recommended - whilst a JVM runtime will work for most use cases, for a developer environment it is normally best to have the full JDK.
 
@@ -50,10 +50,10 @@ To see JBoss Tools being installed into Eclipse, see
 link:http://vimeo.com/39743315[this video].
 ==============================================================
 
-The JBoss Developer Studio installer has a (very long!) name such as `jbdevstudio-product-universal-8.0.0.Beta2-v20140617-0558-B161.jar`
+The JBoss Developer Studio installer has a (very long!) name such as `jboss-devstudio-8.0.0.GA-v20141020-1042-B317-installer-standalone.jar`
 where the latter portion of the file name relates to build date and version information and the text near the front related to the target operating system. The "universal" installer is for any operating system.  To launch the installer you may simply be able to double-click on the .jar file name or you may need to issue the following from the operating system command line:
 
-    java -jar jbdevstudio-product-universal-8.0.0.Beta2-v20140617-0558-B161.jar
+    java -jar jboss-devstudio-8.0.0.GA-v20141020-1042-B317-installer-standalone.jar
 
 We recommend using the "universal" installer as it handles Windows, Mac OS X and Linux - 32-bit and 64-bit versions.
 
@@ -79,7 +79,7 @@ image::gfx/introduction/installer_wizard_page1.png[]
 
 The rest of the steps are fairly self explanatory.  If you run into trouble, please consult the videos above as they explore a few troubleshooting tips related to JRE/JDK setup.
 
-You can skip the step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6.2 as we will do this in the next step.
+You can skip the step in the installation wizard that allows you to install JBoss Enterprise Application Platform 6.3 as we will do this in the next step.
 
 Once installed, launch JBoss Developer Studio. Please make sure to say *Yes* to the prompt that says "Will you allow JBoss Tools team to receive anonymous usage statistics for this Eclipse instance with JBoss Tools?".  This information is very helpful to us when it comes to prioritizing our QA efforts in terms of operating system platforms. More information concerning our usage tracking can be found at http://www.jboss.org/tools/usage
 
@@ -167,14 +167,42 @@ image::gfx/introduction/as_eap_found.png[]
 
 The *Target Runtime* allows you to choose between JBoss Enterprise Application Platform and JBoss AS 7. If it is left empty, JBoss AS 7 will be elected.
 
+Proceed to select the EAP 6.3 runtime, you just created.
+
+[[eap_selected_image]]
+.JBoss EAP 6 runtime selected
+image::gfx/introduction/as_eap_selected.png[]
+
 [CAUTION]
 ===================================================================================
 Choosing an enterprise application server as the runtime will require you to 
-configure Maven to use the JBoss Enterprise Maven repositories. For instructions on 
-configure the Maven repositories, visit the link:https://access.redhat.com/site/documentation/en-US/JBoss_Enterprise_Application_Platform/6.2/html-single/Development_Guide/index.html#Install_the_JBoss_Enterprise_Application_Platform_6_Maven_Repository[JBoss Enterprise Application Platform 6.2 documentation].
+configure Maven to use the JBoss Enterprise Maven repositories. For detailed instructions on 
+configure the Maven repositories, visit the link:https://access.redhat.com/site/documentation/en-US/JBoss_Enterprise_Application_Platform/6.3/html-single/Development_Guide/index.html#Install_the_JBoss_Enterprise_Application_Platform_6_Maven_Repository[JBoss Enterprise Application Platform 6.3 documentation].
 ===================================================================================
 
-Select *Next*.
+You may see a warning (like the one in the screenshot), if you do not have the JBoss Enterprise Maven repository configured in your environment. Should this be the case, select the *repository* link in the warning, to open the JBoss Maven Integration wizard. The wizard dialog will prompt you to add the JBoss Enterprise Maven repository.
+
+[[add_jboss_maven_repo_image]]
+.Add the JBoss Enterprise Maven repository
+image::gfx/introduction/jboss_maven_repository.png[]
+
+Click *Ok*.
+
+You'll now be shown the proposed changes to your Maven settings.xml file. Click *Finish* after reviewing the proposed updates.
+
+[[update_settings_xml_image]]
+.Update the Maven settings.xml file
+image::gfx/introduction/jboss_maven_repo_settings_xml.png[]
+
+You'll be prompted to confirm the update. Click *Yes*.
+
+[[confirm_update_settings_xml_image]]
+.Confirm the changes to the Maven settings.xml file
+image::gfx/introduction/prompt_update_settings_xml.png[]
+
+The updates will now be persisted, and you'll be returned to the original wizard.
+
+Now, select *Next* in the *New Project* wizard to proceed to the next step.
 
 [[new-project-wizard-step_2_image]]
 .New Project Wizard Step 2
@@ -212,13 +240,13 @@ image::gfx/introduction/pom_xml_tabs.png[]
 
 For this tutorial, we do not need to edit the `pom.xml` as it already provides the Java EE 6 APIs that we will need (e.g. JPA, JAX-RS, CDI). You should spend some time exploring the *Dependencies* and the *pom.xml* (source view) tabs.   
 
-One key element to make note of is `<version.jboss.bom>1.0.4.Final-redhat-4</version.jboss.bom>` which establishes if this project uses JBoss Enterprise Application Platform or JBoss AS dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
+One key element to make note of is `<version.jboss.bom.eap>6.3.0.GA</version.jboss.bom.eap>` which establishes the version of the JBoss Enterprise Application Platform dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
 
-If you are using JBoss Enterprise Application Platform 6 and you selected that as your Target Runtime, you will find a `-redhat-4` suffix on the version string. You may need to setup the JBoss Enterprise Maven repository to use the certified dependencies in your project, details of which are available link:https://community.jboss.org/wiki/SettingUpTheJBossEnterpriseRepositories[here].
+If you are using community version of the JBoss Application Server and you selected that as your Target Runtime, you will find a different property as the version string.
 
 [CAUTION]
 ========================================================================================
-The specific version of the BOM (e.g. `1.0.4.Final-redhat-4`) is likely to change, so do not 
+The specific version of the BOM (e.g. `6.3.0.GA`) is likely to change, so do not 
 be surprised if the version is slightly different.
 
 The recommended version of the BOM for a runtime (EAP 6) can be 
@@ -264,14 +292,10 @@ Under src you will find:
 +
 `mvn test –Parq-jbossas-remote`
 +
-Note that you will need to start the JBoss Enterprise Application Platform 6.2 server before running the test.
+Note that you will need to start the JBoss Enterprise Application Platform 6.3 server before running the test.
    
 `src/main/webapp`::
     contains `index.xhtml`, the JSF-based user interface for the sample application.  If you double-click on that file you will see Visual Page Editor allows you to visually navigate through the file and see the source simultaneously. Changes to the source are immediately reflected in the visual pane.
-
-[[visual_page_editor_image]]
-.Visual Page Editor
-image::gfx/introduction/visual_page_editor.png[]
 
 In `src/main/webapp/WEB-INF`, you will find three key files:
 

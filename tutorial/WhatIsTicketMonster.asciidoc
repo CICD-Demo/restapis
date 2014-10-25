@@ -73,7 +73,7 @@ Monitoring sales requires staying in touch with the latest changes on the server
 ===================================================================================
 In order to build the application, you will need you to 
 configure Maven to use the JBoss Enterprise Maven repositories. For instructions on 
-configure the Maven repositories, visit the link:https://access.redhat.com/site/documentation/en-US/JBoss_Enterprise_Application_Platform/6.2/html-single/Development_Guide/index.html#Install_the_JBoss_Enterprise_Application_Platform_6_Maven_Repository[JBoss Enterprise Application Platform 6.2 documentation].
+configure the Maven repositories, visit the link:https://access.redhat.com/site/documentation/en-US/JBoss_Enterprise_Application_Platform/6.3/html-single/Development_Guide/index.html#Install_the_JBoss_Enterprise_Application_Platform_6_Maven_Repository[JBoss Enterprise Application Platform 6.3 documentation].
 ===================================================================================
 
 TicketMonster can be built from Maven, by runnning the following Maven command:
@@ -113,12 +113,12 @@ mvn clean package -Pmysql-openshift
 === Running TicketMonster
 
 
-You can run TicketMonster into a local JBoss EAP 6.2 instance or on OpenShift.
+You can run TicketMonster into a local JBoss EAP 6.3 instance or on OpenShift.
 
 
 ==== Running TicketMonster locally
 
-_Start JBoss Enterprise Application Platform 6.2_.
+_Start JBoss Enterprise Application Platform 6.3_.
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
@@ -148,7 +148,7 @@ mvn clean package jboss-as:deploy
 
 First, _create an OpenShift project_.
 
-1. Make sure that you have an OpenShift domain and you have created an application using the `jbosseap-6` cartridge (for more details, get started link:https://openshift.redhat.com/app/getting_started[here]). If you want to use PostgreSQL, add the `postgresql-8.4` cartridge too.
+1. Make sure that you have an OpenShift domain and you have created an application using the `jbosseap-6` cartridge (for more details, get started link:https://openshift.redhat.com/app/getting_started[here]). If you want to use PostgreSQL, add the `postgresql-9.2` cartridge too. Or for MySQL, add the `mysql-5.5` cartridge.
 2. Ensure that the Git repository of the project is checked out.
 
 Then, _build and deploy it_.

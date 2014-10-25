@@ -65,7 +65,7 @@ The first step for setting up our service architecture is to add Jackson Core as
         <dependency>
             <groupId>org.jboss.bom.eap</groupId>
             <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
-            <version>${jboss.bom.version}</version>
+            <version>${version.jboss.bom.eap}</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -111,7 +111,7 @@ and deserialization of one of the fields involved in the cycle.
 
 The next step is to verify if we're using the right version of the JBoss BOMs in the project.
 Using the right versions of the BOMs ensures that you work against a known set of tested dependencies.
-Verify that the property `jboss.bom.version` contains the value `6.2.3.GA` or higher:
+Verify that the property `version.jboss.bom.eap` contains the value `6.3.0.GA` or higher:
 
 .pom.xml
 [source,xml]
@@ -120,7 +120,7 @@ Verify that the property `jboss.bom.version` contains the value `6.2.3.GA` or hi
     ...  
     <properties>
         ...
-        <jboss.bom.version>6.2.3.GA</jboss.bom.version>
+        <jboss.bom.version>6.3.0.GA</jboss.bom.version>
         ...
     </properties>
     ...
@@ -1229,6 +1229,52 @@ If you're new to Arquillian and Shrinkwrap, we recommend going through the
 http://arquillian.org/guides/[beginner-level Arquillian guides], at the very least.
 =====================================================================================
 
+
+=== Adding ShrinkWrap Resolvers
+
+We'll need to use an updated version of the ShrinkWrap Resolvers project, that is not provided by the existing `org.jboss.bom.eap:jboss-javaee-6.0-with-tools` BOM. Fortunately, the JBoss WFK project provides this for us. It provides us with the `shrinkwrap-resolver-depchain` module, which allows us to use ShrinkWrap resolvers in our project through a single dependency. We can bring in the required version of ShrinkWrap Resolvers, by merely using the `org.jboss.bom.wfk:jboss-javaee-6.0-with-tools` BOM instead of the pre-existing tools BOM from EAP:
+
+.pom.xml
+[source,xml]
+---------------------------------------------------------------------------------
+<project ...>
+    ...
+	<properties>
+		...
+		<jboss.wfk.bom.version>2.6.0-redhat-1</jboss.wfk.bom.version>
+		...
+	</properties>
+
+
+    <dependencyManagement>
+        ...
+
+        <dependency>
+            <groupId>org.jboss.bom.wfk</groupId>
+            <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
+            <version>${version.jboss.bom.wfk}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencyManagement>
+
+	...
+
+    <dependencies>
+		...
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+	</dependencies>
+    ...
+
+</project>
+---------------------------------------------------------------------------------
+
+Remember to remove the original Tools BOM with the `org.jboss.bom.eap` groupId.
 
 === A Basic Deployment Class
 
