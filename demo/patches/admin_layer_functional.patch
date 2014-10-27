@@ -1,7 +1,7 @@
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java
 index 76a5b9a..43b499b 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/PerformanceEndpoint.java
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java
 @@ -8,12 +8,20 @@ import javax.persistence.EntityManager;
  import javax.persistence.NoResultException;
  import javax.persistence.PersistenceContext;
@@ -15,11 +15,11 @@ index 76a5b9a..43b499b 100644
  import javax.ws.rs.core.Response.Status;
  import javax.ws.rs.core.UriBuilder;
 +
- import org.jboss.jdf.example.ticketmonster.rest.dto.PerformanceDTO;
-+import org.jboss.jdf.example.ticketmonster.model.Booking;
- import org.jboss.jdf.example.ticketmonster.model.Performance;
-+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
-+import org.jboss.jdf.example.ticketmonster.model.Show;
+ import org.jboss.examples.ticketmonster.rest.dto.PerformanceDTO;
++import org.jboss.examples.ticketmonster.model.Booking;
+ import org.jboss.examples.ticketmonster.model.Performance;
++import org.jboss.examples.ticketmonster.model.SectionAllocation;
++import org.jboss.examples.ticketmonster.model.Show;
  
  /**
   * 
@@ -71,10 +71,10 @@ index 76a5b9a..43b499b 100644
 +
  }
 \ No newline at end of file
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java
 index 64c8dfb..067371c 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedPerformanceDTO.java
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java
 @@ -9,6 +9,7 @@ public class NestedPerformanceDTO implements Serializable {
  
  	private Long id;
@@ -101,10 +101,10 @@ index 64c8dfb..067371c 100644
 +    }
  }
 \ No newline at end of file
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java
 index b181aaf..0289c0d 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedShowDTO.java
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java
 @@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
  public class NestedShowDTO implements Serializable {
  
@@ -131,10 +131,10 @@ index b181aaf..0289c0d 100644
 +    }
  }
 \ No newline at end of file
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java
 index 09c3d96..25ac1f8 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/NestedTicketPriceDTO.java
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java
 @@ -8,6 +8,7 @@ public class NestedTicketPriceDTO implements Serializable {
  
  	private Long id;
@@ -161,10 +161,10 @@ index 09c3d96..25ac1f8 100644
 +    }
  }
 \ No newline at end of file
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java
 index 10d7b9c..b50ba72 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/PerformanceDTO.java
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java
 @@ -12,6 +12,7 @@ public class PerformanceDTO implements Serializable {
  	private Long id;
  	private NestedShowDTO show;
@@ -194,18 +194,18 @@ index 10d7b9c..b50ba72 100644
 +    }
 +}
 \ No newline at end of file
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java
 index 0a28637..7e29712 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/ShowDTO.java
-@@ -2,17 +2,32 @@ package org.jboss.jdf.example.ticketmonster.rest.dto;
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java
+@@ -2,17 +2,32 @@ package org.jboss.examples.ticketmonster.rest.dto;
  
  
  import java.io.Serializable;
 +
-+import org.jboss.jdf.example.ticketmonster.model.Booking;
-+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
- import org.jboss.jdf.example.ticketmonster.model.Show;
++import org.jboss.examples.ticketmonster.model.Booking;
++import org.jboss.examples.ticketmonster.model.SectionAllocation;
+ import org.jboss.examples.ticketmonster.model.Show;
 +
  import javax.persistence.EntityManager;
 +import javax.persistence.criteria.CriteriaBuilder;
@@ -213,20 +213,20 @@ index 0a28637..7e29712 100644
 +import javax.persistence.criteria.Predicate;
 +import javax.persistence.criteria.Root;
 +
- import org.jboss.jdf.example.ticketmonster.rest.dto.NestedEventDTO;
+ import org.jboss.examples.ticketmonster.rest.dto.NestedEventDTO;
 +
 +import java.util.List;
  import java.util.Set;
  import java.util.HashSet;
 +
- import org.jboss.jdf.example.ticketmonster.rest.dto.NestedPerformanceDTO;
- import org.jboss.jdf.example.ticketmonster.model.Performance;
+ import org.jboss.examples.ticketmonster.rest.dto.NestedPerformanceDTO;
+ import org.jboss.examples.ticketmonster.model.Performance;
 +
  import java.util.Iterator;
 +
- import org.jboss.jdf.example.ticketmonster.rest.dto.NestedVenueDTO;
- import org.jboss.jdf.example.ticketmonster.rest.dto.NestedTicketPriceDTO;
- import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
+ import org.jboss.examples.ticketmonster.rest.dto.NestedVenueDTO;
+ import org.jboss.examples.ticketmonster.rest.dto.NestedTicketPriceDTO;
+ import org.jboss.examples.ticketmonster.model.TicketPrice;
 +
  import javax.xml.bind.annotation.XmlRootElement;@XmlRootElement
  public class ShowDTO implements Serializable {
@@ -302,10 +302,10 @@ index 0a28637..7e29712 100644
 +    }
 +}
 \ No newline at end of file
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java
 index 922c1e5..d76eb08 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/TicketPriceDTO.java
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java
 @@ -15,6 +15,7 @@ public class TicketPriceDTO implements Serializable {
  	private NestedSectionDTO section;
  	private NestedTicketCategoryDTO ticketCategory;
@@ -335,19 +335,19 @@ index 922c1e5..d76eb08 100644
 +    }
 +}
 \ No newline at end of file
-diff --git ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
+diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java
 index ba16d54..f9c9df0 100644
---- ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
-+++ ./src/main/java/org/jboss/jdf/example/ticketmonster/rest/dto/VenueDTO.java
-@@ -2,15 +2,30 @@ package org.jboss.jdf.example.ticketmonster.rest.dto;
+--- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java
++++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java
+@@ -2,15 +2,30 @@ package org.jboss.examples.ticketmonster.rest.dto;
  
  
  import java.io.Serializable;
 +
-+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
-+import org.jboss.jdf.example.ticketmonster.model.Show;
-+import org.jboss.jdf.example.ticketmonster.model.TicketPrice;
- import org.jboss.jdf.example.ticketmonster.model.Venue;
++import org.jboss.examples.ticketmonster.model.SectionAllocation;
++import org.jboss.examples.ticketmonster.model.Show;
++import org.jboss.examples.ticketmonster.model.TicketPrice;
+ import org.jboss.examples.ticketmonster.model.Venue;
 +
  import javax.persistence.EntityManager;
 +import javax.persistence.criteria.CriteriaBuilder;
@@ -355,15 +355,15 @@ index ba16d54..f9c9df0 100644
 +import javax.persistence.criteria.Predicate;
 +import javax.persistence.criteria.Root;
 +
- import org.jboss.jdf.example.ticketmonster.rest.dto.AddressDTO;
- import org.jboss.jdf.example.ticketmonster.rest.dto.NestedMediaItemDTO;
+ import org.jboss.examples.ticketmonster.rest.dto.AddressDTO;
+ import org.jboss.examples.ticketmonster.rest.dto.NestedMediaItemDTO;
 +
 +import java.util.List;
  import java.util.Set;
  import java.util.HashSet;
 +
- import org.jboss.jdf.example.ticketmonster.rest.dto.NestedSectionDTO;
- import org.jboss.jdf.example.ticketmonster.model.Section;
+ import org.jboss.examples.ticketmonster.rest.dto.NestedSectionDTO;
+ import org.jboss.examples.ticketmonster.model.Section;
 +
  import java.util.Iterator;
 +
