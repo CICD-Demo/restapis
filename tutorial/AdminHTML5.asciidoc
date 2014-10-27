@@ -72,7 +72,7 @@ image::gfx/forge_scaffold_generate.png[]
 .Select the scaffold to generate and the web root path
 image::gfx/forge_scaffold_generate_input_webroot.png[]
 
-Click the `Next` button, and proceed to choose the JPA entities that we would use as the basis for the scaffold. You can either scaffold the entities one-by-one, which allows you to control which UIs are generated, or you can generate a CRUD UI for all the entities. We'll do the latter:
+Click the `Next` button, and proceed to choose the JPA entities that we would use as the basis for the scaffold. You can either scaffold the entities one-by-one, which allows you to control which UIs are generated, or you can generate a CRUD UI for all the entities. We'll do the latter. We'll also choose to generate REST resources for the entities, since the existing REST resources are not suitable for CRUD operations:
 
 [[project_scaffold_generate_select_entities]]
 .Select the JPA entities to use for generation
@@ -495,7 +495,7 @@ For brevity, the significant sections of the corrected page are listed below:
 </html>
 ------------------------------------------------------------------------------------------
 
-It is sufficient to copy the corrected page from the project sources. Additionally, do not forget to copy the `src/main/webapp/admin/styles/custom-forge.css` file, that we now reference in the corrected page.
+It is sufficient to copy the corrected page from the project sources. Additionally, do not forget to copy the `src/main/webapp/admin/styles/custom-forge.css` file, that we now reference it in the corrected page.
 
 
 == Updating the ShrinkWrap deployment for the test suite

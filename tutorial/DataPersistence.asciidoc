@@ -91,13 +91,13 @@ For ticket category, the choice of natural identity is easy and obvious - it mus
 
 [[eclipse-generate-hashcode-equals]]
 .Generate hashCode() and equals() in Eclipse
-image::gfx/eclipse-generate-hashcode-equals.png[scaledwidth="50%"]
+image::gfx/eclipse-generate-hashcode-equals.png
 
 Now, select the properties to include:
 
 [[eclipse-generate-hashcode-equals-2]]
 .Generate hashCode() and equals() in Eclipse
-image::gfx/eclipse-generate-hashcode-equals-2.png[scaledwidth="50%"]
+image::gfx/eclipse-generate-hashcode-equals-2.png
 
 Now that we have a JavaBean, let's proceed to make it an entity. First, add the `@Entity` annotation to the class:
 
@@ -146,7 +146,7 @@ public class TicketCategory {
 }
 -------------------------------------------------------------------------------------------------------
 
-As we decided that our natural identifier was the description, we should introduce a unique constraint on the property:
+As we decided that our natural identifier was the `description`, we should introduce a unique constraint on the property:
 
 .src/main/java/org/jboss/examples/ticketmonster/model/TicketCategory.java
 [source,java]
@@ -173,15 +173,6 @@ public class TicketCategory {
 
     ...
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    ...
 }
 -------------------------------------------------------------------------------------------------------
 

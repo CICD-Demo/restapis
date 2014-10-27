@@ -212,11 +212,11 @@ The default *Project name* is `jboss-javaee6-webapp`. If this field appears blan
 
 Select *Finish*.
 
-JBoss Tools/JBoss Developer Studio will now generate the template project and import it into the workspace.  You will see it pop up into the Project Explorer and a message that asks if you would like to review the readme file.
+JBoss Tools/JBoss Developer Studio will now generate the template project and import it into the workspace.  You will see it pop up into the Project Explorer and a message that asks if you would like to open the cheatsheet file associated with the project.
 
 [[prompt_for_readme_image]]
 .New Project Wizard Step 3
-image::gfx/introduction/prompt_for_readme.png[]
+image::gfx/introduction/prompt_for_cheatsheet.png[]
 
 Select *Finish*
 
@@ -240,13 +240,13 @@ image::gfx/introduction/pom_xml_tabs.png[]
 
 For this tutorial, we do not need to edit the `pom.xml` as it already provides the Java EE 6 APIs that we will need (e.g. JPA, JAX-RS, CDI). You should spend some time exploring the *Dependencies* and the *pom.xml* (source view) tabs.   
 
-One key element to make note of is `<version.jboss.bom.eap>6.3.0.GA</version.jboss.bom.eap>` which establishes the version of the JBoss Enterprise Application Platform dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
+One key element to make note of is `<version.jboss.bom.eap>6.3.1.GA</version.jboss.bom.eap>` which establishes the version of the JBoss Enterprise Application Platform dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
 
 If you are using community version of the JBoss Application Server and you selected that as your Target Runtime, you will find a different property as the version string.
 
 [CAUTION]
 ========================================================================================
-The specific version of the BOM (e.g. `6.3.0.GA`) is likely to change, so do not 
+The specific version of the BOM (e.g. `6.3.1.GA`) is likely to change, so do not 
 be surprised if the version is slightly different.
 
 The recommended version of the BOM for a runtime (EAP 6) can be 
@@ -335,6 +335,14 @@ The list of commands that you can execute in Forge will be visible in the Forge 
 [[forge_action_menu_image]]
 .Forge action menu 
 image::gfx/introduction/forge_action_menu.png[]
+
+[TIP]
+========================================================================================
+If you do not see a lot of commands in the quick action menu, then you may not have selected the project.
+The Forge quick action menu is contextual in nature, and therefore, it displays commands relevant to the current selection in the project explorer.
+
+When nothing is selected, then fewer commands are shown.
+========================================================================================
 
 [TIP]
 ==============================================================================
@@ -857,9 +865,9 @@ This results in the following document with the jQuery JavaScript file and the j
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js" />
-    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js" />
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css" />
+	<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
     <meta charset="UTF-8">
     <title>TicketMonster</title>
 </head>
@@ -897,12 +905,12 @@ Set the page title as "TicketMonster", footer as blank, and the ID as "page1". C
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js" />
-    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js" />
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
-    <meta charset="UTF-8">
-    <title>TicketMonster</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css" />
+	<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+	<meta charset="UTF-8">
+	<title>TicketMonster</title>
 </head>
 <body>
 	<div data-role="page" id="page1">
@@ -939,12 +947,12 @@ Select the inset checkbox to display the list as an inset list. Inset lists do n
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js" />
-    <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js" />
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
-    <meta charset="UTF-8">
-    <title>TicketMonster</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css" />
+	<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+	<meta charset="UTF-8">
+	<title>TicketMonster</title>
 </head>
 <body>
 	<div data-role="page" id="page1">

@@ -111,7 +111,7 @@ and deserialization of one of the fields involved in the cycle.
 
 The next step is to verify if we're using the right version of the JBoss BOMs in the project.
 Using the right versions of the BOMs ensures that you work against a known set of tested dependencies.
-Verify that the property `version.jboss.bom.eap` contains the value `6.3.0.GA` or higher:
+Verify that the property `version.jboss.bom.eap` contains the value `6.3.1.GA` or higher:
 
 .pom.xml
 [source,xml]
@@ -120,7 +120,7 @@ Verify that the property `version.jboss.bom.eap` contains the value `6.3.0.GA` o
     ...  
     <properties>
         ...
-        <jboss.bom.version>6.3.0.GA</jboss.bom.version>
+        <version.jboss.bom.eap>6.3.1.GA</version.jboss.bom.eap>
         ...
     </properties>
     ...
@@ -1241,7 +1241,7 @@ We'll need to use an updated version of the ShrinkWrap Resolvers project, that i
     ...
 	<properties>
 		...
-		<jboss.wfk.bom.version>2.6.0-redhat-1</jboss.wfk.bom.version>
+		<version.jboss.bom.wfk>2.7.0-redhat-1</version.jboss.bom.wfk>
 		...
 	</properties>
 
@@ -1261,14 +1261,14 @@ We'll need to use an updated version of the ShrinkWrap Resolvers project, that i
 	...
 
     <dependencies>
-		...
+        ...
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-depchain</artifactId>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
-	</dependencies>
+    </dependencies>
     ...
 
 </project>
@@ -1655,11 +1655,17 @@ can be a productivity drain, especially when you're trying to focus on a particu
 
 Running Arquillian tests from JBoss Developer Studio or JBoss tools is very simple as Arquillian builds on JUnit (or TestNG).
 
-First enable one of the two profiles in the project. In Eclipse, open the project properties, and from the _Maven_ tab, add the profile as shown in the picture below.
+First enable one of the two profiles in the project. In Eclipse, select the project, right-click on it to open the context menu, drill down into the _Maven_ sub-menu:
+
+[[eclipse-select-maven-profiles]]
+.Select the Maven profiles for the project 
+image::gfx/eclipse-project-maven-profiles.png
+
+Activate the profile as shown in the picture below.
 
 [[eclipse-update-profiles]]
 .Update Maven profiles in Eclipse
-image::gfx/eclipse-maven-profile-update.png[scaledwidth="50%"]
+image::gfx/eclipse-maven-profile-update.png
 
 The project configuration will be updated automatically.
 
