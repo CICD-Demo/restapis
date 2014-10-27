@@ -1,5 +1,5 @@
 diff --git ./src/main/webapp/admin/app.html ./src/main/webapp/admin/app.html
-index de23164..920b23d 100644
+index 2e27e40..4e1f843 100644
 --- ./src/main/webapp/admin/app.html
 +++ ./src/main/webapp/admin/app.html
 @@ -4,25 +4,37 @@
@@ -52,3 +52,10 @@ index de23164..920b23d 100644
      	</div>
          
          <div class="container">
+@@ -128,4 +140,4 @@
+     <script src="scripts/controllers/searchVenueController.js"></script>
+     <script src="scripts/controllers/editVenueController.js"></script>
+ </body>
+-</html>
+\ No newline at end of file
++</html>

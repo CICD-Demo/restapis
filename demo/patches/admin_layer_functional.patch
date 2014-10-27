@@ -1,16 +1,19 @@
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java
-index 76a5b9a..43b499b 100644
+index 4d5c0b3..3f0e6ba 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/PerformanceEndpoint.java
-@@ -8,12 +8,20 @@ import javax.persistence.EntityManager;
- import javax.persistence.NoResultException;
+@@ -9,6 +9,10 @@ import javax.persistence.NoResultException;
+ import javax.persistence.OptimisticLockException;
  import javax.persistence.PersistenceContext;
  import javax.persistence.TypedQuery;
 +import javax.persistence.criteria.CriteriaBuilder;
 +import javax.persistence.criteria.CriteriaQuery;
 +import javax.persistence.criteria.Predicate;
 +import javax.persistence.criteria.Root;
- import javax.ws.rs.*;
+ import javax.ws.rs.Consumes;
+ import javax.ws.rs.DELETE;
+ import javax.ws.rs.GET;
+@@ -21,8 +25,12 @@ import javax.ws.rs.QueryParam;
  import javax.ws.rs.core.Response;
  import javax.ws.rs.core.Response.Status;
  import javax.ws.rs.core.UriBuilder;
@@ -23,9 +26,9 @@ index 76a5b9a..43b499b 100644
  
  /**
   * 
-@@ -42,6 +50,18 @@ public class PerformanceEndpoint
-       if (entity == null) {
-         return Response.status(Status.NOT_FOUND).build();
+@@ -52,6 +60,18 @@ public class PerformanceEndpoint
+       {
+          return Response.status(Status.NOT_FOUND).build();
        }
 +      Show show = entity.getShow();
 +      show.getPerformances().remove(entity);
@@ -42,11 +45,11 @@ index 76a5b9a..43b499b 100644
        em.remove(entity);
        return Response.noContent().build();
     }
-@@ -105,4 +125,27 @@ public class PerformanceEndpoint
-       entity = em.merge(entity);
+@@ -130,4 +150,27 @@ public class PerformanceEndpoint
+       }
        return Response.noContent().build();
     }
-+   
++
 +   public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance)
 +   {
 +      CriteriaQuery<SectionAllocation> criteria = this.em
@@ -70,136 +73,140 @@ index 76a5b9a..43b499b 100644
 +   }
 +
  }
-\ No newline at end of file
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java
-index 64c8dfb..067371c 100644
+index 1fb77f9..421c55f 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedPerformanceDTO.java
-@@ -9,6 +9,7 @@ public class NestedPerformanceDTO implements Serializable {
+@@ -11,6 +11,7 @@ public class NestedPerformanceDTO implements Serializable
  
- 	private Long id;
- 	private Date date;
-+	private String displayTitle;
+    private Long id;
+    private Date date;
++   private String displayTitle;
  
- 	public NestedPerformanceDTO() {
- 	}
-@@ -17,6 +18,7 @@ public class NestedPerformanceDTO implements Serializable {
- 		if (entity != null) {
- 			this.id = entity.getId();
- 			this.date = entity.getDate();
-+			this.displayTitle = entity.toString();
- 		}
- 	}
+    public NestedPerformanceDTO()
+    {
+@@ -22,6 +23,7 @@ public class NestedPerformanceDTO implements Serializable
+       {
+          this.id = entity.getId();
+          this.date = entity.getDate();
++         this.displayTitle = entity.toString();
+       }
+    }
  
-@@ -56,4 +58,8 @@ public class NestedPerformanceDTO implements Serializable {
- 	public void setDate(final Date date) {
- 		this.date = date;
- 	}
-+	
-+    public String getDisplayTitle() {
-+       return this.displayTitle;
-+    }
- }
+@@ -72,4 +74,9 @@ public class NestedPerformanceDTO implements Serializable
+    {
+       this.date = date;
+    }
+-}
 \ No newline at end of file
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
++}
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java
-index b181aaf..0289c0d 100644
+index c5207cf..05f69e1 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedShowDTO.java
-@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
- public class NestedShowDTO implements Serializable {
+@@ -9,6 +9,7 @@ public class NestedShowDTO implements Serializable
+ {
  
- 	private Long id;
-+	private String displayTitle;
+    private Long id;
++   private String displayTitle;
  
- 	public NestedShowDTO() {
- 	}
-@@ -14,6 +15,7 @@ public class NestedShowDTO implements Serializable {
- 	public NestedShowDTO(final Show entity) {
- 		if (entity != null) {
- 			this.id = entity.getId();
-+			this.displayTitle = entity.toString();
- 		}
- 	}
+    public NestedShowDTO()
+    {
+@@ -19,6 +20,7 @@ public class NestedShowDTO implements Serializable
+       if (entity != null)
+       {
+          this.id = entity.getId();
++         this.displayTitle = entity.toString();
+       }
+    }
  
-@@ -43,4 +45,8 @@ public class NestedShowDTO implements Serializable {
- 	public void setId(final Long id) {
- 		this.id = id;
- 	}
-+	
-+    public String getDisplayTitle() {
-+       return this.displayTitle;
-+    }
- }
+@@ -57,4 +59,9 @@ public class NestedShowDTO implements Serializable
+    {
+       this.id = id;
+    }
+-}
 \ No newline at end of file
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
++}
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java
-index 09c3d96..25ac1f8 100644
+index 54d7f7d..0165de9 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/NestedTicketPriceDTO.java
-@@ -8,6 +8,7 @@ public class NestedTicketPriceDTO implements Serializable {
+@@ -10,6 +10,7 @@ public class NestedTicketPriceDTO implements Serializable
  
- 	private Long id;
- 	private float price;
-+	private String displayTitle;
+    private Long id;
+    private float price;
++   private String displayTitle;
  
- 	public NestedTicketPriceDTO() {
- 	}
-@@ -16,6 +17,7 @@ public class NestedTicketPriceDTO implements Serializable {
- 		if (entity != null) {
- 			this.id = entity.getId();
- 			this.price = entity.getPrice();
-+			this.displayTitle = entity.toString();
- 		}
- 	}
+    public NestedTicketPriceDTO()
+    {
+@@ -21,6 +22,7 @@ public class NestedTicketPriceDTO implements Serializable
+       {
+          this.id = entity.getId();
+          this.price = entity.getPrice();
++         this.displayTitle = entity.toString();
+       }
+    }
  
-@@ -55,4 +57,8 @@ public class NestedTicketPriceDTO implements Serializable {
- 	public void setPrice(final float price) {
- 		this.price = price;
- 	}
-+	
-+    public String getDisplayTitle() {
-+       return this.displayTitle;
-+    }
- }
+@@ -71,4 +73,9 @@ public class NestedTicketPriceDTO implements Serializable
+    {
+       this.price = price;
+    }
+-}
 \ No newline at end of file
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
++}
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java
-index 10d7b9c..b50ba72 100644
+index 83d6bdf..b4a2e1f 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/PerformanceDTO.java
-@@ -12,6 +12,7 @@ public class PerformanceDTO implements Serializable {
- 	private Long id;
- 	private NestedShowDTO show;
- 	private Date date;
-+	private String displayTitle;
+@@ -14,6 +14,7 @@ public class PerformanceDTO implements Serializable
+    private Long id;
+    private NestedShowDTO show;
+    private Date date;
++   private String displayTitle;
  
- 	public PerformanceDTO() {
- 	}
-@@ -21,6 +22,7 @@ public class PerformanceDTO implements Serializable {
- 			this.id = entity.getId();
- 			this.show = new NestedShowDTO(entity.getShow());
- 			this.date = entity.getDate();
-+			this.displayTitle = entity.toString();
- 		}
- 	}
+    public PerformanceDTO()
+    {
+@@ -26,6 +27,7 @@ public class PerformanceDTO implements Serializable
+          this.id = entity.getId();
+          this.show = new NestedShowDTO(entity.getShow());
+          this.date = entity.getDate();
++         this.displayTitle = entity.toString();
+       }
+    }
  
-@@ -58,4 +60,9 @@ public class PerformanceDTO implements Serializable {
- 
- 	public void setDate(final Date date) {
- 		this.date = date;
--	} }
+@@ -73,4 +75,9 @@ public class PerformanceDTO implements Serializable
+    {
+       this.date = date;
+    }
+-}
 \ No newline at end of file
-+	}
 +
-+    public String getDisplayTitle() {
-+       return this.displayTitle;
-+    }
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
 +}
-\ No newline at end of file
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java
-index 0a28637..7e29712 100644
+index 37b4b5e..2e4ceda 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/ShowDTO.java
-@@ -2,17 +2,32 @@ package org.jboss.examples.ticketmonster.rest.dto;
- 
+@@ -1,17 +1,32 @@
+ package org.jboss.examples.ticketmonster.rest.dto;
  
  import java.io.Serializable;
 +
@@ -228,119 +235,121 @@ index 0a28637..7e29712 100644
  import org.jboss.examples.ticketmonster.rest.dto.NestedTicketPriceDTO;
  import org.jboss.examples.ticketmonster.model.TicketPrice;
 +
- import javax.xml.bind.annotation.XmlRootElement;@XmlRootElement
- public class ShowDTO implements Serializable {
+ import javax.xml.bind.annotation.XmlRootElement;
  
-@@ -21,6 +36,7 @@ public class ShowDTO implements Serializable {
- 	private Set<NestedPerformanceDTO> performances = new HashSet<NestedPerformanceDTO>();
- 	private NestedVenueDTO venue;
- 	private Set<NestedTicketPriceDTO> ticketPrices = new HashSet<NestedTicketPriceDTO>();
-+	private String displayTitle;
+ @XmlRootElement
+@@ -23,6 +38,7 @@ public class ShowDTO implements Serializable
+    private Set<NestedPerformanceDTO> performances = new HashSet<NestedPerformanceDTO>();
+    private NestedVenueDTO venue;
+    private Set<NestedTicketPriceDTO> ticketPrices = new HashSet<NestedTicketPriceDTO>();
++   private String displayTitle;
  
- 	public ShowDTO() {
- 	}
-@@ -42,6 +58,7 @@ public class ShowDTO implements Serializable {
- 				TicketPrice element = iterTicketPrices.next();
- 				this.ticketPrices.add(new NestedTicketPriceDTO(element));
- 			}
-+			this.displayTitle = entity.toString();
- 		}
- 	}
+    public ShowDTO()
+    {
+@@ -49,6 +65,7 @@ public class ShowDTO implements Serializable
+             TicketPrice element = iterTicketPrices.next();
+             this.ticketPrices.add(new NestedTicketPriceDTO(element));
+          }
++         this.displayTitle = entity.toString();
+       }
+    }
  
-@@ -69,6 +86,15 @@ public class ShowDTO implements Serializable {
- 			}
- 			if (found == false) {
- 				iterPerformances.remove();
-+	            List<SectionAllocation> sectionAllocations = findSectionAllocationsByPerformance(performance, em);
-+	            for(SectionAllocation sectionAllocation: sectionAllocations) {
-+	                em.remove(sectionAllocation);
-+	            }
-+	            List<Booking> bookings = findBookingsByPerformance(performance, em);
-+	            for(Booking booking: bookings) {
-+	                em.remove(booking);
-+	            }
-+	            em.remove(performance);
- 			}
- 		}
- 		Iterator<NestedPerformanceDTO> iterDtoPerformances = this
-@@ -148,6 +174,25 @@ public class ShowDTO implements Serializable {
- 		entity = em.merge(entity);
- 		return entity;
- 	}
-+	
-+    public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance, EntityManager em) {
-+       CriteriaQuery<SectionAllocation> criteria = em
+@@ -83,6 +100,17 @@ public class ShowDTO implements Serializable
+          if (found == false)
+          {
+             iterPerformances.remove();
++            List<SectionAllocation> sectionAllocations = findSectionAllocationsByPerformance(performance, em);
++            for(SectionAllocation sectionAllocation: sectionAllocations)
++            {
++               em.remove(sectionAllocation);
++            }
++            List<Booking> bookings = findBookingsByPerformance(performance, em);
++            for(Booking booking: bookings)
++            {
++               em.remove(booking);
++            }
++            em.remove(performance);
+          }
+       }
+       Iterator<NestedPerformanceDTO> iterDtoPerformances = this
+@@ -180,6 +208,27 @@ public class ShowDTO implements Serializable
+       return entity;
+    }
+ 
++   public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance, EntityManager em)
++   {
++      CriteriaQuery<SectionAllocation> criteria = em
 +             .getCriteriaBuilder().createQuery(SectionAllocation.class);
-+       Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
-+       CriteriaBuilder builder = em.getCriteriaBuilder();
-+       Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
-+       return em.createQuery(
++      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return em.createQuery(
 +             criteria.select(from).where(performanceIsSame)).getResultList();
-+    }
++   }
 +   
-+    public List<Booking> findBookingsByPerformance(Performance performance, EntityManager em) {
-+       CriteriaQuery<Booking> criteria = em.getCriteriaBuilder().createQuery(Booking.class);
-+       Root<Booking> from = criteria.from(Booking.class);
-+       CriteriaBuilder builder = em.getCriteriaBuilder();
-+       Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
-+       return em.createQuery(
++   public List<Booking> findBookingsByPerformance(Performance performance, EntityManager em)
++   {
++      CriteriaQuery<Booking> criteria = em.getCriteriaBuilder().createQuery(Booking.class);
++      Root<Booking> from = criteria.from(Booking.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate performanceIsSame = builder.equal(from.get("performance"), performance);
++      return em.createQuery(
 +             criteria.select(from).where(performanceIsSame)).getResultList();
-+    }
- 
- 	public Long getId() {
- 		return this.id;
-@@ -187,4 +232,9 @@ public class ShowDTO implements Serializable {
- 
- 	public void setTicketPrices(final Set<NestedTicketPriceDTO> ticketPrices) {
- 		this.ticketPrices = ticketPrices;
--	} }
-\ No newline at end of file
-+	}
++   }
 +
-+    public String getDisplayTitle() {
-+       return this.displayTitle;
-+    }
-+}
+    public Long getId()
+    {
+       return this.id;
+@@ -229,4 +278,9 @@ public class ShowDTO implements Serializable
+    {
+       this.ticketPrices = ticketPrices;
+    }
+-}
 \ No newline at end of file
++
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
++}
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java
-index 922c1e5..d76eb08 100644
+index 455f614..bce2cb3 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/TicketPriceDTO.java
-@@ -15,6 +15,7 @@ public class TicketPriceDTO implements Serializable {
- 	private NestedSectionDTO section;
- 	private NestedTicketCategoryDTO ticketCategory;
- 	private float price;
-+	private String displayTitle;
+@@ -17,6 +17,7 @@ public class TicketPriceDTO implements Serializable
+    private NestedSectionDTO section;
+    private NestedTicketCategoryDTO ticketCategory;
+    private float price;
++   private String displayTitle;
  
- 	public TicketPriceDTO() {
- 	}
-@@ -27,6 +28,7 @@ public class TicketPriceDTO implements Serializable {
- 			this.ticketCategory = new NestedTicketCategoryDTO(
- 					entity.getTicketCategory());
- 			this.price = entity.getPrice();
-+			this.displayTitle = entity.toString();
- 		}
- 	}
+    public TicketPriceDTO()
+    {
+@@ -32,6 +33,7 @@ public class TicketPriceDTO implements Serializable
+          this.ticketCategory = new NestedTicketCategoryDTO(
+                entity.getTicketCategory());
+          this.price = entity.getPrice();
++         this.displayTitle = entity.toString();
+       }
+    }
  
-@@ -87,4 +89,9 @@ public class TicketPriceDTO implements Serializable {
- 
- 	public void setPrice(final float price) {
- 		this.price = price;
--	} }
+@@ -108,4 +110,9 @@ public class TicketPriceDTO implements Serializable
+    {
+       this.price = price;
+    }
+-}
 \ No newline at end of file
-+	}
 +
-+    public String getDisplayTitle() {
-+       return this.displayTitle;
-+    }
++   public String getDisplayTitle()
++   {
++      return this.displayTitle;
++   }
 +}
-\ No newline at end of file
 diff --git ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java
-index ba16d54..f9c9df0 100644
+index 2412c30..8048ddf 100644
 --- ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java
 +++ ./src/main/java/org/jboss/examples/ticketmonster/rest/dto/VenueDTO.java
-@@ -2,15 +2,30 @@ package org.jboss.examples.ticketmonster.rest.dto;
- 
+@@ -1,15 +1,30 @@
+ package org.jboss.examples.ticketmonster.rest.dto;
  
  import java.io.Serializable;
 +
@@ -367,78 +376,67 @@ index ba16d54..f9c9df0 100644
 +
  import java.util.Iterator;
 +
- import javax.xml.bind.annotation.XmlRootElement;@XmlRootElement
- public class VenueDTO implements Serializable {
+ import javax.xml.bind.annotation.XmlRootElement;
  
-@@ -69,6 +84,19 @@ public class VenueDTO implements Serializable {
- 			}
- 			if (found == false) {
- 				iterSections.remove();
-+	            List<SectionAllocation> sectionAllocations = findSectionAllocationBySection(section, em);
-+	            for(SectionAllocation sectionAllocation: sectionAllocations)
-+	            {
-+	                em.remove(sectionAllocation);
-+	            }
-+	            List<TicketPrice> ticketPrices = findTicketPricesBySection(section, em);
-+	            for(TicketPrice ticketPrice: ticketPrices)
-+	            {
-+	                Show show = ticketPrice.getShow();
-+	                show.getTicketPrices().remove(ticketPrice);
-+	                em.remove(ticketPrice);
-+	            }
-+	            em.remove(section);
- 			}
- 		}
- 		Iterator<NestedSectionDTO> iterDtoSections = this.getSections()
-@@ -101,6 +129,26 @@ public class VenueDTO implements Serializable {
- 		entity = em.merge(entity);
- 		return entity;
- 	}
-+	
-+    public List<SectionAllocation> findSectionAllocationBySection(Section section, EntityManager em) {
-+       CriteriaQuery<SectionAllocation> criteria = em
+ @XmlRootElement
+@@ -83,6 +98,19 @@ public class VenueDTO implements Serializable
+          if (found == false)
+          {
+             iterSections.remove();
++            List<SectionAllocation> sectionAllocations = findSectionAllocationBySection(section, em);
++	        for(SectionAllocation sectionAllocation: sectionAllocations)
++            {
++               em.remove(sectionAllocation);
++            }
++            List<TicketPrice> ticketPrices = findTicketPricesBySection(section, em);
++            for(TicketPrice ticketPrice: ticketPrices)
++            {
++               Show show = ticketPrice.getShow();
++               show.getTicketPrices().remove(ticketPrice);
++               em.remove(ticketPrice);
++            }
++            em.remove(section);
+          }
+       }
+       Iterator<NestedSectionDTO> iterDtoSections = this.getSections()
+@@ -122,6 +150,28 @@ public class VenueDTO implements Serializable
+       return entity;
+    }
+ 
++   public List<SectionAllocation> findSectionAllocationBySection(Section section, EntityManager em)
++   {
++      CriteriaQuery<SectionAllocation> criteria = em
 +             .getCriteriaBuilder().createQuery(SectionAllocation.class);
-+       Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
-+       CriteriaBuilder builder = em.getCriteriaBuilder();
-+       Predicate sectionIsSame = builder.equal(from.get("section"), section);
-+       return em.createQuery(
++      Root<SectionAllocation> from = criteria.from(SectionAllocation.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate sectionIsSame = builder.equal(from.get("section"), section);
++      return em.createQuery(
 +             criteria.select(from).where(sectionIsSame)).getResultList();
-+    }
++   }
 +   
-+    public List<TicketPrice> findTicketPricesBySection(Section section, EntityManager em) {
-+       CriteriaQuery<TicketPrice> criteria = em
++   public List<TicketPrice> findTicketPricesBySection(Section section, EntityManager em)
++   {
++      CriteriaQuery<TicketPrice> criteria = em
 +             .getCriteriaBuilder().createQuery(TicketPrice.class);
-+       Root<TicketPrice> from = criteria.from(TicketPrice.class);
-+       CriteriaBuilder builder = em.getCriteriaBuilder();
-+       Predicate sectionIsSame = builder.equal(from.get("section"), section);
-+       return em.createQuery(
++      Root<TicketPrice> from = criteria.from(TicketPrice.class);
++      CriteriaBuilder builder = em.getCriteriaBuilder();
++      Predicate sectionIsSame = builder.equal(from.get("section"), section);
++      return em.createQuery(
 +             criteria.select(from).where(sectionIsSame)).getResultList();
-+    }
- 
- 	public Long getId() {
- 		return this.id;
-diff --git ./src/main/webapp/WEB-INF/web.xml ./src/main/webapp/WEB-INF/web.xml
-deleted file mode 100644
-index b86b28f..0000000
---- ./src/main/webapp/WEB-INF/web.xml
-+++ /dev/null
-@@ -1,14 +0,0 @@
--<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
--<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
--  <display-name>ticket-monster</display-name>
--  <session-config>
--    <session-timeout>30</session-timeout>
--  </session-config>
--  <mime-mapping>
--    <extension>ico</extension>
--    <mime-type>image/x-icon</mime-type>
--  </mime-mapping>
--  <welcome-file-list>
--    <welcome-file>/index.html</welcome-file>
--  </welcome-file-list>
--</web-app>
++   }
++
+    public Long getId()
+    {
+       return this.id;
+@@ -191,4 +241,4 @@ public class VenueDTO implements Serializable
+    {
+       this.capacity = capacity;
+    }
+-}
+\ No newline at end of file
++}
 diff --git ./src/main/webapp/admin/scripts/controllers/editBookingController.js ./src/main/webapp/admin/scripts/controllers/editBookingController.js
-index 91ddde7..a310cf0 100644
+index 91ddde7..6233ab4 100644
 --- ./src/main/webapp/admin/scripts/controllers/editBookingController.js
 +++ ./src/main/webapp/admin/scripts/controllers/editBookingController.js
 @@ -37,7 +37,7 @@ angular.module('ticketmonster').controller('EditBookingController', function($sc
@@ -450,8 +448,15 @@ index 91ddde7..a310cf0 100644
                      };
                      if($scope.booking.performance && item.id == $scope.booking.performance.id) {
                          $scope.performanceSelection = labelObject;
+@@ -103,4 +103,4 @@ angular.module('ticketmonster').controller('EditBookingController', function($sc
+     });
+     
+     $scope.get();
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/editEventController.js ./src/main/webapp/admin/scripts/controllers/editEventController.js
-index 8bb871b..8fecbce 100644
+index 8bb871b..553bdf2 100644
 --- ./src/main/webapp/admin/scripts/controllers/editEventController.js
 +++ ./src/main/webapp/admin/scripts/controllers/editEventController.js
 @@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditEventController', function($scop
@@ -463,8 +468,15 @@ index 8bb871b..8fecbce 100644
                      };
                      if($scope.event.mediaItem && item.id == $scope.event.mediaItem.id) {
                          $scope.mediaItemSelection = labelObject;
+@@ -94,4 +94,4 @@ angular.module('ticketmonster').controller('EditEventController', function($scop
+     });
+     
+     $scope.get();
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/editPerformanceController.js ./src/main/webapp/admin/scripts/controllers/editPerformanceController.js
-index fc93d6a..35b6ca9 100644
+index fc93d6a..98e21fc 100644
 --- ./src/main/webapp/admin/scripts/controllers/editPerformanceController.js
 +++ ./src/main/webapp/admin/scripts/controllers/editPerformanceController.js
 @@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditPerformanceController', function
@@ -476,8 +488,15 @@ index fc93d6a..35b6ca9 100644
                      };
                      if($scope.performance.show && item.id == $scope.performance.show.id) {
                          $scope.showSelection = labelObject;
+@@ -71,4 +71,4 @@ angular.module('ticketmonster').controller('EditPerformanceController', function
+     });
+     
+     $scope.get();
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js ./src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js
-index 763fa18..db8e951 100644
+index 763fa18..734baae 100644
 --- ./src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js
 +++ ./src/main/webapp/admin/scripts/controllers/editSectionAllocationController.js
 @@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditSectionAllocationController', fu
@@ -489,8 +508,15 @@ index 763fa18..db8e951 100644
                      };
                      if($scope.sectionAllocation.performance && item.id == $scope.sectionAllocation.performance.id) {
                          $scope.performanceSelection = labelObject;
+@@ -94,4 +94,4 @@ angular.module('ticketmonster').controller('EditSectionAllocationController', fu
+     });
+     
+     $scope.get();
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/editShowController.js ./src/main/webapp/admin/scripts/controllers/editShowController.js
-index 04d537a..5d7ddfe 100644
+index 04d537a..e863587 100644
 --- ./src/main/webapp/admin/scripts/controllers/editShowController.js
 +++ ./src/main/webapp/admin/scripts/controllers/editShowController.js
 @@ -33,7 +33,7 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
@@ -511,8 +537,15 @@ index 04d537a..5d7ddfe 100644
                      };
                      if($scope.show.ticketPrices){
                          $.each($scope.show.ticketPrices, function(idx, element) {
+@@ -158,4 +158,4 @@ angular.module('ticketmonster').controller('EditShowController', function($scope
+     });
+     
+     $scope.get();
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/editTicketPriceController.js ./src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
-index 532ab5e..51b1540 100644
+index 532ab5e..0f5446d 100644
 --- ./src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
 +++ ./src/main/webapp/admin/scripts/controllers/editTicketPriceController.js
 @@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditTicketPriceController', function
@@ -552,8 +585,15 @@ index 532ab5e..51b1540 100644
          }
      });
      $scope.$watch("sectionSelection", function(selection) {
+@@ -117,4 +138,4 @@ angular.module('ticketmonster').controller('EditTicketPriceController', function
+     });
+     
+     $scope.get();
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/editVenueController.js ./src/main/webapp/admin/scripts/controllers/editVenueController.js
-index bc0cbeb..25d8d57 100644
+index bc0cbeb..ac61a65 100644
 --- ./src/main/webapp/admin/scripts/controllers/editVenueController.js
 +++ ./src/main/webapp/admin/scripts/controllers/editVenueController.js
 @@ -16,7 +16,7 @@ angular.module('ticketmonster').controller('EditVenueController', function($scop
@@ -565,8 +605,15 @@ index bc0cbeb..25d8d57 100644
                      };
                      if($scope.venue.mediaItem && item.id == $scope.venue.mediaItem.id) {
                          $scope.mediaItemSelection = labelObject;
+@@ -103,4 +103,4 @@ angular.module('ticketmonster').controller('EditVenueController', function($scop
+     });
+     
+     $scope.get();
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/newBookingController.js ./src/main/webapp/admin/scripts/controllers/newBookingController.js
-index d68a202..f0cedad 100644
+index d68a202..4d29c29 100644
 --- ./src/main/webapp/admin/scripts/controllers/newBookingController.js
 +++ ./src/main/webapp/admin/scripts/controllers/newBookingController.js
 @@ -27,7 +27,7 @@ angular.module('ticketmonster').controller('NewBookingController', function ($sc
@@ -578,8 +625,15 @@ index d68a202..f0cedad 100644
              });
          });
      });
+@@ -54,4 +54,4 @@ angular.module('ticketmonster').controller('NewBookingController', function ($sc
+     $scope.cancel = function() {
+         $location.path("/Bookings");
+     };
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/newEventController.js ./src/main/webapp/admin/scripts/controllers/newEventController.js
-index 069b0c3..6a9bc4f 100644
+index 069b0c3..2cc7120 100644
 --- ./src/main/webapp/admin/scripts/controllers/newEventController.js
 +++ ./src/main/webapp/admin/scripts/controllers/newEventController.js
 @@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewEventController', function ($scop
@@ -591,8 +645,15 @@ index 069b0c3..6a9bc4f 100644
              });
          });
      });
+@@ -50,4 +50,4 @@ angular.module('ticketmonster').controller('NewEventController', function ($scop
+     $scope.cancel = function() {
+         $location.path("/Events");
+     };
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/newPerformanceController.js ./src/main/webapp/admin/scripts/controllers/newPerformanceController.js
-index 9899ee4..e30fb2a 100644
+index 9899ee4..8ac2a3b 100644
 --- ./src/main/webapp/admin/scripts/controllers/newPerformanceController.js
 +++ ./src/main/webapp/admin/scripts/controllers/newPerformanceController.js
 @@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewPerformanceController', function
@@ -604,8 +665,15 @@ index 9899ee4..e30fb2a 100644
              });
          });
      });
+@@ -35,4 +35,4 @@ angular.module('ticketmonster').controller('NewPerformanceController', function
+     $scope.cancel = function() {
+         $location.path("/Performances");
+     };
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js ./src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js
-index 4320cb5..1d043dd 100644
+index 4320cb5..52a8143 100644
 --- ./src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js
 +++ ./src/main/webapp/admin/scripts/controllers/newSectionAllocationController.js
 @@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewSectionAllocationController', fun
@@ -617,8 +685,15 @@ index 4320cb5..1d043dd 100644
              });
          });
      });
+@@ -50,4 +50,4 @@ angular.module('ticketmonster').controller('NewSectionAllocationController', fun
+     $scope.cancel = function() {
+         $location.path("/SectionAllocations");
+     };
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/newShowController.js ./src/main/webapp/admin/scripts/controllers/newShowController.js
-index 01b4a50..686d3ae 100644
+index 01b4a50..087a23b 100644
 --- ./src/main/webapp/admin/scripts/controllers/newShowController.js
 +++ ./src/main/webapp/admin/scripts/controllers/newShowController.js
 @@ -23,7 +23,7 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
@@ -639,8 +714,15 @@ index 01b4a50..686d3ae 100644
              });
          });
      });
+@@ -88,4 +88,4 @@ angular.module('ticketmonster').controller('NewShowController', function ($scope
+     $scope.cancel = function() {
+         $location.path("/Shows");
+     };
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/newTicketPriceController.js ./src/main/webapp/admin/scripts/controllers/newTicketPriceController.js
-index daf214f..a94200e 100644
+index daf214f..557e372 100644
 --- ./src/main/webapp/admin/scripts/controllers/newTicketPriceController.js
 +++ ./src/main/webapp/admin/scripts/controllers/newTicketPriceController.js
 @@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewTicketPriceController', function
@@ -680,8 +762,15 @@ index daf214f..a94200e 100644
          }
      });
      
+@@ -65,4 +86,4 @@ angular.module('ticketmonster').controller('NewTicketPriceController', function
+     $scope.cancel = function() {
+         $location.path("/TicketPrices");
+     };
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/scripts/controllers/newVenueController.js ./src/main/webapp/admin/scripts/controllers/newVenueController.js
-index 1e61887..7cc3c12 100644
+index 1e61887..b16736e 100644
 --- ./src/main/webapp/admin/scripts/controllers/newVenueController.js
 +++ ./src/main/webapp/admin/scripts/controllers/newVenueController.js
 @@ -8,7 +8,7 @@ angular.module('ticketmonster').controller('NewVenueController', function ($scop
@@ -693,8 +782,15 @@ index 1e61887..7cc3c12 100644
              });
          });
      });
+@@ -54,4 +54,4 @@ angular.module('ticketmonster').controller('NewVenueController', function ($scop
+     $scope.cancel = function() {
+         $location.path("/Venues");
+     };
+-});
+\ No newline at end of file
++});
 diff --git ./src/main/webapp/admin/views/Booking/search.html ./src/main/webapp/admin/views/Booking/search.html
-index cefb023..7ffac7d 100644
+index cefb023..c0bcf5a 100644
 --- ./src/main/webapp/admin/views/Booking/search.html
 +++ ./src/main/webapp/admin/views/Booking/search.html
 @@ -37,7 +37,7 @@
@@ -706,8 +802,15 @@ index cefb023..7ffac7d 100644
                  <option value="">Choose a Performance</option>
              </select>
          </div>
+@@ -87,4 +87,4 @@
+         </li>
+     </ul>
+ 
+-</div>
+\ No newline at end of file
++</div>
 diff --git ./src/main/webapp/admin/views/Event/detail.html ./src/main/webapp/admin/views/Event/detail.html
-index 78d55b3..e4039ce 100644
+index 78d55b3..4da1871 100644
 --- ./src/main/webapp/admin/views/Event/detail.html
 +++ ./src/main/webapp/admin/views/Event/detail.html
 @@ -23,6 +23,8 @@
@@ -719,8 +822,15 @@ index 78d55b3..e4039ce 100644
          </div>
      </div>
  
+@@ -54,4 +56,4 @@
+             <button id="deleteEvent" name="deleteEvent" class="btn btn-danger" ng-show="event.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+         </div>
+     </div>
+-</form>
+\ No newline at end of file
++</form>
 diff --git ./src/main/webapp/admin/views/Event/search.html ./src/main/webapp/admin/views/Event/search.html
-index c37f281..d3bcdb8 100644
+index c37f281..a2f614e 100644
 --- ./src/main/webapp/admin/views/Event/search.html
 +++ ./src/main/webapp/admin/views/Event/search.html
 @@ -21,7 +21,7 @@
@@ -741,8 +851,15 @@ index c37f281..d3bcdb8 100644
                          <td><a href="#/Events/edit/{{result.id}}">{{result.category.description}}</a></td>
                      <td><a href="#/Events/edit/{{result.id}}">{{result.description}}</a></td>
                  </tr>
+@@ -85,4 +85,4 @@
+         </li>
+     </ul>
+ 
+-</div>
+\ No newline at end of file
++</div>
 diff --git ./src/main/webapp/admin/views/Performance/search.html ./src/main/webapp/admin/views/Performance/search.html
-index ef13770..56d1f4b 100644
+index ef13770..b315edf 100644
 --- ./src/main/webapp/admin/views/Performance/search.html
 +++ ./src/main/webapp/admin/views/Performance/search.html
 @@ -14,7 +14,7 @@
@@ -763,8 +880,15 @@ index ef13770..56d1f4b 100644
                      <td><a href="#/Performances/edit/{{result.id}}">{{result.date| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
                  </tr>
              </tbody>
+@@ -59,4 +59,4 @@
+         </li>
+     </ul>
+ 
+-</div>
+\ No newline at end of file
++</div>
 diff --git ./src/main/webapp/admin/views/SectionAllocation/search.html ./src/main/webapp/admin/views/SectionAllocation/search.html
-index 820fdd5..021eb2b 100644
+index 820fdd5..b813ea8 100644
 --- ./src/main/webapp/admin/views/SectionAllocation/search.html
 +++ ./src/main/webapp/admin/views/SectionAllocation/search.html
 @@ -20,7 +20,7 @@
@@ -785,8 +909,15 @@ index 820fdd5..021eb2b 100644
                          <td><a href="#/SectionAllocations/edit/{{result.id}}">{{result.section.name}}</a></td>
                  </tr>
              </tbody>
+@@ -76,4 +76,4 @@
+         </li>
+     </ul>
+ 
+-</div>
+\ No newline at end of file
++</div>
 diff --git ./src/main/webapp/admin/views/TicketPrice/search.html ./src/main/webapp/admin/views/TicketPrice/search.html
-index 2bf2648..3726fbd 100644
+index 2bf2648..4345e63 100644
 --- ./src/main/webapp/admin/views/TicketPrice/search.html
 +++ ./src/main/webapp/admin/views/TicketPrice/search.html
 @@ -14,7 +14,7 @@
@@ -807,8 +938,15 @@ index 2bf2648..3726fbd 100644
                          <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.section.name}}</a></td>
                          <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.ticketCategory.description}}</a></td>
                      <td><a href="#/TicketPrices/edit/{{result.id}}">{{result.price}}</a></td>
+@@ -87,4 +87,4 @@
+         </li>
+     </ul>
+ 
+-</div>
+\ No newline at end of file
++</div>
 diff --git ./src/main/webapp/admin/views/Venue/detail.html ./src/main/webapp/admin/views/Venue/detail.html
-index 5bb6383..a077823 100644
+index 5bb6383..77904e1 100644
 --- ./src/main/webapp/admin/views/Venue/detail.html
 +++ ./src/main/webapp/admin/views/Venue/detail.html
 @@ -20,6 +20,8 @@
@@ -820,8 +958,15 @@ index 5bb6383..a077823 100644
          </div>
      </div>
  
+@@ -76,4 +78,4 @@
+             <button id="deleteVenue" name="deleteVenue" class="btn btn-danger" ng-show="venue.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+         </div>
+     </div>
+-</form>
+\ No newline at end of file
++</form>
 diff --git ./src/main/webapp/admin/views/Venue/search.html ./src/main/webapp/admin/views/Venue/search.html
-index 57bc1ff..70d21fe 100644
+index 57bc1ff..ff04b44 100644
 --- ./src/main/webapp/admin/views/Venue/search.html
 +++ ./src/main/webapp/admin/views/Venue/search.html
 @@ -21,7 +21,7 @@
@@ -842,3 +987,10 @@ index 57bc1ff..70d21fe 100644
                      <td><a href="#/Venues/edit/{{result.id}}">{{result.description}}</a></td>
                      <td><a href="#/Venues/edit/{{result.id}}">{{result.capacity}}</a></td>
                      <td><a href="#/Venues/edit/{{result.id}}">{{result.address.street}}</a></td>
+@@ -111,4 +111,4 @@
+         </li>
+     </ul>
+ 
+-</div>
+\ No newline at end of file
++</div>
