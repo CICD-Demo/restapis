@@ -5,12 +5,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.NoResultException;
 
 import org.jboss.examples.ticketmonster.model.Performance;
 import org.jboss.examples.ticketmonster.model.Seat;
 import org.jboss.examples.ticketmonster.model.SeatAllocationException;
 import org.jboss.examples.ticketmonster.model.Section;
 import org.jboss.examples.ticketmonster.model.SectionAllocation;
+import org.jboss.examples.ticketmonster.service.AllocatedSeats;
 
 /**
  *
@@ -20,8 +22,6 @@ import org.jboss.examples.ticketmonster.model.SectionAllocation;
  */
 @SuppressWarnings("serial")
 public class SeatAllocationService {
-
-
 
     @Inject
     EntityManager entityManager;
@@ -43,13 +43,21 @@ public class SeatAllocationService {
     }
 
     private SectionAllocation retrieveSectionAllocationExclusively(Section section, Performance performance) {
-        SectionAllocation sectionAllocationStatus = (SectionAllocation) entityManager.createQuery(
-													"select s from SectionAllocation s where " +
-													"s.performance.id = :performanceId and " +
-													"s.section.id = :sectionId")
-													.setParameter("performanceId", performance.getId())
-													.setParameter("sectionId", section.getId())
-													.getSingleResult();
+        SectionAllocation sectionAllocationStatus = null;
+        try {
+            sectionAllocationStatus = (SectionAllocation) entityManager.createQuery(
+                "select s from SectionAllocation s where " +
+                    "s.performance.id = :performanceId and " +
+                    "s.section.id = :sectionId")
+                .setParameter("performanceId", performance.getId())
+                .setParameter("sectionId", section.getId())
+                .getSingleResult();
+        } catch (NoResultException noSectionEx) {
+            // Create the SectionAllocation since it doesn't exist
+            sectionAllocationStatus = new SectionAllocation(performance, section);
+            entityManager.persist(sectionAllocationStatus);
+            entityManager.flush();
+        }
         entityManager.lock(sectionAllocationStatus, LockModeType.PESSIMISTIC_WRITE);
         return sectionAllocationStatus;
     }
