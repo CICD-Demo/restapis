@@ -6,15 +6,23 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-
-import org.jboss.examples.ticketmonster.model.Event;
 import org.jboss.examples.ticketmonster.rest.dto.EventDTO;
+import org.jboss.examples.ticketmonster.model.Event;
 
 /**
  * 
@@ -23,7 +31,7 @@ import org.jboss.examples.ticketmonster.rest.dto.EventDTO;
 @Path("forge/events")
 public class EventEndpoint
 {
-   @PersistenceContext(unitName="primary")
+   @PersistenceContext(unitName = "primary")
    private EntityManager em;
 
    @POST
@@ -40,8 +48,9 @@ public class EventEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       Event entity = em.find(Event.class, id);
-      if (entity == null) {
-        return Response.status(Status.NOT_FOUND).build();
+      if (entity == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,13 +64,17 @@ public class EventEndpoint
       TypedQuery<Event> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.mediaItem LEFT JOIN FETCH e.category WHERE e.id = :entityId ORDER BY e.id", Event.class);
       findByIdQuery.setParameter("entityId", id);
       Event entity;
-      try {
+      try
+      {
          entity = findByIdQuery.getSingleResult();
-      } catch (NoResultException nre) {
+      }
+      catch (NoResultException nre)
+      {
          entity = null;
       }
-      if (entity == null) {
-        return Response.status(Status.NOT_FOUND).build();
+      if (entity == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
       }
       EventDTO dto = new EventDTO(entity);
       return Response.ok(dto).build();
@@ -82,9 +95,10 @@ public class EventEndpoint
       }
       final List<Event> searchResults = findAllQuery.getResultList();
       final List<EventDTO> results = new ArrayList<EventDTO>();
-      for(Event searchResult: searchResults) {
-        EventDTO dto = new EventDTO(searchResult);
-        results.add(dto);
+      for (Event searchResult : searchResults)
+      {
+         EventDTO dto = new EventDTO(searchResult);
+         results.add(dto);
       }
       return results;
    }
@@ -97,13 +111,23 @@ public class EventEndpoint
       TypedQuery<Event> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.mediaItem LEFT JOIN FETCH e.category WHERE e.id = :entityId ORDER BY e.id", Event.class);
       findByIdQuery.setParameter("entityId", id);
       Event entity;
-      try {
+      try
+      {
          entity = findByIdQuery.getSingleResult();
-      } catch (NoResultException nre) {
+      }
+      catch (NoResultException nre)
+      {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);
-      entity = em.merge(entity);
+      try
+      {
+         entity = em.merge(entity);
+      }
+      catch (OptimisticLockException e)
+      {
+         return Response.status(Response.Status.CONFLICT).entity(e.getEntity()).build();
+      }
       return Response.noContent().build();
    }
 }

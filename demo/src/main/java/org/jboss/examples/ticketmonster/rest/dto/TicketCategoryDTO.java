@@ -1,48 +1,58 @@
 package org.jboss.examples.ticketmonster.rest.dto;
 
-
 import java.io.Serializable;
-
 import org.jboss.examples.ticketmonster.model.TicketCategory;
-
 import javax.persistence.EntityManager;
-import javax.xml.bind.annotation.XmlRootElement;@XmlRootElement
-public class TicketCategoryDTO implements Serializable {
+import javax.xml.bind.annotation.XmlRootElement;
 
-	private Long id;
-	private String description;
+@XmlRootElement
+public class TicketCategoryDTO implements Serializable
+{
 
-	public TicketCategoryDTO() {
-	}
+   private Long id;
+   private String description;
 
-	public TicketCategoryDTO(final TicketCategory entity) {
-		if (entity != null) {
-			this.id = entity.getId();
-			this.description = entity.getDescription();
-		}
-	}
+   public TicketCategoryDTO()
+   {
+   }
 
-	public TicketCategory fromDTO(TicketCategory entity, EntityManager em) {
-		if (entity == null) {
-			entity = new TicketCategory();
-		}
-		entity.setDescription(this.description);
-		entity = em.merge(entity);
-		return entity;
-	}
+   public TicketCategoryDTO(final TicketCategory entity)
+   {
+      if (entity != null)
+      {
+         this.id = entity.getId();
+         this.description = entity.getDescription();
+      }
+   }
 
-	public Long getId() {
-		return this.id;
-	}
+   public TicketCategory fromDTO(TicketCategory entity, EntityManager em)
+   {
+      if (entity == null)
+      {
+         entity = new TicketCategory();
+      }
+      entity.setDescription(this.description);
+      entity = em.merge(entity);
+      return entity;
+   }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+   public Long getId()
+   {
+      return this.id;
+   }
 
-	public String getDescription() {
-		return this.description;
-	}
+   public void setId(final Long id)
+   {
+      this.id = id;
+   }
 
-	public void setDescription(final String description) {
-		this.description = description;
-	} }
+   public String getDescription()
+   {
+      return this.description;
+   }
+
+   public void setDescription(final String description)
+   {
+      this.description = description;
+   }
+}

@@ -1,60 +1,72 @@
 package org.jboss.examples.ticketmonster.rest.dto;
 
-
 import java.io.Serializable;
-
 import org.jboss.examples.ticketmonster.model.MediaItem;
-import org.jboss.examples.ticketmonster.model.MediaType;
-
 import javax.persistence.EntityManager;
-import javax.xml.bind.annotation.XmlRootElement;@XmlRootElement
-public class MediaItemDTO implements Serializable {
+import org.jboss.examples.ticketmonster.model.MediaType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-	private Long id;
-	private MediaType mediaType;
-	private String url;
+@XmlRootElement
+public class MediaItemDTO implements Serializable
+{
 
-	public MediaItemDTO() {
-	}
+   private Long id;
+   private MediaType mediaType;
+   private String url;
 
-	public MediaItemDTO(final MediaItem entity) {
-		if (entity != null) {
-			this.id = entity.getId();
-			this.mediaType = entity.getMediaType();
-			this.url = entity.getUrl();
-		}
-	}
+   public MediaItemDTO()
+   {
+   }
 
-	public MediaItem fromDTO(MediaItem entity, EntityManager em) {
-		if (entity == null) {
-			entity = new MediaItem();
-		}
-		entity.setMediaType(this.mediaType);
-		entity.setUrl(this.url);
-		entity = em.merge(entity);
-		return entity;
-	}
+   public MediaItemDTO(final MediaItem entity)
+   {
+      if (entity != null)
+      {
+         this.id = entity.getId();
+         this.mediaType = entity.getMediaType();
+         this.url = entity.getUrl();
+      }
+   }
 
-	public Long getId() {
-		return this.id;
-	}
+   public MediaItem fromDTO(MediaItem entity, EntityManager em)
+   {
+      if (entity == null)
+      {
+         entity = new MediaItem();
+      }
+      entity.setMediaType(this.mediaType);
+      entity.setUrl(this.url);
+      entity = em.merge(entity);
+      return entity;
+   }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+   public Long getId()
+   {
+      return this.id;
+   }
 
-	public MediaType getMediaType() {
-		return this.mediaType;
-	}
+   public void setId(final Long id)
+   {
+      this.id = id;
+   }
 
-	public void setMediaType(final MediaType mediaType) {
-		this.mediaType = mediaType;
-	}
+   public MediaType getMediaType()
+   {
+      return this.mediaType;
+   }
 
-	public String getUrl() {
-		return this.url;
-	}
+   public void setMediaType(final MediaType mediaType)
+   {
+      this.mediaType = mediaType;
+   }
 
-	public void setUrl(final String url) {
-		this.url = url;
-	} }
+   public String getUrl()
+   {
+      return this.url;
+   }
+
+   public void setUrl(final String url)
+   {
+      this.url = url;
+   }
+}

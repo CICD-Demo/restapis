@@ -1,69 +1,85 @@
 package org.jboss.examples.ticketmonster.rest.dto;
 
 import java.io.Serializable;
-
 import org.jboss.examples.ticketmonster.model.Ticket;
-import org.jboss.examples.ticketmonster.rest.dto.SeatDTO;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-public class NestedTicketDTO implements Serializable {
+import org.jboss.examples.ticketmonster.rest.dto.SeatDTO;
 
-	private Long id;
-	private float price;
-	private SeatDTO seat;
+public class NestedTicketDTO implements Serializable
+{
 
-	public NestedTicketDTO() {
-	}
+   private Long id;
+   private float price;
+   private SeatDTO seat;
 
-	public NestedTicketDTO(final Ticket entity) {
-		if (entity != null) {
-			this.id = entity.getId();
-			this.price = entity.getPrice();
-			this.seat = new SeatDTO(entity.getSeat());
-		}
-	}
+   public NestedTicketDTO()
+   {
+   }
 
-	public Ticket fromDTO(Ticket entity, EntityManager em) {
-		if (entity == null) {
-			entity = new Ticket();
-		}
-		if (this.id != null) {
-			TypedQuery<Ticket> findByIdQuery = em.createQuery(
-					"SELECT DISTINCT t FROM Ticket t WHERE t.id = :entityId",
-					Ticket.class);
-			findByIdQuery.setParameter("entityId", this.id);
-			try {
-				entity = findByIdQuery.getSingleResult();
-			} catch (javax.persistence.NoResultException nre) {
-				entity = null;
-			}
-			return entity;
-		}
-		entity = em.merge(entity);
-		return entity;
-	}
-	public Long getId() {
-		return this.id;
-	}
+   public NestedTicketDTO(final Ticket entity)
+   {
+      if (entity != null)
+      {
+         this.id = entity.getId();
+         this.price = entity.getPrice();
+         this.seat = new SeatDTO(entity.getSeat());
+      }
+   }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+   public Ticket fromDTO(Ticket entity, EntityManager em)
+   {
+      if (entity == null)
+      {
+         entity = new Ticket();
+      }
+      if (this.id != null)
+      {
+         TypedQuery<Ticket> findByIdQuery = em.createQuery(
+               "SELECT DISTINCT t FROM Ticket t WHERE t.id = :entityId",
+               Ticket.class);
+         findByIdQuery.setParameter("entityId", this.id);
+         try
+         {
+            entity = findByIdQuery.getSingleResult();
+         }
+         catch (javax.persistence.NoResultException nre)
+         {
+            entity = null;
+         }
+         return entity;
+      }
+      entity = em.merge(entity);
+      return entity;
+   }
 
-	public float getPrice() {
-		return this.price;
-	}
+   public Long getId()
+   {
+      return this.id;
+   }
 
-	public void setPrice(final float price) {
-		this.price = price;
-	}
+   public void setId(final Long id)
+   {
+      this.id = id;
+   }
 
-	public SeatDTO getSeat() {
-		return this.seat;
-	}
+   public float getPrice()
+   {
+      return this.price;
+   }
 
-	public void setSeat(final SeatDTO seat) {
-		this.seat = seat;
-	}
+   public void setPrice(final float price)
+   {
+      this.price = price;
+   }
+
+   public SeatDTO getSeat()
+   {
+      return this.seat;
+   }
+
+   public void setSeat(final SeatDTO seat)
+   {
+      this.seat = seat;
+   }
 }

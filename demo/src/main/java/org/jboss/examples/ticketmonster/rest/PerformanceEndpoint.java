@@ -6,22 +6,31 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
+import org.jboss.examples.ticketmonster.rest.dto.PerformanceDTO;
 import org.jboss.examples.ticketmonster.model.Booking;
 import org.jboss.examples.ticketmonster.model.Performance;
 import org.jboss.examples.ticketmonster.model.SectionAllocation;
 import org.jboss.examples.ticketmonster.model.Show;
-import org.jboss.examples.ticketmonster.rest.dto.PerformanceDTO;
 
 /**
  * 
@@ -30,7 +39,7 @@ import org.jboss.examples.ticketmonster.rest.dto.PerformanceDTO;
 @Path("/performances")
 public class PerformanceEndpoint
 {
-   @PersistenceContext(unitName="primary")
+   @PersistenceContext(unitName = "primary")
    private EntityManager em;
 
    @POST
@@ -47,8 +56,9 @@ public class PerformanceEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       Performance entity = em.find(Performance.class, id);
-      if (entity == null) {
-        return Response.status(Status.NOT_FOUND).build();
+      if (entity == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
       }
       Show show = entity.getShow();
       show.getPerformances().remove(entity);
@@ -74,13 +84,17 @@ public class PerformanceEndpoint
       TypedQuery<Performance> findByIdQuery = em.createQuery("SELECT DISTINCT p FROM Performance p LEFT JOIN FETCH p.show WHERE p.id = :entityId ORDER BY p.id", Performance.class);
       findByIdQuery.setParameter("entityId", id);
       Performance entity;
-      try {
+      try
+      {
          entity = findByIdQuery.getSingleResult();
-      } catch (NoResultException nre) {
+      }
+      catch (NoResultException nre)
+      {
          entity = null;
       }
-      if (entity == null) {
-        return Response.status(Status.NOT_FOUND).build();
+      if (entity == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
       }
       PerformanceDTO dto = new PerformanceDTO(entity);
       return Response.ok(dto).build();
@@ -101,9 +115,10 @@ public class PerformanceEndpoint
       }
       final List<Performance> searchResults = findAllQuery.getResultList();
       final List<PerformanceDTO> results = new ArrayList<PerformanceDTO>();
-      for(Performance searchResult: searchResults) {
-        PerformanceDTO dto = new PerformanceDTO(searchResult);
-        results.add(dto);
+      for (Performance searchResult : searchResults)
+      {
+         PerformanceDTO dto = new PerformanceDTO(searchResult);
+         results.add(dto);
       }
       return results;
    }
@@ -116,16 +131,26 @@ public class PerformanceEndpoint
       TypedQuery<Performance> findByIdQuery = em.createQuery("SELECT DISTINCT p FROM Performance p LEFT JOIN FETCH p.show WHERE p.id = :entityId ORDER BY p.id", Performance.class);
       findByIdQuery.setParameter("entityId", id);
       Performance entity;
-      try {
+      try
+      {
          entity = findByIdQuery.getSingleResult();
-      } catch (NoResultException nre) {
+      }
+      catch (NoResultException nre)
+      {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);
-      entity = em.merge(entity);
+      try
+      {
+         entity = em.merge(entity);
+      }
+      catch (OptimisticLockException e)
+      {
+         return Response.status(Response.Status.CONFLICT).entity(e.getEntity()).build();
+      }
       return Response.noContent().build();
    }
-   
+
    public List<SectionAllocation> findSectionAllocationsByPerformance(Performance performance)
    {
       CriteriaQuery<SectionAllocation> criteria = this.em

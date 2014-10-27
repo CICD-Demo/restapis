@@ -1,48 +1,58 @@
 package org.jboss.examples.ticketmonster.rest.dto;
 
-
 import java.io.Serializable;
-
 import org.jboss.examples.ticketmonster.model.EventCategory;
-
 import javax.persistence.EntityManager;
-import javax.xml.bind.annotation.XmlRootElement;@XmlRootElement
-public class EventCategoryDTO implements Serializable {
+import javax.xml.bind.annotation.XmlRootElement;
 
-	private Long id;
-	private String description;
+@XmlRootElement
+public class EventCategoryDTO implements Serializable
+{
 
-	public EventCategoryDTO() {
-	}
+   private Long id;
+   private String description;
 
-	public EventCategoryDTO(final EventCategory entity) {
-		if (entity != null) {
-			this.id = entity.getId();
-			this.description = entity.getDescription();
-		}
-	}
+   public EventCategoryDTO()
+   {
+   }
 
-	public EventCategory fromDTO(EventCategory entity, EntityManager em) {
-		if (entity == null) {
-			entity = new EventCategory();
-		}
-		entity.setDescription(this.description);
-		entity = em.merge(entity);
-		return entity;
-	}
+   public EventCategoryDTO(final EventCategory entity)
+   {
+      if (entity != null)
+      {
+         this.id = entity.getId();
+         this.description = entity.getDescription();
+      }
+   }
 
-	public Long getId() {
-		return this.id;
-	}
+   public EventCategory fromDTO(EventCategory entity, EntityManager em)
+   {
+      if (entity == null)
+      {
+         entity = new EventCategory();
+      }
+      entity.setDescription(this.description);
+      entity = em.merge(entity);
+      return entity;
+   }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+   public Long getId()
+   {
+      return this.id;
+   }
 
-	public String getDescription() {
-		return this.description;
-	}
+   public void setId(final Long id)
+   {
+      this.id = id;
+   }
 
-	public void setDescription(final String description) {
-		this.description = description;
-	} }
+   public String getDescription()
+   {
+      return this.description;
+   }
+
+   public void setDescription(final String description)
+   {
+      this.description = description;
+   }
+}

@@ -1,72 +1,88 @@
 package org.jboss.examples.ticketmonster.rest.dto;
 
 import java.io.Serializable;
-
 import org.jboss.examples.ticketmonster.model.MediaItem;
-import org.jboss.examples.ticketmonster.model.MediaType;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-public class NestedMediaItemDTO implements Serializable {
+import org.jboss.examples.ticketmonster.model.MediaType;
 
-	private Long id;
-	private MediaType mediaType;
-	private String url;
+public class NestedMediaItemDTO implements Serializable
+{
 
-	public NestedMediaItemDTO() {
-	}
+   private Long id;
+   private MediaType mediaType;
+   private String url;
 
-	public NestedMediaItemDTO(final MediaItem entity) {
-		if (entity != null) {
-			this.id = entity.getId();
-			this.mediaType = entity.getMediaType();
-			this.url = entity.getUrl();
-		}
-	}
+   public NestedMediaItemDTO()
+   {
+   }
 
-	public MediaItem fromDTO(MediaItem entity, EntityManager em) {
-		if (entity == null) {
-			entity = new MediaItem();
-		}
-		if (this.id != null) {
-			TypedQuery<MediaItem> findByIdQuery = em
-					.createQuery(
-							"SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId",
-							MediaItem.class);
-			findByIdQuery.setParameter("entityId", this.id);
-			try {
-				entity = findByIdQuery.getSingleResult();
-			} catch (javax.persistence.NoResultException nre) {
-				entity = null;
-			}
-			return entity;
-		}
-		entity.setMediaType(this.mediaType);
-		entity.setUrl(this.url);
-		entity = em.merge(entity);
-		return entity;
-	}
-	public Long getId() {
-		return this.id;
-	}
+   public NestedMediaItemDTO(final MediaItem entity)
+   {
+      if (entity != null)
+      {
+         this.id = entity.getId();
+         this.mediaType = entity.getMediaType();
+         this.url = entity.getUrl();
+      }
+   }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+   public MediaItem fromDTO(MediaItem entity, EntityManager em)
+   {
+      if (entity == null)
+      {
+         entity = new MediaItem();
+      }
+      if (this.id != null)
+      {
+         TypedQuery<MediaItem> findByIdQuery = em
+               .createQuery(
+                     "SELECT DISTINCT m FROM MediaItem m WHERE m.id = :entityId",
+                     MediaItem.class);
+         findByIdQuery.setParameter("entityId", this.id);
+         try
+         {
+            entity = findByIdQuery.getSingleResult();
+         }
+         catch (javax.persistence.NoResultException nre)
+         {
+            entity = null;
+         }
+         return entity;
+      }
+      entity.setMediaType(this.mediaType);
+      entity.setUrl(this.url);
+      entity = em.merge(entity);
+      return entity;
+   }
 
-	public MediaType getMediaType() {
-		return this.mediaType;
-	}
+   public Long getId()
+   {
+      return this.id;
+   }
 
-	public void setMediaType(final MediaType mediaType) {
-		this.mediaType = mediaType;
-	}
+   public void setId(final Long id)
+   {
+      this.id = id;
+   }
 
-	public String getUrl() {
-		return this.url;
-	}
+   public MediaType getMediaType()
+   {
+      return this.mediaType;
+   }
 
-	public void setUrl(final String url) {
-		this.url = url;
-	}
+   public void setMediaType(final MediaType mediaType)
+   {
+      this.mediaType = mediaType;
+   }
+
+   public String getUrl()
+   {
+      return this.url;
+   }
+
+   public void setUrl(final String url)
+   {
+      this.url = url;
+   }
 }

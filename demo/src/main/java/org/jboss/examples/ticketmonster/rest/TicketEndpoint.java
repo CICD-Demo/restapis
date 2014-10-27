@@ -6,15 +6,23 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-
-import org.jboss.examples.ticketmonster.model.Ticket;
 import org.jboss.examples.ticketmonster.rest.dto.TicketDTO;
+import org.jboss.examples.ticketmonster.model.Ticket;
 
 /**
  * 
@@ -23,7 +31,7 @@ import org.jboss.examples.ticketmonster.rest.dto.TicketDTO;
 @Path("/tickets")
 public class TicketEndpoint
 {
-   @PersistenceContext(unitName="primary")
+   @PersistenceContext(unitName = "primary")
    private EntityManager em;
 
    @POST
@@ -40,8 +48,9 @@ public class TicketEndpoint
    public Response deleteById(@PathParam("id") Long id)
    {
       Ticket entity = em.find(Ticket.class, id);
-      if (entity == null) {
-        return Response.status(Status.NOT_FOUND).build();
+      if (entity == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
       }
       em.remove(entity);
       return Response.noContent().build();
@@ -55,13 +64,17 @@ public class TicketEndpoint
       TypedQuery<Ticket> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM Ticket t LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", Ticket.class);
       findByIdQuery.setParameter("entityId", id);
       Ticket entity;
-      try {
+      try
+      {
          entity = findByIdQuery.getSingleResult();
-      } catch (NoResultException nre) {
+      }
+      catch (NoResultException nre)
+      {
          entity = null;
       }
-      if (entity == null) {
-        return Response.status(Status.NOT_FOUND).build();
+      if (entity == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
       }
       TicketDTO dto = new TicketDTO(entity);
       return Response.ok(dto).build();
@@ -82,9 +95,10 @@ public class TicketEndpoint
       }
       final List<Ticket> searchResults = findAllQuery.getResultList();
       final List<TicketDTO> results = new ArrayList<TicketDTO>();
-      for(Ticket searchResult: searchResults) {
-        TicketDTO dto = new TicketDTO(searchResult);
-        results.add(dto);
+      for (Ticket searchResult : searchResults)
+      {
+         TicketDTO dto = new TicketDTO(searchResult);
+         results.add(dto);
       }
       return results;
    }
@@ -97,13 +111,23 @@ public class TicketEndpoint
       TypedQuery<Ticket> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM Ticket t LEFT JOIN FETCH t.ticketCategory WHERE t.id = :entityId ORDER BY t.id", Ticket.class);
       findByIdQuery.setParameter("entityId", id);
       Ticket entity;
-      try {
+      try
+      {
          entity = findByIdQuery.getSingleResult();
-      } catch (NoResultException nre) {
+      }
+      catch (NoResultException nre)
+      {
          entity = null;
       }
       entity = dto.fromDTO(entity, em);
-      entity = em.merge(entity);
+      try
+      {
+         entity = em.merge(entity);
+      }
+      catch (OptimisticLockException e)
+      {
+         return Response.status(Response.Status.CONFLICT).entity(e.getEntity()).build();
+      }
       return Response.noContent().build();
    }
 }

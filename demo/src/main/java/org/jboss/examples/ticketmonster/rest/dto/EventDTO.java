@@ -1,88 +1,106 @@
 package org.jboss.examples.ticketmonster.rest.dto;
 
-
 import java.io.Serializable;
-
 import org.jboss.examples.ticketmonster.model.Event;
-import org.jboss.examples.ticketmonster.rest.dto.NestedEventCategoryDTO;
-import org.jboss.examples.ticketmonster.rest.dto.NestedMediaItemDTO;
-
 import javax.persistence.EntityManager;
-import javax.xml.bind.annotation.XmlRootElement;@XmlRootElement
-public class EventDTO implements Serializable {
+import org.jboss.examples.ticketmonster.rest.dto.NestedMediaItemDTO;
+import org.jboss.examples.ticketmonster.rest.dto.NestedEventCategoryDTO;
+import javax.xml.bind.annotation.XmlRootElement;
 
-	private Long id;
-	private String name;
-	private NestedMediaItemDTO mediaItem;
-	private NestedEventCategoryDTO category;
-	private String description;
+@XmlRootElement
+public class EventDTO implements Serializable
+{
 
-	public EventDTO() {
-	}
+   private Long id;
+   private String name;
+   private NestedMediaItemDTO mediaItem;
+   private NestedEventCategoryDTO category;
+   private String description;
 
-	public EventDTO(final Event entity) {
-		if (entity != null) {
-			this.id = entity.getId();
-			this.name = entity.getName();
-			this.mediaItem = new NestedMediaItemDTO(entity.getMediaItem());
-			this.category = new NestedEventCategoryDTO(entity.getCategory());
-			this.description = entity.getDescription();
-		}
-	}
+   public EventDTO()
+   {
+   }
 
-	public Event fromDTO(Event entity, EntityManager em) {
-		if (entity == null) {
-			entity = new Event();
-		}
-		entity.setName(this.name);
-		if (this.mediaItem != null) {
-			entity.setMediaItem(this.mediaItem.fromDTO(entity.getMediaItem(),
-					em));
-		}
-		if (this.category != null) {
-			entity.setCategory(this.category.fromDTO(entity.getCategory(), em));
-		}
-		entity.setDescription(this.description);
-		entity = em.merge(entity);
-		return entity;
-	}
+   public EventDTO(final Event entity)
+   {
+      if (entity != null)
+      {
+         this.id = entity.getId();
+         this.name = entity.getName();
+         this.mediaItem = new NestedMediaItemDTO(entity.getMediaItem());
+         this.category = new NestedEventCategoryDTO(entity.getCategory());
+         this.description = entity.getDescription();
+      }
+   }
 
-	public Long getId() {
-		return this.id;
-	}
+   public Event fromDTO(Event entity, EntityManager em)
+   {
+      if (entity == null)
+      {
+         entity = new Event();
+      }
+      entity.setName(this.name);
+      if (this.mediaItem != null)
+      {
+         entity.setMediaItem(this.mediaItem.fromDTO(entity.getMediaItem(),
+               em));
+      }
+      if (this.category != null)
+      {
+         entity.setCategory(this.category.fromDTO(entity.getCategory(), em));
+      }
+      entity.setDescription(this.description);
+      entity = em.merge(entity);
+      return entity;
+   }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+   public Long getId()
+   {
+      return this.id;
+   }
 
-	public String getName() {
-		return this.name;
-	}
+   public void setId(final Long id)
+   {
+      this.id = id;
+   }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+   public String getName()
+   {
+      return this.name;
+   }
 
-	public NestedMediaItemDTO getMediaItem() {
-		return this.mediaItem;
-	}
+   public void setName(final String name)
+   {
+      this.name = name;
+   }
 
-	public void setMediaItem(final NestedMediaItemDTO mediaItem) {
-		this.mediaItem = mediaItem;
-	}
+   public NestedMediaItemDTO getMediaItem()
+   {
+      return this.mediaItem;
+   }
 
-	public NestedEventCategoryDTO getCategory() {
-		return this.category;
-	}
+   public void setMediaItem(final NestedMediaItemDTO mediaItem)
+   {
+      this.mediaItem = mediaItem;
+   }
 
-	public void setCategory(final NestedEventCategoryDTO category) {
-		this.category = category;
-	}
+   public NestedEventCategoryDTO getCategory()
+   {
+      return this.category;
+   }
 
-	public String getDescription() {
-		return this.description;
-	}
+   public void setCategory(final NestedEventCategoryDTO category)
+   {
+      this.category = category;
+   }
 
-	public void setDescription(final String description) {
-		this.description = description;
-	} }
+   public String getDescription()
+   {
+      return this.description;
+   }
+
+   public void setDescription(final String description)
+   {
+      this.description = description;
+   }
+}
