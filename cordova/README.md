@@ -7,7 +7,7 @@ This is the Hybrid Mobile project for TicketMonster.
 Prerequisites
 -------------
 
-* JBoss Developer Studio (JBDS) 7.1 and JBDS 8.0.0 Beta 2
+* JBoss Developer Studio (JBDS) 8.0.0 GA
 * The JBoss Hybrid Mobile Tools + CordovaSim feature is installed in JBDS.
 
 For running on an Android emulator:
@@ -18,7 +18,7 @@ For running on an Android emulator:
 For running on an iOS simulator:
 
 * Mac OS X 10.7 (Lion) or higher.
-* XCode 4.5 or higher, with iOS 6 SDK or higher.
+* XCode 6.0 or higher, with iOS 6 SDK or higher.
 * An iOS 5.x or higher simulator for the iPhone or iPad.
 
 If you need more detailed instruction to setup a iOS Development Environment with Apache Cordova, you can take a look at [Setting up your development environment to use Apache Cordova](http://aerogear.org/docs/guides/CordovaSetup/)
@@ -28,15 +28,11 @@ Import the ticket-monster Code
 
 First we need to import the existing Hybrid Mobile project code to JBDS.
 
-1. In JBDS, click File then import.
-2. Select *Existing Projects into Workspace* and click *Next*.
+1. In JBDS, click File then Import.
+2. Select *Import Cordova Project* and click *Next*.
 3. On Root Directory, click on *Browse...* button and navigate to the `$TICKET-MONSTER_HOME/cordova/` directory on your filesystem.
 4. After selecting the TicketMonster-Cordova project, you can click on *Finish* button to start the project import.
-5. Make sure that `$TICKET-MONSTER_HOME/cordova/www` is a symbolic link to `../demo/src/main/webapp`
-
-#### Troubleshooting Windows Operating Systems
-
-As Windows doesn't support symbolic links you must copy `$TICKET-MONSTER_HOME/demo/src/main/webapp` folder to `$TICKET-MONSTER_HOME/cordova/www`
+5. Make sure that `$TICKET-MONSTER_HOME/cordova/www` is a linked folder that resolves to `../demo/src/main/webapp`.
 
 
 Deploy the application on an Android Emulator

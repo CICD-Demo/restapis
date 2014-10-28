@@ -29,7 +29,7 @@ Before building and running TicketMonster, you must generate the administration 
 
     The git patches need to be applied manually. Both the patches are located in the patches sub-directory. To apply the manual changes, first apply the patch located in file _admin_layer_functional.patch_. Then perform the same for the file _admin_layer_graphics.patch_ if you want to apply the style changes for the generated administration site. You can do so in JBoss Developer Studio, by opening the context-menu on the project (Right-click on the project) and then apply a git patch via _Team_ -> _Apply Patch..._. Locate the patch file in the Workspace, select it and click the 'Next' button. In the next dialog, select to apply the patch on the 'ticket-monster' project in the workspace. Click Finish in the final page of the wizard after satisfying that the patch applies cleanly.
 
-4. Deployment to JBoss EAP 6.2 is optional. The project can be built and deployed to a running instance of JBoss EAP through the following command in JBoss Forge:
+4. Deployment to JBoss EAP 6.3 is optional. The project can be built and deployed to a running instance of JBoss EAP through the following command in JBoss Forge:
 
 	    $ build clean package jboss-as:deploy
 
@@ -65,11 +65,11 @@ If you intend to deploy into [OpenShift](http://openshift.com), you can use the 
 	
 ## Running TicketMonster
 
-You can run TicketMonster into a local JBoss EAP 6.2 instance or on OpenShift.
+You can run TicketMonster into a local JBoss EAP 6.3 instance or on OpenShift.
 
 ### Running TicketMonster locally
 
-#### Start JBoss Enterprise Application Platform 6.2
+#### Start JBoss Enterprise Application Platform 6.3
 
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
