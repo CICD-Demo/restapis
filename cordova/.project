@@ -12,7 +12,14 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.jboss.tools.aerogear.hybrid.core.HybridAppNature</nature>
+		<nature>org.eclipse.thym.core.HybridAppNature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>www</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/demo/src/main/webapp</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

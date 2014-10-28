@@ -146,10 +146,31 @@ We'll choose Android and iOS variants of version 3.4.0.
 .Select Android and iOS for 3.4.0
 image::gfx/setup_hybrid_mobile_engine_340.png[]
 +
-Now that we have downloaded and setup a hybrid mobile engine, let's use it in our project. Select the newly configured engine and click `Finish`.
+Now that we have downloaded and setup a hybrid mobile engine, let's use it in our project. Select the newly configured engine and click `Next`.
 +
 .Creating a new Hybrid Mobile Application project
 image::gfx/select_hybrid_mobile_engine_for_project.png[]
++
+We will now be provided the opportunity to add Cordova plug-ins to our project.
++
+.Adding Cordova plugins when a new Hybrid Mobile Application project
+image::gfx/cordova_choose_to_add_plugins.png[]
++
+We will be using the Status Bar plugin from Cordova, to ensure that the status bar on iOS 7 does not overlap the UI. The Device plugin will be used to obtain device information for use in device detection. We'll also use the Notification plugin to display alerts and notifications to the end-user using the native mobile UI. We'll proceed to add the required Cordova plugins to the project.
++
+.Add Cordova Device plugin
+image::gfx/cordova_add_device_plugin.png[]
++
+.Add Cordova Notification plugin
+image::gfx/cordova_add_notifications_plugin.png[]
++
+.Add Cordova StatusBar plugin
+image::gfx/cordova_add_statusbar_plugin.png[]
++
+Let's proceed to add these, by searching for them and selecting them. Click `Next` once you have finished selecting the necessary plug-ins. We will now confirm the plugins to be added to the project. Click `Finish` to create the new Hybrid Mobile application project.
++
+.Confirm plugins to add
+image::gfx/cordova_confirm_plugin_versions.png[]
 +
 Once you have finished creating the project, navigate to the `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply replace the `www` directory with a symbolic link to the `webapp` directory of TicketMonster; the `config.xml` file and `res` directory would need to be copied over to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application in both places).
 
@@ -162,13 +183,36 @@ $ rm -rf www
 
 Once the necessary files have been copied and the original `www` folder deleted, you can re-create the `www` directory as an Eclipse linked folder in the Hybrid Mobile project.
 
-First select the project, right-click on it, and select the `New` -> `Folder` option in the context menu. Specify the name of the folder as `www`, but do not click `Finish` yet. In the same dialog box, click the `Advanced` button, to create a new `Linked Folder` (Link to alternate location). Enter the following value: `PROJECT_LOC/../ticket-monster/src/main/webapp/` in the textbox. This will link the folder to the TicketMonster project, assuming the Hybrid Mobile Project and the Java EE project reside in the same directory. Replace `ticket-monster` with the name of the Java EE project, if you specified a different name when you originally created the Java EE project. If the TicketMonster project sources are in a different location, you should correct the link, and specify the correct location instead.
+First select the project, right-click on it, and select the `New` -> `Folder` option in the context menu.
+
+.Create a new Folder
+image::gfx/create_new_folder.png[]
+
+Specify the name of the folder as `www`, but do not click `Finish` yet - we need to create a linked folder.
+
+.Specify www as the folder name
+image::gfx/create_www_folder.png[]
+
+In the same dialog box, click the `Advanced` button, to create a new `Linked Folder` (Link to alternate location). Enter the following value: `PROJECT_LOC/../ticket-monster/src/main/webapp/` in the textbox. Click _Finish_ to create the linked folder. This will link the folder to the TicketMonster project, assuming the Hybrid Mobile Project and the Java EE project reside in the same directory.
+
+.Establish link between www and the webapp directory
+image::gfx/setup_linked_folder_to_webapp.png[]
+
+Replace `ticket-monster` with the name of the Java EE project, if you specified a different name when you originally created the Java EE project. If the TicketMonster project sources are in a different location, you should correct the link, and specify the correct location instead.
 
 [NOTE]
 ==================================================
 We use Linked Folders instead of file-system dependent symbolic links, as the latter are not portable across operating systems.
 
 The `PROJECT_LOC` variable that we use in the link, represents the location of the current project. `PROJECT_LOC/../ticket-monster/` represents the `ticket-monster` (aka the Java EE project we originally created in the Introductory chapter) in the parent directory of the Hybrid Mobile project (i.e. as a sibling project, and if you've used the default locations, both of these projects would be in the same top-level workspace directory). The rest of the link's value translates to the `webapp` directory under the Java EE project.
+==================================================
+
+[WARNING]
+==================================================
+Once you switch to using an Eclipse Linked Folder, you may not be able to add or remove Cordova plugins from the Hybrid Mobile application project.
+This is a known issue, that you can track in the https://issues.jboss.org/browse/JBIDE-18711[JBoss JIRA].
+
+If you wish to do work around this, simply drop the linked folder, recreate a simple folder with the `config.xml` file, and proceed to add/remove the plugins.
 ==================================================
 
 .The result of linking www to the webapp directory
@@ -259,35 +303,42 @@ require(['../../../cordova'], function() {
 
 [NOTE]
 ==============================================================
-We'll use the OpenShift hosted version of the TicketMonster application because it is easier to access in all environments - the smartphone simulators and emulators can also access it with relatively little or no configuration. On the other hand, accessing the locally running JBoss EAP instance may require some complicated network configuration, especially if the instance needs to be opened up to the internet for access from smartphones.
+We'll use the OpenShift hosted version of the TicketMonster application because it is easier to access in all environments - the smartphone simulators and emulators can also access it with relatively little or no configuration. On the other hand, accessing the locally running JBoss EAP instance may require some complicated network configuration, especially if the instance needs to be opened up to the internet for access from smartphones through a mobile internet link.
 ==============================================================
 
+The above snippet of code contains a device-specific check for iOS 7.
 
-The above snippet of code contains a device-specific check for iOS 7. We will be using the Cordova status bar plugin, to ensure that the status bar on iOS 7 does not overlap the UI. The Cordova device plugin will be used to obtain device information for use in device detection. We'll also use the Cordova Notification plugin to display alerts and notifications to the end-user using the native mobile UI.
+Finally, we'll configure the loader module launched from `mobileapp.html` to use the above defined `hybrid` module:
 
-We'll proceed to add the required Cordova plugins to the project.
+.src/main/webapp/resources/js/configurations/loader.js
+[source,javascript]
+-------------------------------------------------------------------------------------------------------
+//detect the appropriate module to load
+define(function () {
 
-Select the `plugins` directory of the Hybrid Mobile project, and open the context-menu through a right-click. Select the *Install Cordova Plug-in* option in the menu.
-This opens a dialog where you can search for Cordova plugins in various locations, including the Cordova registry, a git repository or a directory in your file system.
+    /*
+     A simple check on the client. For touch devices or small-resolution screens)
+     show the mobile client. By enabling the mobile client on a small-resolution screen
+     we allow for testing outside a mobile device (like for example the Mobile Browser
+     simulator in JBoss Tools and JBoss Developer Studio).
+     */
 
-.Launch Cordova plugin discovery wizard
-image::gfx/cordova_choose_to_add_plugins.png[]
+    var environment;
 
-We'll now search and the desired plugins:
+    if (document.URL.indexOf("mobileapp.html") > -1) {
+        environment = "hybrid";
+    }
+    else if (Modernizr.touch || Modernizr.mq("only all and (max-width: 768px)")) {
+        environment = "mobile";
+    } else {
+        environment = "desktop";
+    }
 
-.Add Cordova Device plugin
-image::gfx/cordova_add_device_plugin.png[]
+    require([environment]);
+});
+-------------------------------------------------------------------------------------------------------
 
-.Add Cordova Notification plugin
-image::gfx/cordova_add_notifications_plugin.png[]
-
-.Add Cordova StatusBar plugin
-image::gfx/cordova_add_statusbar_plugin.png[]
-
-Click the `Next` button to confirm the plugin versions to install. Click the `Finish` button to download and install the plugins to the project.
-
-.Confirm plugins to add
-image::gfx/cordova_confirm_plugin_versions.png[]
+In the above code snippet, we detect if the URL of the page contains `mobileapp.html` or not, and then proceed to activate the `hybrid` module if so. Since Apache Cordova is configured to use `mobileapp.html` as the application start page, the desired objective is achieved. This way, we avoid loading the `mobile` or `desktop` modules that do not have any logic in them to detect the `deviceready` event of Cordova.
 
 The final step will involve adjusting `src/main/webapp/resources/js/configurations/loader.js` to load this module when running on Android, using the query string we have already configured in the project. We'll also tweak `src/main/webapp/resources/js/app/utilities.js` to use the Notification plugin to display alerts in the context of a Hybrid Mobile app.
 

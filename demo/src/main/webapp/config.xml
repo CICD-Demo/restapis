@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0"
-	id="org.jboss.examples.ticketmonster.cordova" version="2.0.0">
+	id="org.jboss.examples.ticketmonster.cordova" version="1.0.0">
 	<name>TicketMonster-Cordova</name>
 
 	<description>
@@ -25,15 +25,19 @@
 		<param name="android-package" value="org.apache.cordova.App" />
 	</feature>
 	<feature name="StatusBar">
+		<param name="android-package" value="org.apache.cordova.statusbar.StatusBar" />
 		<param name="ios-package" value="CDVStatusBar" />
+		<param name="id" value="org.apache.cordova.statusbar" />
 	</feature>
 	<feature name="Device">
 		<param name="android-package" value="org.apache.cordova.device.Device" />
 		<param name="ios-package" value="CDVDevice" />
+		<param name="id" value="org.apache.cordova.device" />
 	</feature>
 	<feature name="Notification">
 		<param name="android-package" value="org.apache.cordova.dialogs.Notification" />
 		<param name="ios-package" value="CDVNotification" />
+		<param name="id" value="org.apache.cordova.dialogs" />
 	</feature>
 
 </widget>
