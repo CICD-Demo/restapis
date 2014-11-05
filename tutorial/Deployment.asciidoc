@@ -1,0 +1,174 @@
+= Appendix A: Deploying the application
+:Author: Vineet Reynolds
+
+This appendix demonstrates how to get the application running in various environments. We'll cover the use of both command-line tools as well as the IDE (JBoss Developer Studio). Deployments of the application against JBoss Enterprise Application Platform (EAP) on the local workstation as well as the OpenShift cloud platform, would be covered. The choice of the database could be one of the in-memory H2 database (embedded with JBoss EAP), MySQL, or PostgreSQL.
+
+== How can you run it?
+
+If you've not already copied the project sources to your workstation, you should do so now.
+
+=== Pre-requisites
+
+You need the following software to build and run TicketMonster:
+
+* Java Development Kit (JDK) 6 or higher, to run Maven as well as the JBoss application server. Any of the following would suffice:
+** OpenJDK
+** Oracle Java SE
+** Oracle JRockit
+* JBoss Developer Studio (optional), to build and deploy TicketMonster from the IDE.
+* Maven 3.0 or later, to build and deploy the examples.
++
+If you are using JBoss Developer Studio, it comes embedded with Maven, so you don't need to install it externally.
+* The JBoss EAP distribution, extracted and installed in a directory.
+
+
+You may have some of these installed these already. 
+
+=== Running TicketMonster on the command-line
+
+[CAUTION]
+===================================================================================
+In order to build the application, you will need you to 
+configure Maven to use the JBoss Enterprise Maven repositories. For instructions on 
+configure the Maven repositories, visit the link:https://access.redhat.com/site/documentation/en-US/JBoss_Enterprise_Application_Platform/6.3/html-single/Development_Guide/index.html#Install_the_JBoss_Enterprise_Application_Platform_6_Maven_Repository[JBoss Enterprise Application Platform 6.3 documentation].
+===================================================================================
+
+TicketMonster can be built from Maven, by runnning the following commands on the command-line:
+
+----
+cd <TICKETMONSTER_HOME>/demo
+mvn clean package
+----
+
+or, if you have not configured the Maven settings, use the settings.xml file supplied in the project sources: 
+
+----
+cd <TICKETMONSTER_HOME>/demo
+mvn clean package -s ./settings.xml
+----
+
+This prepares a WAR file that you can deploy right away in a JBoss Enterprise Application Platform instance. It would use the in-built H2 database.
+
+==== Running Arquillian tests during build
+
+If you want to run the Arquillian tests as part of the build, you can enable one of the two available Arquillian profiles.
+
+For running the tests in an _already running_ JBoss application server instance, use the `arq-jbossas-remote` profile.
+
+----
+mvn clean package -Parq-jbossas-remote
+----
+
+If you want the test runner to _start_ a JBoss application server instance, use the `arq-jbossas-managed` profile. You must set up the `JBOSS_HOME` property to point to the server location, or update the `src/main/test/resources/arquillian.xml` file.
+
+----
+mvn clean package -Parq-jbossas-managed
+----
+
+===
+
+If you intend to deploy into link:http://openshift.com[OpenShift] with the PostgreSQL cartridge, you can use the `postgresql-openshift` profile:
+
+----
+mvn clean package -Ppostgresql-openshift
+----
+
+Doing so would create a WAR file with a JPA persistence deployment descriptor tailored for the PostgreSQL cartridge on OpenShift.
+
+If you intend to deploy into link:http://openshift.com[OpenShift] with the MySQL cartridge, you can use the `mysql-openshift` profile:
+
+----
+mvn clean package -Pmysql-openshift
+----
+
+And just like the profile for PostgreSQL, this would create a WAR file tailored for the MySQL cartridge on OpenShift.
+
+
+=== Running TicketMonster
+
+You can run TicketMonster into a local JBoss EAP 6.3 instance or on OpenShift.
+
+
+==== Running TicketMonster locally
+
+===== From the command-line
+
+_Start JBoss Enterprise Application Platform 6.3_.
+
+1. Open a command line and navigate to the root of the JBoss server directory.
+2. The following shows the command line to start the server with the web profile:
++
+----
+For Linux:   JBOSS_HOME/bin/standalone.sh
+For Windows: JBOSS_HOME\bin\standalone.bat
+----
+		
+Then, _deploy TicketMonster_.
+
+
+1. Make sure you have started the JBoss Server as described above.
+2. Type this command to build and deploy the archive into a running server instance.
++
+----
+mvn clean package jboss-as:deploy
+----
+
+3. This will deploy `target/ticket-monster.war` to the running instance of the server.
+4. Now you can see the application running at http://localhost:8080/ticket-monster.
+
+===== From JBoss Developer Studio
+
+
+==== Running TicketMonster in OpenShift
+
+
+First, _create an OpenShift project_.
+
+1. Make sure that you have an OpenShift domain and you have created an application using the `jbosseap-6` cartridge (for more details, get started link:https://openshift.redhat.com/app/getting_started[here]). If you want to use PostgreSQL, add the `postgresql-9.2` cartridge too. Or for MySQL, add the `mysql-5.5` cartridge.
+2. Ensure that the Git repository of the project is checked out.
+
+Then, _build and deploy it_.
+
+1. Build TicketMonster using either: 
+    * the default profile (with H2 database support)
++
+----
+mvn clean package
+----
+    
+	* the `postgresql-openshift` profile (with PostgreSQL support) if the PostgreSQL cartrdige is enabled in OpenShift.
++
+----            
+mvn clean package -Ppostgresql-openshift
+----
+    
+	* the `mysql-openshift` profile (with MySQL support) if the MySQL cartrdige is enabled in OpenShift.
++
+----            
+mvn clean package -Pmysql-openshift
+----
+			
+2. Copy the `target/ticket-monster.war` file in the OpenShift Git repository (located at `<root-of-openshift-application-git-repository>`).
++
+----
+cp target/ticket-monster.war <root-of-openshift-application-git-repository>/deployments/ROOT.war
+----
+
+3. Navigate to `<root-of-openshift-application-git-repository>` folder.
+
+4. Remove the existing `src` folder and `pom.xml` file. 
++
+----
+git rm -r src
+git rm pom.xml
+----
+
+5. Add the copied file to the repository, commit and push to Openshift
++
+----
+git add deployments/ROOT.war
+git commit -m "Deploy TicketMonster"
+git push
+----
+		
+6. Now you can see the application running at at `http://<app-name>-<domain-name>.rhcloud.com`

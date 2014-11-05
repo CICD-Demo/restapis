@@ -23,3 +23,6 @@ include::DashboardHTML5.asciidoc[]
 
 include::HybridUI.asciidoc[]
 
+include::JBossDeployment.asciidoc[]
+
+include::OpenShiftDeployment.asciidoc[]
