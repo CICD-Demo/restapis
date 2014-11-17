@@ -983,10 +983,10 @@ define([
                         || value <= 0 // is negative
                         || parseFloat(value) != parseInt(value))) { // is not an integer
                 $("#error-input-"+ticketPriceId).empty().append("Please enter a positive integer value");
-                $("#ticket-category-fieldset-"+ticketPriceId).addClass("error")
+                $("#ticket-category-fieldset-"+ticketPriceId).addClass("error");
             } else {
                 $("#error-input-"+ticketPriceId).empty();
-                $("#ticket-category-fieldset-"+ticketPriceId).removeClass("error")
+                $("#ticket-category-fieldset-"+ticketPriceId).removeClass("error");
             }
             // are there any outstanding errors after this update?
             // if yes, disable the input button
@@ -2215,15 +2215,14 @@ define([
             this.model.email = $("input[type='email']").val();
             $("input[type='number']").each(function(idx,element) {
                 var quantity = $(this).val();
-                if(!$.isNumeric(quantity)  // is a non-number, other than empty string
+                if(quantity.length > 0 &&
+                    (!$.isNumeric(quantity)  // is a non-number, other than empty string
                         || quantity <= 0 // is negative
-                        || parseFloat(quantity) != parseInt(quantity)) {
+                        || parseFloat(quantity) != parseInt(quantity))) {
                     $("#error-" + element.id).empty().append("Should be a positive number.");
-                    $('a[id="confirmBooking"]').removeClass('ui-disabled');
                     valid = false;
                 } else {
                     $("#error-" + element.id).empty();
-                    $('a[id="confirmBooking"]').addClass('ui-disabled');
                 }
             });
             try {

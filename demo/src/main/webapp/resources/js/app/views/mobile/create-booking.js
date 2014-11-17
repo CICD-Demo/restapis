@@ -147,15 +147,14 @@ define([
             this.model.email = $("input[type='email']").val();
             $("input[type='number']").each(function(idx,element) {
                 var quantity = $(this).val();
-                if(!$.isNumeric(quantity)  // is a non-number, other than empty string
+                if(quantity.length > 0 &&
+                    (!$.isNumeric(quantity)  // is a non-number, other than empty string
                         || quantity <= 0 // is negative
-                        || parseFloat(quantity) != parseInt(quantity)) {
+                        || parseFloat(quantity) != parseInt(quantity))) {
                     $("#error-" + element.id).empty().append("Should be a positive number.");
-                    $('a[id="confirmBooking"]').removeClass('ui-disabled');
                     valid = false;
                 } else {
                     $("#error-" + element.id).empty();
-                    $('a[id="confirmBooking"]').addClass('ui-disabled');
                 }
             });
             try {
