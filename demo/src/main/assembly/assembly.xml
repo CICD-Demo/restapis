@@ -5,6 +5,7 @@
     <formats>
         <format>zip</format>
     </formats>
+    <baseDirectory>${artifactId}-${version}</baseDirectory>
     <fileSets>
         <fileSet>            
             <directory>../</directory>
