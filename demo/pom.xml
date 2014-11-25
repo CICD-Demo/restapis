@@ -453,26 +453,7 @@
                         <configuration>
                             <skip>true</skip>
                         </configuration>
-                    </plugin>                    
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.2.1</version>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <executable>git</executable>
-                            <arguments>
-                                <argument>init</argument>
-                            </arguments>
-                      </configuration>
-                   </plugin>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
