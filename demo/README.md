@@ -181,7 +181,7 @@ You can run TicketMonster into a local JBoss EAP 6.3 instance or on OpenShift.
 
 1. You can now deploy the changes to your OpenShift application using git as follows:
 
-        git add src pom.xml
+        git add -A
         git commit -m "TicketMonster on OpenShift"
         git push
 
