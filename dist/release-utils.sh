@@ -13,7 +13,7 @@ DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 # DEFINE
 
 VERSION_REGEX='([0-9]*)\.([0-9]*)([a-zA-Z0-9\.]*)'
-FILEMGMT="jdf@filemgmt.jboss.org:docs_htdocs"
+FILEMGMT="jbossdeveloper@filemgmt.jboss.org:docs_htdocs"
 URL_BASE="http://docs.jboss.org"
 
 # SCRIPT
