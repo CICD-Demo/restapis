@@ -39,6 +39,7 @@ do
    asciidoctor -d book -b html5 -a toc2 -a copycss -a source-highlighter=highlightjs -o ${output_filename} $file
 done
 
+file=ticket-monster.asciidoc
 for ((i=0; i < ${#OUTPUT_FORMATS[@]}; i++))
 do
    output_format=${OUTPUT_FORMATS[i]}

@@ -34,6 +34,10 @@ First we need to import the existing Hybrid Mobile project code to JBDS.
 4. After selecting the TicketMonster-Cordova project, you can click on *Finish* button to start the project import.
 5. Make sure that `$TICKET-MONSTER_HOME/cordova/www` is a linked folder that resolves to `../demo/src/main/webapp`.
 
+#### Troubleshooting Windows Operating Systems
+
+As Windows doesn't support symbolic links you must copy `$TICKET-MONSTER_HOME/demo/src/main/webapp` folder to `$TICKET-MONSTER_HOME/cordova/www`
+
 
 Deploy the application on an Android Emulator
 --------------------------------------------

@@ -172,48 +172,15 @@ Let's proceed to add these, by searching for them and selecting them. Click `Nex
 .Confirm plugins to add
 image::gfx/cordova_confirm_plugin_versions.png[]
 +
-Once you have finished creating the project, navigate to the `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply replace the `www` directory with a symbolic link to the `webapp` directory of TicketMonster; the `config.xml` file and `res` directory would need to be copied over to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application in both places).
+Once you have finished creating the project, navigate to the `www` directory, that will contain the HTML5 code of the application. Since we are reusing the TicketMonster code you can simply replace the `www` directory with a symbolic link to the `webapp` directory of TicketMonster; the `config.xml` file and `res` directory would need to be copied over to the `webapp` directory of TicketMonster. Alternatively, you can copy the code of TicketMonster and make all necessary changes there (however, in that case you will have to maintain the code of the application in both places); on Windows, it would be easier to do this.
 
 ----
 $ cp config.xml $TICKET_MONSTER_HOME/demo/src/main/webapp
 $ cp res $TICKET_MONSTER_HOME/demo/src/main/webapp
 $ cd ..
 $ rm -rf www
+$ ln -s $TICKET_MONSTER_HOME/demo/src/main/webapp www
 ----
-
-Once the necessary files have been copied and the original `www` folder deleted, you can re-create the `www` directory as an Eclipse linked folder in the Hybrid Mobile project.
-
-First select the project, right-click on it, and select the `New` -> `Folder` option in the context menu.
-
-.Create a new Folder
-image::gfx/create_new_folder.png[]
-
-Specify the name of the folder as `www`, but do not click `Finish` yet - we need to create a linked folder.
-
-.Specify www as the folder name
-image::gfx/create_www_folder.png[]
-
-In the same dialog box, click the `Advanced` button, to create a new `Linked Folder` (Link to alternate location). Enter the following value: `PROJECT_LOC/../ticket-monster/src/main/webapp/` in the textbox. Click _Finish_ to create the linked folder. This will link the folder to the TicketMonster project, assuming the Hybrid Mobile Project and the Java EE project reside in the same directory.
-
-.Establish link between www and the webapp directory
-image::gfx/setup_linked_folder_to_webapp.png[]
-
-Replace `ticket-monster` with the name of the Java EE project, if you specified a different name when you originally created the Java EE project. If the TicketMonster project sources are in a different location, you should correct the link, and specify the correct location instead.
-
-[NOTE]
-==================================================
-We use Linked Folders instead of file-system dependent symbolic links, as the latter are not portable across operating systems.
-
-The `PROJECT_LOC` variable that we use in the link, represents the location of the current project. `PROJECT_LOC/../ticket-monster/` represents the `ticket-monster` (aka the Java EE project we originally created in the Introductory chapter) in the parent directory of the Hybrid Mobile project (i.e. as a sibling project, and if you've used the default locations, both of these projects would be in the same top-level workspace directory). The rest of the link's value translates to the `webapp` directory under the Java EE project.
-==================================================
-
-[WARNING]
-==================================================
-Once you switch to using an Eclipse Linked Folder, you may not be able to add or remove Cordova plugins from the Hybrid Mobile application project.
-This is a known issue, that you can track in the https://issues.jboss.org/browse/JBIDE-18711[JBoss JIRA].
-
-If you wish to do work around this, simply drop the linked folder, recreate a simple folder with the `config.xml` file, and proceed to add/remove the plugins.
-==================================================
 
 .The result of linking www to the webapp directory
 image::gfx/link-www-directory-to-webapp.png[]
