@@ -240,13 +240,13 @@ image::gfx/introduction/pom_xml_tabs.png[]
 
 For this tutorial, we do not need to edit the `pom.xml` as it already provides the Java EE 6 APIs that we will need (e.g. JPA, JAX-RS, CDI). You should spend some time exploring the *Dependencies* and the *pom.xml* (source view) tabs.   
 
-One key element to make note of is `<version.jboss.bom.eap>6.3.1.GA</version.jboss.bom.eap>` which establishes the version of the JBoss Enterprise Application Platform dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
+One key element to make note of is `<version.jboss.bom.eap>6.3.2.GA</version.jboss.bom.eap>` which establishes the version of the JBoss Enterprise Application Platform dependencies. The BOM (Bill of Materials) specifies the versions of the Java EE (and other) APIs defined in the dependency section.
 
 If you are using community version of the JBoss Application Server and you selected that as your Target Runtime, you will find a different property as the version string.
 
 [CAUTION]
 ========================================================================================
-The specific version of the BOM (e.g. `6.3.1.GA`) is likely to change, so do not 
+The specific version of the BOM (e.g. `6.3.2.GA`) is likely to change, so do not 
 be surprised if the version is slightly different.
 
 The recommended version of the BOM for a runtime (EAP 6) can be 
