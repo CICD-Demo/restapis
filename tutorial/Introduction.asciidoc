@@ -1099,7 +1099,7 @@ Before we proceed with the tutorial and implement TicketMonster, we need to clea
 ** `src/main/java/org/jboss/examples/ticketmonster/model/Member.java`
 ** `src/main/java/org/jboss/examples/ticketmonster/rest/MemberResourceRESTService.java`
 ** `src/main/java/org/jboss/examples/ticketmonster/service/MemberRegistration.java`
-** `src/test/java/org/jboss/examples/ticketmonster/rest/MemberRegistrationTest.java`
+** `src/test/java/org/jboss/examples/ticketmonster/test/MemberRegistrationTest.java`
 
 * Generated web content
 
