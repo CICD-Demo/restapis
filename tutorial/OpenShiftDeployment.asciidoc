@@ -249,7 +249,7 @@ export MAVEN_ARGS="clean package -Popenshift,mysql-openshift -DskipTests"
 +
 This OpenShift action hook sets up the `MAVEN_ARGS` environment variable used by OpenShift to configure the Maven build process. The exported variable now activates the `mysql-openshift` profile, in addition to the default values originally present in the variable.
 . Publish the changes to OpenShift:
-.. If you are using JBoss Developer Studio, right-click the project, go to *Team*→*Commit...* to commit the changes. Select the `pre_build_jbosseap` file to add to the commit. Choose the *Commit and Push* button during committing, to push the changes to the OpenShift repository.
+.. If you are using JBoss Developer Studio, right-click the project, go to *Team* → *Commit...* to commit the changes. Select the `pre_build_jbosseap` file to add to the commit. Choose the *Commit and Push* button during committing, to push the changes to the OpenShift repository.
 .. If you are using the command line, add the `pre_build_jbosseap` file to the git index, and commit it, and push to the OpenShift repository, as follows:
 +
 ----
@@ -304,7 +304,7 @@ export MAVEN_ARGS="clean package -Popenshift,postgresql-openshift -DskipTests"
 +
 This OpenShift action hook sets up the `MAVEN_ARGS` environment variable used by OpenShift to configure the Maven build process. The exported variable now activates the `postgresql-openshift` profile, in addition to the default values originally present in the variable.
 . Publish the changes to OpenShift:
-.. If you are using JBoss Developer Studio, right-click the project, go to *Team*→*Commit...* to commit the changes. Select the `pre_build_jbosseap` file to add to the commit. Choose the *Commit and Push* button during committing, to push the changes to the OpenShift repository.
+.. If you are using JBoss Developer Studio, right-click the project, go to *Team* → *Commit...* to commit the changes. Select the `pre_build_jbosseap` file to add to the commit. Choose the *Commit and Push* button during committing, to push the changes to the OpenShift repository.
 .. If you are using the command line, add the `pre_build_jbosseap` file to the git index, and commit it, and push to the OpenShift repository, as follows:
 +
 ------

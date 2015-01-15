@@ -14,8 +14,8 @@ This appendix demonstrates how to import, develop and deploy the TicketMonster e
 We don't recommend using the *Internal Web Browser*, although it is configured as the default web browser in the IDE.
 In certain environments, it may lack features present in modern web browsers, thus providing a sub-optimal user and developer experience.
 
-We shall therefore set the IDE default web browser to be your default system web browser. Click *Window*→*Web
-Browser*→*Default system web browser*.
+We shall therefore set the IDE default web browser to be your default system web browser. Click *Window* → *Web
+Browser* → *Default system web browser*.
 
 == Import the Project source code
 
@@ -23,7 +23,7 @@ Once the TicketMonster source code is obtained and unpackaged, you must import i
 Developer Studio, as detailed in the procedure below. TicketMonster is a Maven-based project so a
 specific Import Maven Project wizard is used for the import.
 
-. Click *File*→*Import* to open the *Import* wizard.
+. Click *File* → *Import* to open the *Import* wizard.
 . Expand *Maven*, select *Existing Maven Projects* and click *Next*.
 . In the *Root Directory* field, enter the path to the TicketMonster source code. Alternatively,
 click *Browse* to navigate to the source code location. The *Import Maven Project* wizard
@@ -41,7 +41,7 @@ Once you have imported the TicketMonster source code into JBoss Developer Studio
 application can be deployed to the JBoss EAP server and the running application viewed in the
 default system web browser, as detailed in the procedure below:
 
-. In the *Project Explorer* view, right-click *ticket-monster* and click *Run As*→*Run on
+. In the *Project Explorer* view, right-click *ticket-monster* and click *Run As* → *Run on
 Server*.
 . Under *How do you want to select the server?*, ensure *Choose an existing
 server* is selected.
@@ -162,7 +162,7 @@ modules
 +
 Replace the values for the `connection-url`, `user-name` and `password` with the correct ones for your environment.
 . Build and deploy the application, using the `mysql` profile defined in the project POM : 
-.. In JBoss Developer Studio, you can do this by opening the project's context menu: right-click on the project, click *Maven*→*Select Maven Profiles...*, and activate the `mysql` profile by selecting it's checkbox. Once you have activated the profile, you can publish the project to a JBoss EAP instance from JBoss Developer Studio in the same manner described previously.
+.. In JBoss Developer Studio, you can do this by opening the project's context menu: right-click on the project, click *Maven* → *Select Maven Profiles...*, and activate the `mysql` profile by selecting it's checkbox. Once you have activated the profile, you can publish the project to a JBoss EAP instance from JBoss Developer Studio in the same manner described previously.
 .. If you are building and deploying from the command-line, activate the `mysql` profile, by specifying it during the build command like so:
 +
 ----
@@ -242,7 +242,7 @@ modules
 +
 Replace the values for the `connection-url`, `user-name` and `password` with the correct ones for your environment.
 . Build and deploy the application, using the `postgresql` profile defined in the project POM :
-.. In JBoss Developer Studio, you can do this by opening the project's context menu: right-click on the project, click *Maven*→*Select Maven Profiles...*, and activate the `postgresql` profile by selecting it's checkbox. Once you have activated the profile, you can publish the project to a JBoss EAP instance from JBoss Developer Studio in the same manner described previously.
+.. In JBoss Developer Studio, you can do this by opening the project's context menu: right-click on the project, click *Maven* → *Select Maven Profiles...*, and activate the `postgresql` profile by selecting it's checkbox. Once you have activated the profile, you can publish the project to a JBoss EAP instance from JBoss Developer Studio in the same manner described previously.
 .. If you are building and deploying from the command-line, activate the `postgresql` profile, by specifying it during the build command like so:
 +
 ----
