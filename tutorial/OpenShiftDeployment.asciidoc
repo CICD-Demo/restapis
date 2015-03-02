@@ -1,4 +1,3 @@
-[[DeployingToOpenShift]]
 = Appendix B - Deploying to OpenShift
 :Author: Vineet Reynolds
 

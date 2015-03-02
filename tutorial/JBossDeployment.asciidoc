@@ -1,4 +1,3 @@
-[[DeployingToJBossEAP]]
 = Appendix A - Deploying to JBoss EAP locally
 :Author: Vineet Reynolds
 
