@@ -91,13 +91,13 @@ For ticket category, the choice of natural identity is easy and obvious - it mus
 
 [[eclipse-generate-hashcode-equals]]
 .Generate hashCode() and equals() in Eclipse
-image::gfx/eclipse-generate-hashcode-equals.png
+image::gfx/eclipse-generate-hashcode-equals.png[]
 
 Now, select the properties to include:
 
 [[eclipse-generate-hashcode-equals-2]]
 .Generate hashCode() and equals() in Eclipse
-image::gfx/eclipse-generate-hashcode-equals-2.png
+image::gfx/eclipse-generate-hashcode-equals-2.png[]
 
 Now that we have a JavaBean, let's proceed to make it an entity. First, add the `@Entity` annotation to the class:
 
