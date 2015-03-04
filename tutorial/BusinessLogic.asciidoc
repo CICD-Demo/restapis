@@ -1673,7 +1673,7 @@ Activate the profile as shown in the picture below.
 
 [[eclipse-update-profiles]]
 .Update Maven profiles in Eclipse
-image::gfx/eclipse-maven-profile-update.png
+image::gfx/eclipse-maven-profile-update.png[]
 
 The project configuration will be updated automatically.
 
