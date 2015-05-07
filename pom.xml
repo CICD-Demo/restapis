@@ -305,73 +305,13 @@
                 </plugins>
             </build>
         </profile>
-
-
+        
         <profile>
-            <!-- An optional Arquillian testing profile that executes tests 
-                in your JBoss AS instance -->
-            <!-- This profile will start a new JBoss AS instance, and execute 
-                the test, shutting it down when done -->
-            <!-- Run with: mvn clean test -Parq-jbossas-managed -->
-            <id>arq-jbossas-managed</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <!-- An optional Arquillian testing profile that executes tests 
-                in a remote JBoss AS instance -->
-            <!-- Run with: mvn clean test -Parq-jbossas-remote -->
-            <id>arq-jbossas-remote</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <!-- An optional profile that produces a WAR to be used 
-                with a PostgreSQL cartridge on OpenShift -->
-            <id>postgresql-openshift</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources-postgresql-openshift</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>**/*</include>
-                        </includes>
-                        <excludes>
-                            <exclude>META-INF/*</exclude>
-                        </excludes>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.4.3</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!-- An optional profile that produces a WAR to be used 
-                with a MySQL cartridge on OpenShift -->
-            <id>mysql-openshift</id>
+		  <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
+		  <!-- Use this profile for any OpenShift specific customization your app will need. -->
+		  <!-- By default that is to put the resulting archive into the 'deployments' folder. -->
+		  <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+		  <id>openshift</id>
             <build>
                 <resources>
                     <resource>
@@ -395,120 +335,15 @@
                             <skip>true</skip>
                         </configuration>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <profile>
-            <!-- An optional profile that enables a server managed postgresql data source-->
-            <id>postgresql</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources-postgresql</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>**/*</include>
-                        </includes>
-                        <excludes>
-                            <exclude>META-INF/*</exclude>
-                        </excludes>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.4.3</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!-- An optional profile that enables a server managed mysql data source-->
-            <id>mysql</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources-mysql</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>**/*</include>
-                        </includes>
-                        <excludes>
-                            <exclude>META-INF/*</exclude>
-                        </excludes>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.4.3</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!-- Create a release distribution with the right directory layout. -->
-            <!-- product build specific assembly -->
-            <id>release-dist</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <profile>
-		  <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
-		  <!-- Use this profile for any OpenShift specific customization your app will need. -->
-		  <!-- By default that is to put the resulting archive into the 'deployments' folder. -->
-		  <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-		  <id>openshift</id>
-		    <build>
-		      <plugins>
-		        <plugin>
-		          <artifactId>maven-war-plugin</artifactId>
-		          <configuration>
+		    <plugin>
+		        <artifactId>maven-war-plugin</artifactId>
+		        <configuration>
 		            <outputDirectory>deployments</outputDirectory>
 		            <warName>ROOT</warName>
-		          </configuration>
-		        </plugin>
-		      </plugins>
-		    </build>
-		</profile>
-
+		        </configuration>
+		    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
