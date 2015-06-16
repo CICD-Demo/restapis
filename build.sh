@@ -20,7 +20,7 @@ osc create -f - <<EOF
 kind: BuildConfig
 apiVersion: v1beta1
 metadata:
-  name: apiserver-build
+  name: apiserver
   labels:
     component: apiserver
 triggers:
@@ -31,12 +31,15 @@ parameters:
   strategy:
     type: STI
     stiStrategy:
-      image: jminter-sti-wildfly
+      image: docker.io/cicddemo/sti-eap
+      env:
+      - name: MAVEN_MIRROR
+        value: "http://192.168.0.254:8081/nexus/content/groups/public"
   source:
     type: Git
     git:
       ref: master
-      uri: http://gogs.gogs/$PROJECT/apiserver
+      uri: http://gogs.gogs.svc/$PROJECT/apiserver
   output:
     to:
       name: apiserver
