@@ -50,8 +50,8 @@ items:
               image: apiserver:latest
               ports:
               - containerPort: 8080
-#              - containerPort: 8787
-#                hostPort: 8787
+              - containerPort: 8787
+                hostPort: 8787
               env:
               - name: MYSQL_DB_NAME
                 value: "$MYSQL_DATABASE"
@@ -59,8 +59,16 @@ items:
                 value: "$MYSQL_USER"
               - name: MYSQL_PASSWORD
                 value: "$MYSQL_PASSWORD"
-#              - name: ENABLE_JPDA
-#                value: "true"
+              - name: ENABLE_JPDA
+                value: "true"
+              - name: MQ_SERVICE_PREFIX_MAPPING
+                value: amq
+              - name: amq_JNDI
+                value: "java:/ConnectionFactory"
+              - name: amq_USERNAME
+                value: admin
+              - name: amq_PASSWORD
+                value: admin
         labels:
           component: apiserver
 

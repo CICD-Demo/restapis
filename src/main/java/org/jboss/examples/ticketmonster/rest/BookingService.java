@@ -21,6 +21,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.examples.ticketmonster.BookingNotifier;
 import org.jboss.examples.ticketmonster.model.Booking;
 import org.jboss.examples.ticketmonster.model.Performance;
 import org.jboss.examples.ticketmonster.model.Seat;
@@ -202,6 +203,7 @@ public class BookingService extends BaseEntityService<Booking> {
                 booking.setCancellationCode("abc");
                 getEntityManager().persist(booking);
                 newBookingEvent.fire(booking);
+                BookingNotifier.notify(booking);
                 return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
             } else {
                 Map<String, Object> responseEntity = new HashMap<String, Object>();

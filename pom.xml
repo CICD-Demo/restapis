@@ -240,9 +240,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
-            <version>5.9.0</version>
+            <groupId>org.jboss.spec.javax.jms</groupId>
+            <artifactId>jboss-jms-api_1.1_spec</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -335,7 +335,7 @@
 		    <plugin>
 		        <artifactId>maven-war-plugin</artifactId>
 		        <configuration>
-		            <outputDirectory>deployments</outputDirectory>
+		            <outputDirectory>target</outputDirectory>
 		            <warName>ROOT</warName>
 		        </configuration>
 		    </plugin>
