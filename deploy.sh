@@ -50,19 +50,29 @@ items:
               image: apiserver:latest
               ports:
               - containerPort: 8080
-              - containerPort: 8787
-                hostPort: 8787
+#              - containerPort: 8787
+#                hostPort: 8787
+              - containerPort: 8778
+                name: jolokia
               env:
-              - name: MYSQL_DB_NAME
-                value: "$MYSQL_DATABASE"
-              - name: MYSQL_USER
+#              - name: ENABLE_JPDA
+#                value: "true"
+              - name: DB_SERVICE_PREFIX_MAPPING
+                value: mysql
+              - name: mysql_JNDI
+                value: "java:jboss/datasources/MySQLDS"
+              - name: mysql_USERNAME
                 value: "$MYSQL_USER"
-              - name: MYSQL_PASSWORD
+              - name: mysql_PASSWORD
                 value: "$MYSQL_PASSWORD"
-              - name: ENABLE_JPDA
-                value: "true"
+              - name: mysql_DATABASE
+                value: "$MYSQL_DATABASE"
               - name: MQ_SERVICE_PREFIX_MAPPING
                 value: amq
+              - name: AMQ_TCP_SERVICE_HOST
+                value: amq
+              - name: AMQ_TCP_SERVICE_PORT
+                value: "61616"
               - name: amq_JNDI
                 value: "java:/ConnectionFactory"
               - name: amq_USERNAME
