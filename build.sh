@@ -3,7 +3,7 @@
 cd $(dirname $0)
 
 . utils
-. ../environment
+. ../../environment
 
 PROJECT=$(osc status | sed -n '1 { s/.* //; p; }')
 
@@ -34,12 +34,12 @@ parameters:
       image: docker.io/cicddemo/sti-eap
       env:
       - name: MAVEN_MIRROR
-        value: "http://192.168.0.254:8081/nexus/content/groups/public"
+        value: "$MAVEN_MIRROR"
   source:
     type: Git
     git:
       ref: master
-      uri: http://gogs.gogs.svc/$PROJECT/apiserver
+      uri: http://gogs.$INFRA/$PROJECT/apiserver
   output:
     to:
       name: apiserver

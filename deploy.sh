@@ -3,7 +3,7 @@
 cd $(dirname $0)
 
 . utils
-. ../environment
+. ../../environment
 
 osc create -f - <<EOF || true
 kind: ImageStream
