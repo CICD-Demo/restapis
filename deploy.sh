@@ -5,13 +5,20 @@ cd $(dirname $0)
 . utils
 . ../../environment
 
+if [ $PROJECT = $PROD ]; then
+  REPLICAS=2
+else
+  REPLICAS=1
+fi
+
 osc create -f - <<EOF || true
 kind: ImageStream
 apiVersion: v1beta1
 metadata:
   name: apiserver
   labels:
-    component: apiserver
+    service: apiserver
+    function: application
 EOF
 
 osc create -f - <<EOF
@@ -23,7 +30,8 @@ items:
   metadata:
     name: apiserver
     labels:
-      component: apiserver
+      service: apiserver
+      function: application
   triggers:
   - type: ConfigChange
   - type: ImageChange
@@ -38,9 +46,10 @@ items:
     strategy:
       type: Recreate
     controllerTemplate:
-      replicas: 1
+      replicas: $REPLICAS
       replicaSelector:
-        component: apiserver
+        service: apiserver
+        function: application
       podTemplate:
         desiredState:
           manifest:
@@ -80,18 +89,21 @@ items:
               - name: amq_PASSWORD
                 value: admin
         labels:
-          component: apiserver
+          service: apiserver
+          function: application
 
 - kind: Service
   apiVersion: v1beta3
   metadata:
     name: apiserver
     labels:
-      component: apiserver
+      service: apiserver
+      function: application
   spec:
     ports:
     - port: 80
       targetPort: 8080
     selector:
-      component: apiserver
+      service: apiserver
+      function: application
 EOF
