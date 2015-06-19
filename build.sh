@@ -11,18 +11,20 @@ osc create -f - <<EOF || true
 kind: ImageStream
 apiVersion: v1beta1
 metadata:
-  name: apiserver
+  name: restapis
   labels:
-    component: apiserver
+    service: restapis
+    function: application
 EOF
 
 osc create -f - <<EOF
 kind: BuildConfig
 apiVersion: v1beta1
 metadata:
-  name: apiserver
+  name: restapis
   labels:
-    component: apiserver
+    service: restapis
+    function: application
 triggers:
 - type: generic
   generic:
@@ -39,8 +41,8 @@ parameters:
     type: Git
     git:
       ref: master
-      uri: http://gogs.$INFRA/$PROJECT/apiserver
+      uri: http://gogs.$INFRA/$PROJECT/restapis
   output:
     to:
-      name: apiserver
+      name: restapis
 EOF

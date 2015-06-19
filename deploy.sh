@@ -15,9 +15,9 @@ osc create -f - <<EOF || true
 kind: ImageStream
 apiVersion: v1beta1
 metadata:
-  name: apiserver
+  name: restapis
   labels:
-    service: apiserver
+    service: restapis
     function: application
 EOF
 
@@ -28,9 +28,9 @@ items:
 - kind: DeploymentConfig
   apiVersion: v1beta1
   metadata:
-    name: apiserver
+    name: restapis
     labels:
-      service: apiserver
+      service: restapis
       function: application
   triggers:
   - type: ConfigChange
@@ -38,9 +38,9 @@ items:
     imageChangeParams:
       automatic: true
       containerNames:
-      - apiserver
+      - restapis
       from:
-        name: apiserver
+        name: restapis
       tag: latest
   template:
     strategy:
@@ -48,15 +48,15 @@ items:
     controllerTemplate:
       replicas: $REPLICAS
       replicaSelector:
-        service: apiserver
+        service: restapis
         function: application
       podTemplate:
         desiredState:
           manifest:
             version: v1beta2
             containers:
-            - name: apiserver
-              image: apiserver:latest
+            - name: restapis
+              image: restapis:latest
               ports:
               - containerPort: 8080
 #              - containerPort: 8787
@@ -68,6 +68,10 @@ items:
 #                value: "true"
               - name: DB_SERVICE_PREFIX_MAPPING
                 value: mysql
+              - name: mysql_SERVICE_HOST
+                value: db
+              - name: mysql_SERVICE_PORT
+                value: "3306"
               - name: mysql_JNDI
                 value: "java:jboss/datasources/MySQLDS"
               - name: mysql_USERNAME
@@ -79,7 +83,7 @@ items:
               - name: MQ_SERVICE_PREFIX_MAPPING
                 value: amq
               - name: AMQ_TCP_SERVICE_HOST
-                value: amq
+                value: broker
               - name: AMQ_TCP_SERVICE_PORT
                 value: "61616"
               - name: amq_JNDI
@@ -89,21 +93,21 @@ items:
               - name: amq_PASSWORD
                 value: admin
         labels:
-          service: apiserver
+          service: restapis
           function: application
 
 - kind: Service
   apiVersion: v1beta3
   metadata:
-    name: apiserver
+    name: restapis
     labels:
-      service: apiserver
+      service: restapis
       function: application
   spec:
     ports:
     - port: 80
       targetPort: 8080
     selector:
-      service: apiserver
+      service: restapis
       function: application
 EOF
