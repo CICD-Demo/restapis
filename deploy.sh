@@ -5,6 +5,8 @@ cd $(dirname $0)
 . utils
 . ../../environment
 
+PROJECT=$(osc status | sed -n '1 { s/.* //; p; }')
+
 if [ $PROJECT = $PROD ]; then
   REPLICAS=2
 else
@@ -68,9 +70,9 @@ items:
 #                value: "true"
               - name: DB_SERVICE_PREFIX_MAPPING
                 value: mysql
-              - name: mysql_SERVICE_HOST
+              - name: MYSQL_SERVICE_HOST
                 value: db
-              - name: mysql_SERVICE_PORT
+              - name: MYSQL_SERVICE_PORT
                 value: "3306"
               - name: mysql_JNDI
                 value: "java:jboss/datasources/MySQLDS"
