@@ -85,7 +85,7 @@ items:
               - name: MQ_SERVICE_PREFIX_MAPPING
                 value: amq
               - name: AMQ_TCP_SERVICE_HOST
-                value: broker
+                value: amqbroker
               - name: AMQ_TCP_SERVICE_PORT
                 value: "61616"
               - name: amq_JNDI
