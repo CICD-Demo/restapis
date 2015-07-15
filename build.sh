@@ -5,11 +5,11 @@ cd $(dirname $0)
 . utils
 . ../../environment
 
-PROJECT=$(osc status | sed -n '1 { s/.* //; p; }')
+PROJECT=$(oc status | sed -n '1 { s/.* //; p; }')
 
-osc create -f - <<EOF || true
+oc create -f - <<EOF || true
 kind: ImageStream
-apiVersion: v1beta1
+apiVersion: v1
 metadata:
   name: restapis
   labels:
@@ -17,31 +17,34 @@ metadata:
     function: application
 EOF
 
-osc create -f - <<EOF
+oc create -f - <<EOF
 kind: BuildConfig
-apiVersion: v1beta1
+apiVersion: v1
 metadata:
   name: restapis
   labels:
     service: restapis
     function: application
-triggers:
-- type: generic
-  generic:
-    secret: secret
-parameters:
+spec:
+  triggers:
+  - type: generic
+    generic:
+      secret: secret
   strategy:
-    type: STI
-    stiStrategy:
-      image: docker.io/cicddemo/sti-eap
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: sti-eap:latest
+        namespace: openshift
       env:
       - name: MAVEN_MIRROR
         value: "$MAVEN_MIRROR"
   source:
     type: Git
     git:
-      ref: master
       uri: http://gogs.$INFRA/$PROJECT/restapis
+      ref: master
   output:
     to:
       name: restapis
