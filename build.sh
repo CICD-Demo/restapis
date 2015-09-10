@@ -35,11 +35,11 @@ spec:
     sourceStrategy:
       from:
         kind: ImageStreamTag
-        name: sti-eap:latest
+        name: jboss-eap6-openshift:6.4
         namespace: openshift
       env:
-      - name: MAVEN_MIRROR
-        value: "$MAVEN_MIRROR"
+      - name: http_proxy
+        value: "$http_proxy"
   source:
     type: Git
     git:
